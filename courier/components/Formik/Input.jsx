@@ -14,3 +14,14 @@ function Input(props) {
 }
 
 export default Input
+
+// const TextField = (props: FieldHookConfig<string>) => {
+//   const [field] = useField(props);
+//   return (
+//     <div>
+//       {/* no need to pass the name field because Formik will accept
+//       that prop internally and pass it to the field variable */}
+//       <input {...field} placeholder={props.placeholder} type={props.type} />
+//     </div>
+//     );
+// };

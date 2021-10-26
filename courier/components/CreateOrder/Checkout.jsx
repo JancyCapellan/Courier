@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react'
 import { useCart } from '../../contexts/cartContext'
-import Cart from '../Cart/Cart'
+import Cart from './Cart'
 import axios from 'axios'
-import { useHistory } from 'react-router'
+// import { useHistory } from 'react-router'
 
 const Checkout = () => {
   const [cashToggle, setCashToggle] = useState(true)
   const [addressStrings, setAddressStrings] = useState({ shipper: '', reciever: '' })
   const { cart, total, amount, formDetails, submitOrder } = useCart()
-  const history = useHistory()
+  // const history = useHistory()
 
   // order is the body that is sent to api
   const order = {
@@ -22,7 +22,7 @@ const Checkout = () => {
 
   async function postOrder(order) {
     await axios
-      .post('http://localhost:5000/user/submitOrder', order)
+      .post('http://localhost:3000/user/submitOrder', order)
       .then((res) => {
         console.log('res:', res)
 
@@ -43,7 +43,7 @@ const Checkout = () => {
     postOrder(order)
 
     // go to review order page with reciept of order
-    history.push('/customers')
+    // history.push('/customers')
     // try {
     //   // console.log(order.form)
     //   await submitOrder(order)

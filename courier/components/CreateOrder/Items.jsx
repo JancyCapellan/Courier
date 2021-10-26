@@ -1,5 +1,5 @@
 import React from 'react'
-import products from '../../assets/products.json'
+import products from './products.json'
 import Item from './item'
 
 const jsonProdcutsES = products.spanish

@@ -81,7 +81,9 @@ function CustomerTable({ search, setCurrentUser, setShowEditor }) {
                         console.log(`move to order page with ${item.first_name} info`)
                         setCurrentUser(item)
                         changeCurrentOrderUser(item)
-                        history.push('/createcustomerorder')
+                        router.push({
+                          pathname: `/order`,
+                        })
                       }}
                     >
                       order

@@ -3,10 +3,10 @@ import * as Bi from 'react-icons/bi'
 
 // cname is className
 // { staff:[], cust: [], admin:[]}
-const routes = {
+export const routes = {
   account: {
     title: 'Account',
-    path: '/accountInfo',
+    path: '/account',
     icon: <Bi.BiUser />,
     cName: 'nav-text',
   },

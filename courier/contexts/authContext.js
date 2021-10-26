@@ -5,6 +5,7 @@ import { postLogin, postRegistration } from './authActions'
 // import Axios from 'axios'
 // import { useHistory } from 'react-router'
 import Router from 'next/router'
+import { routes } from '../components/SidebarData'
 
 const initialState = {
   email: '',
@@ -40,7 +41,7 @@ const AuthProvider = ({ children }) => {
         dispatch({ type: 'LOGIN', payload: res })
         // console.log()
 
-        Router.push('/accountInfo')
+        Router.push(routes.account.path)
         break
 
       case 204:

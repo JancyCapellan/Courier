@@ -15,7 +15,7 @@ const SelectShipperAddress = ({ show, handleClose, currentUser, setAddress }) =>
     let isMounted = true
     async function getCustomerAddress() {
       try {
-        let res = await axios.get(`http://localhost:5000/user/addresses/${currentUser.id}`)
+        let res = await axios.get(`http://localhost:3000/user/addresses/${currentUser.id}`)
         if (res.status === 200 && isMounted) {
           // console.table(res.data)
           setAddresses(res.data)

@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { useCart } from '../../contexts/cartContext'
-import '../../index.css'
-import { useHistory } from 'react-router'
+// import { useHistory } from 'react-router'
 import { Formik, Form } from 'formik'
 import FormikControl from '../../components/Formik/FormikControl'
 import * as Yup from 'yup'
@@ -24,7 +23,7 @@ const SenderFormAdmin = ({ currentUser, handlePage }) => {
   const [showModal, setShowModal] = useState(false)
   const { addForm, formDetails } = useCart()
 
-  const history = useHistory()
+  // const history = useHistory()
   // const shipperSelectRef = useRef(null)
 
   // useEffect(() => {
