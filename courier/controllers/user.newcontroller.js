@@ -4,6 +4,7 @@ const prisma = new PrismaClient()
 
 // Create and Save a new user
 exports.register = async (req, res) => {
+  console.log('register')
   // Validate request
   if (!req.body) {
     res.status(400).send({
@@ -20,6 +21,7 @@ exports.register = async (req, res) => {
 
 // Login in user to correct site
 exports.login = async (req, res) => {
+  console.log('login')
   // Validate request
   if (!req.body) {
     res.status(400).send({

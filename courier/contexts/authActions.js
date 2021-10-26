@@ -6,7 +6,7 @@ export const postLogin = async (form) => {
       email: form.loginEmail,
       password: form.password,
     }
-    const res = await Axios.post('http://localhost:5000/user/login', loginValues)
+    const res = await Axios.post('http://localhost:3000/user/login', loginValues)
     return res
   } catch (err) {
     console.error(err)
@@ -23,7 +23,9 @@ export const postRegistration = async (form) => {
       password: form.password,
       role: 'ADMIN',
     }
-    const res = await Axios.post('http://localhost:5000/user/register', registerValues)
+
+    delete form.password2
+    const res = await Axios.post('http://localhost:3000/user/register', form)
     console.log('REGISTER RES HERE', res)
     return res
   } catch (error) {

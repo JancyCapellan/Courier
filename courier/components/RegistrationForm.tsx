@@ -14,6 +14,7 @@ const RegistrationForm = () => {
     email: '',
     password: '',
     password2: '',
+    role: 'admin',
   }
 
   // RegEx for phone number validation
