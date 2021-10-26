@@ -2,14 +2,13 @@ import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import { useCart } from '../../../contexts/cartContext'
 import { useRouter } from 'next/router'
-const router = useRouter()
 
 function CustomerTable({ search, setCurrentUser, setShowEditor }) {
   //search is done with or statements in mysql wiht form entry search bar component,
   // might add component into this file
   const [searchResults, setSearchResults] = useState([])
   const { changeCurrentOrderUser } = useCart()
-
+  const router = useRouter()
   // TODO: api/services/app/Customer/GetAll?Filter=m&SkipCount=0&MaxResultCount=10
 
   useEffect(() => {
@@ -29,11 +28,14 @@ function CustomerTable({ search, setCurrentUser, setShowEditor }) {
   }, [search, setSearchResults])
 
   function openCustomerAccountPage(user) {
-    router.push()
-    const location = {
-      pathname: '/customers/customeraccount',
-      state: { user: user },
-    }
+    router.push({
+      pathname: `/customers/${user.id}`,
+      query: user,
+    })
+    // const location = {
+    //   pathname: '/customers/customeraccount',
+    //   state: { user: user },
+    // }
   }
   return (
     <>
