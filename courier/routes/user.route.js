@@ -1,0 +1,59 @@
+const express = require('express')
+const router = express.Router()
+const user = require('../controllers/user.newcontroller.js')
+
+// user CRUD
+router.post('/register', user.register)
+router.post('/login', user.login)
+router.put('/:userId', user.update) // Update a user with userId
+
+router.get('/getUsers', user.getUsers) //search for users dynamically with mysql locate
+
+// router.options('/login', user.loginError)
+//place order
+router.post('/submitOrder', user.submitOrder)
+
+//bulk add items to products liust
+router.post('/bulkAdd', user.addItemToProductsList)
+
+// Retrieve all user
+router.get('/all', user.findAll)
+
+// Retrieve a single user with userId
+router.get('/:userId', user.findOne)
+
+// Get user addresses with userId
+router.get('/addresses/:userId', user.getAddressesWithId)
+
+// Add user addrerss with userId
+router.post('/addresses/add/:userId', user.AddAddress)
+
+// update address with addressId
+router.put('/addresses/update/:addressId', user.updateAddress)
+
+// get all user orders //create status for orders in mysql
+router.get('/orders/all', user.getAllOrders)
+
+// Delete a user with userId
+// router.delete('/user/:userId', user.delete)
+
+// Create a new user
+// router.delete('/user', user.deleteAll)
+
+module.exports = router
+
+// ** example of ogranizing routes
+
+// 'use strict'
+// module.exports = function (app) {
+//   var todoList = require('../controllers/todoListController')
+
+//   // todoList Routes
+//   app.route('/tasks').get(todoList.list_all_tasks).post(todoList.create_a_task)
+
+//   app
+//     .route('/tasks/:taskId')
+//     .get(todoList.read_a_task)
+//     .put(todoList.update_a_task)
+//     .delete(todoList.delete_a_task)
+// }

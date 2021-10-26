@@ -1,16 +1,570 @@
 html,
 body {
-  padding: 0;
+  height: 100%;
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+  padding: 0;
+}
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu',
+    'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+}
+
+/*
+===============
+Variables
+===============
+*/
+
+:root {
+  --clr-primary: #2680c0;
+  --clr-primary-dark: hsl(205, 100%, 21%);
+  --clr-primary-light: hsl(205, 84%, 74%);
+  --clr-grey-1: #102a42;
+  --clr-grey-5: #617d98;
+  --clr-grey-10: #f1f5f8;
+  --clr-white: #fff;
+  --clr-red-dark: hsl(360, 67%, 44%);
+  --clr-red-light: hsl(360, 71%, 66%);
+  --transition: all 0.3s linear;
+  --spacing: 0.25rem;
+  --radius: 0.25rem;
+  --large-screen-width: 1170px;
+  --small-screen-width: 90vw;
+  --fixed-width: 50rem;
+}
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell,
+    'Open Sans', 'Helvetica Neue', sans-serif;
+  background: var(--clr-grey-10);
+  color: var(--clr-grey-1);
+  line-height: 1.5;
+  font-size: 0.875rem;
+}
 a {
   color: inherit;
   text-decoration: none;
 }
 
-* {
-  box-sizing: border-box;
+h1,
+h2,
+h3,
+h4 {
+  letter-spacing: var(--spacing);
+  text-transform: capitalize;
+  line-height: 1.25;
+  margin-bottom: 0.75rem;
+}
+h1 {
+  font-size: 3rem;
+}
+h2 {
+  font-size: 2rem;
+}
+h3 {
+  font-size: 1.5rem;
+}
+h4 {
+  font-size: 0.875rem;
+}
+p {
+  margin-bottom: 1.25rem;
+}
+/* @media screen and (min-width: 800px) {
+  h1 {
+    font-size: 4rem;
+  }
+  h2 {
+    font-size: 2.5rem;
+  }
+  h3 {
+    font-size: 2rem;
+  }
+  h4 {
+    font-size: 1rem;
+  }
+  body {
+    font-size: 1rem;
+  }
+  h1,
+  h2,
+  h3,
+  h4 {
+    line-height: 1;
+  }
+} */
+
+img {
+  max-width: 100%;
+  max-height: 100%;
+}
+/* more global css */
+
+.btn {
+  text-transform: uppercase;
+  background: var(--clr-primary);
+  color: var(--clr-white);
+  padding: 0.375rem 0.75rem;
+  letter-spacing: var(--spacing);
+  display: inline-block;
+  font-weight: 700;
+  transition: var(--transition);
+  font-size: 0.875rem;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+.btn:hover {
+  color: var(--clr-primary);
+  background: var(--clr-primary-light);
+}
+table,
+th,
+td {
+  border: 1px solid black;
+}
+ul {
+  list-style-type: none;
+}
+/*
+===============
+multi-page styles
+===============
+*/
+.page-title {
+  text-align: center;
+  padding-bottom: 40px;
+}
+
+/*
+===============
+Sidebar / layout
+===============
+*/
+.page-layout {
+  display: grid;
+  grid-template-columns: min-content min-content;
+}
+
+.main-content {
+  margin: 0;
+  padding: 50px;
+  grid-column: 3;
+}
+
+.sidebar {
+  height: 100vh; /* cant use 100% Full-height, because root div has no styling for height */
+  width: 14vw; /* 0 width - change this with JavaScript */
+  position: relative; /* Stay in place */
+  top: 0;
+  left: 0;
+  background-color: #e7e8e9; /* Black*/
+  overflow-x: hidden; /* Disable horizontal scroll */
+  /* Place content 60px from the top */
+  transition: 0.7s; /* 0.5 second transition effect to slide in the sidebar */
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  grid-column: 1;
+}
+
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  padding-top: 25px;
+  padding-bottom: 50px;
+}
+
+.sidebar-logo-container {
+  margin: 0 auto;
+}
+
+.sidebar-toggle {
+  transition: 0.3s;
+}
+.sidebar-toggle-off {
+  display: none;
+}
+.backup-logo {
+  margin: 0 auto;
+}
+
+/* ul */
+.sidebar-links {
+}
+
+.nav-text a {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  transition: 0.7s;
+}
+
+/* li span */
+.nav-text span {
+  color: red;
+  transition-timing-function: ease-in;
+}
+
+/*-------- sidebar collapsed -------*/
+.sidebar-collapsed {
+  height: 100vh; /* cant use 100% Full-height, because root div has no styling for height */
+  width: 7vw; /* 0 width - change this with JavaScript */
+  position: relative; /* Stay in place */
+  top: 0;
+  left: 0;
+  background-color: #e7e8e9; /* Black*/
+  overflow-x: hidden; /* Disable horizontal scroll */
+  /* Place content 60px from the top */
+  transition: 0.4s; /* 0.5 second transition effect to slide in the sidebar */
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  grid-column: 1;
+}
+.sidebar-collapsed .sidebar-link-icon {
+  margin-right: 0;
+  font-size: 1.3em;
+  transition: 0.4s;
+}
+
+.sidebar-collapsed .sidebar-link-title {
+  display: none;
+  transition: 0.4s;
+}
+
+.sidebar-collapsed .sidebar-header {
+  padding-bottom: 75px;
+}
+
+/*
+===============
+Account info
+===============
+*/
+.accountPage {
+  display: flex;
+  flex-direction: column;
+}
+.accInfotable {
+  width: 100vw;
+}
+
+/*
+================
+Customer Manager
+================
+*/
+
+.customer-manager-page {
+  display: grid;
+  gap: 20px;
+  grid-template-columns: min-content min-content;
+
+  grid-template-rows: auto auto;
+
+  grid-template-areas:
+    'customer-search add-customer-btn'
+    'customers-table customers-info-table';
+}
+
+.customer-search {
+  grid-area: 'customer-search';
+  display: flex;
+  margin-bottom: auto;
+}
+
+.customer-search-label {
+  margin: 0;
+}
+
+.customer-search-btn {
+  /* grid-area: 'customer-search-btn'; */
+  align-self: flex-end;
+  height: min-content;
+}
+
+.customer-table-row:hover {
+  background-color: yellow;
+}
+
+.add-customer-btn {
+  width: min-content;
+  grid-area: 'add-customer-btn';
+}
+
+.customers-table {
+  grid-area: 'customers-table';
+}
+
+.customers-info-table {
+  grid-area: 'customers-info-table';
+}
+
+/* create customer modal */
+
+.d-block {
+  display: block;
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0, 0, 0); /* Fallback color */
+  background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
+}
+
+.d-none {
+  display: none;
+}
+
+.modal-container {
+  background-color: #fefefe;
+  margin: 15% auto; /* 15% from the top and centered */
+  padding: 20px;
+  border: 1px solid #888;
+  width: 40%; /* Could be more or less, depending on screen size */
+}
+
+.modal-close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+.modal-close:hover,
+.mdoal-close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+/*
+================
+Home page
+================
+*/
+.homeLayout {
+  width: 100%;
+  flex-direction: column;
+}
+
+.homeHeader {
+  background-color: blue;
+  outline-color: green;
+  justify-content: center;
+  align-content: center;
+  height: 45px;
+}
+
+.headerTitle {
+  color: black;
+}
+
+.forms {
+  justify-content: center;
+  align-content: center;
+  align-content: flex-end;
+}
+
+.loginform {
+  padding: 15%;
+}
+
+/*
+===============
+Cart
+===============
+*/
+.cart {
+  min-height: calc(100vh - 420px);
+  width: 90vw;
+  margin: 0 auto;
+  margin-top: 40px;
+  padding: 2.5rem 0;
+  max-width: var(--fixed-width);
+}
+.cart h2 {
+  text-transform: uppercase;
+  text-align: center;
+  margin-bottom: 3rem;
+}
+.empty-cart {
+  text-transform: lowercase;
+  color: var(--clr-grey-5);
+  margin-top: 1rem;
+  text-align: center;
+}
+.cart footer {
+  margin-top: 4rem;
+  text-align: center;
+}
+.cart-total h4 {
+  text-transform: capitalize;
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1rem;
+}
+.clear-btn {
+  background: transparent;
+  padding: 0.5rem 1rem;
+  color: var(--clr-red-dark);
+  border: 1px solid var(--clr-red-dark);
+  margin-top: 2.25rem;
+  border-radius: var(--radius);
+}
+.clear-btn:hover {
+  background: var(--clr-red-light);
+  color: var(--clr-red-dark);
+  border-color: var(--clr-red-light);
+}
+/*
+===============
+Cart Item
+===============
+*/
+.cart-item {
+  display: grid;
+  align-items: center;
+  grid-template-columns: auto 1fr auto;
+  grid-column-gap: 1.5rem;
+  margin: 1.5rem 0;
+}
+.cart-item img {
+  width: 5rem;
+  height: 5rem;
+  object-fit: cover;
+}
+.cart-item h4 {
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  letter-spacing: 2px;
+}
+.item-price {
+  color: var(--clr-grey-5);
+}
+.remove-btn {
+  color: var(--clr-primary);
+  letter-spacing: var(--spacing);
+  cursor: pointer;
+  font-size: 0.85rem;
+  background: transparent;
+  border: none;
+  margin-top: 0.375rem;
+  transition: var(--transition);
+}
+.remove-btn:hover {
+  color: var(--clr-primary-light);
+}
+.amount-btn {
+  width: 1.5rem;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+.amount-btn svg {
+  fill: var(--clr-primary);
+}
+.amount-btn:hover svg {
+  fill: var(--clr-primary-light);
+}
+.amount {
+  text-align: center;
+  margin-bottom: 0;
+  font-size: 1.25rem;
+  line-height: 1;
+}
+hr {
+  background: var(--clr-grey-5);
+  border-color: transparent;
+  border-width: 0.25px;
+}
+
+/* Custom */
+.container-fluid {
+  padding: 0;
+}
+.mainApp {
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: row;
+}
+
+/*
+======
+Delivery Information / SenderForm.jsx
+======
+*/
+.contactForm {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  border: 3px solid rgb(0, 0, 0);
+  padding: 20px;
+}
+
+.senderForm {
+  order: 1;
+  margin: 0px;
+}
+.recieverForm {
+  order: 2;
+  margin: 0px;
+}
+
+/*
+======
+Item
+======
+ */
+.itemBox {
+  margin: 1em;
+  background-color: wheat;
+  display: grid;
+  grid-template-areas:
+    'image'
+    'label'
+    'submitButton';
+}
+.itemImage {
+  grid-area: image;
+}
+
+.labelItemCount {
+  grid-area: label;
+}
+.itemCount {
+  grid-area: count;
+}
+
+.itemSubmitButton {
+  grid-area: submitButton;
+}
+/*
+======
+Items List
+======
+ */
+.items-section {
+  flex: 9;
+}
+.itemsList {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: flex-start;
 }
