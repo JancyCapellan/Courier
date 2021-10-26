@@ -61,17 +61,18 @@ const Sidebar = ({ children }) => {
             return (
               <li key={index} className={item.cName}>
                 <Link href={item.path}>
-                  <span className='sidebar-link-title sidebar-link-icon'>
-                    {item.icon}
-                    {item.title}
-                  </span>
+                  <>
+                    <span className='sidebar-link-icon'>{item.icon}</span>
+                    <span className='sidebar-link-title'>{item.title}</span>
+                  </>
                 </Link>
               </li>
             )
           })}
         </ul>
+        <button>Log out</button>
         <button className='' onClick={sidebarToggler}>
-          ====
+          \====
         </button>
       </nav>
 

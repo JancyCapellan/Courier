@@ -13,7 +13,13 @@ export const routes = {
   administration: {
     title: 'Admin',
     path: '/administration',
-    icon: <Bi.BiUser />,
+    icon: <Bi.BiAnchor />,
+    cName: 'nav-text',
+  },
+  invoices: {
+    title: 'Invoices',
+    path: '/Invoices',
+    icon: <Bi.BiAdjust />,
     cName: 'nav-text',
   },
   pickups: {
@@ -66,9 +72,9 @@ export const routes = {
     cName: 'nav-text',
   },
   warehouse: {
-    title: 'Warehouse Manger',
+    title: 'Branch Manager',
     path: '/warehouse',
-    icon: <Bi.BiAccessibility />,
+    icon: <Bi.BiAlarm />,
     cName: 'nav-text',
   },
   adminstration: {
@@ -91,9 +97,9 @@ export const sidebarTypes = {
     routes.administration,
     routes.account,
     routes.customers,
-    routes.pickups,
+    routes.invoices,
     routes.warehouse,
-    routes.support,
     routes.logout,
   ],
+  All: [routes],
 }

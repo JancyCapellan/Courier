@@ -3,8 +3,11 @@ import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Home.module.css'
 import LoginForm from '../components/LoginForm'
+import { useAuth } from '../contexts/authContext'
+import { Router } from 'next/router'
 
 const Home: NextPage = () => {
+  const { email } = useAuth()
   return (
     <div className=' homeLayout '>
       <div className='homeHeader'>

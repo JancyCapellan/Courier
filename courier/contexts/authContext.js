@@ -29,9 +29,19 @@ const AuthProvider = ({ children }) => {
   const [state, dispatch] = useReducer(authReducer, initialState)
   // const history = useHistory()
 
+  // useEffect(() => {
+  //   const loggedInUser = localStorage.getItem('cu')
+  //   console.log(loggedInUser)
+  //   if (loggedInUser) {
+  //     const foundUser = JSON.parse(loggedInUser)
+  //     // dispatch({ type: 'LOGIN', payload: foundUser })
+  //   }
+  // }, [])
+
   useEffect(() => {
     console.log(state)
   }, [state])
+
   const login = async (form) => {
     const res = await postLogin(form)
     // console.log('res', res)
@@ -39,6 +49,7 @@ const AuthProvider = ({ children }) => {
       case 200:
         console.log('LOGIN DATA', res.data)
         dispatch({ type: 'LOGIN', payload: res })
+        // localStorage.setItem('cu', res.data)
         // console.log()
 
         Router.push(routes.account.path)
