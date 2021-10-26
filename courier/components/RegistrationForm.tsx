@@ -89,7 +89,7 @@ const RegistrationForm = () => {
         }}
       </Formik>
       <div>
-        Have an Account Already? <Link href='/home'> Login </Link>
+        Have an Account Already? <Link href='/'> Login </Link>
       </div>
     </div>
   )

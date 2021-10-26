@@ -28,6 +28,9 @@ const AuthProvider = ({ children }) => {
   const [state, dispatch] = useReducer(authReducer, initialState)
   // const history = useHistory()
 
+  useEffect(() => {
+    console.log(state)
+  }, [state])
   const login = async (form) => {
     const res = await postLogin(form)
     // console.log('res', res)
@@ -37,7 +40,7 @@ const AuthProvider = ({ children }) => {
         dispatch({ type: 'LOGIN', payload: res })
         // console.log()
 
-        Router.push('/account')
+        Router.push('/accountInfo')
         break
 
       case 204:

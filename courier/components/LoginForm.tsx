@@ -7,7 +7,12 @@ import { useAuth } from '../contexts/authContext'
 export default function LoginForm() {
   const { login } = useAuth()
 
-  const initialValues = {
+  interface LoginFormValues {
+    loginEmail: string
+    password: string
+  }
+
+  const initialValues: LoginFormValues = {
     loginEmail: '',
     password: '',
   }

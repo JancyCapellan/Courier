@@ -15,14 +15,14 @@ export const postLogin = async (form) => {
 
 export const postRegistration = async (form) => {
   try {
-    const registerValues = {
-      email: form.email,
-      firstName: form.first_name,
-      middleName: form.middle_name,
-      lastName: form.last_name,
-      password: form.password,
-      role: 'ADMIN',
-    }
+    // const registerValues = {
+    //   email: form.email,
+    //   firstName: form.first_name,
+    //   middleName: form.middle_name,
+    //   lastName: form.last_name,
+    //   password: form.password,
+    //   role: 'ADMIN',
+    // }
 
     delete form.password2
     const res = await Axios.post('http://localhost:3000/user/register', form)

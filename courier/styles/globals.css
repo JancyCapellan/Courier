@@ -203,7 +203,9 @@ Sidebar / layout
 /* ul */
 .sidebar-links {
 }
-
+.nav-text {
+  cursor: pointer;
+}
 .nav-text a {
   display: flex;
   align-items: flex-start;

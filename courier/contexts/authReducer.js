@@ -5,9 +5,9 @@ const authReducer = (state, action) => {
       let info = action.payload.data
       return {
         ...state,
-        firstName: info.first_name,
-        middleName: info.middle_name,
-        lastName: info.last_name,
+        firstName: info.firstName,
+        middleName: info.middleName,
+        lastName: info.lastName,
         email: info.email,
         role: info.role,
         id: info.id,
