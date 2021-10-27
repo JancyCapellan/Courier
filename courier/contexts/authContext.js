@@ -50,7 +50,7 @@ const AuthProvider = ({ children }) => {
         dispatch({ type: 'LOGIN_JWT', payload: res.data.accessToken })
 
         const user = await getLoggedInUser(res.data.accessToken)
-        console.log('user', user)
+        console.log('user', user.data)
         dispatch({ type: 'LOGIN_USER', payload: user.data })
 
         Router.push(routes.account.path)
