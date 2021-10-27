@@ -20,12 +20,12 @@ function authenticateToken(req, res, next) {
  *  USER CRUD
  */
 
-//register
+//register - prisma
 router.post('/register', user.register)
 
-//login
+//login - prisma
 router.post('/login', user.login)
-// get info after successful login
+// get info after successful login - prisma
 router.get('/loggedInUser', authenticateToken, user.getloggedInUser)
 
 // Update a user with userId

@@ -5,7 +5,7 @@ import { useAuth } from '../contexts/authContext'
 import Link from 'next/link'
 import Router from 'next/router'
 
-const RegistrationForm = () => {
+const RegistrationForm = (type: any) => {
   const { register } = useAuth()
   const initialValues = {
     firstName: '',
@@ -71,10 +71,20 @@ const RegistrationForm = () => {
           return (
             <Form>
               <FormikControl control='input' type='text' label='First Name' name='firstName' />
-              <FormikControl control='input' type='text' label='Middle Name' name='middleName' />
+              <FormikControl
+                control='input'
+                type='text'
+                label='Middle Name'
+                name='middleName'
+              />
               <FormikControl control='input' type='text' label='Last Name' name='lastName' />
               <FormikControl control='input' type='email' label='Email' name='email' />
-              <FormikControl control='input' type='password' label='Password' name='password' />
+              <FormikControl
+                control='input'
+                type='password'
+                label='Password'
+                name='password'
+              />
               <FormikControl
                 control='input'
                 type='password'

@@ -36,6 +36,13 @@ exports.login = async (req, res) => {
       email: req.body.email,
       password: req.body.password,
     },
+    select: {
+      id: true,
+      firstName: true,
+      lastName: true,
+      role: true,
+      preferredLanguage: true,
+    },
   })
 
   if (result) {
@@ -101,16 +108,23 @@ exports.submitOrder = (req, res) => {
     })
   }
 
-  User.submitOrder2(customerId, cartJSON, addresses, total_price, amount_items, (err, data) => {
-    if (err) {
-      //possible error here when sending err
-      res.status(500).send({
-        message: err.message || 'Some error occurred while submitting order.',
-      })
+  User.submitOrder2(
+    customerId,
+    cartJSON,
+    addresses,
+    total_price,
+    amount_items,
+    (err, data) => {
+      if (err) {
+        //possible error here when sending err
+        res.status(500).send({
+          message: err.message || 'Some error occurred while submitting order.',
+        })
+      }
+      console.log('past query')
+      res.status(200).send(data)
     }
-    console.log('past query')
-    res.status(200).send(data)
-  })
+  )
 }
 
 exports.addItemToProductsList = (req, res) => {
