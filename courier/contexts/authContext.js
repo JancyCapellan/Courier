@@ -34,7 +34,7 @@ const AuthProvider = ({ children }) => {
   //   console.log(loggedInUser)
   //   if (loggedInUser) {
   //     const foundUser = JSON.parse(loggedInUser)
-  //     // dispatch({ type: 'LOGIN', payload: foundUser })
+  // dispatch({ type: 'LOGIN', payload: foundUser })
   //   }
   // }, [])
 
@@ -44,16 +44,14 @@ const AuthProvider = ({ children }) => {
 
   const login = async (form) => {
     const res = await postLogin(form)
-    console.log('token', res)
     switch (res.status) {
       case 200:
-        console.log('ACCESS TOKEN', res.data)
+        console.log('ACCESS TOKEN', res.data.accessToken)
         dispatch({ type: 'LOGIN_JWT', payload: res.data.accessToken })
-        const user = await getLoggedInUser(state.JWT)
-        dispatch({ type: 'LOGIN_USER', payload: user })
 
-        // localStorage.setItem('cu', res.data)
-        // console.log()
+        const user = await getLoggedInUser(res.data.accessToken)
+        console.log('user', user)
+        dispatch({ type: 'LOGIN_USER', payload: user.data })
 
         Router.push(routes.account.path)
         break

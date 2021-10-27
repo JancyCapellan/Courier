@@ -1,8 +1,15 @@
 const authReducer = (state, action) => {
   // console.log('AUTH CONTEXT action', action)
   switch (action.type) {
+    case 'LOGIN_JWT':
+      let jwt = action.payload
+      return {
+        ...state,
+        JWT: jwt,
+      }
+
     case 'LOGIN_USER':
-      let info = action.payload.data
+      let info = action.payload
       return {
         ...state,
         firstName: info.firstName,
@@ -11,13 +18,6 @@ const authReducer = (state, action) => {
         email: info.email,
         role: info.role,
         id: info.id,
-      }
-
-    case 'LOGIN_JWT':
-      let jwt = action.payload
-      return {
-        ...state,
-        JWT: jwt,
       }
 
     case 'LOADING':
