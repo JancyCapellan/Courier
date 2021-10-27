@@ -1,0 +1,11 @@
+GET http://localhost:3000/user/getUsers?search=45
+
+### 
+
+POST http://localhost:3000/user/login
+Content-Type: application/json
+
+{
+  "email": "jancycapellan97@gmail.com",
+  "password": "123"
+}

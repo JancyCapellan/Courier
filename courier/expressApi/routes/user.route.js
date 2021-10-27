@@ -3,9 +3,15 @@ const router = express.Router()
 const user = require('../controllers/user.newcontroller.js')
 
 // user CRUD
+
+//register
 router.post('/register', user.register)
+
+//login
 router.post('/login', user.login)
-router.put('/:userId', user.update) // Update a user with userId
+
+// Update a user with userId
+router.put('/:userId', user.update)
 
 router.get('/getUsers', user.getUsers) //search for users dynamically with mysql locate
 

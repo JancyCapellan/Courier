@@ -1,8 +1,13 @@
 const User = require('../models/user.model.js')
 const { PrismaClient } = require('@prisma/client')
-const prisma = new PrismaClient()
+const jwt = require('jsonwebtoken')
+// require('dotenv').config()
+const fs = require('fs')
 
-// Create and Save a new user
+const prisma = new PrismaClient()
+let refreshTokens = []
+
+// register new user
 exports.register = async (req, res) => {
   console.log('register')
   // Validate request
@@ -36,7 +41,13 @@ exports.login = async (req, res) => {
   })
 
   if (result) {
-    res.send(result).status(200)
+    const accessToken = jwt.sign(result, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '7D' })
+    console.log('here')
+    console.log('object', process.env.ACCESS_TOKEN_SECRET)
+    // const refreshToken = jwt.sign(result, process.env.REFRESH_TOKEN_SECRET)
+    // refreshTokens.push(refreshToken)
+    res.json({ accessToken: accessToken })
+    // res.send(result).status(200)
   }
 }
 

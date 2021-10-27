@@ -238,12 +238,12 @@ Sidebar / layout
 .sidebar-collapsed .sidebar-link-icon {
   margin-right: 0;
   font-size: 1.3em;
-  transition: 0.4s;
+  transition: 0.2s;
 }
 
 .sidebar-collapsed .sidebar-link-title {
   display: none;
-  transition: 0.4s;
+  transition: 0.2s;
 }
 
 .sidebar-collapsed .sidebar-header {

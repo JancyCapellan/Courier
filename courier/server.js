@@ -4,16 +4,16 @@ const express = require('express')
 const logger = require('morgan')
 const cors = require('cors')
 const next = require('next')
+// require('dotenv').config()rs
 
 //custom modules
 // const indexRouter = require('./routes/index.route')
-const userRouter = require('./routes/user.route')
+const userRouter = require('./expressApi/routes/user.route')
 //server start
 
 const dev = process.env.NODE_ENV !== 'production'
 const app = next({ dev })
 const handle = app.getRequestHandler()
-
 app
   .prepare()
   .then(() => {

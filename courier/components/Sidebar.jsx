@@ -3,6 +3,7 @@ import { sidebarTypes } from './SidebarData'
 import Link from 'next/link'
 // import logo from '../assets/logo-dark.png'
 import { useAuth } from '../contexts/authContext'
+import Router from 'next/router'
 
 const Sidebar = ({ children }) => {
   const [isCollapsed, setIsCollapsed] = useState(false)
@@ -59,13 +60,17 @@ const Sidebar = ({ children }) => {
         <ul className='sidebar-links'>
           {SidebarData.map((item, index) => {
             return (
-              <li key={index} className={item.cName}>
-                <Link href={item.path}>
-                  <>
-                    <span className='sidebar-link-icon'>{item.icon}</span>
-                    <span className='sidebar-link-title'>{item.title}</span>
-                  </>
-                </Link>
+              <li
+                key={index}
+                className={item.cName}
+                onClick={() => {
+                  Router.push(item.path) // Replaced with `router.push`
+                }}
+              >
+                <>
+                  <span className='sidebar-link-icon'>{item.icon}</span>
+                  <span className='sidebar-link-title'>{item.title}</span>
+                </>
               </li>
             )
           })}
