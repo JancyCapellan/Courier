@@ -19,7 +19,7 @@ const Administration = () => {
   return (
     <Sidebar>
       <section>
-        <RegistrationForm staff={true} />
+        <RegistrationForm />
 
         <button className='btn add-customer-btn' onClick={() => setShowModal(true)}>
           Add User

@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react'
 import Sidebar from '../../../components/Sidebar'
 import CustomerTable from './CustomerTable'
 import CreateCustomerModal from '../CreateCustomerModal'
+import ModalContainer from '../../HOC/ModalContainer'
+import Register from '../../../pages/register'
+import RegistrationForm from '../../RegistrationForm'
 
 const CustomerManager = () => {
   const [value, setValue] = useState('')
@@ -59,13 +62,9 @@ const CustomerManager = () => {
           setShowEditor={setShowEditor}
         />
       </div>
-      <CreateCustomerModal show={showModal} handleClose={handleModalClose} />
-      {/* <CustomerEditor
-        show={showEditor}
-        handleClose={handleModalClose}
-        currentUser={currentUser}
-        setSearch={setSearch}
-      /> */}
+      <ModalContainer show={showModal} handleClose={handleModalClose}>
+        <RegistrationForm staff={false} />
+      </ModalContainer>
     </Sidebar>
   )
 }

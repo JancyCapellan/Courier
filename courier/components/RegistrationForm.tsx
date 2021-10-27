@@ -6,7 +6,7 @@ import Link from 'next/link'
 import Router from 'next/router'
 
 // if staff strue, can change role of user being registered
-const RegistrationForm = (staff: boolean) => {
+const RegistrationForm = (staff: any) => {
   const { register } = useAuth()
   const initialValues = {
     firstName: '',
