@@ -36,9 +36,6 @@ exports.login = async (req, res) => {
     },
     select: {
       id: true,
-      firstName: true,
-      lastName: true,
-      role: true,
       preferredLanguage: true,
     },
   })
@@ -54,8 +51,9 @@ exports.login = async (req, res) => {
 
 // get user info after login
 exports.getloggedInUser = async (req, res) => {
-  // console.log('user', req.user)
   let user = req.user
+  console.log('user', user)
+
   if (!req.body || !user) {
     res.status(400).send({
       message: 'Content can not be empty!',
@@ -63,8 +61,7 @@ exports.getloggedInUser = async (req, res) => {
   }
   const result = await prisma.user.findFirst({
     where: {
-      email: user.email,
-      password: req.body.password,
+      id: user.id,
     },
   })
   if (result) res.send(result)

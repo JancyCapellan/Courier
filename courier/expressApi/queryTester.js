@@ -14,18 +14,31 @@ async function main() {
   //   },
   // })
 
+  // const result = await prisma.user.findFirst({
+  //   where: {
+  //     email: 'jancycapellan97@gmail.com',
+  //     password: '123',
+  //   },
+  //   select: {
+  //     id: true,
+  //     firstName: true,
+  //     lastName: true,
+  //     role: true,
+  //     preferredLanguage: true,
+  //     email: false,
+  //   },
+  // })
+
   const result = await prisma.user.findFirst({
     where: {
-      email: 'jancycapellan97@gmail.com',
-      password: '123',
-    },
-    select: {
-      id: true,
-      firstName: true,
-      lastName: true,
-      role: true,
-      preferredLanguage: true,
-      email: false,
+      AND: [
+        {
+          email: 'fish',
+        },
+        {
+          password: '123',
+        },
+      ],
     },
   })
   console.log(result)
