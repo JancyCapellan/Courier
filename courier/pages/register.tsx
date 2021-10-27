@@ -1,5 +1,5 @@
 import type { NextPage } from 'next'
-import RegistrationForm from '../components/RegistrationForm'
+import RegistrationForm from '../components/RegistrationForm.jsx'
 
 const Register: NextPage = () => {
   return (
@@ -9,7 +9,7 @@ const Register: NextPage = () => {
       </div>
       <div className='forms'>
         <div className='loginform'>
-          <RegistrationForm />
+          <RegistrationForm staff={false} />
         </div>
       </div>
     </div>

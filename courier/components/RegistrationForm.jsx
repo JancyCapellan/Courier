@@ -4,9 +4,13 @@ import * as Yup from 'yup'
 import { useAuth } from '../contexts/authContext'
 import Link from 'next/link'
 import Router from 'next/router'
+import { useEffect } from 'react'
 
 // if staff strue, can change role of user being registered
-const RegistrationForm = (staff: any) => {
+const RegistrationForm = ({ staff }) => {
+  useEffect(() => {
+    console.log('staff', staff)
+  }, [])
   const { register } = useAuth()
   const initialValues = {
     firstName: '',
@@ -48,7 +52,7 @@ const RegistrationForm = (staff: any) => {
     password2: Yup.string().required('* required'),
   })
 
-  const onSubmit = (values: any) => {
+  const onSubmit = (values) => {
     setTimeout(() => {
       if (values.password !== values.password2) {
         alert('passwords do not match')
@@ -62,7 +66,7 @@ const RegistrationForm = (staff: any) => {
   }
   return (
     <div>
-      {staff ? <h1>Create Staff Account</h1> : <h1> Reigstraion Form </h1>}
+      {staff ? <h1>Create Staff Account</h1> : <h1> Reigstraion</h1>}
       <Formik
         className='registration-form'
         initialValues={initialValues}
