@@ -11,7 +11,7 @@ const Sidebar = ({ children }) => {
     setIsCollapsed(!isCollapsed)
   }
 
-  const { email, role } = useAuth()
+  const { email, role, firstName } = useAuth()
 
   //will switch the sidebar data to show links to routes per user role
   let SidebarData = []
@@ -23,8 +23,11 @@ const Sidebar = ({ children }) => {
       case 'ADMIN':
         SidebarData = sidebarTypes.ADMIN
         break
-      case 'STAFF':
-        SidebarData = sidebarTypes.STAFF
+      case 'DRIVER':
+        SidebarData = sidebarTypes.DRIVER
+        break
+      case 'SECT':
+        SidebarData = sidebarTypes.SECT
         break
       default:
         SidebarData = sidebarTypes.ADMIN
@@ -38,9 +41,12 @@ const Sidebar = ({ children }) => {
     <div className='page-layout'>
       <nav className={isCollapsed ? 'sidebar-collapsed' : 'sidebar'}>
         <section className='sidebar-header'>
-          <div className='sidebar-logo-container'>
-            {/* <img className='sidebar-logo' src={logo} alt='logo' /> */}
-          </div>
+          <b>
+            User: {firstName} Role: {role}
+          </b>
+          {/* <div className='sidebar-logo-container'>
+            <img className='sidebar-logo' src={logo} alt='logo' />
+          </div> */}
           {/* <button
             className={isCollapsed ? 'sidebar-toggle' : 'sidebar-toggle-off'}
             onClick={sidebarToggler}

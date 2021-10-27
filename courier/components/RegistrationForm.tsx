@@ -5,7 +5,8 @@ import { useAuth } from '../contexts/authContext'
 import Link from 'next/link'
 import Router from 'next/router'
 
-const RegistrationForm = (type: any) => {
+// if staff strue, can change role of user being registered
+const RegistrationForm = (staff: boolean) => {
   const { register } = useAuth()
   const initialValues = {
     firstName: '',
@@ -14,16 +15,15 @@ const RegistrationForm = (type: any) => {
     email: '',
     password: '',
     password2: '',
-    role: 'admin',
+    role: 'CUST',
   }
 
-  // RegEx for phone number validation
-  const phoneRegExp =
-    /^(\+?\d{0,4})?\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{3}\)?)\s?-?\s?(\(?\d{4}\)?)?$/
+  const selectOptions = [
+    { key: 'Admin', value: 'ADMIN' },
+    { key: 'Staff', value: 'STAFF' },
+    { key: 'Driver', value: 'DRIVE' },
+  ]
 
-  // Will recreate formik forms to include less code and better validation.
-
-  // Schema for yup
   const validationSchema = Yup.object({
     firstName: Yup.string()
       .min(2, '*Names must have at least 2 characters')
@@ -53,14 +53,16 @@ const RegistrationForm = (type: any) => {
       if (values.password !== values.password2) {
         alert('passwords do not match')
       } else {
-        if (register(values)) Router.push('/home')
+        if (register(values)) {
+          staff ? alert('successful registration') : Router.push('/home')
+        }
         // console.log(values)
       }
     }, 1000)
   }
   return (
     <div>
-      <h1> Reigstraion Form </h1>
+      {staff ? <h1>Create Staff Account</h1> : <h1> Reigstraion Form </h1>}
       <Formik
         className='registration-form'
         initialValues={initialValues}
@@ -91,6 +93,16 @@ const RegistrationForm = (type: any) => {
                 label='Re-enter Password'
                 name='password2'
               />
+              {staff ? (
+                <FormikControl
+                  control='select'
+                  label='role'
+                  name='role'
+                  options={selectOptions}
+                />
+              ) : (
+                <></>
+              )}
               <button type='submit' disabled={!formik.isValid}>
                 Submit
               </button>

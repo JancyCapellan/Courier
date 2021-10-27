@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import Sidebar from '../components/Sidebar'
 import CreateCustomerModal from '../components/Customers/CreateCustomerModal'
+import RegistrationForm from '../components/RegistrationForm'
 
 const Administration = () => {
   const [branch, setBranch] = useState()
@@ -18,8 +19,7 @@ const Administration = () => {
   return (
     <Sidebar>
       <section>
-        <h1>Create Users</h1>
-        <CreateCustomerModal show={showModal} handleClose={handleModalClose} any={true} />
+        <RegistrationForm staff={true} />
 
         <button className='btn add-customer-btn' onClick={() => setShowModal(true)}>
           Add User

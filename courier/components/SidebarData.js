@@ -91,7 +91,8 @@ export const routes = {
   },
 }
 export const sidebarTypes = {
-  STAFF: [routes.account, routes.pickups, routes.warehouse, routes.logout],
+  SECT: [routes.account, routes.customers, routes.invoices, routes.warehouse, routes.logout],
+  DRIVER: [routes.account, routes.pickups, routes.warehouse, routes.logout],
   CUST: [routes.account, routes.createOrder, routes.cart, routes.support, routes.logout],
   ADMIN: [
     routes.administration,

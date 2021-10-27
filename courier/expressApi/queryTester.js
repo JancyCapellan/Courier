@@ -29,19 +29,30 @@ async function main() {
   //   },
   // })
 
-  const result = await prisma.user.findFirst({
+  // const result = await prisma.user.findFirst({
+  //   where: {
+  //     AND: [
+  //       {
+  //         email: 'fish',
+  //       },
+  //       {
+  //         password: '123',
+  //       },
+  //     ],
+  //   },
+  // })
+  // console.log(result)
+
+  const updateUser = await prisma.user.update({
     where: {
-      AND: [
-        {
-          email: 'fish',
-        },
-        {
-          password: '123',
-        },
-      ],
+      email: 'jessyjones@email.com',
+    },
+    data: {
+      role: 'SECT',
     },
   })
-  console.log(result)
+
+  console.log('updated user', updateUser)
 }
 
 main()
