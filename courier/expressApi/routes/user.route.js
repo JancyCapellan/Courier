@@ -1,14 +1,32 @@
 const express = require('express')
 const router = express.Router()
 const user = require('../controllers/user.newcontroller.js')
+var ejwt = require('express-jwt')
+const jwt = require('jsonwebtoken')
 
-// user CRUD
+function authenticateToken(req, res, next) {
+  const authHeader = req.headers['authorization']
+  const token = authHeader && authHeader.split(' ')[1]
+  if (token == null) return res.sendStatus(401)
+
+  jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
+    console.log(err)
+    if (err) return res.sendStatus(403)
+    req.user = user
+    next()
+  })
+}
+/**
+ *  USER CRUD
+ */
 
 //register
 router.post('/register', user.register)
 
 //login
 router.post('/login', user.login)
+// get info after successful login
+router.get('/loggedInUser', authenticateToken, user.getloggedInUser)
 
 // Update a user with userId
 router.put('/:userId', user.update)

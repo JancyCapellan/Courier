@@ -6,7 +6,6 @@ const fs = require('fs')
 
 const prisma = new PrismaClient()
 let refreshTokens = []
-
 // register new user
 exports.register = async (req, res) => {
   console.log('register')
@@ -27,7 +26,7 @@ exports.register = async (req, res) => {
 // Login in user to correct site
 exports.login = async (req, res) => {
   console.log('login')
-  // Validate request
+
   if (!req.body) {
     res.status(400).send({
       message: 'Content can not be empty!',
@@ -49,6 +48,23 @@ exports.login = async (req, res) => {
     res.json({ accessToken: accessToken })
     // res.send(result).status(200)
   }
+}
+
+exports.getloggedInUser = async (req, res) => {
+  // console.log('user', req.user)
+  let user = req.user
+  if (!req.body || !user) {
+    res.status(400).send({
+      message: 'Content can not be empty!',
+    })
+  }
+  const result = await prisma.user.findFirst({
+    where: {
+      email: user.email,
+      password: req.body.password,
+    },
+  })
+  if (result) res.send(result)
 }
 
 // Update a user identified by the userId in the request

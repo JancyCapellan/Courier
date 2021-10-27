@@ -1,6 +1,6 @@
 import React, { useContext, useReducer, useEffect } from 'react'
 import authReducer from './authReducer'
-import { postLogin, postRegistration } from './authActions'
+import { getLoggedInUser, postLogin, postRegistration } from './authActions'
 // import History from '../components/History'
 // import Axios from 'axios'
 // import { useHistory } from 'react-router'
@@ -44,11 +44,14 @@ const AuthProvider = ({ children }) => {
 
   const login = async (form) => {
     const res = await postLogin(form)
-    // console.log('res', res)
+    console.log('token', res)
     switch (res.status) {
       case 200:
-        console.log('LOGIN DATA', res.data)
-        dispatch({ type: 'LOGIN', payload: res })
+        console.log('ACCESS TOKEN', res.data)
+        dispatch({ type: 'LOGIN_JWT', payload: res.data.accessToken })
+        const user = await getLoggedInUser(state.JWT)
+        dispatch({ type: 'LOGIN_USER', payload: user })
+
         // localStorage.setItem('cu', res.data)
         // console.log()
 

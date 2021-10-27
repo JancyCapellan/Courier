@@ -13,6 +13,19 @@ export const postLogin = async (form) => {
   }
 }
 
+export const getLoggedInUser = async (jwt) => {
+  try {
+    const res = await Axios.get('http://localhost:3000/user/loggedInUser', {
+      headers: {
+        Authorization: 'Bearer ' + jwt,
+      },
+    })
+    return res
+  } catch (err) {
+    console.error(err)
+  }
+}
+
 export const postRegistration = async (form) => {
   try {
     // const registerValues = {

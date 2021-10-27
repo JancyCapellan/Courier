@@ -4,7 +4,6 @@ const express = require('express')
 const logger = require('morgan')
 const cors = require('cors')
 const next = require('next')
-// require('dotenv').config()rs
 
 //custom modules
 // const indexRouter = require('./routes/index.route')
