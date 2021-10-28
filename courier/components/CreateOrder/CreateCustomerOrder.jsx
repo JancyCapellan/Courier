@@ -6,13 +6,17 @@ import Sidebar from '../../components/Sidebar'
 import SenderFormAdmin from './SenderFormAdmin'
 import { useCart } from '../../contexts/cartContext'
 import Checkout from './Checkout'
+import { useEffect } from 'react'
 
 const CreateCustomerOrder = () => {
   const [currentPage, setCurrentPage] = useState(1)
-  const [value, setValue] = useState('')
-  const [user, setUser] = useState()
+  // const [value, setValue] = useState('')
+  // const [user, setUser] = useState()
 
   const { currentOrderUser } = useCart()
+  useEffect(() => {
+    console.log('Order for user', currentOrderUser)
+  }, [])
 
   const handlePage = (pageCode) => {
     if (pageCode === 'NEXT' && currentPage < 4) setCurrentPage(currentPage + 1)

@@ -40,7 +40,7 @@ const Checkout = () => {
   //make sure to clean up order/cart
   const submit = () => {
     console.log('order', order)
-    postOrder(order)
+    // postOrder(order)
 
     // go to review order page with reciept of order
     // history.push('/customers')
@@ -100,7 +100,13 @@ const Checkout = () => {
       </section>
       <Cart />
       <h1>payment form</h1>
-      <input type='radio' name='cardOrCheck' onChange={handleChange} value='cash' defaultChecked />
+      <input
+        type='radio'
+        name='cardOrCheck'
+        onChange={handleChange}
+        value='cash'
+        defaultChecked
+      />
       <label>
         <p>Cash/Check</p>
       </label>

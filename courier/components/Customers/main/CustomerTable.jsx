@@ -57,17 +57,17 @@ function CustomerTable({ search, setCurrentUser }) {
               <th>ID</th>
               <th>Name</th>
             </tr>
-            {searchResults.map((item) => {
+            {searchResults.map((user) => {
               return (
-                <tr className='customer-table-row' key={item.id}>
-                  <td onClick={() => setCurrentUser(item)}>{item.id}</td>
-                  <td onClick={() => openCustomerAccountPage(item)}>
-                    {item.firstName} {item.middleName} {item.lastName}
+                <tr className='customer-table-row' key={user.id}>
+                  <td onClick={() => setCurrentUser(user)}>{user.id}</td>
+                  <td onClick={() => openCustomerAccountPage(user)}>
+                    {user.firstName} {user.middleName} {user.lastName}
                   </td>
                   {/* <td>
                     <button
                       onClick={() => {
-                        setCurrentUser(item)
+                        setCurrentUser(user)
                         setShowEditor(true)
                       }}
                     >
@@ -77,9 +77,9 @@ function CustomerTable({ search, setCurrentUser }) {
                   <td>
                     <button
                       onClick={() => {
-                        console.log(`move to order page with ${item.firstName} info`)
-                        setCurrentUser(item)
-                        changeCurrentOrderUser(item)
+                        console.log(`move to order page with ${user.firstName} info`)
+                        setCurrentUser(user)
+                        changeCurrentOrderUser(user)
                         router.push({
                           pathname: `/order`,
                         })

@@ -20,5 +20,8 @@
 
 // working on  creating sessions so the user doesnt have to keep signing in to the same device in a timeframe
 
-// make registration dynamic but changing form depending on the type: admin, cust, staff, any, etc
-// down size similar forms to one. two createcustomer modals should be based on the original registration with more inputs
+// *make registration dynamic but changing form depending on the type: admin, cust, staff, any, etc
+// * down size similar forms to one. two createcustomer modals should be based on the original registration with more inputs
+
+// create folders to hold polymorphic forms for reuse
+// change add customer address form api call and change route/controller to prisma model

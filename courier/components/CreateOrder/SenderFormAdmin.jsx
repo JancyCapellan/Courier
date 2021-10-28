@@ -43,8 +43,8 @@ const SenderFormAdmin = ({ currentUser, handlePage }) => {
     shipper: {
       address_id: selectedShipperAddress.address_id,
       id: currentUser.id,
-      FirstName: currentUser.first_name,
-      LastName: currentUser.last_name,
+      FirstName: currentUser.firstName,
+      LastName: currentUser.lastName,
       Address: selectedShipperAddress.address,
       Address2: selectedShipperAddress.address2,
       Address3: selectedShipperAddress.address3,

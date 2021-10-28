@@ -36,7 +36,7 @@ const AddCustomerAddressForm = ({ show, handleClose, currentUser, edit }) => {
   const AddCustomerAddress = async (values) => {
     try {
       const res = await Axios.post(
-        `http://localhost:5000/user/addresses/add/${currentUser.id}`,
+        `http://localhost:3000/user/addresses/add/${currentUser.id}`,
         values
       )
       if (res.status === 200) alert('Successfully Added')
@@ -73,14 +73,44 @@ const AddCustomerAddressForm = ({ show, handleClose, currentUser, edit }) => {
                   name='country'
                   options={selectOptions}
                 />
-                <FormikControl control='input' type='text' label='Address line 1' name='address' />
-                <FormikControl control='input' type='text' label='Address line 2' name='address2' />
-                <FormikControl control='input' type='text' label='Address line 3' name='address3' />
+                <FormikControl
+                  control='input'
+                  type='text'
+                  label='Address line 1'
+                  name='address'
+                />
+                <FormikControl
+                  control='input'
+                  type='text'
+                  label='Address line 2'
+                  name='address2'
+                />
+                <FormikControl
+                  control='input'
+                  type='text'
+                  label='Address line 3'
+                  name='address3'
+                />
                 <FormikControl control='input' type='text' label='city' name='city' />
                 <FormikControl control='input' type='text' label='state' name='state' />
-                <FormikControl control='input' type='text' label='postal code' name='postal_code' />
-                <FormikControl control='input' type='text' label='cellphone' name='cellphone' />
-                <FormikControl control='input' type='text' label='telephone' name='telephone' />
+                <FormikControl
+                  control='input'
+                  type='text'
+                  label='postal code'
+                  name='postal_code'
+                />
+                <FormikControl
+                  control='input'
+                  type='text'
+                  label='cellphone'
+                  name='cellphone'
+                />
+                <FormikControl
+                  control='input'
+                  type='text'
+                  label='telephone'
+                  name='telephone'
+                />
                 <button type='submit' disabled={!formik.isValid}>
                   Submit
                 </button>
