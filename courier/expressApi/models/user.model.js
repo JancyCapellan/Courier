@@ -509,8 +509,17 @@ User.addAddress = (addressForm, result) => {
 }
 
 User.updateAddress = (addressId, addressData, result) => {
-  const { address, address2, address3, city, state, postal_code, country, cellphone, telephone } =
-    addressData
+  const {
+    address,
+    address2,
+    address3,
+    city,
+    state,
+    postal_code,
+    country,
+    cellphone,
+    telephone,
+  } = addressData
   let stmt = `UPDATE addresses SET address = ?, address2 = ?, address3 = ?,\
   city = ?, state = ?, postal_code = ?, country = ?, cellphone = ?, telephone = ? \
   WHERE address_id = ${addressId};`

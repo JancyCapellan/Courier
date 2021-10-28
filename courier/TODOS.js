@@ -15,7 +15,7 @@
 // depending on the accoutn being used to create it to avoid some hacking schemes
 // since the role currently dictates web security and its a easy to change form value.
 
-// also working on checking the registartion logic to nnot use objects because i dont see the benefit in this case.
+// * also working on checking the registartion logic to nnot use objects because i dont see the benefit in this case.
 // going to make a json that takes that form data and set into mysql
 
 // working on  creating sessions so the user doesnt have to keep signing in to the same device in a timeframe

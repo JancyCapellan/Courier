@@ -4,13 +4,13 @@ import * as Yup from 'yup'
 import { useAuth } from '../contexts/authContext'
 import Link from 'next/link'
 import Router from 'next/router'
-import { useEffect } from 'react'
+// import { useEffect } from 'react'
 
 // if staff strue, can change role of user being registered
 const RegistrationForm = ({ staff }) => {
-  useEffect(() => {
-    console.log('staff', staff)
-  }, [])
+  // useEffect(() => {
+  //   console.log('staff', staff)
+  // }, [])
   const { register } = useAuth()
   const initialValues = {
     firstName: '',
@@ -58,7 +58,7 @@ const RegistrationForm = ({ staff }) => {
         alert('passwords do not match')
       } else {
         if (register(values)) {
-          staff ? alert('successful registration') : Router.push('/home')
+          staff ? Router.push('/customers') : Router.push('/home')
         }
         // console.log(values)
       }

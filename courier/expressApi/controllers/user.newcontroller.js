@@ -80,6 +80,53 @@ exports.update = async (req, res) => {
   }
 }
 
+exports.customerSearch = async (req, res) => {
+  console.log('search', req.query)
+  // const search = toString(req.query.search)
+  const search = req.query.search
+  let result
+  if (search === '') {
+    console.log('here')
+    result = await prisma.user.findMany({
+      // should be role: "cust" to oonly show customers. blank to show all users for dev purposes
+      // where: {
+      //   role: 'admin',
+      // },
+    })
+    console.log('results', result)
+    res.send(result)
+  } else {
+    console.log('here2')
+    result = await prisma.user.findMany({
+      where: {
+        OR: [
+          {
+            email: {
+              contains: search,
+            },
+          },
+          {
+            firstName: {
+              contains: search,
+            },
+          },
+          {
+            lastName: {
+              contains: search,
+            },
+          },
+          {
+            role: {
+              contains: 'CUST',
+            },
+          },
+        ],
+      },
+    })
+    res.send(result)
+  }
+}
+
 //submits orders for payment into database
 // create order first, then ger order id
 // then add values into array, mimicing rows, the bulk add to order_items

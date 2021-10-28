@@ -7,6 +7,8 @@ import Sidebar from '../../components/Sidebar'
 import { useRouter } from 'next/router'
 import ModalContainer from '../../components/HOC/ModalContainer'
 
+// ! customer account page. dynamic entry from customers table
+
 const AddCustomerAddressForm = ({ show, handleClose, currentUser, edit }) => {
   const showHideClassName = show ? 'd-block' : 'd-none'
 
@@ -76,14 +78,44 @@ const AddCustomerAddressForm = ({ show, handleClose, currentUser, edit }) => {
                   name='country'
                   options={selectOptions}
                 />
-                <FormikControl control='input' type='text' label='Address line 1' name='address' />
-                <FormikControl control='input' type='text' label='Address line 2' name='address2' />
-                <FormikControl control='input' type='text' label='Address line 3' name='address3' />
+                <FormikControl
+                  control='input'
+                  type='text'
+                  label='Address line 1'
+                  name='address'
+                />
+                <FormikControl
+                  control='input'
+                  type='text'
+                  label='Address line 2'
+                  name='address2'
+                />
+                <FormikControl
+                  control='input'
+                  type='text'
+                  label='Address line 3'
+                  name='address3'
+                />
                 <FormikControl control='input' type='text' label='city' name='city' />
                 <FormikControl control='input' type='text' label='state' name='state' />
-                <FormikControl control='input' type='text' label='postal code' name='postal_code' />
-                <FormikControl control='input' type='text' label='cellphone' name='cellphone' />
-                <FormikControl control='input' type='text' label='telephone' name='telephone' />
+                <FormikControl
+                  control='input'
+                  type='text'
+                  label='postal code'
+                  name='postal_code'
+                />
+                <FormikControl
+                  control='input'
+                  type='text'
+                  label='cellphone'
+                  name='cellphone'
+                />
+                <FormikControl
+                  control='input'
+                  type='text'
+                  label='telephone'
+                  name='telephone'
+                />
                 <button type='submit' disabled={!formik.isValid}>
                   Submit
                 </button>
@@ -324,7 +356,11 @@ const CustomerAddresses = ({ user }) => {
           </tbody>
         </table>
       </section>
-      <AddCustomerAddressForm show={showModal} handleClose={handleModalClose} currentUser={user} />
+      <AddCustomerAddressForm
+        show={showModal}
+        handleClose={handleModalClose}
+        currentUser={user}
+      />
       <EditAddressModal
         show={showAddressModal}
         handleClose={handleModalClose}
@@ -339,16 +375,16 @@ const CustomerEditorForm = ({ currentUser }) => {
   // not all of these values are in the form inputs to hide them from being edited.
   const initialValues = {
     id: `${currentUser.id}`,
-    firstName: `${currentUser.first_name}`,
-    middleName: `${currentUser.middle_name}`,
-    lastName: `${currentUser.last_name}`,
+    firstName: `${currentUser.firstName}`,
+    middleName: `${currentUser.middleName}`,
+    lastName: `${currentUser.lastName}`,
     password: `${currentUser.password}`,
     email: `${currentUser.email}`,
     role: `${currentUser.role}`,
     company: `${currentUser.company}`,
-    branchName: `${currentUser.branch_name}`,
-    preferredLanguage: `${currentUser.prefered_language}`,
-    licenseId: `${currentUser.license_id}`,
+    branchName: `${currentUser.branchName}`,
+    preferredLanguage: `${currentUser.preferedLanguage}`,
+    licenseId: `${currentUser.licenseId}`,
   }
 
   // Schema for yup
@@ -408,14 +444,30 @@ const CustomerEditorForm = ({ currentUser }) => {
         {(formik) => {
           return (
             <Form>
-              <FormikControl control='input' type='text' label='Customer ID:' name='id' disabled />
+              <FormikControl
+                control='input'
+                type='text'
+                label='Customer ID:'
+                name='id'
+                disabled
+              />
               <FormikControl control='input' type='text' label='First Name' name='firstName' />
-              <FormikControl control='input' type='text' label='Middle Name' name='middleName' />
+              <FormikControl
+                control='input'
+                type='text'
+                label='Middle Name'
+                name='middleName'
+              />
               <FormikControl control='input' type='text' label='Last Name' name='lastName' />
               <FormikControl control='input' type='email' label='email' name='email' />
               <FormikControl control='input' type='text' label='role' name='role' />
               <FormikControl control='input' type='text' label='company' name='company' />
-              <FormikControl control='input' type='text' label='branch name' name='branchName' />
+              <FormikControl
+                control='input'
+                type='text'
+                label='branch name'
+                name='branchName'
+              />
               <FormikControl
                 control='input'
                 type='text'

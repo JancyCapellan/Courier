@@ -3,18 +3,17 @@ import axios from 'axios'
 import { useCart } from '../../../contexts/cartContext'
 import { useRouter } from 'next/router'
 
-function CustomerTable({ search, setCurrentUser, setShowEditor }) {
-  //search is done with or statements in mysql wiht form entry search bar component,
-  // might add component into this file
+function CustomerTable({ search, setCurrentUser }) {
   const [searchResults, setSearchResults] = useState([])
   const { changeCurrentOrderUser } = useCart()
   const router = useRouter()
-  // TODO: api/services/app/Customer/GetAll?Filter=m&SkipCount=0&MaxResultCount=10
+
+  // TODO: api/services/app/Customer/GetAll?Filter=m&SkipCount=0&MaxResultCount=10... going to use react table for pagination and filtering
 
   useEffect(() => {
     async function getCustomers() {
       try {
-        let res = await axios.get(`http://localhost:3000/user/getUsers?search='${search}'`)
+        let res = await axios.get(`http://localhost:3000/user/customerSearch?search=${search}`)
         if (res.status === 200) {
           // console.log('herere', res.data)
           setSearchResults(res.data)
@@ -63,7 +62,7 @@ function CustomerTable({ search, setCurrentUser, setShowEditor }) {
                 <tr className='customer-table-row' key={item.id}>
                   <td onClick={() => setCurrentUser(item)}>{item.id}</td>
                   <td onClick={() => openCustomerAccountPage(item)}>
-                    {item.first_name} {item.middle_name} {item.last_name}
+                    {item.firstName} {item.middleName} {item.lastName}
                   </td>
                   {/* <td>
                     <button
@@ -78,7 +77,7 @@ function CustomerTable({ search, setCurrentUser, setShowEditor }) {
                   <td>
                     <button
                       onClick={() => {
-                        console.log(`move to order page with ${item.first_name} info`)
+                        console.log(`move to order page with ${item.firstName} info`)
                         setCurrentUser(item)
                         changeCurrentOrderUser(item)
                         router.push({

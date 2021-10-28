@@ -43,16 +43,47 @@ async function main() {
   // })
   // console.log(result)
 
-  const updateUser = await prisma.user.update({
-    where: {
-      email: 'jessyjones@email.com',
-    },
-    data: {
-      role: 'SECT',
-    },
-  })
+  // const updateUser = await prisma.user.update({
+  //   where: {
+  //     email: 'jessyjones@email.com',
+  //   },
+  //   data: {
+  //     role: 'SECT',
+  //   },
+  // })
 
-  console.log('updated user', updateUser)
+  // console.log('updated user', updateUser)
+
+  let search = 'jancy'
+  // const result = await prisma.user.findMany({
+  //   where: {
+  //     OR: [
+  //       {
+  //         email: {
+  //           contains: search,
+  //         },
+  //       },
+  //       {
+  //         firstName: {
+  //           contains: search,
+  //         },
+  //       },
+  //       {
+  //         lastName: {
+  //           contains: search,
+  //         },
+  //       },
+  //       // {
+  //       //   id: {
+  //       //     contains: {},
+  //       //   },
+  //       // },
+  //     ],
+  //   },
+  // })
+  // console.log(result)
+  const result = await prisma.user.findMany({})
+  console.log('results', result)
 }
 
 main()

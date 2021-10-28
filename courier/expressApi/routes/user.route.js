@@ -28,6 +28,8 @@ router.post('/login', user.login)
 // get info after successful login - prisma
 router.get('/loggedInUser', authenticateToken, user.getloggedInUser)
 
+router.get('/customerSearch', user.customerSearch)
+
 // Update a user with userId
 router.put('/:userId', user.update)
 
