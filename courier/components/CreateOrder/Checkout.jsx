@@ -3,6 +3,7 @@ import { useCart } from '../../contexts/cartContext'
 import Cart from './Cart'
 import axios from 'axios'
 // import { useHistory } from 'react-router'
+// import QRCode from 'qrcode.react'
 
 const Checkout = () => {
   const [cashToggle, setCashToggle] = useState(true)
@@ -37,20 +38,9 @@ const Checkout = () => {
       })
   }
 
-  //make sure to clean up order/cart
   const submit = () => {
     console.log('order', order)
     // postOrder(order)
-
-    // go to review order page with reciept of order
-    // history.push('/customers')
-    // try {
-    //   // console.log(order.form)
-    //   await submitOrder(order)
-    //   alert('ORDER COMPLETED')
-    // } catch (error) {
-    //   console.log('failed to submit order')
-    // }
   }
 
   function handleChange(e) {
@@ -99,24 +89,27 @@ const Checkout = () => {
         <p>reciever: {addressStrings.reciever} </p>
       </section>
       <Cart />
-      <h1>payment form</h1>
-      <input
-        type='radio'
-        name='cardOrCheck'
-        onChange={handleChange}
-        value='cash'
-        defaultChecked
-      />
-      <label>
-        <p>Cash/Check</p>
-      </label>
+      // format order into nice string for better QRcode reads
+      {/* <QRCode value={JSON.stringify({ cart, total, addressStrings })} size={200} /> */}
+      <section>
+        <h1>payment form</h1>
+        <input
+          type='radio'
+          name='cardOrCheck'
+          onChange={handleChange}
+          value='cash'
+          defaultChecked
+        />
+        <label>
+          <p>Cash/Check</p>
+        </label>
 
-      <input type='radio' name='cardOrCheck' onChange={handleChange} value='card' />
-      <label>
-        <p>Card</p>
-      </label>
-      {cashToggle ? <p>cash selected</p> : <CreditCardForm />}
-
+        <input type='radio' name='cardOrCheck' onChange={handleChange} value='card' />
+        <label>
+          <p>Card</p>
+        </label>
+        {cashToggle ? <p>cash selected</p> : <CreditCardForm />}
+      </section>
       <button onClick={() => submit()}>CHECKOUT</button>
     </section>
   )

@@ -14,9 +14,9 @@ const CreateCustomerOrder = () => {
   // const [user, setUser] = useState()
 
   const { currentOrderUser } = useCart()
-  useEffect(() => {
-    console.log('Order for user', currentOrderUser)
-  }, [])
+  // useEffect(() => {
+  //   console.log('Order for user', currentOrderUser)
+  // }, [])
 
   const handlePage = (pageCode) => {
     if (pageCode === 'NEXT' && currentPage < 4) setCurrentPage(currentPage + 1)
