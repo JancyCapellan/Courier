@@ -4,12 +4,12 @@ import * as Yup from 'yup'
 import { useAuth } from '../contexts/authContext'
 import Link from 'next/link'
 import Router from 'next/router'
-// import { useEffect } from 'react'
+import { useEffect } from 'react'
 
 // if staff strue, can change role of user being registered
 const RegistrationForm = ({ staff, customer = false }) => {
   // useEffect(() => {
-  //   console.log('staff', staff)
+  //   console.log('staff', staff, 'customer', customer)
   // }, [])
   const { register } = useAuth()
   const initialValues = {
