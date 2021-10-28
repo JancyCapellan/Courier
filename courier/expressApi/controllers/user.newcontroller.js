@@ -115,12 +115,14 @@ exports.customerSearch = async (req, res) => {
               contains: search,
             },
           },
-          {
-            role: {
-              contains: 'CUST',
-            },
-          },
         ],
+        // AND: [
+        //   {
+        //     role: {
+        //       contains: 'CUST',
+        //     },
+        //   },
+        // ],
       },
     })
     res.send(result)
@@ -128,9 +130,6 @@ exports.customerSearch = async (req, res) => {
 }
 
 //submits orders for payment into database
-// create order first, then ger order id
-// then add values into array, mimicing rows, the bulk add to order_items
-// products and type should be the same since the same list is used by DB and frontend
 exports.submitOrder = (req, res) => {
   console.log('order', req.body)
   let order = req.body
