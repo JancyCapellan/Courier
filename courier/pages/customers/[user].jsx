@@ -383,7 +383,7 @@ const CustomerEditorForm = ({ currentUser }) => {
     role: `${currentUser.role}`,
     company: `${currentUser.company}`,
     branchName: `${currentUser.branchName}`,
-    preferredLanguage: `${currentUser.preferedLanguage}`,
+    preferredLanguage: `${currentUser.preferredLanguage}`,
     licenseId: `${currentUser.licenseId}`,
   }
 

@@ -16,23 +16,24 @@ function authenticateToken(req, res, next) {
     next()
   })
 }
-/**
+
+/*************
  *  USER CRUD
- */
+ **************/
 
 //register - prisma
 router.post('/register', user.register)
-
 //login - prisma
 router.post('/login', user.login)
 // get info after successful login - prisma
 router.get('/loggedInUser', authenticateToken, user.getloggedInUser)
-
+// search customers for customer manager customer table
 router.get('/customerSearch', user.customerSearch)
 
 // Update a user with userId
 router.put('/:userId', user.update)
 
+// not in use
 router.get('/getUsers', user.getUsers) //search for users dynamically with mysql locate
 
 // router.options('/login', user.loginError)

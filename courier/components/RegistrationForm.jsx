@@ -7,7 +7,7 @@ import Router from 'next/router'
 // import { useEffect } from 'react'
 
 // if staff strue, can change role of user being registered
-const RegistrationForm = ({ staff }) => {
+const RegistrationForm = ({ staff, customer = false }) => {
   // useEffect(() => {
   //   console.log('staff', staff)
   // }, [])
@@ -58,7 +58,7 @@ const RegistrationForm = ({ staff }) => {
         alert('passwords do not match')
       } else {
         if (register(values)) {
-          staff ? Router.push('/customers') : Router.push('/home')
+          customer ? Router.reload() : staff ? Router.push('/customers') : Router.push('/')
         }
         // console.log(values)
       }

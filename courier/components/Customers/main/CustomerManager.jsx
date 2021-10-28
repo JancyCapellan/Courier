@@ -63,7 +63,7 @@ const CustomerManager = () => {
         />
       </div>
       <ModalContainer show={showModal} handleClose={handleModalClose}>
-        <RegistrationForm staff={false} />
+        <RegistrationForm staff={false} customer={true} />
       </ModalContainer>
     </Sidebar>
   )
