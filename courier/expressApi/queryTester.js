@@ -74,12 +74,26 @@ async function main() {
     userId: 1,
   }
 
-  let shippedFromCreate = await prisma.address.create({ data: order.form.shipper.shippedFrom })
-  let ShippedToCreate = await prisma.address.create({ data: order.form.reciever.shippedTo })
+  // make sure address and order are transaction safe
+  let shippedFromCreate
+  let ShippedToCreate
+  try {
+    ;[shippedFromCreate, ShippedToCreate] = await prisma.$transaction([
+      prisma.address.create({ data: order.form.shipper.shippedFrom }),
+      prisma.address.create({ data: order.form.reciever.shippedTo }),
+    ])
+  } catch (error) {
+    console.log('Address Create Error')
+    throw error
+  }
+
+  // create many does not return ids, so this the only way i can think of.
+  // let shippedFromCreate = await prisma.address.create({ data: order.form.shipper.shippedFrom })
+  // let ShippedToCreate = await prisma.address.create({ data: order.form.reciever.shippedTo })
+
   let shippedFrom = shippedFromCreate.id
   let shippedTo = ShippedToCreate.id
 
-  console.log('shippedFromId', shippedFrom)
   let info = {
     userId: order.userId,
     recieverFirstName: order.form.reciever.firstName,
@@ -114,21 +128,24 @@ async function main() {
         shippedTo: shippedTo,
       },
     },
+    // i dont think this can work becuase addresses is conencted to orderAddresses and not orders directly.
+    // addresses: {
+    //   create: {
+    //     shipper: order.form.shipper.shippedFrom,
+    //     reciever: order.form.reciever.shippedTo,
+    //   },
+    //   connect: {
+    //     shippedFrom: prisma.user.address.shipper,
+    //     shippedTo: prisma.user.address.reciever,
+    //   },
   }
-
-  // const addresses = await prisma.address.createMany({
-  //   data: [order.form.shipper.shippedFrom, order.form.reciever.shippedTo],
-  // })
-
-  // const addresses = await prisma.address.create({
-  //   data: order.form.shipper.shippedFrom,
-  // })
 
   const result = await prisma.order.create({
     data: info,
-    // include: {
-    //   addresses: true,
-    // },
+    include: {
+      items: true,
+      addresses: true,
+    },
   })
 
   console.log('results', result)
