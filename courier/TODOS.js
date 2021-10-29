@@ -25,3 +25,5 @@
 
 // create folders to hold polymorphic forms for reuse
 // change add customer address form api call and change route/controller to prisma model
+
+// CRUD for products/services that staff can change

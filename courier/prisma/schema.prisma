@@ -83,16 +83,16 @@ model product {
   id Int @id @default(autoincrement())
   name  String
   price Int
-  productType  productType @relation(fields: [productTypeId], references:[id])
-  productTypeId Int
+  type Int
   orderItem OrderItem[]
+  productType productType? @relation(fields: [type], references:[id])
 
 }
 
 model productType {
   id Int @id @default(autoincrement())
   type String
-  product product?
+  product product[]
 }
 
 // add products to table
