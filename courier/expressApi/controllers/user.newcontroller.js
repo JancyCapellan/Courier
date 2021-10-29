@@ -215,7 +215,7 @@ exports.submitOrderPrisma = async (req, res) => {
           },
         },
       },
-      userId: 1,
+      paymentType: order.payment,
     }
 
     let info = {

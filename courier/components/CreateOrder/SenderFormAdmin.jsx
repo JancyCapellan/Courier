@@ -223,13 +223,13 @@ const SenderFormAdmin = ({ currentUser, handlePage }) => {
                   control='input'
                   type='text'
                   label='First Name'
-                  name='reciever.shippedTo.firstName'
+                  name='reciever.firstName'
                 />
                 <FormikControl
                   control='input'
                   type='text'
                   label='Last Name'
-                  name='reciever.shippedTo.lastName'
+                  name='reciever.lastName'
                 />
                 <FormikControl
                   control='input'

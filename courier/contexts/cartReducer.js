@@ -77,7 +77,7 @@ const cartReducer = (state, action) => {
     case 'TOGGLE_AMOUNT':
       let tempCart = state.cart
         .map((cartItem) => {
-          if (cartItem.id === action.payload.id) {
+          if (cartItem.productsId === action.payload.productsId) {
             if (action.payload.type === 'inc') {
               return { ...cartItem, amount: cartItem.amount + 1 }
             }

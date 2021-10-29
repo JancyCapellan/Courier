@@ -40,7 +40,7 @@ const Checkout = () => {
 
   const submit = () => {
     console.log('order', order)
-    // postOrder(order)
+    postOrder(order)
   }
 
   function handleChange(e) {
@@ -62,32 +62,13 @@ const Checkout = () => {
     )
   }
 
-  function createAddressStringFromForm() {
-    let addressStrings = { shipper: '', reciever: '' }
-    for (const obj in formDetails)
-      for (const key in formDetails[obj]) {
-        // console.log(obj, key, formDetails[obj][key])
-        if (obj === 'shipper')
-          addressStrings.shipper = addressStrings.shipper + ` ${formDetails[obj][key]}`
-        if (obj === 'reciever')
-          addressStrings.reciever = addressStrings.reciever + ` ${formDetails[obj][key]}`
-      }
-    setAddressStrings(addressStrings)
-
-    // console.log(addressStrings.shipper, 'tt', addressStrings.reciever)
-  }
-
-  useEffect(() => {
-    createAddressStringFromForm()
-  }, [])
-
   return (
     <section className='checkout-section'>
-      <section>
+      {/* <section>
         <h1>shipping information</h1>
-        <p>shipper: {addressStrings.shipper} </p>
+        <p>shipper: {formDetails.shipper.First} </p>
         <p>reciever: {addressStrings.reciever} </p>
-      </section>
+      </section> */}
       <Cart />
       // format order into nice string for better QRcode reads
       {/* <QRCode value={JSON.stringify({ cart, total, addressStrings })} size={200} /> */}

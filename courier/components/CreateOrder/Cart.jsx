@@ -24,7 +24,7 @@ const Cart = ({ handlePage }) => {
       {/* cart items */}
       <div>
         {cart.map((item) => {
-          return <CartItem key={item.id} {...item} />
+          return <CartItem key={item.productsId} {...item} />
         })}
       </div>
       {/* {console.log('cart', cart)} */}
