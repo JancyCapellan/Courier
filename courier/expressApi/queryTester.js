@@ -92,7 +92,8 @@ async function main() {
   // let ShippedToCreate = await prisma.address.create({ data: order.form.reciever.shippedTo })
 
   let shippedFrom = shippedFromCreate.id
-  let shippedTo = ShippedToCreate.id
+  let shippedTo = -1
+  // let shippedTo = ShippedToCreate.id
 
   let info = {
     userId: order.userId,
@@ -139,14 +140,22 @@ async function main() {
     //     shippedTo: prisma.user.address.reciever,
     //   },
   }
-
-  const result = await prisma.order.create({
-    data: info,
-    include: {
-      items: true,
-      addresses: true,
-    },
-  })
+  let result = await prisma.order
+    .create({
+      data: info,
+      include: {
+        items: true,
+        addresses: true,
+      },
+    })
+    .catch(async (e) => {
+      // deletes the data from first transaction if this one fails to mimic a full transaction until
+      // i figure out prisma or decide to something else
+      // main issue that i cant use on transaction beacuse order address dont actually hold the adresses.
+      await prisma.address.delete({ where: { id: shippedFromCreate.id } })
+      await prisma.address.delete({ where: { id: ShippedToCreate.id } })
+      throw e
+    })
 
   console.log('results', result)
 }

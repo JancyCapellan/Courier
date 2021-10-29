@@ -72,14 +72,15 @@ const order = {
 async function main() {
   try {
     return await prisma.$transaction(async (prisma) => {
-      let shippedFromCreate = await prisma.address.create({
-        data: order.form.shipper.shippedFrom,
-      })
-      let ShippedToCreate = await prisma.address.create({
-        data: order.form.reciever.shippedTo,
-      })
-      let shippedFrom = shippedFromCreate.id
-      let shippedTo = ShippedToCreate.id
+      return 'test'
+      // let shippedFromCreate = await prisma.address.create({
+      //   data: order.form.shipper.shippedFrom,
+      // })
+      // let ShippedToCreate = await prisma.address.create({
+      //   data: order.form.reciever.shippedTo,
+      // })
+      // let shippedFrom = shippedFromCreate.id
+      // let shippedTo = ShippedToCreate.id
 
       // let info = {
       //   userId: order.userId,
@@ -98,14 +99,6 @@ async function main() {
       //           quantity: 13,
       //           productsId: 704,
       //         },
-      //         // {
-      //         //   quantity: 1,
-      //         //   productsId: 701,
-      //         // },
-      //         // {
-      //         //   quantity: 1,
-      //         //   productsId: 724,
-      //         // },
       //       ],
       //     },
       //   },
@@ -129,6 +122,7 @@ async function main() {
     })
   } catch (error) {
     console.log('shit', error)
+    throw 'err'
   }
 }
 
@@ -137,7 +131,7 @@ async function main() {
 // }
 
 main()
-// .catch(console.error)
-// .finally(() => {
-//   prisma.$disconnect()
-// })
+  .catch(console.error)
+  .finally(() => {
+    prisma.$disconnect()
+  })
