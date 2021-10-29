@@ -9,6 +9,28 @@ const Administration = () => {
 
   const handleModalClose = () => setShowModal(false)
 
+  const bulkAddItems = () => {
+    let itemArray = []
+    let itemListJSON = action.payload
+    // console.log(state, order)
+
+    itemListJSON.map((item) => itemArray.push([item.id, item.name, item.price, item.type]))
+    console.log('cartArray', itemArray)
+
+    Axios.post('http://localhost:3000/user/bulkAdd', itemArray)
+      .then((res) => {
+        console.log('res:', res)
+
+        if (res.status === 200) {
+          console.log('completed')
+        }
+      })
+      .catch((error) => {
+        console.log('Bulk Items', error)
+        // alert('Error')
+      })
+  }
+
   const BranchOfficeData = (branch) => {
     return (
       <section>

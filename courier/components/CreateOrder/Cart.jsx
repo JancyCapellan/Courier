@@ -40,7 +40,11 @@ const Cart = ({ handlePage }) => {
           clear cart
         </button>
       </footer>
-      {handlePage ? <button onClick={() => handlePage('NEXT')}>CONTINE TO CHECKOUT</button> : ''}
+      {handlePage ? (
+        <button onClick={() => handlePage('NEXT')}>CONTINE TO CHECKOUT</button>
+      ) : (
+        ''
+      )}
     </section>
   )
 }

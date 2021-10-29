@@ -29,7 +29,6 @@ model User {
 }
 model address {
   id Int @id @default(autoincrement())
-  user User @relation(fields: [userId], references:[id] )
   userId Int
   address String
   address2 String?
@@ -42,6 +41,7 @@ model address {
   telephone Int?
   default Boolean @default(false)
   recipient Boolean @default(false)
+  user User @relation(fields: [userId], references:[id] )
   shipperAddress OrderAddresses[] @relation("shipperAddress")
   recieverAddress OrderAddresses[] @relation("recieverAddress")
 }
@@ -49,30 +49,33 @@ model Order {
   id Int @id @default(autoincrement())
   user User @relation(fields: [userId], references:[id] )
   userId Int
-  timePlaced DateTime
+  timePlaced DateTime @default(now())
   recieverFirstName String
   recieverLastName String
   totalItems Int
   totalPrice Int
   items OrderItem[]
+  addresses OrderAddresses[]
 }
 
 model OrderAddresses{
   id Int @id @default(autoincrement())
+  orderId Int
   shippedFrom Int
   shippedTo Int
   shipper address @relation("shipperAddress", fields: [shippedFrom], references:[id])
   reciever address @relation("recieverAddress",fields: [shippedTo], references:[id])
+  order Order @relation(fields: [orderId],references:[id] )
 
 }
 
 model OrderItem {
   id Int @id @default(autoincrement())
-  order Order @relation(fields: [orderId],references:[id] )
   orderId Int
-  product product @relation(fields: [productsId], references:[id])
   productsId Int
   quantity Int
+  order Order @relation(fields: [orderId],references:[id] )
+  product product @relation(fields: [productsId], references:[id])
 
 }
 
@@ -91,3 +94,7 @@ model productType {
   type String
   product product?
 }
+
+// add products to table
+// add table for drivers, routes, route packages
+// add table warehouse batches info

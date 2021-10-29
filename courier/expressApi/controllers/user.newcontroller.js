@@ -129,6 +129,28 @@ exports.customerSearch = async (req, res) => {
   }
 }
 
+exports.submitOrderPrisma = (req, res) => {
+  if (!req.body) {
+    res.status(400).send({
+      message: 'Content can not be empty!',
+    })
+  }
+  console.log('order', req.body)
+  let order = req.body
+  let cartJSON = order.cart
+  let customerId = order.id
+  let addresses = order.form
+  let total_price = order.total_price
+  let amount_items = order.amount_items
+
+  const result = prisma.order.update({
+    where: {
+      id: customerId,
+    },
+    data: {},
+  })
+}
+
 //submits orders for payment into database
 exports.submitOrder = (req, res) => {
   console.log('order', req.body)
