@@ -41,62 +41,71 @@ const SenderFormAdmin = ({ currentUser, handlePage }) => {
   ]
   const initialValues = {
     shipper: {
-      address_id: selectedShipperAddress.address_id,
-      id: currentUser.id,
-      FirstName: currentUser.firstName,
-      LastName: currentUser.lastName,
-      Address: selectedShipperAddress.address,
-      Address2: selectedShipperAddress.address2,
-      Address3: selectedShipperAddress.address3,
-      City: selectedShipperAddress.city,
-      State: selectedShipperAddress.state,
-      PostalCode: selectedShipperAddress.postal_code,
-      Country: selectedShipperAddress.country,
-      Cellphone: selectedShipperAddress.cellphone,
-      Telephone: selectedShipperAddress.telephone,
+      userId: currentUser.id,
+      firstName: currentUser.firstName,
+      lastName: currentUser.lastName,
+      shippedFrom: {
+        address_id: selectedShipperAddress.address_id,
+        address: selectedShipperAddress.address,
+        address2: selectedShipperAddress.address2,
+        address3: selectedShipperAddress.address3,
+        city: selectedShipperAddress.city,
+        state: selectedShipperAddress.state,
+        postalCode: selectedShipperAddress.postal_code,
+        country: selectedShipperAddress.country,
+        cellphone: selectedShipperAddress.cellphone,
+        telephone: selectedShipperAddress.telephone,
+        default: false,
+      },
     },
     reciever: {
-      FirstName: '',
-      LastName: '',
-      Address: '',
-      Address2: '',
-      Address3: '',
-      City: '',
-      State: '',
-      PostalCode: '',
-      Country: 'DR',
-      Cellphone: '',
-      Telephone: '',
-      recipient: true,
+      firstName: '',
+      lastName: '',
+      shippedTo: {
+        address: '',
+        address2: '',
+        address3: '',
+        city: '',
+        state: '',
+        postalCode: '',
+        country: 'DR',
+        cellphone: '',
+        telephone: '',
+        recipient: true,
+      },
     },
   }
 
   const validationSchema = Yup.object({
     shipper: Yup.object().shape({
-      FirstName: Yup.string(),
-      LastName: Yup.string(),
-      Address: Yup.string(),
-      Address2: Yup.string().notRequired(),
-      Address3: Yup.string().notRequired(),
-      City: Yup.string(),
-      State: Yup.string(),
-      PostalCode: Yup.string(),
-      Country: Yup.string(),
-      Cellphone: Yup.string(),
-      Telephone: Yup.string().notRequired(),
+      firstName: Yup.string(),
+      lastName: Yup.string(),
+      shippedFrom: Yup.object({
+        address: Yup.string(),
+        address2: Yup.string().notRequired(),
+        address3: Yup.string().notRequired(),
+        city: Yup.string(),
+        state: Yup.string(),
+        postalCode: Yup.string(),
+        country: Yup.string(),
+        cellphone: Yup.string(),
+        telephone: Yup.string().notRequired(),
+      }),
     }),
     reciever: Yup.object().shape({
-      FirstName: Yup.string(),
-      LastName: Yup.string(),
-      Address: Yup.string(),
-      Address2: Yup.string().notRequired(),
-      Address3: Yup.string().notRequired(),
-      City: Yup.string(),
-      State: Yup.string(),
-      PostalCode: Yup.string(),
-      Country: Yup.string(),
-      Cellphone: Yup.string(),
-      Telephone: Yup.string().notRequired(),
+      firstName: Yup.string(),
+      lastName: Yup.string(),
+      shippedTo: Yup.object({
+        address: Yup.string(),
+        address2: Yup.string().notRequired(),
+        address3: Yup.string().notRequired(),
+        city: Yup.string(),
+        state: Yup.string(),
+        postalCode: Yup.string(),
+        country: Yup.string(),
+        cellphone: Yup.string(),
+        telephone: Yup.string().notRequired(),
+      }),
     }),
   })
 
@@ -142,67 +151,67 @@ const SenderFormAdmin = ({ currentUser, handlePage }) => {
                   control='input'
                   type='text'
                   label='First Name'
-                  name='shipper.FirstName'
+                  name='shipper.firstName'
                 />
                 <FormikControl
                   control='input'
                   type='text'
                   label='Last Name'
-                  name='shipper.LastName'
+                  name='shipper.lastName'
                 />
                 <FormikControl
                   control='input'
                   type='text'
                   label='Shipper Address'
-                  name='shipper.Address'
+                  name='shipper.shippedFrom.address'
                 />
                 <FormikControl
                   control='input'
                   type='text'
                   label='Shipper Address2'
-                  name='shipper.Address2'
+                  name='shipper.shippedFrom.address2'
                 />
                 <FormikControl
                   control='input'
                   type='text'
                   label='Shipper Address3'
-                  name='shipper.Address3'
+                  name='shipper.shippedFrom.address3'
                 />
                 <FormikControl
                   control='input'
                   type='text'
                   label='Shipper City'
-                  name='shipper.City'
+                  name='shipper.shippedFrom.city'
                 />
                 <FormikControl
                   control='input'
                   type='text'
                   label='shipper State'
-                  name='shipper.State'
+                  name='shipper.shippedFrom.state'
                 />
                 <FormikControl
                   control='input'
                   type='text'
                   label='shipper Postal Code'
-                  name='shipper.PostalCode'
+                  name='shipper.shippedFrom.postalCode'
                 />
                 <FormikControl
                   control='select'
                   label='Country'
-                  name='shipper.Country'
+                  name='shipper.shippedFrom.country'
                   options={selectOptions}
                 />
                 <FormikControl
                   control='input'
                   type='text'
                   label='shipper cellphone'
-                  name='shipper.Cellphone'
+                  name='shipper.shippedFrom.cellphone'
                 />
                 <FormikControl
                   control='input'
                   type='text'
                   label='shipper telephone'
-                  name='shipper.Telephone'
+                  name='shipper.shippedFrom.telephone'
                 />
                 <h3>Reciever information</h3>
                 {/* <FormikControl
@@ -214,67 +223,67 @@ const SenderFormAdmin = ({ currentUser, handlePage }) => {
                   control='input'
                   type='text'
                   label='First Name'
-                  name='reciever.FirstName'
+                  name='reciever.shippedTo.firstName'
                 />
                 <FormikControl
                   control='input'
                   type='text'
                   label='Last Name'
-                  name='reciever.LastName'
+                  name='reciever.shippedTo.lastName'
                 />
                 <FormikControl
                   control='input'
                   type='text'
                   label='reciever Address'
-                  name='reciever.Address'
+                  name='reciever.shippedTo.address'
                 />
                 <FormikControl
                   control='input'
                   type='text'
                   label='reciever Address2'
-                  name='reciever.Address2'
+                  name='reciever.shippedTo.address2'
                 />
                 <FormikControl
                   control='input'
                   type='text'
                   label='reciever Address3'
-                  name='reciever.Address3'
+                  name='reciever.shippedTo.address3'
                 />
                 <FormikControl
                   control='input'
                   type='text'
                   label='reciever City'
-                  name='reciever.City'
+                  name='reciever.shippedTo.city'
                 />
                 <FormikControl
                   control='input'
                   type='text'
                   label='reciever State'
-                  name='reciever.State'
+                  name='reciever.shippedTo.state'
                 />
                 <FormikControl
                   control='input'
                   type='text'
                   label='reciever Postal Code'
-                  name='reciever.PostalCode'
+                  name='reciever.shippedTo.postalCode'
                 />
                 <FormikControl
                   control='select'
                   label='Country'
-                  name='reciever.Country'
+                  name='reciever.shippedTo.country'
                   options={selectOptions}
                 />
                 <FormikControl
                   control='input'
                   type='text'
                   label='reciever cellphone'
-                  name='reciever.Cellphone'
+                  name='reciever.shippedTo.cellphone'
                 />
                 <FormikControl
                   control='input'
                   type='text'
                   label='reciever telephone'
-                  name='reciever.Telephone'
+                  name='reciever.shippedTo.telephone'
                 />
                 <button type='submit' disabled={!formik.isValid}>
                   Submit

@@ -40,12 +40,17 @@ exports.login = async (req, res) => {
     },
   })
 
-  if (result) {
+  console.log('login results', result)
+  if (result !== null) {
+    console.log('testtt')
     const accessToken = jwt.sign(result, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1h' })
     const refreshToken = jwt.sign(result, process.env.REFRESH_TOKEN_SECRET)
     refreshTokens.push(refreshToken)
     res.json({ accessToken: accessToken, refreshToken: refreshToken })
-    // res.send(result).status(200)
+  }
+  if (result === null) {
+    console.log('elsewhere')
+    res.status(500).send({ error: 'Something failed!' })
   }
 }
 
@@ -129,7 +134,7 @@ exports.customerSearch = async (req, res) => {
   }
 }
 
-exports.submitOrderPrisma = (req, res) => {
+exports.submitOrderPrisma = async (req, res) => {
   if (!req.body) {
     res.status(400).send({
       message: 'Content can not be empty!',
@@ -143,12 +148,115 @@ exports.submitOrderPrisma = (req, res) => {
   let total_price = order.total_price
   let amount_items = order.amount_items
 
-  const result = prisma.order.update({
-    where: {
-      id: customerId,
-    },
-    data: {},
-  })
+  async function main() {
+    // ... you will write your Prisma Client queries here
+
+    const order = {
+      cart: [
+        {
+          name: 'Prod. Niños',
+          quantity: 1,
+          productsId: '0762',
+          price: 75,
+        },
+        {
+          name: 'Tanq. Misc',
+          quantity: 1,
+          productsId: '0704',
+          price: 75,
+        },
+        {
+          name: 'Tanq Ropa/Zap',
+          quantity: 1,
+          productsId: '0701',
+          price: 75,
+        },
+        {
+          name: 'Mesas',
+          quantity: 1,
+          productsId: '0724',
+          price: 75,
+        },
+      ],
+      total_price: 300,
+      quantity_items: 4,
+      form: {
+        shipper: {
+          userId: 1,
+          firstName: 'Jancy',
+          lastName: 'Capellan',
+          shippedFrom: {
+            address: '314 East 100st apt 6f',
+            address2: '',
+            address3: '',
+            city: 'New York City',
+            state: 'NY',
+            postalCode: 10029,
+            country: '',
+            cellphone: '3475209701',
+            telephone: null,
+            default: false,
+          },
+        },
+        reciever: {
+          firstName: 'Jessica',
+          lastName: 'jones',
+          shippedTo: {
+            address: '471 Santiago rd',
+            address2: '',
+            address3: '',
+            city: 'santiago',
+            state: 'DR',
+            postalCode: 14379,
+            country: 'DR',
+            cellphone: '1345219999',
+            telephone: null,
+            recipient: true,
+          },
+        },
+      },
+      userId: 1,
+    }
+
+    let info = {
+      userId: order.form.shipper.userId,
+      recieverFirstName: order.form.reciever.firstName,
+      recieverLastName: order.form.reciever.lastName,
+      totalItems: 14, //order.quantity_items,
+      totalPrice: 14 * 75, //order.total_price,
+      items: {
+        createMany: {
+          data: [
+            {
+              quantity: 1,
+              productsId: 762,
+            },
+            {
+              quantity: 13,
+              productsId: 704,
+            },
+          ],
+        },
+      },
+      addresses: {
+        createMany: { data: [order.form.shipper.shippedFrom, order.form.reciever.shippedTo] },
+      },
+    }
+
+    let result = await prisma.order
+      .create({
+        data: info,
+        include: {
+          items: true,
+          addresses: true,
+        },
+      })
+      .catch(async (e) => {
+        throw e
+      })
+
+    console.log('results', result)
+  }
 }
 
 //submits orders for payment into database

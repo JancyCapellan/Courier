@@ -32,12 +32,21 @@ export default function LoginForm() {
   return (
     <div className=''>
       <h1>Login </h1>
-      <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={onSubmit}>
+      <Formik
+        initialValues={initialValues}
+        validationSchema={validationSchema}
+        onSubmit={onSubmit}
+      >
         {(formik) => {
           return (
             <Form>
               <FormikControl control='input' type='email' label='Email' name='loginEmail' />
-              <FormikControl control='input' type='password' label='Password' name='password' />
+              <FormikControl
+                control='input'
+                type='password'
+                label='Password'
+                name='password'
+              />
               <button type='submit' disabled={!formik.isValid}>
                 Submit
               </button>

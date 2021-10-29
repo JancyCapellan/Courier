@@ -11,14 +11,14 @@ const Checkout = () => {
   const { cart, total, amount, formDetails, submitOrder } = useCart()
   // const history = useHistory()
 
+  let paymentType = !!cashToggle ? 'CASH' : 'CREDIT'
   // order is the body that is sent to api
   const order = {
     cart: cart,
     total_price: total,
     amount_items: amount,
     form: formDetails,
-    // parsedAddresses: addressStrings,
-    id: formDetails.shipper.id,
+    payment: paymentType,
   }
 
   async function postOrder(order) {

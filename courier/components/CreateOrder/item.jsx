@@ -9,7 +9,7 @@ const Item = ({ name, price, id }) => {
   let item = {
     name: `${name}`,
     amount: parseInt(qty),
-    id: `${id}`,
+    productsId: `${id}`,
     price: 75,
   }
 

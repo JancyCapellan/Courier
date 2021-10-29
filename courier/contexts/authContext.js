@@ -43,9 +43,11 @@ const AuthProvider = ({ children }) => {
   }, [state])
 
   const login = async (form) => {
-    const res = await postLogin(form)
+    let res = await postLogin(form)
+    console.log('object', res)
     switch (res.status) {
       case 200:
+        console.log('res res 200', res.status)
         console.log('ACCESS TOKEN', res.data.accessToken)
         dispatch({ type: 'LOGIN_JWT', payload: res.data.accessToken })
 
@@ -57,11 +59,18 @@ const AuthProvider = ({ children }) => {
         break
 
       case 204:
+        console.log('res res 204', res)
+        alert('INCORRET USERNAME OR PASSWORD')
+        break
+
+      case 500:
+        console.log('res res 500', res)
         alert('INCORRET USERNAME OR PASSWORD')
         break
 
       default:
-        throw new Error('status code not handled')
+        console.log('res res default', res)
+        throw new Error('res code not handled')
     }
   }
 
@@ -70,7 +79,7 @@ const AuthProvider = ({ children }) => {
     const res = await postRegistration(form)
     console.log('REGISTRATION', res)
     // a hack, res is just returning 500 from try/catch
-    switch (res.status || res) {
+    switch (res?.res || res) {
       case 200:
         alert('registration completed')
         // if after registrtation, i want to autologin user, dispatch would have run with these forms values
@@ -85,7 +94,7 @@ const AuthProvider = ({ children }) => {
         return false
 
       default:
-        throw new Error('status code not 200 or 204')
+        throw new Error('res code not 200 or 204')
       // dispatch({ type: 'REGISTER', payload: form })
     }
   }

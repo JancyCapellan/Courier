@@ -40,7 +40,6 @@ async function main() {
         firstName: 'Jancy',
         lastName: 'Capellan',
         shippedFrom: {
-          userId: 1,
           address: '314 East 100st apt 6f',
           address2: '',
           address3: '',
@@ -57,7 +56,6 @@ async function main() {
         firstName: 'Jessica',
         lastName: 'jones',
         shippedTo: {
-          userId: 1,
           address: '471 Santiago rd',
           address2: '',
           address3: '',
@@ -75,24 +73,24 @@ async function main() {
   }
 
   // make sure address and order are transaction safe
-  let shippedFromCreate
-  let ShippedToCreate
-  try {
-    ;[shippedFromCreate, ShippedToCreate] = await prisma.$transaction([
-      prisma.address.create({ data: order.form.shipper.shippedFrom }),
-      prisma.address.create({ data: order.form.reciever.shippedTo }),
-    ])
-  } catch (error) {
-    console.log('Address Create Error')
-    throw error
-  }
+  // let shippedFromCreate
+  // let ShippedToCreate
+  // try {
+  //   ;[shippedFromCreate, ShippedToCreate] = await prisma.$transaction([
+  //     prisma.address.create({ data: order.form.shipper.shippedFrom }),
+  //     prisma.address.create({ data: order.form.reciever.shippedTo }),
+  //   ])
+  // } catch (error) {
+  //   console.log('Address Create Error')
+  //   throw error
+  // }
 
   // create many does not return ids, so this the only way i can think of.
   // let shippedFromCreate = await prisma.address.create({ data: order.form.shipper.shippedFrom })
   // let ShippedToCreate = await prisma.address.create({ data: order.form.reciever.shippedTo })
 
-  let shippedFrom = shippedFromCreate.id
-  let shippedTo = -1
+  // let shippedFrom = shippedFromCreate.id
+  // let shippedTo = -1
   // let shippedTo = ShippedToCreate.id
 
   let info = {
@@ -124,22 +122,10 @@ async function main() {
       },
     },
     addresses: {
-      create: {
-        shippedFrom: shippedFrom,
-        shippedTo: shippedTo,
-      },
+      createMany: { data: [order.form.shipper.shippedFrom, order.form.reciever.shippedTo] },
     },
-    // i dont think this can work becuase addresses is conencted to orderAddresses and not orders directly.
-    // addresses: {
-    //   create: {
-    //     shipper: order.form.shipper.shippedFrom,
-    //     reciever: order.form.reciever.shippedTo,
-    //   },
-    //   connect: {
-    //     shippedFrom: prisma.user.address.shipper,
-    //     shippedTo: prisma.user.address.reciever,
-    //   },
   }
+
   let result = await prisma.order
     .create({
       data: info,
@@ -152,8 +138,6 @@ async function main() {
       // deletes the data from first transaction if this one fails to mimic a full transaction until
       // i figure out prisma or decide to something else
       // main issue that i cant use on transaction beacuse order address dont actually hold the adresses.
-      await prisma.address.delete({ where: { id: shippedFromCreate.id } })
-      await prisma.address.delete({ where: { id: ShippedToCreate.id } })
       throw e
     })
 
