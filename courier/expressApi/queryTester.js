@@ -84,8 +84,8 @@ async function main() {
     userId: order.userId,
     recieverFirstName: order.form.reciever.firstName,
     recieverLastName: order.form.reciever.lastName,
-    totalItems: order.quantity_items,
-    totalPrice: order.total_price,
+    totalItems: 14, //order.quantity_items,
+    totalPrice: 14 * 75, //order.total_price,
     items: {
       createMany: {
         data: [
@@ -94,17 +94,17 @@ async function main() {
             productsId: 762,
           },
           {
-            quantity: 1,
+            quantity: 13,
             productsId: 704,
           },
-          {
-            quantity: 1,
-            productsId: 701,
-          },
-          {
-            quantity: 1,
-            productsId: 724,
-          },
+          // {
+          //   quantity: 1,
+          //   productsId: 701,
+          // },
+          // {
+          //   quantity: 1,
+          //   productsId: 724,
+          // },
         ],
       },
     },
