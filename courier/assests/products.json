@@ -220,13 +220,13 @@
   "english": [
     {
       "name": "Box of Clothes",
-      "id": "0707",
+      "id": 707,
       "price": 75,
       "type": 3
     },
     {
       "name": "Children Products",
-      "id": "0762",
+      "id": 762,
       "price": 30,
       "type": 3
     }

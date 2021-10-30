@@ -8,9 +8,9 @@ const Item = ({ name, price, id }) => {
   // let itemArray = [`${name}`, parseInt(qty)]
   let item = {
     name: `${name}`,
-    amount: parseInt(qty),
-    productsId: `${id}`,
     price: 75,
+    amount: parseInt(qty),
+    productsId: id,
   }
 
   const add = () => {

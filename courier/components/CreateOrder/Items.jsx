@@ -1,8 +1,8 @@
 import React from 'react'
-import products from './products.json'
+import products from '../../assests/products.json'
 import Item from './item'
 
-const jsonProdcutsES = products.spanish
+const jsonProdcutsES = products.english
 
 const Items = ({ handlePage }) => {
   return (

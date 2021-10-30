@@ -9,7 +9,6 @@ import SelectShipperAddress from './selectShipperAddress'
 
 const SenderFormAdmin = ({ currentUser, handlePage }) => {
   const [selectedShipperAddress, setSelectedShipperAddress] = useState({
-    address_id: -1,
     address: '',
     address2: '',
     address3: '',
@@ -86,7 +85,7 @@ const SenderFormAdmin = ({ currentUser, handlePage }) => {
         address3: Yup.string().notRequired(),
         city: Yup.string(),
         state: Yup.string(),
-        postalCode: Yup.string(),
+        postalCode: Yup.number(),
         country: Yup.string(),
         cellphone: Yup.string(),
         telephone: Yup.string().notRequired(),
@@ -191,7 +190,7 @@ const SenderFormAdmin = ({ currentUser, handlePage }) => {
                 />
                 <FormikControl
                   control='input'
-                  type='text'
+                  type='number'
                   label='shipper Postal Code'
                   name='shipper.shippedFrom.postalCode'
                 />
@@ -263,7 +262,7 @@ const SenderFormAdmin = ({ currentUser, handlePage }) => {
                 />
                 <FormikControl
                   control='input'
-                  type='text'
+                  type='number'
                   label='reciever Postal Code'
                   name='reciever.shippedTo.postalCode'
                 />

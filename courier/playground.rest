@@ -14,3 +14,64 @@ Content-Type: application/json
 ###
 
 GET http://localhost:3000/user/customerSearch?search=j
+
+
+###
+
+POST http://localhost:3000/user/submitOrder
+Content-Type: application/json
+
+{
+  "cart": [
+    {
+      "name": "Box of Clothes",
+      "amount": 5,
+      "productsId": 707,
+      "price": 75
+    },
+    {
+      "name": "Children Products",
+      "amount": 4,
+      "productsId": 762,
+      "price": 75
+    }
+  ],
+  "total_price": 675,
+  "amount_items": 9,
+  "form": {
+    "shipper": {
+      "userId": 1,
+      "firstName": "Jancy",
+      "lastName": "Capellan",
+      "shippedFrom": {
+        "address": "314 East 100st apt 6f",
+        "address2": "",
+        "address3": "",
+        "city": "New York City",
+        "state": "NY",
+        "postalCode": 10029,
+        "country": "",
+        "cellphone": "3475209701",
+        "telephone": "",
+        "default": false
+      }
+    },
+    "reciever": {
+      "firstName": "Jessica",
+      "lastName": "jones",
+      "shippedTo": {
+        "address": "471 main ST apt 23",
+        "address2": "e",
+        "address3": "e",
+        "city": "NYC",
+        "state": "NY",
+        "postalCode": 14379,
+        "country": "DR",
+        "cellphone": "1345219999",
+        "telephone": "",
+        "recipient": true
+      }
+    }
+  },
+  "paymentType": "CASH"
+}

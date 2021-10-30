@@ -18,7 +18,7 @@ const Checkout = () => {
     total_price: total,
     amount_items: amount,
     form: formDetails,
-    payment: paymentType,
+    paymentType: paymentType,
   }
 
   async function postOrder(order) {

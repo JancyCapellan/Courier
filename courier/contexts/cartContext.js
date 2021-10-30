@@ -37,17 +37,17 @@ const CartProvider = ({ children }) => {
   const clearCart = () => {
     dispatch({ type: 'CLEAR_CART' })
   }
-  const remove = (id) => {
-    dispatch({ type: 'REMOVE', payload: id })
+  const remove = (productsId) => {
+    dispatch({ type: 'REMOVE', payload: productsId })
   }
-  const increase = (id) => {
-    dispatch({ type: 'INCREASE', payload: id })
-  }
-  const decrease = (id) => {
-    dispatch({ type: 'DECREASE', payload: id })
-  }
-  const toggleAmount = (id, type) => {
-    dispatch({ type: 'TOGGLE_AMOUNT', payload: { id, type } })
+  // const increase = (id) => {
+  //   dispatch({ type: 'INCREASE', payload: id })
+  // }
+  // const decrease = (id) => {
+  //   dispatch({ type: 'DECREASE', payload: id })
+  // }
+  const toggleAmount = (productsId, type) => {
+    dispatch({ type: 'TOGGLE_AMOUNT', payload: { productsId, type } })
   }
   const addForm = (form) => {
     dispatch({ type: 'ADD_FORM_DETAILS', payload: form })
@@ -114,8 +114,8 @@ const CartProvider = ({ children }) => {
     addItem,
     clearCart,
     remove,
-    increase,
-    decrease,
+    // increase,
+    // decrease,
     toggleAmount,
     addForm,
     changeCurrentOrderUser,
