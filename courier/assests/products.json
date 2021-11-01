@@ -2,217 +2,217 @@
   "spanish": [
     {
       "name": "Aceite",
-      "id": "0734",
+      "id": 734,
       "price": 30,
       "type": 3
     },
     {
       "name": "Aire",
-      "id": "0741",
+      "id": 741,
       "price": 30,
       "type": 3
     },
     {
       "name": "Arroz",
-      "id": "0735",
+      "id": 735,
       "price": 30,
       "type": 3
     },
     {
       "name": "Bicicleta",
-      "id": "0733",
+      "id": 733,
       "price": 30,
       "type": 3
     },
     {
       "name": "Caja Comida",
-      "id": "0705",
+      "id": 705,
       "price": 30,
       "type": 1
     },
     {
       "name": "Caja Ropa / Zap",
-      "id": "0707",
+      "id": 707,
       "price": 30,
       "type": 1
     },
     {
       "name": "Caja Misc",
-      "id": "0708",
+      "id": 708,
       "price": 30,
       "type": 1
     },
     {
       "name": "Colchon",
-      "id": "0719",
+      "id": 719,
       "price": 30,
       "type": 3
     },
     {
       "name": "Computdora",
-      "id": "0715",
+      "id": 715,
       "price": 30,
       "type": 3
     },
     {
       "name": "Electrónica Misc",
-      "id": "0737",
+      "id": 737,
       "price": 30,
       "type": 3
     },
     {
       "name": "Espardar",
-      "id": "0726",
+      "id": 726,
       "price": 30,
       "type": 3
     },
     {
       "name": "Estante",
-      "id": "0729",
+      "id": 729,
       "price": 30,
       "type": 3
     },
     {
       "name": "Estufa",
-      "id": "0714",
+      "id": 714,
       "price": 30,
       "type": 3
     },
     {
       "name": "Espejo",
-      "id": "0731",
+      "id": 731,
       "price": 30,
       "type": 3
     },
     {
       "name": "Gabetero",
-      "id": "0727",
+      "id": 727,
       "price": 30,
       "type": 3
     },
     {
       "name": "Gomas",
-      "id": "0732",
+      "id": 732,
       "price": 30,
       "type": 3
     },
     {
       "name": "Lampara",
-      "id": "0730",
+      "id": 730,
       "price": 30,
       "type": 3
     },
     {
       "name": "Lavadora",
-      "id": "0711",
+      "id": 711,
       "price": 30,
       "type": 3
     },
     {
       "name": "Microonda",
-      "id": "0713",
+      "id": 713,
       "price": 30,
       "type": 3
     },
     {
       "name": "Mesas",
-      "id": "0724",
+      "id": 724,
       "price": 30,
       "type": 4
     },
     {
       "name": "Nevera",
-      "id": "0712",
+      "id": 712,
       "price": 30,
       "type": 3
     },
     {
       "name": "Parte de Carros",
-      "id": "0716",
+      "id": 716,
       "price": 30,
       "type": 3
     },
     {
       "name": "Planta Electrica",
-      "id": "0718",
+      "id": 718,
       "price": 30,
       "type": 3
     },
     {
       "name": "Sillas",
-      "id": "0725",
+      "id": 725,
       "price": 30,
       "type": 3
     },
     {
       "name": "Secadora",
-      "id": "0742",
+      "id": 742,
       "price": 30,
       "type": 3
     },
     {
       "name": "Tanq Comida",
-      "id": "0702",
+      "id": 702,
       "price": 30,
       "type": 2
     },
     {
       "name": "Tanq Hierro",
-      "id": "0703",
+      "id": 703,
       "price": 30,
       "type": 2
     },
     {
       "name": "Tanq Ropa/Zap",
-      "id": "0701",
+      "id": 701,
       "price": 30,
       "type": 2
     },
     {
       "name": "Tanq. Misc",
-      "id": "0704",
+      "id": 704,
       "price": 30,
       "type": 2
     },
     {
       "name": "TV",
-      "id": "0709",
+      "id": 709,
       "price": 30,
       "type": 3
     },
     {
       "name": "Viuro",
-      "id": "0728",
+      "id": 728,
       "price": 30,
       "type": 3
     },
     {
       "name": "Mueble Misc",
-      "id": "0738",
+      "id": 738,
       "price": 30,
       "type": 3
     },
     {
       "name": "Cristal Misc",
-      "id": "0739",
+      "id": 739,
       "price": 30,
       "type": 3
     },
     {
       "name": "Hierro Misc",
-      "id": "0740",
+      "id": 740,
       "price": 30,
       "type": 3
     },
     {
       "name": "Prod. Caseros",
-      "id": "0743",
+      "id": 743,
       "price": 30,
       "type": 3
     },
     {
       "name": "Prod. Niños",
-      "id": "0762",
+      "id": 762,
       "price": 30,
       "type": 3
     }

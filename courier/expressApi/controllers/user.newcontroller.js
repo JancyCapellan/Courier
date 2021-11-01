@@ -184,6 +184,8 @@ exports.submitOrderPrisma = async (req, res) => {
       throw e
     })
 
+  res.status(200).send(result)
+
   console.log('results', result)
 }
 
