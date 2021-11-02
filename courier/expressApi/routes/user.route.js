@@ -17,6 +17,10 @@ function authenticateToken(req, res, next) {
   })
 }
 
+function ISOTimeToReadable(req, res, next) {
+  next()
+}
+
 /*************
  *  USER CRUD
  **************/

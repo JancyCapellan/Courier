@@ -33,9 +33,6 @@ export const getServerSideProps: GetServerSideProps = async ({ res }) => {
       props: {},
     }
   }
-  // return {
-  //   props: {},
-  // }
 }
 
 export const Invoices: NextPage<{ listOfInvoices: OrderData[] }> = (props) => {

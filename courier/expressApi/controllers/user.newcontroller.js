@@ -1,6 +1,7 @@
 const User = require('../models/user.model.js')
 const { PrismaClient } = require('@prisma/client')
 const jwt = require('jsonwebtoken')
+const { DateTime } = require('luxon')
 const prisma = new PrismaClient()
 
 let refreshTokens = []
@@ -190,11 +191,31 @@ exports.submitOrderPrisma = async (req, res) => {
 }
 
 exports.getAllOrders = async (req, res) => {
-  const result = await prisma.order.findMany({}).catch(async (e) => {
-    res.status(500).send({ error: 'Something failed!' })
-    throw e
-  })
-  if (result) res.send(result)
+  const result = await prisma.order
+    .findMany({
+      // select: {
+      //   timePlaced: true,
+      // },
+    })
+    .catch(async (e) => {
+      res.status(500).send({ error: 'Something failed!' })
+      throw e
+    })
+  if (result) {
+    for (const obj in result)
+      for (const key in result[obj])
+        if (key === 'timePlaced') {
+          // console.log('datetime', result[obj][key])
+          // result[obj][key] = `${result[obj][key]}`
+          // const d = DateTime.fromISO(result[obj][key].toUTCString)
+          // console.log(result[obj][key].toLocaleString(DateTime.DATETIME_FULL))
+
+          result[obj][key] = result[obj][key].toLocaleString(DateTime.DATETIME_FULL)
+        }
+
+    console.log(result)
+    res.send(result)
+  }
 }
 
 exports.getUserOrders = async (req, res) => {
