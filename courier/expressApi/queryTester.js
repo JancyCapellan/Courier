@@ -145,12 +145,49 @@ const prisma = new PrismaClient()
 // }
 
 async function main() {
-  let types = [{ type: 'BOX' }, { type: 'TANK' }, { type: 'MISC' }]
-  const result = await prisma.productType.createMany({
-    data: types,
+  // const result = await prisma.user.findUnique({
+  //   where: { id: 1 },
+  //   select: {
+  //     orders: true,
+  //     // orders: {
+  //     //   select: { items: true },
+  //     // },
+  //   },
+  // })
+
+  const result = await prisma.order.findUnique({
+    where: { id: 5 },
+    include: {
+      items: {
+        include: {
+          product: {
+            select: {
+              name: true,
+              price: true,
+              productType: {
+                select: {
+                  type: true,
+                },
+              },
+            },
+          },
+        },
+      },
+    },
   })
 
-  console.log('results', result)
+  // const items = await prisma.orderItem.findMany({
+  //   where: { orderId: 5 },
+  //   include: {
+  //     product: {
+  //       select: {
+  //         name: true,
+  //       },
+  //     },
+  //   },
+  // })
+
+  console.log('results', result.items[0].product)
 }
 main()
   .catch((e) => {

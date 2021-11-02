@@ -189,6 +189,71 @@ exports.submitOrderPrisma = async (req, res) => {
   console.log('results', result)
 }
 
+exports.getAllOrders = async (req, res) => {
+  const result = await prisma.order.findMany({}).catch(async (e) => {
+    res.status(500).send({ error: 'Something failed!' })
+    throw e
+  })
+  if (result) res.send(result)
+}
+
+exports.getUserOrders = async (req, res) => {
+  if (!req.body) {
+    res.status(400).send({
+      message: 'Content can not be empty!',
+    })
+  }
+  const id = parseInt(req.params.userId)
+  const result = await prisma.user
+    .findUnique({
+      where: { id: id },
+      include: {
+        orders: true,
+      },
+    })
+    .catch(async (e) => {
+      res.status(500).send({ error: 'Something failed!' })
+      throw e
+    })
+  if (result) res.send(result)
+}
+
+exports.getUserOrderInfo = async (req, res) => {
+  const id = parseInt(req.query.id)
+  const orderId = parseInt(req.query.order)
+  if (!req.body) {
+    res.status(400).send({
+      message: 'Content can not be empty!',
+    })
+  }
+  const result = await prisma.order
+    .findUnique({
+      where: { id: 5 },
+      include: {
+        items: {
+          include: {
+            product: {
+              select: {
+                name: true,
+                productType: {
+                  select: {
+                    type: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    })
+    .catch(async (e) => {
+      res.status(500).send({ error: 'Something failed!' })
+      throw e
+    })
+  if (result) res.send(result)
+}
+
+// ####################    OLD  ###########################
 //submits orders for payment into database
 exports.submitOrder = (req, res) => {
   console.log('order', req.body)
@@ -378,27 +443,28 @@ exports.updateAddress = (req, res) => {
 }
 
 // Delete a user with the specified userId in the request
-exports.delete = (req, res) => {}
+
+// exports.delete = (req, res) => {}
 
 // Delete all users from the database.
-exports.deleteAll = (req, res) => {}
+// exports.deleteAll = (req, res) => {}
 
-exports.getAllOrders = (req, res) => {
-  User.getAllOrders((err, data) => {
-    if (err) {
-      console.log('ERROR', err)
-      if (err.kind === 'not_found') {
-        res.status(404).send({
-          message: '',
-        })
-      } else {
-        res.status(500).send({
-          message: '',
-        })
-      }
-    } else {
-      console.log('ORDERS', data)
-      res.send(data)
-    }
-  })
-}
+// exports.getAllOrders = (req, res) => {
+//   User.getAllOrders((err, data) => {
+//     if (err) {
+//       console.log('ERROR', err)
+//       if (err.kind === 'not_found') {
+//         res.status(404).send({
+//           message: '',
+//         })
+//       } else {
+//         res.status(500).send({
+//           message: '',
+//         })
+//       }
+//     } else {
+//       console.log('ORDERS', data)
+//       res.send(data)
+//     }
+//   })
+// }

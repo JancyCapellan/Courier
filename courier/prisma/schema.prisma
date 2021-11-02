@@ -53,6 +53,8 @@ model Order {
   totalItems Int
   totalPrice Int
   paymentType String
+  status String @default("ORDERED")
+  location String @default("Shipping Address/owner")
   items OrderItem[]
   addresses OrderAddressDuo[]
   user User @relation(fields: [userId], references:[id] )

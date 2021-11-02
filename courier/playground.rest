@@ -15,6 +15,16 @@ Content-Type: application/json
 
 GET http://localhost:3000/user/customerSearch?search=j
 
+###
+
+GET http://localhost:3000/user/allOrders
+
+
+###
+GET http://localhost:3000/user/orders
+
+###
+GET http://localhost:3000/user/orderInfo?id=1&order=5
 
 ###
 

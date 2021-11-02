@@ -1,3 +1,5 @@
+// ! make sure that routes are all unique, that i can use the same route plus params  to get to the same page with same state granted that the user has permission
+
 // * finish order, connect to api submit order with new admin form, test submission
 // * new add customer form,new edit customer form with prefilled fields
 // TODO: create a favorite list for recipient to help cut down on duplicate addresses
@@ -28,4 +30,4 @@
 
 // CRUD for products/services that staff can change
 
-// ! create transaction for prisma submit order. change orderForm shape to match.
+// ** create transaction for prisma submit order. change orderForm shape to match. // nested writes are transactions in primsa 2.

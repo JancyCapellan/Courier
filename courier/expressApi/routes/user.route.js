@@ -40,6 +40,10 @@ router.get('/getUsers', user.getUsers) //search for users dynamically with mysql
 //place order
 router.post('/submitOrder', user.submitOrderPrisma)
 
+router.get('/allOrders', user.getAllOrders)
+router.get('/orders/:userId', user.getUserOrders)
+router.get('/orderInfo', user.getUserOrderInfo)
+
 //bulk add items to products liust
 router.post('/bulkAdd', user.addItemToProductsList)
 
@@ -59,7 +63,6 @@ router.post('/addresses/add/:userId', user.AddAddress)
 router.put('/addresses/update/:addressId', user.updateAddress)
 
 // get all user orders //create status for orders in mysql
-router.get('/orders/all', user.getAllOrders)
 
 // Delete a user with userId
 // router.delete('/user/:userId', user.delete)

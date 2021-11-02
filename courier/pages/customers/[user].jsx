@@ -41,7 +41,7 @@ const AddCustomerAddressForm = ({ show, handleClose, currentUser, edit }) => {
   const AddCustomerAddress = async (values) => {
     try {
       const res = await Axios.post(
-        `http://localhost:5000/user/addresses/add/${currentUser.id}`,
+        `http://localhost:3000/user/addresses/add/${currentUser.id}`,
         values
       )
       if (res.status === 200) alert('Successfully Added')
@@ -491,6 +491,61 @@ const CustomerEditorForm = ({ currentUser }) => {
   )
 }
 
+const CustomerOrderHistory = ({ currentUser }) => {
+  const [orderHistory, setOrderHistory] = useState([])
+  useEffect(() => {
+    async function getCustomerOrders() {
+      try {
+        let res = await Axios.get(`http://localhost:3000/user/orders/${currentUser.id}`)
+        if (res.status === 200) {
+          console.log('herere', res.data)
+          setOrderHistory(res.data.orders)
+        }
+      } catch (error) {
+        console.log('getcustomer', error)
+      }
+    }
+    getCustomerOrders()
+  }, [])
+
+  return (
+    <>
+      <h1>ORDERS</h1>
+      <table>
+        <caption>User Order History</caption>
+        <thead>
+          <tr>
+            <th>Order Id</th>
+            <th>time placed</th>
+            <th>Sending to:</th>
+            <th>total cost</th>
+            <th>total items</th>
+            <th>status</th>
+            <th>location</th>
+          </tr>
+        </thead>
+        <tbody>
+          {orderHistory.map((order) => {
+            return (
+              <tr key={order.id}>
+                <td>{order.id}</td>
+                <td>{order.timePlaced}</td>
+                <td>
+                  {order.recieverFirstName} {order.recieverLastName}
+                </td>
+                <td>{order.totalPrice}</td>
+                <td>{order.totalItems}</td>
+                <td>{order.status} </td>
+                <td>{order.location}</td>
+              </tr>
+            )
+          })}
+        </tbody>
+      </table>
+    </>
+  )
+}
+
 const CustomerAccountPage = (props) => {
   const [currentPage, setCurrentPage] = useState(1)
   const router = useRouter()
@@ -506,7 +561,7 @@ const CustomerAccountPage = (props) => {
       case 2:
         return <CustomerAddresses user={currentUser} />
       case 3:
-        break
+        return <CustomerOrderHistory currentUser={currentUser} />
       case 4:
         break
       default:
@@ -520,7 +575,7 @@ const CustomerAccountPage = (props) => {
       <nav>
         <button onClick={() => setCurrentPage(1)}>Customer</button>
         <button onClick={() => setCurrentPage(2)}>Addresses</button>
-        <button>Order History</button>
+        <button onClick={() => setCurrentPage(3)}>Order History</button>
         <button>Current Orders</button>
       </nav>
       <br />
