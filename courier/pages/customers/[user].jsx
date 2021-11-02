@@ -496,7 +496,7 @@ const CustomerOrderHistory = ({ currentUser }) => {
   useEffect(() => {
     async function getCustomerOrders() {
       try {
-        let res = await Axios.get(`http://localhost:3000/user/orders/${currentUser.id}`)
+        let res = await Axios.get(`http://localhost:3000/order/${currentUser.id}`)
         if (res.status === 200) {
           console.log('herere', res.data)
           setOrderHistory(res.data.orders)

@@ -94,7 +94,7 @@ const cartReducer = (state, action) => {
       return { ...state, formDetails: action.payload }
 
     case 'SUBMIT_ORDER':
-      Axios.post('http://localhost:5000/user/submitOrder', action.payload)
+      Axios.post('http://localhost:3000/order/submitOrder', action.payload)
         .then((res) => {
           console.log('res:', res)
 

@@ -18,7 +18,7 @@ const initialState = {
 // redundat, marked for deletion
 const postSubmitOrder = async (order) => {
   try {
-    const res = await Axios.post('http://localhost:3000/user/submitOrder', order)
+    const res = await Axios.post('http://localhost:3000/order/submitOrder', order)
     return res
   } catch (err) {
     // console.log('here')

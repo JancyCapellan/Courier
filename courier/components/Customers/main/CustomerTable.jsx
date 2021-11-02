@@ -38,17 +38,6 @@ function CustomerTable({ search, setCurrentUser }) {
   }
   return (
     <>
-      {/* <div className='customer-manager-page'>
-        <div className='customer-search'>
-          <label>
-            <input placeholder='search customers' onChange={handleChange}></input>
-          </label>
-          <button className='customer-search-btn' onClick={console.log(search)}>
-            search
-          </button>
-        </div>
-      </div> */}
-
       <section className='customers-table'>
         <h3>Customers</h3>
         <table>
@@ -64,16 +53,6 @@ function CustomerTable({ search, setCurrentUser }) {
                   <td onClick={() => openCustomerAccountPage(user)}>
                     {user.firstName} {user.middleName} {user.lastName}
                   </td>
-                  {/* <td>
-                    <button
-                      onClick={() => {
-                        setCurrentUser(user)
-                        setShowEditor(true)
-                      }}
-                    >
-                      edit
-                    </button>
-                  </td> */}
                   <td>
                     <button
                       onClick={() => {

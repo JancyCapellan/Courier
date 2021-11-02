@@ -202,15 +202,23 @@ exports.getAllOrders = async (req, res) => {
       throw e
     })
   if (result) {
+    // changing timePlaced for orders into readable local values
+    // time is in 2021-11-01T16:23:29.139Z format, UTC
+    //might make it so i can get both date and time seperatly in response
     for (const obj in result)
       for (const key in result[obj])
         if (key === 'timePlaced') {
-          // console.log('datetime', result[obj][key])
-          // result[obj][key] = `${result[obj][key]}`
-          // const d = DateTime.fromISO(result[obj][key].toUTCString)
-          // console.log(result[obj][key].toLocaleString(DateTime.DATETIME_FULL))
+          console.log('datetime', result[obj][key])
 
-          result[obj][key] = result[obj][key].toLocaleString(DateTime.DATETIME_FULL)
+          console.log(result[obj][key].toLocaleString())
+          console.log(result[obj][key].toTimeString())
+          console.log(result[obj][key].toDateString())
+          // result[obj][key] = {
+          //   date: result[obj][key].toDateString(),
+          //   time: result[obj][key].toTimeString(),
+          // }
+
+          result[obj][key] = result[obj][key].toLocaleString()
         }
 
     console.log(result)

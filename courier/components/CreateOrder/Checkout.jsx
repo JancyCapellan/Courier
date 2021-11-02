@@ -23,7 +23,7 @@ const Checkout = () => {
 
   async function postOrder(order) {
     await axios
-      .post('http://localhost:3000/user/submitOrder', order)
+      .post('http://localhost:3000/order/submitOrder', order)
       .then((res) => {
         console.log('res:', res)
 

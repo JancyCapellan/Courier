@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from 'react'
-import Sidebar from '../components/Sidebar'
+import Sidebar from '../../components/Sidebar'
 import { GetServerSideProps, NextPage } from 'next'
 import axios from 'axios'
-import internal from 'stream'
-import order from './order'
-import { Order } from '@prisma/client'
+import { useRouter } from 'next/router'
 
 interface OrderData {
   id: number
@@ -19,7 +17,7 @@ interface OrderData {
 
 export const getServerSideProps: GetServerSideProps = async ({ res }) => {
   try {
-    const result = await axios.get(`http://localhost:3000/user/allOrders`)
+    const result = await axios.get(`http://localhost:3000/order/allOrders`)
     console.log('response', result.data)
     return {
       props: {
@@ -36,11 +34,18 @@ export const getServerSideProps: GetServerSideProps = async ({ res }) => {
 }
 
 export const Invoices: NextPage<{ listOfInvoices: OrderData[] }> = (props) => {
-  // const [orderHistory, setOrderHistory] = useState<OrderData>([])
   if (!props.listOfInvoices) {
     return <h1>error page 404</h1>
   }
-  // setOrderHistory(props.listOfInvoices)
+
+  const router = useRouter()
+
+  function openInvoice(id: number) {
+    router.push({
+      pathname: `/Invoices/${id}`,
+      query: { orderId: id },
+    })
+  }
 
   const orderHistory = props.listOfInvoices
   console.log('list', orderHistory)
@@ -52,7 +57,7 @@ export const Invoices: NextPage<{ listOfInvoices: OrderData[] }> = (props) => {
         <thead>
           <tr>
             <th>Order Id</th>
-            <th>time placed</th>
+            <th>Datetime placed</th>
             <th>Sending to:</th>
             <th>total cost</th>
             <th>total items</th>
@@ -63,7 +68,7 @@ export const Invoices: NextPage<{ listOfInvoices: OrderData[] }> = (props) => {
         <tbody>
           {orderHistory.map((order: OrderData) => {
             return (
-              <tr key={order.id}>
+              <tr key={order.id} onClick={() => openInvoice(order.id)}>
                 <td>{order.id}</td>
                 <td>{order.timePlaced}</td>
                 <td>

@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import Sidebar from '../../../components/Sidebar'
 import CustomerTable from './CustomerTable'
-import CreateCustomerModal from '../CreateCustomerModal'
 import ModalContainer from '../../HOC/ModalContainer'
-import Register from '../../../pages/register'
 import RegistrationForm from '../../RegistrationForm'
 
 const CustomerManager = () => {
