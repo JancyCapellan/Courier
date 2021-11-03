@@ -114,8 +114,7 @@ exports.getUserOrders = async (req, res) => {
 }
 
 exports.getUserOrderInfo = async (req, res) => {
-  const id = parseInt(req.query.id)
-  const orderId = parseInt(req.query.order)
+  const id = parseInt(req.params.userId)
   if (!req.body) {
     res.status(400).send({
       message: 'Content can not be empty!',
@@ -123,7 +122,7 @@ exports.getUserOrderInfo = async (req, res) => {
   }
   const result = await prisma.order
     .findUnique({
-      where: { id: 5 },
+      where: { id: id },
       include: {
         items: {
           include: {
@@ -147,3 +146,43 @@ exports.getUserOrderInfo = async (req, res) => {
     })
   if (result) res.send(result)
 }
+
+exports.getOrderInfo = async (req, res) => {
+  const id = parseInt(req.params.orderId)
+
+  const order = await prisma.order.findUnique({
+    where: {
+      id: id,
+    },
+    include: {
+      items: {
+        include: {
+          product: {
+            select: {
+              price: true,
+              name: true,
+              productType: {
+                select: {
+                  type: true,
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  })
+  if (order) {
+    // changing timePlaced for orders into readable local values
+    for (const key in order)
+      if (key === 'timePlaced') {
+        order[key] = order[key].toLocaleString()
+      }
+
+    console.log(order)
+    res.send(order)
+  }
+  // console.log(order)
+}
+
+// ################### old #####################

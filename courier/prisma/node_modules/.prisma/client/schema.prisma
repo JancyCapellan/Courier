@@ -27,6 +27,7 @@ model User {
   licenseId Int? @unique
   addresses address[]
   orders Order[]
+  pastRoutes DriverRoutes[]
 }
 model address {
   id Int @id @default(autoincrement())
@@ -58,6 +59,8 @@ model Order {
   items OrderItem[]
   addresses OrderAddressDuo[]
   user User @relation(fields: [userId], references:[id] )
+  routeId Int?
+  route DriverRoutes? @relation(fields: [routeId], references:[id])
 }
 
 //  change this to updatable addresses
@@ -69,7 +72,6 @@ model Order {
 //   shipper address @relation("shipperAddress", fields: [shippedFrom], references:[id])
 //   reciever address @relation("recieverAddress",fields: [shippedTo], references:[id])
 //   // order Order @relation(fields: [orderId],references:[id] )
-
 // }
 
 model OrderAddressDuo{
@@ -114,6 +116,14 @@ model productType {
   type String
   product product[]
 }
+
+model DriverRoutes {
+  id Int @id @default(autoincrement())
+  driverId Int
+  driver User @relation(fields: [driverId], references:[id] )
+  orders Order[]
+}
+
 
 // add products to table
 // add table for drivers, routes, route packages

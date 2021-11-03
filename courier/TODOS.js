@@ -19,6 +19,13 @@
 // * currently making it so the add user form is dynamic and it can add users depending on the accoutn being used to create it to avoid some hacking schemes since the role currently dictates web security and its a easy to change form value.
 // CRUD for products/services that staff can change
 
+// brain storming
+// create new empty route tha can be filled with different orders based on their proximity and area code.
+// assign orders to those routes manually, or with a system as soon as order is confirmed?
+// invoices will allow staff to see relevant data on current orders and past orders
+
+// branch manager will have the routes for that branch/warehouse/ for anything under super admin it will show only that users branch. here you can create routes for packages, edit supplies at warehouse, and anything to do with the management of the branch.
+
 // ####################################################################################
 
 // * also working on checking the registartion logic to nnot use objects because i dont see the benefit in this case.

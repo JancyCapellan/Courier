@@ -1,13 +1,15 @@
 import Sidebar from '../../components/Sidebar'
-import { useRouter } from 'next/router'
+import axios from 'axios'
 
-export const getServerSideProps = async ({ res }) => {
+export const getServerSideProps = async ({ params, res }) => {
+  // const router = useRouter()
+  const { orderId } = params
   try {
-    const result = await axios.get(`http://localhost:3000/order/allOrders`)
+    const result = await axios.get(`http://localhost:3000/order/${orderId}`)
     console.log('response', result.data)
     return {
       props: {
-        listOfInvoices: result.data,
+        order: result.data,
       },
     }
   } catch (error) {
@@ -19,13 +21,70 @@ export const getServerSideProps = async ({ res }) => {
   }
 }
 
-const InvoicePage = () => {
-  const router = useRouter()
-  const orderId = router.query.orderId
+const InvoicePage = ({ order }) => {
+  // const initialValues = {
+  // id: number
+  // recieverFirstName: string
+  // recieverLastName: string
+  // totalPrice: number
+  // totalItems: number
+  // status: string
+  // location: string
+  // timePlaced: string
+  // routeId: number
+  // }
+  console.log(order)
   return (
     <Sidebar>
-      <h1>test</h1>
-      <div>{orderId}</div>
+      <section>
+        <pre>
+          Invoice #:{order.id} {'\n'}
+          {order.recieverFirstName} {''} {order.recieverLastName}
+          {'\n'}
+          total price: {order.totalPrice}
+          {'\n'}
+          total items: {order.totalItems}
+          {'\n'}
+          status: {order.status}
+          {'\n'}
+          location: {order.location}
+          {'\n'}
+          time ordered: {`${order.timePlaced}`} {'\n'}
+          {order.routeId} {'\n'}
+        </pre>
+        <table>
+          <caption>
+            <b>Items For Invoice#{order.id}</b>
+          </caption>
+          <tr>
+            <th>Item</th>
+            <th>Amount</th>
+            <th>type</th>
+            <th>Per Item Price</th>
+            <th>grouped price</th>
+          </tr>
+          <tbody>
+            {order.items.map((item) => {
+              return (
+                <tr key={item.id}>
+                  <td>{item.product.name}</td>
+                  <td>{item.amount}</td>
+                  <td>{item.product.productType.type}</td>
+                  <td>{item.product.price}</td>
+                  <td> {item.product.price * item.amount}</td>
+                </tr>
+              )
+            })}
+            <tr>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td>total:</td>
+              <td>{order.totalPrice}</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
     </Sidebar>
   )
 }

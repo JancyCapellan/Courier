@@ -17,11 +17,11 @@ GET http://localhost:3000/user/customerSearch?search=j
 
 ###
 
-GET http://localhost:3000/user/allOrders
+GET http://localhost:3000/order/allOrders
 
 
-###
-GET http://localhost:3000/user/orders
+### // get order Info
+GET http://localhost:3000/order/3
 
 ###
 GET http://localhost:3000/user/orderInfo?id=1&order=5

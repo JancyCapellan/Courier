@@ -13,6 +13,7 @@ interface OrderData {
   status: string
   location: string
   timePlaced: string
+  routeId: number
 }
 
 export const getServerSideProps: GetServerSideProps = async ({ res }) => {
@@ -43,7 +44,7 @@ export const Invoices: NextPage<{ listOfInvoices: OrderData[] }> = (props) => {
   function openInvoice(id: number) {
     router.push({
       pathname: `/Invoices/${id}`,
-      query: { orderId: id },
+      // query: { orderId: id },
     })
   }
 
@@ -63,6 +64,7 @@ export const Invoices: NextPage<{ listOfInvoices: OrderData[] }> = (props) => {
             <th>total items</th>
             <th>status</th>
             <th>location</th>
+            <th>route number</th>
           </tr>
         </thead>
         <tbody>
@@ -78,6 +80,7 @@ export const Invoices: NextPage<{ listOfInvoices: OrderData[] }> = (props) => {
                 <td>{order.totalItems}</td>
                 <td>{order.status} </td>
                 <td>{order.location}</td>
+                <td>{order.routeId}</td>
               </tr>
             )
           })}

@@ -40,14 +40,6 @@ router.put('/:userId', user.update)
 // not in use
 router.get('/getUsers', user.getUsers) //search for users dynamically with mysql locate
 
-// router.options('/login', user.loginError)
-//place order
-router.post('/submitOrder', user.submitOrderPrisma)
-
-router.get('/allOrders', user.getAllOrders)
-router.get('/orders/:userId', user.getUserOrders)
-router.get('/orderInfo', user.getUserOrderInfo)
-
 //bulk add items to products liust
 router.post('/bulkAdd', user.addItemToProductsList)
 
