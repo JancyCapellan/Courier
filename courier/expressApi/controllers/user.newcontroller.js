@@ -186,20 +186,15 @@ exports.findAll = (req, res) => {
 }
 
 // Find a single user with a userId
-exports.findOne = (req, res) => {
-  User.findById(req.params.userId, (err, data) => {
-    if (err) {
-      if (err.kind === 'not_found') {
-        res.status(404).send({
-          message: `Not found Customer with id ${req.params.customerId}.`,
-        })
-      } else {
-        res.status(500).send({
-          message: 'Error retrieving Customer with id ' + req.params.customerId,
-        })
-      }
-    } else res.send(data)
+exports.findOne = async (req, res) => {
+  const id = parseInt(req.params.userId)
+  const user = await prisma.user.findUnique({
+    where: {
+      id: id,
+    },
   })
+  console.log(user)
+  res.send(user)
 }
 
 exports.findByName = (req, res) => {

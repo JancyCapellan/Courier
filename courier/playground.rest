@@ -22,9 +22,19 @@ GET http://localhost:3000/order/allProducts
 ###
 GET http://localhost:3000/order/allOrders
 
+###
+GET http://localhost:3000/user/1
 
 ### // get order Info
 GET http://localhost:3000/order/3
+
+###
+PUT http://localhost:3000/order/7
+Content-Type: application/json
+
+{
+  "pickupDriverId": 3
+}
 
 ###
 GET http://localhost:3000/user/orderInfo?id=1&order=5

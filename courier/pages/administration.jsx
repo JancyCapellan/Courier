@@ -2,6 +2,7 @@ import { useState } from 'react'
 import Sidebar from '../components/Sidebar'
 import CreateCustomerModal from '../components/Customers/CreateCustomerModal'
 import RegistrationForm from '../components/RegistrationForm.jsx'
+import ModalContainer from '../components/HOC/ModalContainer'
 
 const Administration = () => {
   const [branch, setBranch] = useState()
@@ -41,10 +42,13 @@ const Administration = () => {
   return (
     <Sidebar>
       <section>
-        <RegistrationForm staff={true} />
+        <h1>Staff Manager</h1>
+        <ModalContainer show={showModal} handleClose={handleModalClose}>
+          <RegistrationForm staff={true} />
+        </ModalContainer>
 
         <button className='btn add-customer-btn' onClick={() => setShowModal(true)}>
-          Add User
+          Create Staff
         </button>
       </section>
     </Sidebar>

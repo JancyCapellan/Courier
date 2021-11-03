@@ -26,9 +26,10 @@ model User {
   preferredLanguage String @default("English")
   licenseId Int? @unique
   addresses address[]
-  orders Order[]
-  pastRoutes DriverRoutes[]
+  orders Order[] @relation("CUSTOMER")
+  pickups Order[] @relation("DRIVER")
 }
+
 model address {
   id Int @id @default(autoincrement())
   userId Int
@@ -45,6 +46,7 @@ model address {
   recipient Boolean @default(false)
   user User @relation(fields: [userId], references:[id] )
 }
+
 model Order {
   id Int @id @default(autoincrement())
   userId Int
@@ -56,13 +58,13 @@ model Order {
   paymentType String
   status String @default("ORDERED")
   location String @default("Shipping Address/owner")
+  pickupDriverId Int?
+  pickupDatetime DateTime?
   items OrderItem[]
   addresses OrderAddressDuo[]
-  user User @relation(fields: [userId], references:[id] )
-  routeId Int?
-  route DriverRoutes? @relation(fields: [routeId], references:[id])
+  user User @relation("CUSTOMER",fields: [userId], references:[id] )
+  pickupdriver User? @relation("DRIVER", fields: [pickupDriverId], references:[id])
 }
-
 //  change this to updatable addresses
 // model UserSavedAddresses{
 //   id Int @id @default(autoincrement())
@@ -117,12 +119,12 @@ model productType {
   product product[]
 }
 
-model DriverRoutes {
-  id Int @id @default(autoincrement())
-  driverId Int
-  driver User @relation(fields: [driverId], references:[id] )
-  orders Order[]
-}
+// model DriverRoutes {
+//   id Int @id @default(autoincrement())
+//   driverId Int
+//   driver User @relation(fields: [driverId], references:[id] )
+//   orders Order[]
+// }
 
 
 // add products to table

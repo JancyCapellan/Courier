@@ -79,7 +79,7 @@ const AuthProvider = ({ children }) => {
     const res = await postRegistration(form)
     console.log('REGISTRATION', res)
     // a hack, res is just returning 500 from try/catch
-    switch (res?.res || res) {
+    switch (res.status) {
       case 200:
         alert('registration completed')
         // if after registrtation, i want to autologin user, dispatch would have run with these forms values

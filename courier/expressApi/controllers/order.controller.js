@@ -155,6 +155,7 @@ exports.getOrderInfo = async (req, res) => {
       id: id,
     },
     include: {
+      addresses: true,
       items: {
         include: {
           product: {
@@ -190,6 +191,19 @@ exports.getAllProducts = async (req, res) => {
 
   console.log(result)
   res.send(result)
+}
+
+exports.updateOrder = async (req, res) => {
+  const id = parseInt(req.params.orderId)
+  const data = req.body
+  const result = await prisma.order.update({
+    where: {
+      id: id,
+    },
+    data: data,
+  })
+
+  console.log(result)
 }
 
 // ################### old #####################

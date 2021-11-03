@@ -3,6 +3,7 @@ import Sidebar from '../../components/Sidebar'
 import { GetServerSideProps, NextPage } from 'next'
 import axios from 'axios'
 import { useRouter } from 'next/router'
+import DateTime from 'luxon'
 
 interface OrderData {
   id: number
@@ -13,7 +14,8 @@ interface OrderData {
   status: string
   location: string
   timePlaced: string
-  routeId: number
+  pickupDriverId: number
+  pickupDatetime: string
 }
 
 export const getServerSideProps: GetServerSideProps = async ({ res }) => {
@@ -64,7 +66,8 @@ export const Invoices: NextPage<{ listOfInvoices: OrderData[] }> = (props) => {
             <th>total items</th>
             <th>status</th>
             <th>location</th>
-            <th>route number</th>
+            <th>Pickup Driver</th>
+            <th>Pickup TIme</th>
           </tr>
         </thead>
         <tbody>
@@ -80,7 +83,14 @@ export const Invoices: NextPage<{ listOfInvoices: OrderData[] }> = (props) => {
                 <td>{order.totalItems}</td>
                 <td>{order.status} </td>
                 <td>{order.location}</td>
-                <td>{order.routeId}</td>
+                <td>
+                  {order.pickupDriverId ? (
+                    order.pickupDriverId
+                  ) : (
+                    <button>choose driver</button>
+                  )}
+                </td>
+                <td>{order.pickupDatetime}</td>
               </tr>
             )
           })}

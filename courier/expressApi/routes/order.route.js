@@ -14,5 +14,6 @@ router.get('/orderInfo', order.getUserOrderInfo)
 // must be in this order or allproducts routes to getOrderInfo
 router.get('/allProducts', order.getAllProducts)
 router.get('/:orderId', order.getOrderInfo)
+router.put('/:orderId', order.updateOrder)
 
 module.exports = router

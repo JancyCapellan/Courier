@@ -27,10 +27,20 @@ function CustomerTable({ search, setCurrentUser }) {
   }, [search, setSearchResults])
 
   function openCustomerAccountPage(user) {
-    router.push({
-      pathname: `/customers/${user.id}`,
-      query: user,
-    })
+    switch (user.role) {
+      case 'DRIVE':
+        console.log('userId', user.id)
+        //make different account pages for roles
+        router.push({
+          pathname: `/customers/${user.id}`,
+        })
+
+      default:
+        router.push({
+          pathname: `/customers/${user.id}`,
+        })
+    }
+
     // const location = {
     //   pathname: '/customers/customeraccount',
     //   state: { user: user },

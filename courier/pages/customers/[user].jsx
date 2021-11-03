@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Formik, Form } from 'formik'
 import FormikControl from '../../components/Formik/FormikControl'
 import * as Yup from 'yup'
-import Axios from 'axios'
+import axios from 'axios'
 import Sidebar from '../../components/Sidebar'
 import { useRouter } from 'next/router'
 import ModalContainer from '../../components/HOC/ModalContainer'
@@ -40,7 +40,7 @@ const AddCustomerAddressForm = ({ show, handleClose, currentUser, edit }) => {
 
   const AddCustomerAddress = async (values) => {
     try {
-      const res = await Axios.post(
+      const res = await axios.post(
         `http://localhost:3000/user/addresses/add/${currentUser.id}`,
         values
       )
@@ -158,7 +158,7 @@ const EditAddressModal = ({ show, handleClose, address }) => {
 
   const updateCustomerAddress = async (values) => {
     try {
-      const res = await Axios.put(
+      const res = await axios.put(
         `http://localhost:5000/user/addresses/update/${address.address_id}`,
         values
       )
@@ -295,7 +295,7 @@ const CustomerAddresses = ({ user }) => {
   useEffect(() => {
     async function getCustomerAddress() {
       try {
-        let res = await Axios.get(`http://localhost:3000/user/addresses/${user.id}`)
+        let res = await axios.get(`http://localhost:3000/user/addresses/${user.id}`)
         if (res.status === 200) {
           // console.table(res.data)
           setAddresses(res.data)
@@ -419,7 +419,7 @@ const CustomerEditorForm = ({ currentUser }) => {
     try {
       values.id = parseInt(values.id)
       values.licenseId = parseInt(values.licenseId)
-      const res = await Axios.put(`http://localhost:3000/user/${currentUser.id}`, values)
+      const res = await axios.put(`http://localhost:3000/user/${currentUser.id}`, values)
       alert('completed')
       return res
     } catch (err) {
@@ -496,7 +496,7 @@ const CustomerOrderHistory = ({ currentUser }) => {
   useEffect(() => {
     async function getCustomerOrders() {
       try {
-        let res = await Axios.get(`http://localhost:3000/order/user/${currentUser.id}`)
+        let res = await axios.get(`http://localhost:3000/order/user/${currentUser.id}`)
         if (res.status === 200) {
           console.log('herere', res.data)
           setOrderHistory(res.data.orders)
@@ -546,26 +546,57 @@ const CustomerOrderHistory = ({ currentUser }) => {
   )
 }
 
-const CustomerAccountPage = (props) => {
-  const [currentPage, setCurrentPage] = useState(1)
-  const router = useRouter()
-  const user = router.query // change to get user info with the userId that was sent and not just recieve the object
+export const getServerSideProps = async ({ params, res }) => {
+  const { user } = params
+  try {
+    const result = await axios.get(`http://localhost:3000/user/${user}`)
+    console.log('response', result.data)
+    return {
+      props: {
+        user: result.data,
+      },
+    }
+  } catch (error) {
+    res.statusCode = 500
+    console.log('getcustomer', error)
+    return {
+      props: {},
+    }
+  }
+}
 
-  const stateFromParent = props.location?.state
-  const currentUser = user
+const CustomerAccountPage = ({ user }) => {
+  const [currentPage, setCurrentPage] = useState(1)
 
   function ComponentSwitcher({ currentUser }) {
-    switch (currentPage) {
-      case 1:
-        return <CustomerEditorForm currentUser={currentUser} />
-      case 2:
-        return <CustomerAddresses user={currentUser} />
-      case 3:
-        return <CustomerOrderHistory currentUser={currentUser} />
-      case 4:
-        break
+    switch (currentUser.role) {
+      case 'DRIVE':
+        switch (currentPage) {
+          case 1:
+            return <CustomerEditorForm currentUser={currentUser} />
+          case 2:
+            return <CustomerAddresses user={currentUser} />
+          case 3:
+            return <CustomerOrderHistory currentUser={currentUser} />
+          case 4:
+            break
+          default:
+            return <CustomerEditorForm currentUser={currentUser} />
+        }
+
       default:
-        return <CustomerEditorForm currentUser={currentUser} />
+        switch (currentPage) {
+          case 1:
+            return <CustomerEditorForm currentUser={currentUser} />
+          case 2:
+            return <CustomerAddresses user={currentUser} />
+          case 3:
+            return <CustomerOrderHistory currentUser={currentUser} />
+          case 4:
+            break
+          default:
+            return <CustomerEditorForm currentUser={currentUser} />
+        }
     }
   }
 
@@ -579,7 +610,7 @@ const CustomerAccountPage = (props) => {
         <button>Current Orders</button>
       </nav>
       <br />
-      <ComponentSwitcher currentUser={currentUser} />
+      <ComponentSwitcher currentUser={user} />
       <br />
     </Sidebar>
   )

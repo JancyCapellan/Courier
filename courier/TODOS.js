@@ -39,3 +39,7 @@
 // change add customer address form api call and change route/controller to prisma model
 
 // ** create transaction for prisma submit order. change orderForm shape to match. // nested writes are transactions in primsa 2.
+
+// update orders
+// table fo drivers
+// tables of packages waiting for pickup by branch
