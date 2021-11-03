@@ -22,7 +22,7 @@ export const getServerSideProps = async ({ params, res }) => {
 }
 
 const InvoicePage = ({ order }) => {
-  // const initialValues = {
+  // const initialValues = {2222222
   // id: number
   // recieverFirstName: string
   // recieverLastName: string
@@ -56,13 +56,16 @@ const InvoicePage = ({ order }) => {
           <caption>
             <b>Items For Invoice#{order.id}</b>
           </caption>
-          <tr>
-            <th>Item</th>
-            <th>Amount</th>
-            <th>type</th>
-            <th>Per Item Price</th>
-            <th>grouped price</th>
-          </tr>
+          <thead>
+            <tr>
+              <th>Item</th>
+              <th>Amount</th>
+              <th>type</th>
+              <th>Per Item Price</th>
+              <th>grouped price</th>
+            </tr>
+          </thead>
+
           <tbody>
             {order.items.map((item) => {
               return (

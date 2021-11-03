@@ -185,4 +185,11 @@ exports.getOrderInfo = async (req, res) => {
   // console.log(order)
 }
 
+exports.getAllProducts = async (req, res) => {
+  const result = await prisma.product.findMany({})
+
+  console.log(result)
+  res.send(result)
+}
+
 // ################### old #####################

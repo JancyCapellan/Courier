@@ -5,10 +5,10 @@ const Item = ({ name, price, id }) => {
   const [qty, setQty] = useState(1)
   const { addItem } = useCart()
 
-  // let itemArray = [`${name}`, parseInt(qty)]
+  // item to add to cart that will be submitted for order,
   let item = {
     name: `${name}`,
-    price: 75,
+    price: price,
     amount: parseInt(qty),
     productsId: id,
   }

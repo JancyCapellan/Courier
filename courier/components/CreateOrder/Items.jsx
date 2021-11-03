@@ -1,10 +1,10 @@
-import React from 'react'
-import products from '../../assests/products.json'
+import React, { useEffect, useState } from 'react'
+// import products from '../../assests/products.json'
 import Item from './item'
 
-const jsonProdcutsES = products.spanish
+// const jsonProdcutsES = products.spanish
 
-const Items = ({ handlePage }) => {
+const Items = ({ handlePage, products }) => {
   return (
     <>
       <h1> Create Order</h1>
@@ -13,7 +13,7 @@ const Items = ({ handlePage }) => {
 
         <section className='items-section'>
           <div className='itemsList'>
-            {jsonProdcutsES.map((item) => {
+            {products.map((item) => {
               return <Item key={item.id} {...item} />
             })}
           </div>

@@ -1,14 +1,13 @@
 import React, { useState } from 'react'
-// import '../../index.css'
 import Items from './Items'
 import Cart from './Cart'
 import Sidebar from '../../components/Sidebar'
 import SenderFormAdmin from './SenderFormAdmin'
 import { useCart } from '../../contexts/cartContext'
 import Checkout from './Checkout'
-import { useEffect } from 'react'
+// import { useEffect } from 'react'
 
-const CreateCustomerOrder = () => {
+const CreateCustomerOrder = ({ products }) => {
   const [currentPage, setCurrentPage] = useState(1)
   // const [value, setValue] = useState('')
   // const [user, setUser] = useState()
@@ -28,7 +27,7 @@ const CreateCustomerOrder = () => {
       case 1:
         return <SenderFormAdmin currentUser={currentOrderUser} handlePage={handlePage} />
       case 2:
-        return <Items handlePage={handlePage} />
+        return <Items handlePage={handlePage} products={products} />
       case 3:
         return <Cart handlePage={handlePage} />
       case 4:
