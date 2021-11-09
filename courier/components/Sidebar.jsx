@@ -23,7 +23,7 @@ const Sidebar = ({ children }) => {
       case 'ADMIN':
         SidebarData = sidebarTypes.ADMIN
         break
-      case 'DRIVER':
+      case 'DRIVE':
         SidebarData = sidebarTypes.DRIVER
         break
       case 'SECT':

@@ -569,34 +569,17 @@ const CustomerAccountPage = ({ user }) => {
   const [currentPage, setCurrentPage] = useState(1)
 
   function ComponentSwitcher({ currentUser }) {
-    switch (currentUser.role) {
-      case 'DRIVE':
-        switch (currentPage) {
-          case 1:
-            return <CustomerEditorForm currentUser={currentUser} />
-          case 2:
-            return <CustomerAddresses user={currentUser} />
-          case 3:
-            return <CustomerOrderHistory currentUser={currentUser} />
-          case 4:
-            break
-          default:
-            return <CustomerEditorForm currentUser={currentUser} />
-        }
-
+    switch (currentPage) {
+      case 1:
+        return <CustomerEditorForm currentUser={currentUser} />
+      case 2:
+        return <CustomerAddresses user={currentUser} />
+      case 3:
+        return <CustomerOrderHistory currentUser={currentUser} />
+      case 4:
+        break
       default:
-        switch (currentPage) {
-          case 1:
-            return <CustomerEditorForm currentUser={currentUser} />
-          case 2:
-            return <CustomerAddresses user={currentUser} />
-          case 3:
-            return <CustomerOrderHistory currentUser={currentUser} />
-          case 4:
-            break
-          default:
-            return <CustomerEditorForm currentUser={currentUser} />
-        }
+        return <CustomerEditorForm currentUser={currentUser} />
     }
   }
 
