@@ -23,7 +23,17 @@ GET http://localhost:3000/order/allProducts
 GET http://localhost:3000/order/allOrders
 
 ###
-GET http://localhost:3000/user/1
+GET http://localhost:3000/user/3
+
+###
+
+post http://localhost:3000/user/allDrivers
+Content-Type: application/json
+
+{
+  "branch": "NYC"
+}
+
 
 ### // get order Info
 GET http://localhost:3000/order/3

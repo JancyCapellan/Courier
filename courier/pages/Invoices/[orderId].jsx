@@ -37,9 +37,16 @@ const InvoicePage = ({ order }) => {
   return (
     <Sidebar>
       <section>
+        <h1>Invoice #{order.id}</h1>
         <pre>
-          Invoice #:{order.id} {'\n'}
-          {order.recieverFirstName} {''} {order.recieverLastName}
+          Customer: {order.user.firstName} {order.user.middleName} {order.user.lastName}
+          {'\n'}
+          {'\t'}
+          Address: {order.addresses[0].address}
+          {'\n'}
+          shipping to: {order.recieverFirstName} {''} {order.recieverLastName} {'\n'}
+          {'\t'}
+          Address: {order.addresses[1].address}
           {'\n'}
           total price: {order.totalPrice}
           {'\n'}

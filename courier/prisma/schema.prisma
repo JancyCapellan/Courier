@@ -54,6 +54,7 @@ model address {
   user User @relation(fields: [userId], references:[id] )
 }
 
+// change user to userOwnerOfOrder something to make it clear that the user is the customer taht placed the order for service
 model Order {
   id Int @id @default(autoincrement())
   userId Int

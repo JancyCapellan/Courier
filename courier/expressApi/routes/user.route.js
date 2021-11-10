@@ -36,8 +36,13 @@ router.get('/customerSearch', user.customerSearch)
 
 // Update a user with userId
 router.put('/:userId', user.update)
+// Retrieve a single user with userId
+router.get('/:userId', user.findOne)
 
-// not in use
+// get all drivers by branch
+router.post('/allDrivers', user.allDrivers)
+
+// ! not in use
 router.get('/getUsers', user.getUsers) //search for users dynamically with mysql locate
 
 //bulk add items to products liust
@@ -45,9 +50,6 @@ router.post('/bulkAdd', user.addItemToProductsList)
 
 // Retrieve all user
 router.get('/all', user.findAll)
-
-// Retrieve a single user with userId
-router.get('/:userId', user.findOne)
 
 // Get user addresses with userId
 router.get('/addresses/:userId', user.getAddressesWithId)

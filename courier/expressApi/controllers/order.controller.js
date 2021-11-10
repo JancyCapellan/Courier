@@ -155,6 +155,13 @@ exports.getOrderInfo = async (req, res) => {
       id: id,
     },
     include: {
+      user: {
+        select: {
+          firstName: true,
+          middleName: true,
+          lastName: true,
+        },
+      },
       addresses: true,
       items: {
         include: {

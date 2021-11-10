@@ -73,6 +73,17 @@ exports.getloggedInUser = async (req, res) => {
   if (result) res.send(result)
 }
 
+exports.allDrivers = async (req, res) => {
+  const branch = req.body.branch
+  const drivers = await prisma.user.findMany({
+    where: {
+      AND: [{ role: 'DRIVE' }, { branchName: branch }],
+    },
+  })
+
+  res.send(drivers)
+}
+
 // Update a user identified by the userId in the request
 exports.update = async (req, res) => {
   const user = await prisma.user.update({
@@ -193,7 +204,7 @@ exports.findOne = async (req, res) => {
       id: id,
     },
   })
-  console.log(user)
+  console.log('unique user', user)
   res.send(user)
 }
 
