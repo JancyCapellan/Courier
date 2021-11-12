@@ -59,9 +59,20 @@ exports.submitOrderPrisma = async (req, res) => {
 exports.getAllOrders = async (req, res) => {
   const result = await prisma.order
     .findMany({
-      // select: {
-      //   timePlaced: true,
-      // },
+      include: {
+        user: {
+          select: {
+            firstName: true,
+            lastName: true,
+          },
+        },
+        pickupdriver: {
+          select: {
+            firstName: true,
+            lastName: true,
+          },
+        },
+      },
     })
     .catch(async (e) => {
       res.status(500).send({ error: 'Something failed!' })
@@ -162,6 +173,13 @@ exports.getOrderInfo = async (req, res) => {
           lastName: true,
         },
       },
+      pickupdriver: {
+        select: {
+          firstName: true,
+          middleName: true,
+          lastName: true,
+        },
+      },
       addresses: true,
       items: {
         include: {
@@ -214,3 +232,11 @@ exports.updateOrder = async (req, res) => {
 }
 
 // ################### old #####################
+// ;`${order.pickupdriver.firstName} ${order.pickupdriver.lastName}`
+
+// ;<select onChange={(e) => updateOrderDriver(order.id, parseInt(e.target.value))}>
+//   <option value={order.pickupDriverId}>
+//     {order.pickupdriver.firstName} {order.pickupdriver.lastName}
+//   </option>
+//   <option value={3}>Driver Tester</option>
+// </select>

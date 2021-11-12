@@ -43,3 +43,5 @@
 // update orders
 // table fo drivers
 // tables of packages waiting for pickup by branch
+
+// move branch selector to be global for the enitre app, admin will efficetly have multiple versions of each page that just changes the info with the specific branch they are trying to work with

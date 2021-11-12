@@ -58,6 +58,7 @@ const InvoicePage = ({ order }) => {
           {'\n'}
           time ordered: {`${order.timePlaced}`} {'\n'}
           {order.routeId} {'\n'}
+          <b>pickup Driver:</b> {order.pickupdriver.firstName} {order.pickupdriver.lastName}
         </pre>
         <table>
           <caption>
