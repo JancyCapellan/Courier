@@ -45,3 +45,7 @@
 // tables of packages waiting for pickup by branch
 
 // move branch selector to be global for the enitre app, admin will efficetly have multiple versions of each page that just changes the info with the specific branch they are trying to work with
+
+// TODO: get pickup driver options from database, choose user role driver
+// TODO: change tables to react-table for more advnaced filtering and inline editing
+// TODO: update driverId page under administration to show the drivers pickups routes, supplies, etc

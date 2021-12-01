@@ -122,7 +122,7 @@ export const Invoices: NextPage<{ listOfInvoices: OrderData[] }> = (props) => {
                       <div>
                         {order.pickupdriver.firstName} {order.pickupdriver.lastName}
                         <select
-                          style={{ width: '18px' }}
+                          style={{ width: '1.5em' }}
                           onChange={(e) =>
                             updateOrderDriver(order.id, parseInt(e.target.value))
                           }
