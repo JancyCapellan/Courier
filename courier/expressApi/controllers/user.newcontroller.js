@@ -239,6 +239,13 @@ exports.getAddressesWithId = (req, res) => {
       }
     } else res.send(data)
   })
+  // const addresses = await prisma.address.findUnique({
+  //   where: {
+  //     id: id,
+  //   },
+  // })
+
+  // if (addresses) res.send(addresses)
 }
 
 exports.AddAddress = (req, res) => {
