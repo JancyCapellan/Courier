@@ -70,7 +70,7 @@ const Checkout = () => {
         <p>reciever: {addressStrings.reciever} </p>
       </section> */}
       <Cart />
-      // format order into nice string for better QRcode reads
+      {/* ! format order into nice string for better QRcode reads */}
       {/* <QRCode value={JSON.stringify({ cart, total, addressStrings })} size={200} /> */}
       <section>
         <h1>payment form</h1>
