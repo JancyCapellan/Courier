@@ -32,6 +32,9 @@ app
     server.get('*', (req, res) => {
       return handle(req, res)
     })
+    server.post('/api/auth/*', (req, res) => {
+      return handle(req, res)
+    })
 
     server.listen(3000, () => {
       console.log('server is listening on port 3000...')
