@@ -64,6 +64,9 @@ const nextAuthOptions = (req, res) => {
             return null
           }
 
+          // TODO: this may be a better choice to only have as the login/ Authentication actions
+          // here, but all database queries a part of my epxress backend.
+
           // try {
           //   const res = await axios.post('http://localhost:3000/user/login', loginForm)
           //   const user = res.data
