@@ -51,11 +51,14 @@ const nextAuthOptions = (req, res) => {
             // console.log('auth user', user)
             // userAccount = user
             return {
-              ...user,
-              // id: user.id,
-              // name: 'jancy capellan',
-              // emailVerified: true,
-              // isActive: 1,
+              user: {
+                id: user.id,
+                name: `${user.firstName} ${user.lastName}`,
+                email: user.email,
+                firstName: user.firstName,
+                lastName: user.lastName,
+                role: user.role,
+              },
             }
           } else {
             return null
@@ -133,16 +136,24 @@ const nextAuthOptions = (req, res) => {
       // },
       jwt: ({ token, user }) => {
         // first time jwt callback is run, user object is available
+        console.log('JWT', token, 'USER', user)
         if (user) {
+          token.user = user.user
           token.id = user.id
+          return token
         }
 
         return token
       },
       session: ({ session, token }) => {
+        console.log('SESSION', session)
+        let test = { ...session.user, ...token.user }
         if (token) {
-          session.id = token.id
+          session.id = token.user.id
+          session.user = token.user ? token.user : { input: token.user, ...session.user }
+          // session.user = test
         }
+        console.log('SESSION2222', session)
 
         return session
       },
