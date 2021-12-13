@@ -1,9 +1,8 @@
 import type { NextPage } from 'next'
-import LoginForm from '../components/LoginForm'
-import { useAuth } from '../contexts/authContext'
 import { useSession, signIn, signOut } from 'next-auth/react'
 import Link from 'next/link'
-import { redirect } from 'next/dist/server/api-utils'
+import router from 'next/router'
+import { useEffect } from 'react'
 
 function NextAuthLogin() {
   const { data, status, data: session } = useSession()
@@ -28,7 +27,13 @@ function NextAuthLogin() {
 }
 
 const Home: NextPage = () => {
-  const { data: session } = useSession()
+  const { data: session, status } = useSession()
+
+  // useEffect(() => {
+  //   if (!!session?.user) {
+  //     router.push('/account')
+  //   }
+  // })
 
   return (
     <div className=' homeLayout '>

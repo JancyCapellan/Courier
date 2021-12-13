@@ -8,35 +8,44 @@ import { useSession } from 'next-auth/react'
 
 const AccountInfo = () => {
   // const { firstName, email, lastName } = useAuth()
-  const { data: session, user } = useSession()
-  console.log(session, user)
+  const { data: session, status } = useSession()
+  console.log(session)
 
+  let show = false
+  if (status === 'authenticated') {
+    show = true
+    const { firstName, lastName, role, email, name } = session.user
+  }
   // const { firstName, lastName } = session.userInfo
 
   //use effect to get user info from database
   return (
     <Sidebar>
       <div className='accountPage'>
-        <section className='accInfoPanel'>
-          <h1> Account Information</h1>
-          <table className='accInfoTable'>
-            <thead>
-              <tr>
-                <th>Name:</th>
-                <td>{/* {firstName} {lastName} */}</td>
-              </tr>
-              <tr>
-                <th>Email: </th>
-                {/* <td>{email}</td> */}
-              </tr>
-              <tr>
-                <th>Address: </th>
-                <td>123 Test st ave, ny, ny, 10087</td>
-              </tr>
-            </thead>
-          </table>
-          <br />
-        </section>
+        {show ? (
+          <section className='accInfoPanel'>
+            <h1> Account Information</h1>
+            <table className='accInfoTable'>
+              <thead>
+                <tr>
+                  <th>Name:</th>
+                  <td>{name}</td>
+                </tr>
+                <tr>
+                  <th>Email: </th>
+                  <td>{email}</td>
+                </tr>
+                <tr>
+                  <th>Address: </th>
+                  <td>123 Test st ave, ny, ny, 10087</td>
+                </tr>
+              </thead>
+            </table>
+            <br />
+          </section>
+        ) : (
+          <></>
+        )}
       </div>
       <ReloadButton />
     </Sidebar>
