@@ -2,11 +2,13 @@ import { useAuth } from '../contexts/authContext'
 import Sidebar from '../components/Sidebar'
 import router from 'next/router'
 import ReloadButton from '../components/ReloadButton'
+import { useSession } from 'next-auth/react'
 // accout information, place to change information, recent orders, settings
 // change payment types, add addresses, change phone numbers, send messages
 
 const AccountInfo = () => {
-  const { firstName, email, lastName } = useAuth()
+  // const { firstName, email, lastName } = useAuth()
+  const { email } = useSession
 
   //use effect to get user info from database
   return (
@@ -18,9 +20,7 @@ const AccountInfo = () => {
             <thead>
               <tr>
                 <th>Name:</th>
-                <td>
-                  {firstName} {lastName}
-                </td>
+                <td>{/* {firstName} {lastName} */}</td>
               </tr>
               <tr>
                 <th>Email: </th>

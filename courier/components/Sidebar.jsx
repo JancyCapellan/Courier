@@ -11,7 +11,7 @@ const Sidebar = ({ children }) => {
     setIsCollapsed(!isCollapsed)
   }
 
-  const { email, role, firstName } = useAuth()
+  // const { email, role, firstName } = useAuth()
 
   //will switch the sidebar data to show links to routes per user role
   let SidebarData = []

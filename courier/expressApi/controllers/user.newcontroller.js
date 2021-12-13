@@ -43,11 +43,12 @@ exports.login = async (req, res) => {
 
   console.log('login results', result)
   if (result !== null) {
-    console.log('testtt')
-    const accessToken = jwt.sign(result, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1h' })
-    const refreshToken = jwt.sign(result, process.env.REFRESH_TOKEN_SECRET)
-    refreshTokens.push(refreshToken)
-    res.json({ accessToken: accessToken, refreshToken: refreshToken })
+    // // no longer needed because of next-auth
+    // const accessToken = jwt.sign(result, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1h' })
+    // const refreshToken = jwt.sign(result, process.env.REFRESH_TOKEN_SECRET)
+    // refreshTokens.push(refreshToken)
+    // res.json({ accessToken: accessToken, refreshToken: refreshToken,  })
+    res.json({ user: result.data })
   }
   if (result === null) {
     console.log('elsewhere')

@@ -1,17 +1,51 @@
 import { Formik, Form, FormikContextType } from 'formik'
 import FormikControl from './Formik/FormikControl'
 import * as Yup from 'yup'
-import { useAuth } from '../contexts/authContext'
 import Link from 'next/link'
 import Router from 'next/router'
 import { useEffect } from 'react'
+import axios from 'axios'
 
-// if staff strue, can change role of user being registered
+const register = async (form) => {
+  const postRegistration = async () => {
+    try {
+      delete form.password2
+      const res = await axios.post('http://localhost:3000/user/register', form)
+      console.log('REGISTER RES HERE', res)
+      return res
+    } catch (error) {
+      console.log(error)
+
+      return 500
+    }
+  }
+
+  console.log('Registeration form', form)
+  const res = await postRegistration(form)
+  console.log('REGISTRATION', res)
+  switch (res.status) {
+    case 200:
+      alert('registration completed')
+      return true
+
+    case 204:
+      alert('ERROR WHILE COMPLETING REGISTRATION')
+      return false
+
+    case 500:
+      alert('ERROR WHILE REGISTRATING')
+      return false
+
+    default:
+      throw new Error('res code not 200 or 204')
+  }
+}
+
 const RegistrationForm = ({ staff, customer = false }) => {
   // useEffect(() => {
   //   console.log('staff', staff, 'customer', customer)
   // }, [])
-  const { register } = useAuth()
+
   const initialValues = {
     firstName: '',
     middleName: '',
@@ -77,20 +111,10 @@ const RegistrationForm = ({ staff, customer = false }) => {
           return (
             <Form>
               <FormikControl control='input' type='text' label='First Name' name='firstName' />
-              <FormikControl
-                control='input'
-                type='text'
-                label='Middle Name'
-                name='middleName'
-              />
+              <FormikControl control='input' type='text' label='Middle Name' name='middleName' />
               <FormikControl control='input' type='text' label='Last Name' name='lastName' />
               <FormikControl control='input' type='email' label='Email' name='email' />
-              <FormikControl
-                control='input'
-                type='password'
-                label='Password'
-                name='password'
-              />
+              <FormikControl control='input' type='password' label='Password' name='password' />
               <FormikControl
                 control='input'
                 type='password'
@@ -98,12 +122,7 @@ const RegistrationForm = ({ staff, customer = false }) => {
                 name='password2'
               />
               {staff ? (
-                <FormikControl
-                  control='select'
-                  label='role'
-                  name='role'
-                  options={selectOptions}
-                />
+                <FormikControl control='select' label='role' name='role' options={selectOptions} />
               ) : (
                 <></>
               )}
