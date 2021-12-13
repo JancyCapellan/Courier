@@ -150,7 +150,7 @@ const nextAuthOptions = (req, res) => {
         let test = { ...session.user, ...token.user }
         if (token) {
           session.id = token.user.id
-          session.user = token.user ? token.user : { input: token.user, ...session.user }
+          session.user = token.user ? token.user : { ...token.user, ...session.user }
           // session.user = test
         }
         console.log('SESSION2222', session)
