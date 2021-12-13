@@ -4,6 +4,7 @@ import Link from 'next/link'
 // import logo from '../assets/logo-dark.png'
 import { useAuth } from '../contexts/authContext'
 import Router from 'next/router'
+import { useSession } from 'next-auth/react'
 
 const Sidebar = ({ children }) => {
   const [isCollapsed, setIsCollapsed] = useState(false)
@@ -12,6 +13,10 @@ const Sidebar = ({ children }) => {
   }
 
   // const { email, role, firstName } = useAuth()
+
+  const { data: session } = useSession()
+  console.log('sidebar session', session)
+  let role = 'ADMIN'
 
   //will switch the sidebar data to show links to routes per user role
   let SidebarData = []
@@ -41,9 +46,7 @@ const Sidebar = ({ children }) => {
     <div className='page-layout'>
       <nav className={isCollapsed ? 'sidebar-collapsed' : 'sidebar'}>
         <section className='sidebar-header'>
-          <b>
-            User: {firstName} Role: {role}
-          </b>
+          <b>{/* User: {firstName} Role: {role} */}</b>
           {/* <div className='sidebar-logo-container'>
             <img className='sidebar-logo' src={logo} alt='logo' />
           </div> */}

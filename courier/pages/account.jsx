@@ -8,7 +8,10 @@ import { useSession } from 'next-auth/react'
 
 const AccountInfo = () => {
   // const { firstName, email, lastName } = useAuth()
-  const { email } = useSession
+  const { data: session, user } = useSession()
+  console.log(session, user)
+
+  // const { firstName, lastName } = session.userInfo
 
   //use effect to get user info from database
   return (
@@ -24,7 +27,7 @@ const AccountInfo = () => {
               </tr>
               <tr>
                 <th>Email: </th>
-                <td>{email}</td>
+                {/* <td>{email}</td> */}
               </tr>
               <tr>
                 <th>Address: </th>

@@ -6,11 +6,14 @@ import Link from 'next/link'
 import { redirect } from 'next/dist/server/api-utils'
 
 function NextAuthLogin() {
-  const { data: session } = useSession()
+  const { data, status, data: session } = useSession()
+  console.log('SESSION', data)
+  let user = data?.user
+  console.log('USER', user)
   if (session) {
     return (
       <>
-        Signed in as {session.user.email} <br />
+        Signed in as {session?.user?.email} <br />
         {/* <pre>{session.user?.email}</pre> */}
         <button onClick={() => signOut()}>Sign out</button>
       </>
@@ -25,7 +28,8 @@ function NextAuthLogin() {
 }
 
 const Home: NextPage = () => {
-  // const { email } = useAuth()
+  const { data: session } = useSession()
+
   return (
     <div className=' homeLayout '>
       <div className='homeHeader'>
@@ -35,6 +39,7 @@ const Home: NextPage = () => {
         <div>
           Need an Account? <Link href='/register'> Register </Link>
         </div>
+        {session ? <Link href='/account'> Open Account</Link> : <></>}
         <div className='loginform'>
           {/* <LoginForm /> */}
           <NextAuthLogin />
