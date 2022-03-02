@@ -14,14 +14,16 @@ function NextAuthLogin() {
       <>
         Signed in as {session?.user?.email} <br />
         {/* <pre>{session.user?.email}</pre> */}
-        <button onClick={() => signOut()}>Sign out</button>
+        <button onClick={() => signOut({ callbackUrl: 'http://localhost:3000/' })}>Sign out</button>
       </>
     )
   }
   return (
     <>
       Not signed in <br />
-      <button onClick={() => signIn()}>Sign in</button>
+      <button onClick={() => signIn('login', { callbackUrl: 'http://localhost:3000/account' })}>
+        Sign in
+      </button>
     </>
   )
 }

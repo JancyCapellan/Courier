@@ -7,6 +7,7 @@ import axios from 'axios'
 const prisma = new PrismaClient()
 const nextAuthOptions = (req, res) => {
   return {
+    // adapter: PrismaAdapter(prisma), breaks functionality
     providers: [
       CredentialsProvider({
         id: 'login',
@@ -30,10 +31,10 @@ const nextAuthOptions = (req, res) => {
           //     email: 'johndoe@test.com',
           //   }
           // }
-          const loginForm = {
-            email: credentials.email,
-            password: credentials.password,
-          }
+          // const loginForm = {
+          //   email: credentials.email,
+          //   password: credentials.password,
+          // }
 
           //can make part of the api
           const user = await prisma.user.findFirst({
@@ -139,7 +140,7 @@ const nextAuthOptions = (req, res) => {
       // },
       jwt: ({ token, user }) => {
         // first time jwt callback is run, user object is available
-        console.log('JWT', token, 'USER', user)
+        console.log('JWT', token)
         if (user) {
           token.user = user.user
           token.id = user.id
@@ -149,8 +150,8 @@ const nextAuthOptions = (req, res) => {
         return token
       },
       session: ({ session, token }) => {
-        console.log('SESSION', session)
-        let test = { ...session.user, ...token.user }
+        // console.log('SESSION', session)
+        // let test = { ...session.user, ...token.user }
         if (token) {
           session.id = token.user.id
           session.user = token.user ? token.user : { ...token.user, ...session.user }

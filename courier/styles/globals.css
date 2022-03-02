@@ -38,6 +38,7 @@ Variables
   --large-screen-width: 1170px;
   --small-screen-width: 90vw;
   --fixed-width: 50rem;
+  --header-height: 40px;
 }
 * {
   margin: 0;
@@ -149,76 +150,88 @@ multi-page styles
 
 /*
 ===============
-Sidebar / layout
+Sidebar (handles layout with children as main content on page)s
 ===============
 */
-.page-layout {
+/* .page-layout {
   display: grid;
-  grid-template-columns: min-content min-content;
+  grid-template-columns: min-content max-content;
+} */
+
+.page-layout {
+  display: flex;
+}
+.page-header {
+  display: flex;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  background-color: white;
+  box-shadow: 0 1px 10px 0 rgba(0, 0, 0, 0.4);
+  padding: 0 0.5rem;
+  height: var(--header-height);
 }
 
 .main-content {
+  width: calc(100vw - 75px);
   margin: 0;
   padding: 50px;
-  grid-column: 3;
+  /* grid-column: 3; */
+}
+
+.menu-icon-btn {
+  background: none;
+  border: none;
+  padding: 0;
+}
+
+.menu-icon {
+  width: 25px;
+  height: 25px;
+  fill: var(--medium-gray);
+  cursor: pointer;
+}
+
+.menu-icon:hover {
+  fill: var(--dark-gray);
 }
 
 .sidebar {
-  height: 100vh; /* cant use 100% Full-height, because root div has no styling for height */
-  width: 14vw; /* 0 width - change this with JavaScript */
-  position: relative; /* Stay in place */
+  height: 100vh;
+  width: 240px; /* 0 width - change this with JavaScript */
+  /* position: sticky; Stay in place */
   top: 0;
   left: 0;
   background-color: #e7e8e9; /* Black*/
   overflow-x: hidden; /* Disable horizontal scroll */
   /* Place content 60px from the top */
-  transition: 0.7s; /* 0.5 second transition effect to slide in the sidebar */
+  transition: 0.7s ease-in-out; /* 0.5 second transition effect to slide in the sidebar */
   text-align: center;
   display: flex;
   flex-direction: column;
-  grid-column: 1;
+  /* grid-column: 1; */
+}
+.sidebar-list {
+  padding-top: 45px;
+}
+.nav-listitem {
 }
 
-.sidebar-header {
+.sidebar-link {
   display: flex;
+  width: 100%;
+  padding: 0.5rem 0;
+  color: var(--light-gray);
+  text-decoration: none;
   align-items: center;
-  padding-top: 25px;
-  padding-bottom: 50px;
+  padding-left: 25px;
 }
 
-.sidebar-logo-container {
-  margin: 0 auto;
+.sidebar-link-icon {
 }
 
-.sidebar-toggle {
-  transition: 0.3s;
+.sidebar-link-title {
 }
-.sidebar-toggle-off {
-  display: none;
-}
-.backup-logo {
-  margin: 0 auto;
-}
-
-/* ul */
-.sidebar-links {
-}
-.nav-text {
-  cursor: pointer;
-}
-.nav-text a {
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
-  transition: 0.7s;
-}
-
-/* li span */
-.nav-text span {
-  color: red;
-  transition-timing-function: ease-in;
-}
-
 /*-------- sidebar collapsed -------*/
 .sidebar-collapsed {
   height: 100vh; /* cant use 100% Full-height, because root div has no styling for height */
