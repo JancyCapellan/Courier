@@ -1,9 +1,8 @@
-html {
-  height: 100%;
-}
+html,
 body {
-  min-height: 100%;
+  height: 100vh;
 }
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu',
@@ -171,6 +170,7 @@ Sidebar (handles layout with children as main content on page)s
 
 .page-layout {
   display: flex;
+  /* overflow-y: hidden; */
   /* height: calc(100% - var(--header-height)); */
 }
 .page-header {
@@ -194,13 +194,15 @@ Sidebar (handles layout with children as main content on page)s
 }
 
 .main-content {
-  min-height: max-content;
-  height: 100vh;
+  /* min-height: max-content; */
+  /* height: 100vh; */
   width: calc(100vw - 75px);
   margin: 0;
   padding: 50px;
-  flex-grow: 1;
-  grid-column: 3;
+  /* flex-grow: 1; */
+  /* overflow: scroll; */
+  overflow-x: hidden;
+  /* grid-column: 3; */
 }
 
 .menu-icon-btn {
@@ -221,9 +223,10 @@ Sidebar (handles layout with children as main content on page)s
 }
 
 .sidebar {
-  /* height: calc(100vh - var(--header-height)); */
-  width: 240px; /* 0 width - change this with JavaScript */
-  top: 0;
+  height: calc(100vh - var(--header-height));
+  width: 200px; /* 0 width - change this with JavaScript */
+  position: sticky;
+  top: var(--header-height);
   left: 0;
   border-right: 1px solid black;
   background-color: black; /* Black*/
@@ -234,7 +237,7 @@ Sidebar (handles layout with children as main content on page)s
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
-  grid-column: 1;
+  /* grid-column: 1; */
 }
 .sidebar-list {
   padding-top: 45px;
