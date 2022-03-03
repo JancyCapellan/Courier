@@ -1,8 +1,8 @@
-html,
-body {
+html {
   height: 100%;
-  margin: 0;
-  padding: 0;
+}
+body {
+  min-height: 100%;
 }
 body {
   margin: 0;
@@ -155,6 +155,10 @@ multi-page styles
   padding-bottom: 40px;
 }
 
+/* #__next {
+  height: 100vh;
+} */
+
 /*
 ===============
 Sidebar (handles layout with children as main content on page)s
@@ -167,26 +171,36 @@ Sidebar (handles layout with children as main content on page)s
 
 .page-layout {
   display: flex;
-  overflow: hidden;
+  /* height: calc(100% - var(--header-height)); */
 }
 .page-header {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   position: sticky;
   top: 0;
-  background-color: white;
+  background-color: black;
   box-shadow: 0 1px 10px 0 rgba(0, 0, 0, 0.4);
   padding: 0 0.5rem;
   height: var(--header-height);
 }
+
 .header-user-info {
+  color: white;
+}
+
+.header-user-info > button {
+  margin: 5px;
 }
 
 .main-content {
+  min-height: max-content;
+  height: 100vh;
   width: calc(100vw - 75px);
   margin: 0;
   padding: 50px;
-  /* grid-column: 3; */
+  flex-grow: 1;
+  grid-column: 3;
 }
 
 .menu-icon-btn {
@@ -207,27 +221,27 @@ Sidebar (handles layout with children as main content on page)s
 }
 
 .sidebar {
-  height: auto;
+  /* height: calc(100vh - var(--header-height)); */
   width: 240px; /* 0 width - change this with JavaScript */
-  /* position: absolute; */
   top: 0;
   left: 0;
   border-right: 1px solid black;
   background-color: black; /* Black*/
-  overflow-x: hidden; /* Disable horizontal scroll */
+  overflow: hidden; /* Disable horizontal scroll */
   /* Place content 60px from the top */
   transition: 0.7s ease-in-out; /* 0.5 second transition effect to slide in the sidebar */
   text-align: center;
+  flex-shrink: 0;
   display: flex;
   flex-direction: column;
-  /* grid-column: 1; */
+  grid-column: 1;
 }
 .sidebar-list {
   padding-top: 45px;
 }
 .nav-listitem {
   /* fill: var(--accent-color); */
-  background-color: black;
+  /* background-color: black; */
 }
 .nav-listitem:hover {
   background-color: var(--clr-grey-1);
@@ -248,6 +262,10 @@ Sidebar (handles layout with children as main content on page)s
 }
 
 .sidebar-link-title {
+  font-size: 1.1rem;
+}
+.sidebar-link-icon {
+  font-size: 1.1rem;
 }
 
 /*-------- sidebar collapsed -------*/

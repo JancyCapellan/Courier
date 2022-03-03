@@ -63,9 +63,9 @@ const Sidebar = ({ children }) => {
           </svg>
         </button>
         <section className='header-user-info'>
-          <b>
-            User: {name} Role: {role}
-          </b>
+          <span>
+            Welcome {name}! <b>Role: {role}</b>
+          </span>
           <button onClick={() => signOut({ callbackUrl: 'http://localhost:3000/' })}>
             Sign out
           </button>
@@ -79,9 +79,6 @@ const Sidebar = ({ children }) => {
                 <li
                   key={index}
                   className={item.cName} // nav-listitem
-                  // onClick={() => {
-                  //   Router.push(item.path) // Replaced with `router.push`
-                  // }}
                 >
                   <Link href={item.path} passHref={true}>
                     <a className='sidebar-link'>
