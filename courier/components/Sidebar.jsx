@@ -62,10 +62,13 @@ const Sidebar = ({ children }) => {
             </g>
           </svg>
         </button>
-        <section className='sidebar-header'>
+        <section className='header-user-info'>
           <b>
             User: {name} Role: {role}
           </b>
+          <button onClick={() => signOut({ callbackUrl: 'http://localhost:3000/' })}>
+            Sign out
+          </button>
         </section>
       </header>
       <section className='page-layout'>
@@ -90,9 +93,6 @@ const Sidebar = ({ children }) => {
               )
             })}
           </ul>
-          <button onClick={() => signOut({ callbackUrl: 'http://localhost:3000/' })}>
-            Sign out
-          </button>
         </nav>
 
         <main className='main-content'>{children}</main>
