@@ -218,9 +218,9 @@ Sidebar (handles layout with children as main content on page)s
   cursor: pointer;
 }
 
-.menu-icon:hover {
+/* .menu-icon:hover {
   fill: var(--dark-gray);
-}
+} */
 
 .sidebar {
   height: calc(100vh - var(--header-height));
@@ -272,36 +272,10 @@ Sidebar (handles layout with children as main content on page)s
 }
 
 /*-------- sidebar collapsed -------*/
-.sidebar-collapsed {
-  height: 100vh; /* cant use 100% Full-height, because root div has no styling for height */
-  width: 7vw; /* 0 width - change this with JavaScript */
-  position: relative; /* Stay in place */
-  top: 0;
-  left: 0;
-  background-color: #e7e8e9; /* Black*/
-  overflow-x: hidden; /* Disable horizontal scroll */
-  /* Place content 60px from the top */
-  transition: 0.4s; /* 0.5 second transition effect to slide in the sidebar */
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  grid-column: 1;
-}
-.sidebar-collapsed .sidebar-link-icon {
-  margin-right: 0;
-  font-size: 1.3em;
-  transition: 0.2s;
-}
 
-.sidebar-collapsed .sidebar-link-title {
-  display: none;
-  transition: 0.2s;
+.sidebar.collapsed {
+  width: 75px;
 }
-
-.sidebar-collapsed .sidebar-header {
-  padding-bottom: 75px;
-}
-
 /*
 ===============
 Account info
@@ -410,6 +384,31 @@ Customer Manager
 Home page
 ================
 */
+.home-header {
+  display: flex;
+  align-items: center;
+  /* position: sticky; */
+  top: 0;
+  background-color: black;
+  box-shadow: 0 1px 10px 0 rgba(0, 0, 0, 0.4);
+  padding: 0 0.5rem;
+  height: 5vh;
+}
+.home-h1 {
+  text-align: center;
+  height: 10vh;
+  margin: 0;
+}
+.home-container {
+  height: 140vh;
+  background-color: rgb(104, 92, 92);
+  display: flex;
+  flex: row;
+  align-items: center;
+  justify-content: center;
+  gap: 1em;
+}
+
 .homeLayout {
   width: 100%;
   flex-direction: column;

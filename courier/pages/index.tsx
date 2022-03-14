@@ -29,7 +29,9 @@ function NextAuthLogin() {
 }
 
 const Home: NextPage = () => {
-  const { data: session, status } = useSession()
+  const { data, data: session } = useSession()
+  console.log(data)
+  // alert(user)
 
   // useEffect(() => {
   //   if (!!session?.user) {
@@ -37,22 +39,59 @@ const Home: NextPage = () => {
   //   }
   // })
 
+  // return (
+  //   <div className=' homeLayout '>
+  //     <div className='homeHeader'>
+  //       <span className=' headerTitle '>WELCOME TO THE ALPHA</span>
+  //     </div>
+  //     <div className='forms'>
+  //       <div>
+  //         Need an Account? <Link href='/register'> Register </Link>
+  //       </div>
+  //       {session ? <Link href='/account'> Open Account</Link> : <></>}
+  //       <div className='loginform'>
+  //         {/* <LoginForm /> */}
+  //         <NextAuthLogin />
+  //       </div>
+  //     </div>
+  //   </div>
+  // )
+
   return (
-    <div className=' homeLayout '>
-      <div className='homeHeader'>
-        <span className=' headerTitle '>WELCOME TO THE ALPHA</span>
+    <>
+      <header className='home-header'>
+        <section className='header-user-info'>
+          {session ? (
+            <>
+              <span>Welcome</span>
+              <button onClick={() => signOut({ callbackUrl: 'http://localhost:3000/' })}>
+                Sign out
+              </button>
+            </>
+          ) : (
+            <p>Not signed in</p>
+          )}
+        </section>
+      </header>
+      <h1 className='home-h1'>Shipping company manager</h1>
+      <div className='home-container'>
+        {/* {!session ? <Link href='/account'> Open Account</Link> : <></>} */}
+        {!session ? (
+          <Link href='/api/auth/signin'>
+            <a className='home-btn'>Signin</a>
+          </Link>
+        ) : (
+          <></>
+        )}
+        {!session ? (
+          <Link href='/register' passHref>
+            <button>register</button>
+          </Link>
+        ) : (
+          <></>
+        )}
       </div>
-      <div className='forms'>
-        <div>
-          Need an Account? <Link href='/register'> Register </Link>
-        </div>
-        {session ? <Link href='/account'> Open Account</Link> : <></>}
-        <div className='loginform'>
-          {/* <LoginForm /> */}
-          <NextAuthLogin />
-        </div>
-      </div>
-    </div>
+    </>
   )
 }
 export default Home

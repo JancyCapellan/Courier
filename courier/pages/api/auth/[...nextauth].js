@@ -112,6 +112,9 @@ const nextAuthOptions = (req, res) => {
       jwt: true,
       maxAge: 7 * 24 * 60 * 60,
     },
+    pages: {
+      signIn: '/signin',
+    },
     jwt: {
       secret: process.env.JWT_TOKEN_SECRET,
       encryption: true,
