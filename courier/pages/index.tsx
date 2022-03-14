@@ -77,7 +77,7 @@ const Home: NextPage = () => {
       <div className='home-container'>
         {/* {!session ? <Link href='/account'> Open Account</Link> : <></>} */}
         {!session ? (
-          <Link href='/api/auth/signin'>
+          <Link href='/signin'>
             <a className='home-btn'>Signin</a>
           </Link>
         ) : (

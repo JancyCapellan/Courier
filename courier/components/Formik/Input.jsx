@@ -5,7 +5,7 @@ import TextError from './TextError'
 function Input(props) {
   const { label, name, id, ...rest } = props
   return (
-    <div className=''>
+    <div className='form-input-container'>
       <label htmlFor={name}>{label}</label>
       <Field id={name} name={name} {...rest} />
       <ErrorMessage component={TextError} name={name} />

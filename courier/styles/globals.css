@@ -435,7 +435,44 @@ Home page
 .loginform {
   padding: 15%;
 }
-
+/*
+===============
+signin page
+===============
+*/
+/* input[type='text'] {
+  width: 100%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+} */
+.container {
+  display: flex;
+  height: 100vh;
+  background-color: #2680c0;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+.signin-form {
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+}
+.test {
+  color: black;
+}
+.form-error {
+  color: red;
+}
+/*
+===============
+signin page
+===============
+*/
 /*
 ===============
 Cart

@@ -124,24 +124,24 @@ const nextAuthOptions = (req, res) => {
       //   console.log('login callback here')
       //   return Promise.resolve(true)
       // },
-      signIn: async ({ user, account, profile }) => {
-        console.log('SIGNED IN', user)
-        const isAllowedToSignIn = true
-        if (isAllowedToSignIn) {
-          // return '/account'
-          return true
-        } else {
-          // Return false to display a default error message
-          return false
-          // Or you can return a URL to redirect to:
-          // return '/unauthorized'
-        }
-      },
+      // signIn: async ({ user, account, profile }) => {
+      //   console.log('SIGNED IN', user)
+      //   const isAllowedToSignIn = true
+      //   if (isAllowedToSignIn) {
+      //     // return '/account'
+      //     return true
+      //   } else {
+      //     // Return false to display a default error message
+      //     return false
+      //     // Or you can return a URL to redirect to:
+      //     // return '/unauthorized'
+      //   }
+      // },
       // login: ({ user, account, profile, email, credentials }) => {
       //   console.log('here', credentials)
       //   return { name: 'test' }
       // },
-      jwt: ({ token, user }) => {
+      jwt: async ({ token, user }) => {
         // first time jwt callback is run, user object is available
         console.log('JWT', token)
         if (user) {
@@ -152,7 +152,7 @@ const nextAuthOptions = (req, res) => {
 
         return token
       },
-      session: ({ session, token }) => {
+      session: async ({ session, token }) => {
         // console.log('SESSION', session)
         // let test = { ...session.user, ...token.user }
         if (token) {
