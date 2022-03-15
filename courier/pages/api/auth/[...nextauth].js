@@ -62,6 +62,7 @@ const nextAuthOptions = (req, res) => {
               },
             }
           } else {
+            console.log('nextauth signin error')
             return null
           }
 
@@ -160,7 +161,7 @@ const nextAuthOptions = (req, res) => {
           session.user = token.user ? token.user : { ...token.user, ...session.user }
           // session.user = test
         }
-        console.log('SESSION2222', session)
+        console.log('nextauth-session', session)
 
         return session
       },

@@ -10,8 +10,16 @@ export default function SignIn({ csrfToken }) {
   const [error, setError] = useState(null)
 
   return (
-    <div className='container'>
+    <div className='signin-page-container'>
       <h1>LOGIN TO APP</h1>
+      {error ? (
+        <p>
+          THERE WAS AN ERROR WHILE LOGGING. CHECK TO MAKE SURE THAT YOU ARE USING THE CORRECT
+          USERNAME AND PASSWORD
+        </p>
+      ) : (
+        <></>
+      )}
       <Formik
         // initialValues={{ email: '', password: '', tenantKey: '' }}
         initialValues={{ email: '', password: '' }}
@@ -27,18 +35,20 @@ export default function SignIn({ csrfToken }) {
         })}
         onSubmit={async (values, { setSubmitting }) => {
           const res = await signIn('login', {
-            redirect: true,
+            redirect: false,
             email: values.email,
             password: values.password,
             // tenantKey: values.tenantKey,
             callbackUrl: 'http://localhost:3000/account',
           })
+          console.log('res', res)
           if (res?.error) {
             setError(res.error)
           } else {
             setError(null)
           }
           if (res.url) router.push(res.url)
+          console.log('error', error)
           setSubmitting(false)
         }}
       >
@@ -64,11 +74,10 @@ export default function SignIn({ csrfToken }) {
   )
 }
 
-// This is the recommended way for Next.js 9.3 or newer
 export async function getServerSideProps(context) {
   return {
     props: {
-      csrfToken: await getCsrfToken(context),
+      // csrfToken: await getCsrfToken(context),
     },
   }
 }

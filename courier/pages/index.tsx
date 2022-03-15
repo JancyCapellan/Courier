@@ -29,8 +29,8 @@ function NextAuthLogin() {
 }
 
 const Home: NextPage = () => {
-  const { data, data: session } = useSession()
-  console.log(data)
+  const { data: session } = useSession()
+  // console.log(data)
   // alert(user)
 
   // useEffect(() => {
@@ -63,7 +63,7 @@ const Home: NextPage = () => {
         <section className='header-user-info'>
           {session ? (
             <>
-              <span>Welcome</span>
+              <span>Welcome {session?.user?.name}! </span>
               <button onClick={() => signOut({ callbackUrl: 'http://localhost:3000/' })}>
                 Sign out
               </button>
@@ -88,7 +88,9 @@ const Home: NextPage = () => {
             <button>register</button>
           </Link>
         ) : (
-          <></>
+          <Link href='/account' passHref>
+            <button>Home</button>
+          </Link>
         )}
       </div>
     </>

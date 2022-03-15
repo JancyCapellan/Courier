@@ -449,10 +449,28 @@ signin page
   border-radius: 4px;
   box-sizing: border-box;
 } */
-.container {
+input[type='email'] {
+  width: 100%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+input[type='password'] {
+  width: 100%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+.signin-page-container {
   display: flex;
   height: 100vh;
-  background-color: #2680c0;
+  background-color: white;
   align-items: center;
   justify-content: center;
   flex-direction: column;
@@ -462,6 +480,10 @@ signin page
   flex-direction: column;
   background-color: white;
 }
+
+.form-input-container {
+}
+
 .test {
   color: black;
 }
