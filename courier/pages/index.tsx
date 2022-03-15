@@ -60,18 +60,16 @@ const Home: NextPage = () => {
   return (
     <>
       <header className='home-header'>
-        <section className='header-user-info'>
-          {session ? (
-            <>
-              <span>Welcome {session?.user?.name}! </span>
-              <button onClick={() => signOut({ callbackUrl: 'http://localhost:3000/' })}>
-                Sign out
-              </button>
-            </>
-          ) : (
-            <p>Not signed in</p>
-          )}
-        </section>
+        {session ? (
+          <>
+            <span>Welcome {session?.user?.name}! </span>
+            <button onClick={() => signOut({ callbackUrl: 'http://localhost:3000/' })}>
+              Sign out
+            </button>
+          </>
+        ) : (
+          <span>Not signed in</span>
+        )}
       </header>
       <h1 className='home-h1'>Shipping company manager</h1>
       <div className='home-container'>
@@ -89,7 +87,7 @@ const Home: NextPage = () => {
           </Link>
         ) : (
           <Link href='/account' passHref>
-            <button>Home</button>
+            <button>Your Account</button>
           </Link>
         )}
       </div>
