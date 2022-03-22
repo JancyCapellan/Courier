@@ -1,4 +1,4 @@
-import { useAuth } from '../contexts/authContext'
+// import { useAuth } from '../contexts/authContext'
 import Sidebar from '../components/Sidebar'
 import router from 'next/router'
 import ReloadButton from '../components/ReloadButton'
@@ -28,12 +28,16 @@ const AccountInfo = () => {
             <table className='accInfoTable'>
               <thead>
                 <tr>
-                  <th>Name:</th>
-                  <td>{name}</td>
+                  <th>Full Name:</th>
+                  <td> {name}</td>
                 </tr>
                 <tr>
                   <th>Email: </th>
                   <td>{email}</td>
+                </tr>
+                <tr>
+                  <th>Role: </th>
+                  <td>{role}</td>
                 </tr>
                 <tr>
                   <th>Address: </th>

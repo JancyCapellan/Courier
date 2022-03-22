@@ -1,5 +1,5 @@
 import Axios from 'axios'
-import { useAuth } from './authContext'
+// import { useAuth } from './authContext'
 
 const cartReducer = (state, action) => {
   // console.log('CART REDUCER', action)

@@ -74,9 +74,36 @@ const Administration = ({ drivers }) => {
     )
   }
 
+  const ProductEditorTable = () => {
+    return (
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>NAME</th>
+            <th>PRICE</th>
+            <th>TYPE</th>
+          </tr>
+        </thead>
+        <tbody>
+          {drivers.map((driver) => {
+            return (
+              <tr key={driver.id}>
+                <td>1</td>
+                <td>Box</td>
+                <td>$75</td>
+                <td>Box</td>
+              </tr>
+            )
+          })}
+        </tbody>
+      </table>
+    )
+  }
+
   return (
     <Sidebar>
-      <section>
+      <section className='administration-container'>
         <h1>Staff Manager</h1>
         <ModalContainer show={showModal} handleClose={handleModalClose}>
           <RegistrationForm staff={true} />
@@ -85,8 +112,17 @@ const Administration = ({ drivers }) => {
         <button className='btn' onClick={() => setShowModal(true)}>
           Create Staff
         </button>
+        <Drivertable />
+
+        <h1>Product manager</h1>
+        <section className='product-manager-container'>
+          <div>Add form</div>
+          <div>
+            Products list
+            <ProductEditorTable />
+          </div>
+        </section>
       </section>
-      <Drivertable />
     </Sidebar>
   )
 }

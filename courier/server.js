@@ -9,6 +9,7 @@ const next = require('next')
 // const indexRouter = require('./routes/index.route')
 const userRouter = require('./expressApi/routes/user.route')
 const orderRouter = require('./expressApi/routes/order.route')
+const servicesRouter = require('./expressApi/routes/services.route')
 //server start
 
 const dev = process.env.NODE_ENV !== 'production'
@@ -28,6 +29,7 @@ app
     // server.use('/', indexRouter)
     server.use('/user', userRouter)
     server.use('/order', orderRouter)
+    server.use('/services', servicesRouter)
 
     server.get('*', (req, res) => {
       return handle(req, res)
