@@ -4,6 +4,7 @@ import { AuthProvider } from '../contexts/authContext'
 import { CartProvider } from '../contexts/cartContext'
 import { SessionProvider } from 'next-auth/react'
 import { QueryClientProvider, QueryClient } from 'react-query'
+import { ReactQueryDevtools } from 'react-query/devtools'
 
 function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
   const queryClient = new QueryClient()
@@ -14,6 +15,7 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
       <CartProvider>
         <Component {...pageProps} />
       </CartProvider>
+      <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
 
     // </SessionProvider>

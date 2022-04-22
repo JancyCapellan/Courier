@@ -5,8 +5,10 @@ import router from 'next/router'
 import { useEffect } from 'react'
 
 const Home = () => {
-  const { data: session, status } = useSession()
+  const [session, status] = useSession()
+  console.log('home session', session, status)
 
+  // effect to move to account page if there is a session already logged in
   useEffect(() => {
     if (session) {
       router.push('/account')

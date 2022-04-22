@@ -10,11 +10,11 @@ import { useSession } from '../customHooks/useSession'
 
 const AccountInfo = () => {
   // const { firstName, email, lastName } = useAuth()
-  const { data: session, status } = useSession()
+  const [session, loading] = useSession()
   console.log(session)
 
   let show = false
-  if (status === 'authenticated') {
+  if (!loading) {
     show = true
     const { firstName, lastName, role, email, name } = session.user
     return (

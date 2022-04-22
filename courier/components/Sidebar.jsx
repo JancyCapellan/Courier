@@ -14,16 +14,16 @@ const Sidebar = ({ children }) => {
 
   // const { email, role, firstName } = useAuth()
 
-  const { data, status } = useSession()
-  console.log('sidebar user session data', data, 'status', status)
+  const [session, loading] = useSession()
+  console.log('sidebar user session data', session, 'loading', loading)
 
   // logic to set role and name fr
   let role, name
-  // if (status === 'authenticated') {
-  //   ;({ role, name } = session.user)
-  // } else {
-  //   role = 'CUST'
-  // }
+  if (!loading) {
+    ;({ role, name } = session.user)
+  } else {
+    role = 'CUST'
+  }
 
   //will switch the sidebar data to show links to routes per user role
   let SidebarData = []
