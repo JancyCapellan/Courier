@@ -3,7 +3,20 @@ import Sidebar from '../../components/Sidebar'
 import axios from 'axios'
 import { useRouter } from 'next/router'
 
-export const getServerSideProps = async ({ params, res }) => {
+export async function getStaticPaths() {
+  const result = await axios.post(`http://localhost:3000/user/allDrivers`)
+  console.log('response', result.data)
+
+  const paths = result.data.map((driver) => ({
+    params: { driverId: driver.id },
+  }))
+
+  // fallback: false means pages that don’t have the
+  // correct id will 404.
+  return { paths, fallback: false }
+}
+
+export const getStaticProps = async ({ params, res }) => {
   const { driverId } = params
   try {
     const result = await axios.get(`http://localhost:3000/user/${driverId}`)

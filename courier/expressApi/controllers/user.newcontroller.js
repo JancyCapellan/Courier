@@ -82,6 +82,7 @@ exports.allDrivers = async (req, res) => {
     },
   })
 
+  console.log('all drivers sent')
   res.send(drivers)
 }
 
@@ -199,7 +200,8 @@ exports.findAll = (req, res) => {
 
 // Find a single user with a userId
 exports.findOne = async (req, res) => {
-  const id = parseInt(req.params.userId)
+  // const id = parseInt(req.params.userId)
+  const id = req.params.userId
   const user = await prisma.user.findUnique({
     where: {
       id: id,

@@ -4,8 +4,11 @@ import RegistrationForm from '../../components/RegistrationForm.jsx'
 import ModalContainer from '../../components/HOC/ModalContainer'
 import axios from 'axios'
 import { useRouter } from 'next/router'
+import { Formik, Form } from 'formik'
+import * as Yup from 'yup'
+import FormikControl from '../../components/Formik/FormikControl'
 
-export const getServerSideProps = async ({ res }) => {
+export const getStaticProps = async ({ res }) => {
   try {
     const result = await axios.post(`http://localhost:3000/user/allDrivers`)
     console.log('response', result.data)
@@ -16,7 +19,7 @@ export const getServerSideProps = async ({ res }) => {
     }
   } catch (error) {
     res.statusCode = 500
-    console.log('getcustomer', error)
+    console.log('getdrivers', error)
     return {
       props: {},
     }
@@ -116,7 +119,64 @@ const Administration = ({ drivers }) => {
 
         <h1>Product manager</h1>
         <section className='product-manager-container'>
-          <div>Add form</div>
+          <Formik
+            // initialValues={{ email: '', password: '', tenantKey: '' }}
+            initialValues={{ item_name: ' ', item_price: 0, item_type: '' }}
+            validationSchema={Yup.object({
+              item_name: Yup.string()
+                .min(3, 'must be at least 3 characters long')
+                .required('please enter item name'),
+              item_price: Yup.number().required('please enter a price for this item'),
+              item_type: Yup.string().required('Please enter item type'),
+              // tenantKey: Yup.string()
+              //   .max(20, 'Must be 20 characters or less')
+              //   .required('Please enter your organization name'),
+            })}
+            onSubmit={async (values, { setSubmitting }) => {
+              console.log('item submission values', values)
+              try {
+                const res = await axios.post('http://localhost:3000/services/addItem', values)
+                console.log('REGISTER RES HERE', res)
+                return res
+              } catch (error) {
+                console.log(error)
+
+                return 500
+              }
+              // setSubmitting(false)
+            }}
+          >
+            {(formik) => {
+              return (
+                <Form className=''>
+                  <FormikControl
+                    control='input'
+                    type='text'
+                    label='Name'
+                    name='item_name'
+                    className=''
+                  />
+                  <FormikControl
+                    control='input'
+                    type='number'
+                    label='Price'
+                    name='item_price'
+                    className=''
+                  />
+                  <FormikControl
+                    control='input'
+                    type='text'
+                    label='Type'
+                    name='item_type'
+                    className=''
+                  />
+                  <button type='submit' disabled={!formik.isValid}>
+                    Submit
+                  </button>
+                </Form>
+              )
+            }}
+          </Formik>
           <div>
             Products list
             <ProductEditorTable />

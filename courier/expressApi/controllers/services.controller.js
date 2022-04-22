@@ -1,4 +1,5 @@
 const { PrismaClient } = require('@prisma/client')
+const { debug } = require('console')
 const prisma = new PrismaClient()
 
 exports.allProducts = async (req, res) => {
@@ -15,4 +16,8 @@ exports.allProducts = async (req, res) => {
     },
   })
   res.json(products)
+}
+
+exports.addItem = async (req, res) => {
+  debug(req.body)
 }

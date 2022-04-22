@@ -30,33 +30,12 @@ function NextAuthLogin() {
 
 const Home: NextPage = () => {
   const { data: session } = useSession()
-  // console.log(data)
-  // alert(user)
 
-  // useEffect(() => {
-  //   if (!!session?.user) {
-  //     router.push('/account')
-  //   }
-  // })
-
-  // return (
-  //   <div className=' homeLayout '>
-  //     <div className='homeHeader'>
-  //       <span className=' headerTitle '>WELCOME TO THE ALPHA</span>
-  //     </div>
-  //     <div className='forms'>
-  //       <div>
-  //         Need an Account? <Link href='/register'> Register </Link>
-  //       </div>
-  //       {session ? <Link href='/account'> Open Account</Link> : <></>}
-  //       <div className='loginform'>
-  //         {/* <LoginForm /> */}
-  //         <NextAuthLogin />
-  //       </div>
-  //     </div>
-  //   </div>
-  // )
-
+  useEffect(() => {
+    if (session) {
+      router.push('/account')
+    }
+  }, [session])
   return (
     <>
       <header className='home-header'>

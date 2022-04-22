@@ -1,3 +1,5 @@
+// not currently in use, this was a early version of a model/controller without an orm
+
 // const res = require('express/lib/response')
 const sql = require('./db.js')
 

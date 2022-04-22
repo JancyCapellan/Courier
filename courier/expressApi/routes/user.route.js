@@ -1,7 +1,6 @@
 const express = require('express')
 const router = express.Router()
 const user = require('../controllers/user.newcontroller.js')
-var ejwt = require('express-jwt')
 const jwt = require('jsonwebtoken')
 
 function authenticateToken(req, res, next) {

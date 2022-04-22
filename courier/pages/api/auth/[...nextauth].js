@@ -7,7 +7,7 @@ import axios from 'axios'
 const prisma = new PrismaClient()
 const nextAuthOptions = (req, res) => {
   return {
-    // adapter: PrismaAdapter(prisma), breaks functionality
+    // adapter: PrismaAdapter(prisma), breaks functionality with credentials provider
     providers: [
       CredentialsProvider({
         id: 'login',

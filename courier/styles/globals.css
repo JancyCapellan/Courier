@@ -462,7 +462,7 @@ signin page
   border-radius: 4px;
   box-sizing: border-box;
 } */
-input[type='email'] {
+/* input[type='email'] {
   width: 100%;
   padding: 12px 20px;
   margin: 8px 0;
@@ -479,7 +479,7 @@ input[type='password'] {
   border: 1px solid #ccc;
   border-radius: 4px;
   box-sizing: border-box;
-}
+} */
 .signin-page-container {
   display: flex;
   height: 100vh;
@@ -721,21 +721,6 @@ Administration page
   display: flex;
   flex-direction: row;
   justify-content: center;
-}
-
-.product-manager-container div {
-  text-align: center;
-  /* text-decoration: underline solid black;
-  text-underline-offset: 0.1em; */
-  border: 1px solid black;
-  height: 20vh;
-  width: 20vw;
-  margin: 1em;
-  /* padding: 0.5em; */
-  display: flex;
-  flex-direction: column;
-  /* overflow-x: hidden;
-  overflow-y: scroll; */
 }
 
 /* .product-manager-container div table {
