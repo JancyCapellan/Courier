@@ -2,7 +2,9 @@
 import Sidebar from '../components/Sidebar'
 import router from 'next/router'
 import ReloadButton from '../components/ReloadButton'
-import { useSession } from 'next-auth/react'
+// import { useSession } from 'next-auth/react'
+import { useSession } from '../customHooks/useSession'
+
 // accout information, place to change information, recent orders, settings
 // change payment types, add addresses, change phone numbers, send messages
 

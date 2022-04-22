@@ -1,8 +1,9 @@
-import React, { useState } from 'react'
+import React, { useState, useRef } from 'react'
 import { sidebarTypes } from './SidebarData'
 import Link from 'next/link'
 // import logo from '../assets/logo-dark.png'
-import { useSession, signOut } from 'next-auth/react'
+import { signOut } from 'next-auth/react'
+import { useSession } from '../customHooks/useSession'
 // import * from '../styles/Sidebar.module.css'
 
 const Sidebar = ({ children }) => {
@@ -13,16 +14,16 @@ const Sidebar = ({ children }) => {
 
   // const { email, role, firstName } = useAuth()
 
-  const { data: session, status } = useSession()
-  // console.log('sidebar session', session)
+  const { data, status } = useSession()
+  console.log('sidebar user session data', data, 'status', status)
 
   // logic to set role and name fr
   let role, name
-  if (status === 'authenticated') {
-    ;({ role, name } = session.user)
-  } else {
-    role = 'CUST'
-  }
+  // if (status === 'authenticated') {
+  //   ;({ role, name } = session.user)
+  // } else {
+  //   role = 'CUST'
+  // }
 
   //will switch the sidebar data to show links to routes per user role
   let SidebarData = []

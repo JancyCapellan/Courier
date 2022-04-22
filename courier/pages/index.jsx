@@ -1,35 +1,11 @@
-import type { NextPage } from 'next'
-import { useSession, signIn, signOut } from 'next-auth/react'
+import { signIn, signOut } from 'next-auth/react'
+import { useSession } from '../customHooks/useSession'
 import Link from 'next/link'
 import router from 'next/router'
 import { useEffect } from 'react'
 
-function NextAuthLogin() {
-  const { data, status, data: session } = useSession()
-  console.log('SESSION', data)
-  let user = data?.user
-  console.log('USER', user)
-  if (session) {
-    return (
-      <>
-        Signed in as {session?.user?.email} <br />
-        {/* <pre>{session.user?.email}</pre> */}
-        <button onClick={() => signOut({ callbackUrl: 'http://localhost:3000/' })}>Sign out</button>
-      </>
-    )
-  }
-  return (
-    <>
-      Not signed in <br />
-      <button onClick={() => signIn('login', { callbackUrl: 'http://localhost:3000/account' })}>
-        Sign in
-      </button>
-    </>
-  )
-}
-
-const Home: NextPage = () => {
-  const { data: session } = useSession()
+const Home = () => {
+  const { data: session, status } = useSession()
 
   useEffect(() => {
     if (session) {
