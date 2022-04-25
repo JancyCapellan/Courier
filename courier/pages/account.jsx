@@ -18,7 +18,7 @@ const AccountInfo = () => {
     show = true
     const { firstName, lastName, role, email, name } = session.user
     return (
-      <Sidebar>
+      <>
         <div className='accountPage'>
           {show ? (
             <section className='accInfoPanel'>
@@ -50,14 +50,14 @@ const AccountInfo = () => {
           )}
         </div>
         <ReloadButton />
-      </Sidebar>
+      </>
     )
   }
   // const { firstName, lastName } = session.userInfo
 
   //use effect to get user info from database
   return (
-    <Sidebar>
+    <>
       <div className='accountPage'>
         {show ? (
           <section className='accInfoPanel'>
@@ -89,8 +89,12 @@ const AccountInfo = () => {
         )}
       </div>
       <ReloadButton />
-    </Sidebar>
+    </>
   )
 }
 
 export default AccountInfo
+
+AccountInfo.getLayout = function getLayout(page) {
+  return <Sidebar>{page}</Sidebar>
+}

@@ -193,9 +193,9 @@ Sidebar (handles layout with children as main content on page)s
   color: white;
 }
 
-.header-user-info > button {
+/* .header-user-info > button {
   margin: 5px;
-}
+} */
 
 .main-content {
   /* min-height: max-content; */
@@ -209,10 +209,11 @@ Sidebar (handles layout with children as main content on page)s
   /* grid-column: 3; */
 }
 
-.menu-icon-btn {
+.sidebar-toggle-btn {
   background: none;
-  border: none;
-  padding: 0;
+  /* border: none; */
+  padding: 1em;
+  text-align: left;
 }
 
 .menu-icon {
@@ -220,6 +221,7 @@ Sidebar (handles layout with children as main content on page)s
   height: 25px;
   fill: var(--medium-gray);
   cursor: pointer;
+  /* font-size: 1.6rem; */
 }
 
 /* .menu-icon:hover {
@@ -237,7 +239,7 @@ Sidebar (handles layout with children as main content on page)s
   overflow: hidden; /* Disable horizontal scroll */
   /* Place content 60px from the top */
   /* transition: 0.7s ease-in-out;  */
-  text-align: center;
+  /* text-align: center; */
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
@@ -257,11 +259,12 @@ Sidebar (handles layout with children as main content on page)s
 .sidebar-link {
   display: flex;
   width: 100%;
-  padding: 0.5rem 0;
+  /* padding: 0.5rem 0; */
   color: var(--light-gray);
   text-decoration: none;
   align-items: center;
-  padding-left: 25px;
+  padding-left: 1em;
+  padding-top: 0.5em;
 }
 
 .nav-listitem:hover .sidebar-link-title {
@@ -274,6 +277,10 @@ Sidebar (handles layout with children as main content on page)s
 }
 .sidebar-link-icon {
   font-size: 1.6rem;
+  padding-right: 0.4em;
+  color: #2680c0;
+  /* width: 25px;
+  height: 25px; */
 }
 
 /*-------- sidebar collapsed -------*/
@@ -392,6 +399,13 @@ Customer Manager
 Home page
 ================
 */
+.home-container {
+  height: 100vh;
+  background-color: hsl(34, 75%, 45%);
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+}
 .home-header {
   display: flex;
   /* align-content: center; */
@@ -412,12 +426,9 @@ Home page
   height: 10vh;
   margin: 0;
 }
-.home-container {
-  height: 140vh;
-  background-color: rgb(104, 92, 92);
+.home-no-session {
   display: flex;
-  flex: row;
-  align-items: center;
+  align-content: center;
   justify-content: center;
   gap: 1em;
 }

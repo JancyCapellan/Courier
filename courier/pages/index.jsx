@@ -5,8 +5,9 @@ import router from 'next/router'
 import { useEffect } from 'react'
 
 const Home = () => {
+  // use sessions options to make sure react query caches
   const [session, status] = useSession()
-  console.log('home session', session, status)
+  console.log('home session', session, 'loading', status)
 
   // effect to move to account page if there is a session already logged in
   useEffect(() => {
@@ -16,36 +17,35 @@ const Home = () => {
   }, [session])
   return (
     <>
-      <header className='home-header'>
-        {session ? (
-          <>
-            <span>Welcome {session?.user?.name}! </span>
-            <button onClick={() => signOut({ callbackUrl: 'http://localhost:3000/' })}>
-              Sign out
-            </button>
-          </>
-        ) : (
-          <span>Not signed in</span>
-        )}
-      </header>
-      <h1 className='home-h1'>Shipping company manager</h1>
       <div className='home-container'>
-        {/* {!session ? <Link href='/account'> Open Account</Link> : <></>} */}
+        <header className='home-header'>
+          {session ? (
+            <>
+              <span>Welcome {session?.user?.name}! </span>
+              <button onClick={() => signOut({ callbackUrl: 'http://localhost:3000/' })}>
+                Sign out
+              </button>
+            </>
+          ) : (
+            <span>Not signed in</span>
+          )}
+        </header>
+        <h1 className='home-h1'>Shipping company manager</h1>
         {!session ? (
-          <Link href='/signin'>
-            <a className='home-btn'>Signin</a>
-          </Link>
+          <div className='home-no-session'>
+            <Link href='/signin'>
+              <a className='home-btn'>Signin</a>
+            </Link>
+            <Link href='/register' passHref>
+              <button>register</button>
+            </Link>
+          </div>
         ) : (
-          <></>
-        )}
-        {!session ? (
-          <Link href='/register' passHref>
-            <button>register</button>
-          </Link>
-        ) : (
-          <Link href='/account' passHref>
-            <button>Your Account</button>
-          </Link>
+          <>
+            <Link href='/account' passHref>
+              <button>Your Account</button>
+            </Link>
+          </>
         )}
       </div>
     </>

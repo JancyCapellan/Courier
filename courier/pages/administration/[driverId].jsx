@@ -38,7 +38,7 @@ const DriverAccountPage = ({ driver }) => {
   const router = useRouter()
 
   return (
-    <Sidebar>
+    <>
       <section>
         <h1>Driver Account</h1>
         <pre>
@@ -63,8 +63,12 @@ const DriverAccountPage = ({ driver }) => {
           </tr>
         </table>
       </section>
-    </Sidebar>
+    </>
   )
 }
 
 export default DriverAccountPage
+
+DriverAccountPage.getLayout = function getLayout(page) {
+  return <Sidebar>{page}</Sidebar>
+}

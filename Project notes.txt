@@ -1,0 +1,11 @@
+npm packages
+-------------
+
+1. helmet
+2. keycloack w/ nextauth
+3. react form hooks
+	seem to be better suited for lightweighter quick forms, form builder also seems to be a great time saver.
+
+Todo
+-------
+1. when user is logged in and tried to got to home page redirect to app before homepage content shows. 

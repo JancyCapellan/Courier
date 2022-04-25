@@ -73,7 +73,7 @@ const Administration = ({ drivers }) => {
   }
 
   return (
-    <Sidebar>
+    <>
       <section>
         <h1>Staff Manager</h1>
         <ModalContainer show={showModal} handleClose={handleModalClose}>
@@ -85,8 +85,12 @@ const Administration = ({ drivers }) => {
         </button>
       </section>
       <Drivertable />
-    </Sidebar>
+    </>
   )
 }
 
 export default Administration
+
+Administration.getLayout = function getLayout(page) {
+  return <Sidebar>{page}</Sidebar>
+}

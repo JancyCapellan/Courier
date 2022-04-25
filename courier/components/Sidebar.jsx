@@ -15,7 +15,7 @@ const Sidebar = ({ children }) => {
   // const { email, role, firstName } = useAuth()
 
   const [session, loading] = useSession()
-  console.log('sidebar user session data', session, 'loading', loading)
+  // console.log('sidebar user session data', session, 'loading', loading)
 
   // logic to set role and name fr
   let role, name
@@ -52,18 +52,6 @@ const Sidebar = ({ children }) => {
   return (
     <>
       <header className='page-header'>
-        <button className='menu-icon-btn' onClick={sidebarToggler}>
-          <svg
-            viewBox='0 0 24 24'
-            preserveAspectRatio='xMidYMid meet'
-            focusable='false'
-            className='menu-icon'
-          >
-            <g>
-              <path d='M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z'></path>
-            </g>
-          </svg>
-        </button>
         <section className='header-user-info'>
           <span>
             Welcome {name}! <b>Role: {role}</b>
@@ -76,6 +64,21 @@ const Sidebar = ({ children }) => {
       <section className='page-layout'>
         <nav className={isCollapsed ? 'sidebar collapsed' : 'sidebar'}>
           <ul className='sidebar-list'>
+            <li key='sidebarToggle' className=''>
+              <button className='sidebar-toggle-btn' onClick={sidebarToggler}>
+                <svg
+                  viewBox='0 0 24 24'
+                  preserveAspectRatio='xMidYMid meet'
+                  focusable='false'
+                  className='menu-icon'
+                >
+                  <g>
+                    <path d='M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z'></path>
+                  </g>
+                </svg>
+              </button>
+            </li>
+
             {SidebarData.map((item, index) => {
               return (
                 <li
@@ -93,7 +96,6 @@ const Sidebar = ({ children }) => {
             })}
           </ul>
         </nav>
-
         <main className='main-content'>{children}</main>
       </section>
     </>
