@@ -211,19 +211,29 @@ Sidebar (handles layout with children as main content on page)s
 
 .sidebar-toggle-btn {
   background: none;
-  /* border: none; */
-  padding: 1em;
+  border: none;
+  /* padding: 1em; */
+  padding-left: 1em;
   text-align: left;
+  font-size: 1.6rem;
 }
 
 .menu-icon {
-  width: 25px;
-  height: 25px;
+  width: 1em;
+  height: 1em;
   fill: var(--medium-gray);
   cursor: pointer;
   /* font-size: 1.6rem; */
 }
 
+.sidebar-link-icon {
+  font-size: 1.6rem;
+  padding-right: 0.4em;
+  color: #2680c0;
+  padding-left: 1em;
+  /* width: 25px;
+  height: 25px; */
+}
 /* .menu-icon:hover {
   fill: var(--dark-gray);
 } */
@@ -263,7 +273,7 @@ Sidebar (handles layout with children as main content on page)s
   color: var(--light-gray);
   text-decoration: none;
   align-items: center;
-  padding-left: 1em;
+  /* padding-left: 1em; */
   padding-top: 0.5em;
 }
 
@@ -274,13 +284,6 @@ Sidebar (handles layout with children as main content on page)s
 .sidebar-link-title {
   font-size: 1.1rem;
   transition: 0.7s ease-out;
-}
-.sidebar-link-icon {
-  font-size: 1.6rem;
-  padding-right: 0.4em;
-  color: #2680c0;
-  /* width: 25px;
-  height: 25px; */
 }
 
 /*-------- sidebar collapsed -------*/
