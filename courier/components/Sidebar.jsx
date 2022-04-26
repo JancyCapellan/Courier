@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useEffect } from 'react'
 import { sidebarTypes } from './SidebarData'
 import Link from 'next/link'
 // import logo from '../assets/logo-dark.png'
@@ -13,6 +13,10 @@ const Sidebar = ({ children }) => {
   }
 
   // const { email, role, firstName } = useAuth()
+
+  useEffect(() => {
+    console.log('sidebar render')
+  }, [])
 
   const [session, loading] = useSession()
   // console.log('sidebar user session data', session, 'loading', loading)
@@ -51,53 +55,44 @@ const Sidebar = ({ children }) => {
 
   return (
     <>
-      <header className='page-header'>
-        <section className='header-user-info'>
-          <span>
-            Welcome {name}! <b>Role: {role}</b>
-          </span>
-          <button onClick={() => signOut({ callbackUrl: 'http://localhost:3000/' })}>
-            Sign out
-          </button>
-        </section>
-      </header>
-      <section className='page-layout'>
-        <nav className={isCollapsed ? 'sidebar collapsed' : 'sidebar'}>
-          <ul className='sidebar-list'>
-            <li key='sidebarToggle' className=''>
-              <button className='sidebar-toggle-btn' onClick={sidebarToggler}>
-                <svg
-                  viewBox='0 0 24 24'
-                  preserveAspectRatio='xMidYMid meet'
-                  focusable='false'
-                  className='menu-icon'
-                >
-                  <g>
-                    <path d='M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z'></path>
-                  </g>
-                </svg>
-              </button>
-            </li>
+      <nav className={isCollapsed ? 'sidebar collapsed' : 'sidebar'}>
+        <span>
+          Welcome {name}! <b>Role: {role}</b>
+        </span>
+        <ul className='sidebar-list'>
+          <li key='sidebarToggle' className=''>
+            <div className='sidebar-toggle-btn' onClick={sidebarToggler}>
+              <svg
+                viewBox='0 0 24 24'
+                preserveAspectRatio='xMidYMid meet'
+                focusable='false'
+                className='menu-icon'
+              >
+                <g>
+                  <path d='M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z'></path>
+                </g>
+              </svg>
+            </div>
+          </li>
 
-            {SidebarData.map((item, index) => {
-              return (
-                <li
-                  key={index}
-                  className={item.cName} // nav-listitem
-                >
-                  <Link href={item.path} passHref={true}>
-                    <a className='sidebar-link'>
-                      <div className='sidebar-link-icon'>{item.icon}</div>
-                      <div className='sidebar-link-title'>{item.title}</div>
-                    </a>
-                  </Link>
-                </li>
-              )
-            })}
-          </ul>
-        </nav>
-        <main className='main-content'>{children}</main>
-      </section>
+          {SidebarData.map((item, index) => {
+            return (
+              <li
+                key={index}
+                className={item.cName} // nav-listitem
+              >
+                <Link href={item.path} passHref={true}>
+                  <a className='sidebar-link'>
+                    <div className='sidebar-link-icon'>{item.icon}</div>
+                    <div className='sidebar-link-title'>{item.title}</div>
+                  </a>
+                </Link>
+              </li>
+            )
+          })}
+        </ul>
+      </nav>
+      {/* <main className='main-content'>{children}</main> */}
     </>
   )
 }

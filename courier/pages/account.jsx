@@ -4,6 +4,7 @@ import router from 'next/router'
 import ReloadButton from '../components/ReloadButton'
 // import { useSession } from 'next-auth/react'
 import { useSession } from '../customHooks/useSession'
+import Layout from '../components/Layout'
 
 // accout information, place to change information, recent orders, settings
 // change payment types, add addresses, change phone numbers, send messages
@@ -82,7 +83,6 @@ const AccountInfo = () => {
                 </tr>
               </thead>
             </table>
-            <br />
           </section>
         ) : (
           <></>
@@ -96,5 +96,5 @@ const AccountInfo = () => {
 export default AccountInfo
 
 AccountInfo.getLayout = function getLayout(page) {
-  return <Sidebar>{page}</Sidebar>
+  return <Layout>{page}</Layout>
 }

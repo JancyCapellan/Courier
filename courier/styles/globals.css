@@ -164,7 +164,42 @@ multi-page styles
 
 /*
 ===============
-Sidebar (handles layout with children as main content on page)s
+LAYOUT
+===============
+*/
+.layout-dashboard {
+  display: grid;
+  width: 100%;
+  height: 100vh;
+  grid-template-areas:
+    'header header'
+    'sidebar main';
+  gap: 0px 0px;
+  grid-template-rows: 11fr 1fr;
+  grid-template-columns: 1fr 11fr;
+}
+.main-content {
+  /* min-height: max-content; */
+  /* height: 100vh; */
+  /* width: calc(100vw - 75px); */
+  /* width: 100vw; */
+  margin: 0;
+  padding: 50px;
+  /* flex-grow: 1; */
+  /* overflow: scroll; */
+  /* overflow-x: hidden; */
+  /* grid-column: 3; */
+  grid-area: main;
+}
+/*
+===============
+LAYOUT
+===============
+*/
+
+/*
+===============
+Sidebar (handles layout with children as main content on page)
 ===============
 */
 /* .page-layout {
@@ -174,19 +209,22 @@ Sidebar (handles layout with children as main content on page)s
 
 .page-layout {
   display: flex;
+  flex-direction: column;
   /* overflow-y: hidden; */
   /* height: calc(100% - var(--header-height)); */
 }
-.page-header {
+.header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  position: sticky;
+  /* position: sticky; */
   top: 0;
   background-color: black;
   box-shadow: 0 1px 10px 0 rgba(0, 0, 0, 0.4);
   padding: 0 0.5rem;
   height: var(--header-height);
+  /* width: 100%; */
+  grid-area: header;
 }
 
 .header-user-info {
@@ -197,18 +235,7 @@ Sidebar (handles layout with children as main content on page)s
   margin: 5px;
 } */
 
-.main-content {
-  /* min-height: max-content; */
-  /* height: 100vh; */
-  width: calc(100vw - 75px);
-  margin: 0;
-  padding: 50px;
-  /* flex-grow: 1; */
-  /* overflow: scroll; */
-  overflow-x: hidden;
-  /* grid-column: 3; */
-}
-
+/* container for sidebar toggle button */
 .sidebar-toggle-btn {
   background: none;
   border: none;
@@ -216,6 +243,7 @@ Sidebar (handles layout with children as main content on page)s
   padding-left: 1em;
   text-align: left;
   font-size: 1.6rem;
+  color: white;
 }
 
 .menu-icon {
@@ -226,6 +254,7 @@ Sidebar (handles layout with children as main content on page)s
   /* font-size: 1.6rem; */
 }
 
+/* container for sidebar links icon containter */
 .sidebar-link-icon {
   font-size: 1.6rem;
   padding-right: 0.4em;
@@ -241,9 +270,9 @@ Sidebar (handles layout with children as main content on page)s
 .sidebar {
   height: calc(100vh - var(--header-height));
   width: 200px; /* 0 width - change this with JavaScript */
-  position: sticky;
-  top: var(--header-height);
-  left: 0;
+  /* position: sticky; */
+  /* top: var(--header-height); */
+  /* left: 0; */
   border-right: 1px solid black;
   background-color: black; /* Black*/
   overflow: hidden; /* Disable horizontal scroll */
@@ -254,6 +283,7 @@ Sidebar (handles layout with children as main content on page)s
   display: flex;
   flex-direction: column;
   /* grid-column: 1; */
+  grid-area: sidebar;
 }
 .sidebar-list {
   padding-top: 45px;

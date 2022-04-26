@@ -5,6 +5,7 @@ npm packages
 2. keycloack w/ nextauth
 3. react form hooks
 	seem to be better suited for lightweighter quick forms, form builder also seems to be a great time saver.
+4. svgo for svg optimizations
 
 Todo
 -------
