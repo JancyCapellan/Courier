@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react'
 import { sidebarTypes } from './SidebarData'
 import Link from 'next/link'
 // import logo from '../assets/logo-dark.png'
-import { signOut } from 'next-auth/react'
 import { useSession } from '../customHooks/useSession'
 // import * from '../styles/Sidebar.module.css'
 
@@ -18,17 +17,18 @@ const Sidebar = ({ children }) => {
     console.log('sidebar render')
   }, [])
 
-  const [session, loading] = useSession()
+  // const [session, loading] = useSession()
   // console.log('sidebar user session data', session, 'loading', loading)
 
   // logic to set role and name fr
-  let role, name
-  if (!loading) {
-    ;({ role, name } = session.user)
-  } else {
-    role = 'CUST'
-  }
+  // let role, name
+  // if (!loading) {
+  //   ;({ role, name } = session.user)
+  // } else {
+  //   role = 'CUST'
+  // }
 
+  let role = 'ADMIN'
   //will switch the sidebar data to show links to routes per user role
   let SidebarData = []
   const SidebarDataSwitcher = () => {
@@ -56,9 +56,7 @@ const Sidebar = ({ children }) => {
   return (
     <>
       <nav className={isCollapsed ? 'sidebar collapsed' : 'sidebar'}>
-        <span>
-          Welcome {name}! <b>Role: {role}</b>
-        </span>
+        <span>{/* Welcome {name}! <b>Role: {role}</b> */}</span>
         <ul className='sidebar-list'>
           <li key='sidebarToggle' className=''>
             <div className='sidebar-toggle-btn' onClick={sidebarToggler}>

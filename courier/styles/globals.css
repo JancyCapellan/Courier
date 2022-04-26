@@ -85,9 +85,9 @@ h3 {
 h4 {
   font-size: 0.875rem;
 }
-p {
+/* p {
   margin-bottom: 1.25rem;
-}
+} */
 /* @media screen and (min-width: 800px) {
   h1 {
     font-size: 4rem;
@@ -183,6 +183,7 @@ LAYOUT
   /* height: 100vh; */
   /* width: calc(100vw - 75px); */
   /* width: 100vw; */
+  /* color: white; */
   margin: 0;
   padding: 50px;
   /* flex-grow: 1; */
@@ -268,7 +269,7 @@ Sidebar (handles layout with children as main content on page)
 } */
 
 .sidebar {
-  height: calc(100vh - var(--header-height));
+  /* height: calc(100vh - var(--header-height)); */
   width: 200px; /* 0 width - change this with JavaScript */
   /* position: sticky; */
   /* top: var(--header-height); */
@@ -329,6 +330,10 @@ Sidebar (handles layout with children as main content on page)
 Account info
 ===============
 */
+.BCFD {
+  display: flex;
+  flex-direction: column;
+}
 .accountPage {
   display: flex;
   flex-direction: column;

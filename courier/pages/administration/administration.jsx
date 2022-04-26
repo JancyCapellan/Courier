@@ -1,10 +1,11 @@
 import { useState } from 'react'
-import Sidebar from '../../components/Sidebar'
+// import Sidebar from '../../components/Sidebar'
 import RegistrationForm from '../../components/RegistrationForm.jsx'
 import ModalContainer from '../../components/HOC/ModalContainer'
 import axios from 'axios'
+import Layout from '../../components/Layout'
 
-export const getServerSideProps = async ({ res }) => {
+export const getStaticSideProps = async ({ res }) => {
   try {
     const result = await axios.post(`http://localhost:3000/user/allDrivers`)
     console.log('response', result.data)
@@ -74,7 +75,7 @@ const Administration = ({ drivers }) => {
 
   return (
     <>
-      <section>
+      <section className='BCFD'>
         <h1>Staff Manager</h1>
         <ModalContainer show={showModal} handleClose={handleModalClose}>
           <RegistrationForm staff={true} />
@@ -92,5 +93,5 @@ const Administration = ({ drivers }) => {
 export default Administration
 
 Administration.getLayout = function getLayout(page) {
-  return <Sidebar>{page}</Sidebar>
+  return <Layout>{page}</Layout>
 }
