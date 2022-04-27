@@ -6,7 +6,13 @@ npm packages
 3. react form hooks
 	seem to be better suited for lightweighter quick forms, form builder also seems to be a great time saver.
 4. svgo for svg optimizations
-
+5. mantine for ui library, maybe
+6. zod for validation, alt to YUP
+7. msw mocking server package
+8. cypress tester package
+9. easy-peasy another minimal state management library
 Todo
 -------
 1. when user is logged in and tried to got to home page redirect to app before homepage content shows. 
+2. fix administration page layout, use react query to handle client side query.
+3. 

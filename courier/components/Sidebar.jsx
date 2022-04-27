@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { useSession } from '../customHooks/useSession'
 // import * from '../styles/Sidebar.module.css'
 
-const Sidebar = ({ children }) => {
+const Sidebar = () => {
   const [isCollapsed, setIsCollapsed] = useState(false)
   const sidebarToggler = () => {
     setIsCollapsed(!isCollapsed)
@@ -13,9 +13,9 @@ const Sidebar = ({ children }) => {
 
   // const { email, role, firstName } = useAuth()
 
-  useEffect(() => {
-    console.log('sidebar render')
-  }, [])
+  // useEffect(() => {
+  //   console.log('sidebar render')
+  // })
 
   // const [session, loading] = useSession()
   // console.log('sidebar user session data', session, 'loading', loading)

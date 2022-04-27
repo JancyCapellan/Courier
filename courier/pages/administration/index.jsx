@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import Sidebar from '../../components/Sidebar'
+// import Sidebar from '../../components/Sidebar'
 import RegistrationForm from '../../components/RegistrationForm.jsx'
 import ModalContainer from '../../components/HOC/ModalContainer'
 import axios from 'axios'
@@ -7,8 +7,9 @@ import { useRouter } from 'next/router'
 import { Formik, Form } from 'formik'
 import * as Yup from 'yup'
 import FormikControl from '../../components/Formik/FormikControl'
+import Layout from '../../components/Layout'
 
-export const getStaticProps = async ({ res }) => {
+export const getServerSideProps = async ({ res }) => {
   try {
     const result = await axios.post(`http://localhost:3000/user/allDrivers`)
     console.log('response', result.data)
@@ -105,7 +106,7 @@ const Administration = ({ drivers }) => {
   }
 
   return (
-    <Sidebar>
+    <>
       <section className='administration-container'>
         <h1>Staff Manager</h1>
         <ModalContainer show={showModal} handleClose={handleModalClose}>
@@ -183,8 +184,12 @@ const Administration = ({ drivers }) => {
           </div>
         </section>
       </section>
-    </Sidebar>
+    </>
   )
 }
 
 export default Administration
+
+Administration.getLayout = function getLayout(page) {
+  return <Layout>{page}</Layout>
+}
