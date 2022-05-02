@@ -179,17 +179,9 @@ LAYOUT
   grid-template-columns: max-content 11fr;
 }
 .main-content {
-  /* min-height: max-content; */
-  /* height: 100vh; */
-  /* width: calc(100vw - 75px); */
-  /* width: 100vw; */
-  /* color: white; */
+  background-color: white;
   margin: 0;
   padding: 50px;
-  /* flex-grow: 1; */
-  /* overflow: scroll; */
-  /* overflow-x: hidden; */
-  /* grid-column: 3; */
   grid-area: main;
 }
 /*

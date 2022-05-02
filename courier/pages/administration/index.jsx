@@ -8,41 +8,36 @@ import { Formik, Form } from 'formik'
 import * as Yup from 'yup'
 import FormikControl from '../../components/Formik/FormikControl'
 import Layout from '../../components/Layout'
+import { useQuery } from 'react-query'
 
-export const getServerSideProps = async ({ res }) => {
-  try {
-    const result = await axios.post(`http://localhost:3000/user/allDrivers`)
-    console.log('response', result.data)
-    return {
-      props: {
-        drivers: result.data,
-      },
-    }
-  } catch (error) {
-    res.statusCode = 500
-    console.log('getdrivers', error)
-    return {
-      props: {},
-    }
-  }
+const getDrivers = async () => {
+  const { data } = await axios.post(`http://localhost:3000/user/allDrivers`)
+  console.log('DRIVERS DATA', data)
+  return data
 }
 
-const Administration = ({ drivers }) => {
+const getProductTypes = async () => {
+  const result = await axios.get('http://localhost:3000/services/productTypes')
+  return result
+}
+
+const Administration = () => {
   const [branch, setBranch] = useState()
   const [showModal, setShowModal] = useState(false)
+  // const [drivers, setDrivers] = useState([])
   const router = useRouter()
 
   const handleModalClose = () => setShowModal(false)
 
-  const BranchOfficeData = (branch) => {
-    return (
-      <section>
-        <section></section>
-      </section>
-    )
-  }
-
-  console.log('drivers', drivers)
+  const { data: productTypes } = useQuery('productTypes', getProductTypes, {
+    onSuccess: (data) => {
+      console.log('Product Types', data)
+    },
+    onError: (error) => {
+      console.log('error fetching product types')
+    },
+    staleTime: Infinity,
+  })
 
   function openDriverPage(driverId) {
     console.log('open driver page')
@@ -52,29 +47,44 @@ const Administration = ({ drivers }) => {
   }
 
   const Drivertable = () => {
+    let { data: drivers, status } = useQuery('getDrivers', getDrivers, {
+      onSuccess: (data) => {
+        console.log('drivers', data)
+      },
+      onError: (error) => {
+        console.log('error fetching product types', error)
+      },
+      staleTime: Infinity,
+    })
+
     return (
-      <table>
-        <thead>
-          <tr>
-            <th>driver name</th>
-            <th>packages assigned today</th>
-            <th>branch name</th>
-          </tr>
-        </thead>
-        <tbody>
-          {drivers.map((driver) => {
-            return (
-              <tr onClick={() => openDriverPage(driver.id)} key={driver.id}>
-                <td>
-                  {driver.firstName} {driver.lastName}
-                </td>
-                <td></td>
-                <td>{driver.branchName}</td>
+      <>
+        {status === 'loading' && <div>loading</div>}
+        {status === 'success' && (
+          <table>
+            <thead>
+              <tr>
+                <th>Driver Name</th>
+                <th>Packages Assigned Today</th>
+                <th>Affliated Branch</th>
               </tr>
-            )
-          })}
-        </tbody>
-      </table>
+            </thead>
+            <tbody>
+              {drivers.map((driver) => {
+                return (
+                  <tr onClick={() => openDriverPage(driver.id)} key={driver.id}>
+                    <td>
+                      {driver.firstName} {driver.lastName}
+                    </td>
+                    <td></td>
+                    <td>{driver.branchName}</td>
+                  </tr>
+                )
+              })}
+            </tbody>
+          </table>
+        )}
+      </>
     )
   }
 
@@ -90,7 +100,7 @@ const Administration = ({ drivers }) => {
           </tr>
         </thead>
         <tbody>
-          {drivers.map((driver) => {
+          {/* {drivers.map((driver) => {
             return (
               <tr key={driver.id}>
                 <td>1</td>
@@ -99,7 +109,7 @@ const Administration = ({ drivers }) => {
                 <td>Box</td>
               </tr>
             )
-          })}
+          })} */}
         </tbody>
       </table>
     )

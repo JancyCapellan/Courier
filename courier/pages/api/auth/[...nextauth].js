@@ -144,10 +144,10 @@ const nextAuthOptions = (req, res) => {
       // },
       jwt: async ({ token, user }) => {
         // first time jwt callback is run, user object is available
-        console.log('JWT', token)
         if (user) {
           token.user = user.user
-          token.id = user.id
+          token.id = user.user.id
+          console.log('JWT', token)
           return token
         }
 

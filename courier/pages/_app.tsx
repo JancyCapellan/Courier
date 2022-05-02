@@ -19,7 +19,17 @@ type AppPropsWithLayout = AppProps & {
 }
 
 function MyApp({ Component, pageProps }: AppPropsWithLayout) {
-  const queryClient = new QueryClient()
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        refetchOnWindowFocus: false,
+        refetchOnMount: false,
+        refetchOnReconnect: false,
+        retry: false,
+        staleTime: 60 * 60 * 1000,
+      },
+    },
+  })
 
   // const EmptyLayout = ({ children }) => <>{children}</>
   const getLayout = Component.getLayout ?? ((page) => page)

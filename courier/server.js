@@ -15,10 +15,10 @@ const servicesRouter = require('./expressApi/routes/services.route')
 const dev = process.env.NODE_ENV !== 'production'
 const app = next({ dev })
 const handle = app.getRequestHandler()
+const server = express()
 app
   .prepare()
   .then(() => {
-    const server = express()
     server.use(logger('dev'))
     server.use(express.json())
     server.use(express.urlencoded({ extended: false }))
@@ -31,7 +31,8 @@ app
     server.use('/order', orderRouter)
     server.use('/services', servicesRouter)
 
-    server.get('*', (req, res) => {
+    // not sure if changing to all from get caused any bugs, but the offical example had it as such
+    server.all('*', (req, res) => {
       return handle(req, res)
     })
     server.post('/api/auth/*', (req, res) => {
@@ -46,3 +47,5 @@ app
     console.error(err.stack)
     process.exit(1)
   })
+
+module.exports = server

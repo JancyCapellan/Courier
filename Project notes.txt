@@ -12,6 +12,13 @@ npm packages
 8. cypress tester package
 9. easy-peasy another minimal state management library
 Todo
+10. immer immutable objects management library
+11. config npm package to make it easy to make customizable
+12. debug https://www.npmjs.com/package/debug 
+13. jest / mocha testing frameworks
+14. supertest HTTP server testing library
+15. fanthom for website analytics, googlem analytics is currently banned in EU
+16. faker js creating test data
 -------
 1. when user is logged in and tried to got to home page redirect to app before homepage content shows. 
 2. fix administration page layout, use react query to handle client side query.
