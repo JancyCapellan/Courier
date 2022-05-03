@@ -38,12 +38,12 @@ const CreateCustomerOrder = ({ products }) => {
   }
 
   return (
-    <Sidebar>
+    <>
       <button onClick={() => handlePage('BACK')}>last</button>
       <span> currentPage: {currentPage} </span>
       <button onClick={() => handlePage('NEXT')}>next</button>
       <ComponentSwitcher handlePage={handlePage} />
-    </Sidebar>
+    </>
   )
 }
 

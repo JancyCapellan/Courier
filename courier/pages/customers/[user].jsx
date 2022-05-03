@@ -6,6 +6,7 @@ import axios from 'axios'
 import Sidebar from '../../components/Sidebar'
 import { useRouter } from 'next/router'
 import ModalContainer from '../../components/HOC/ModalContainer'
+import Layout from '../../components/Layout'
 
 // ! customer account page. dynamic entry from customers table
 
@@ -534,7 +535,7 @@ const CustomerAccountPage = ({ user }) => {
   }
 
   return (
-    <Sidebar>
+    <>
       <h2> Customer Account Information</h2>
       <nav>
         <button onClick={() => setCurrentPage(1)}>Customer</button>
@@ -545,8 +546,12 @@ const CustomerAccountPage = ({ user }) => {
       <br />
       <ComponentSwitcher currentUser={user} />
       <br />
-    </Sidebar>
+    </>
   )
 }
 
 export default CustomerAccountPage
+
+CustomerAccountPage.getLayout = function getLayout(page) {
+  return <Layout>{page}</Layout>
+}

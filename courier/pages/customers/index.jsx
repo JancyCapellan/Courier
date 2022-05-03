@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react'
-import Sidebar from '../../../components/Sidebar'
-import CustomerTable from './CustomerTable'
-import ModalContainer from '../../HOC/ModalContainer'
-import RegistrationForm from '../../RegistrationForm'
-import Layout from '../../Layout'
+import CustomerTable from '../../components/Customers/main/CustomerTable'
+import ModalContainer from '../../components/HOC/ModalContainer'
+import RegistrationForm from '../../components/RegistrationForm'
+import Layout from '../../components/Layout'
 
-const CustomerManager = () => {
+const Customers = () => {
   const [value, setValue] = useState('')
   const [search, setSearch] = useState(value)
   const [currentUser, setCurrentUser] = useState({})
@@ -67,8 +66,8 @@ const CustomerManager = () => {
     </>
   )
 }
-export default CustomerManager
+export default Customers
 
-CustomerManager.getLayout = function getLayout(page) {
+Customers.getLayout = function getLayout(page) {
   return <Layout>{page}</Layout>
 }

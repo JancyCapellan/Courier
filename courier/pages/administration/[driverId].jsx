@@ -2,6 +2,7 @@ import React from 'react'
 import Sidebar from '../../components/Sidebar'
 import axios from 'axios'
 import { useRouter } from 'next/router'
+import Layout from '../../components/Layout'
 
 export async function getStaticPaths() {
   const result = await axios.post(`http://localhost:3000/user/allDrivers`)
@@ -39,7 +40,7 @@ const DriverAccountPage = ({ driver }) => {
 
   return (
     <>
-      <section>
+      <section className='driverAccountPage'>
         <h1>Driver Account</h1>
         <pre>
           <button
@@ -70,5 +71,5 @@ const DriverAccountPage = ({ driver }) => {
 export default DriverAccountPage
 
 DriverAccountPage.getLayout = function getLayout(page) {
-  return <Sidebar>{page}</Sidebar>
+  return <Layout>{page}</Layout>
 }

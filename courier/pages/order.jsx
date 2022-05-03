@@ -1,5 +1,6 @@
 import CreateCustomerOrder from '../components/CreateOrder/CreateCustomerOrder'
 import axios from 'axios'
+import Layout from '../components/Layout'
 
 export const getServerSideProps = async ({ res }) => {
   try {
@@ -21,9 +22,13 @@ export const getServerSideProps = async ({ res }) => {
 const Order = ({ products }) => {
   console.log('prodcuts', products)
   return (
-    <section>
+    <>
       <CreateCustomerOrder products={products} />
-    </section>
+    </>
   )
 }
 export default Order
+
+Order.getLayout = function getLayout(page) {
+  return <Layout>{page}</Layout>
+}

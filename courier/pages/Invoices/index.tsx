@@ -1,10 +1,14 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, ReactElement, ReactNode } from 'react'
 import Sidebar from '../../components/Sidebar'
 import { GetServerSideProps, NextPage } from 'next'
 import axios from 'axios'
 import { useRouter } from 'next/router'
 import DateTime from 'luxon'
+import Layout from '../../components/Layout'
 
+type NextPageWithLayout = NextPage & {
+  getLayout?: (page: ReactElement) => ReactNode
+}
 interface OrderData {
   id: number
   recieverFirstName: string
@@ -72,7 +76,7 @@ export const Invoices: NextPage<{ listOfInvoices: OrderData[] }> = (props) => {
   const orderHistory = props.listOfInvoices
   console.log('list', orderHistory)
   return (
-    <Sidebar>
+    <Layout>
       <h1>Current ORDERS - {currentBranch}</h1>
       <label>
         Branch Name:
@@ -123,9 +127,7 @@ export const Invoices: NextPage<{ listOfInvoices: OrderData[] }> = (props) => {
                         {order.pickupdriver.firstName} {order.pickupdriver.lastName}
                         <select
                           style={{ width: '1.5em' }}
-                          onChange={(e) =>
-                            updateOrderDriver(order.id, parseInt(e.target.value))
-                          }
+                          onChange={(e) => updateOrderDriver(order.id, parseInt(e.target.value))}
                         >
                           <option value={'NULL'}>select driver</option>
                           <option value={'NULL'}>none</option>
@@ -150,8 +152,12 @@ export const Invoices: NextPage<{ listOfInvoices: OrderData[] }> = (props) => {
       ) : (
         <h3> CHOOSE BRANCH </h3>
       )}
-    </Sidebar>
+    </Layout>
   )
 }
 
 export default Invoices
+
+// Invoices.getLayout = function getLayout(page) {
+//   return <Layout>{page}</Layout>
+// }

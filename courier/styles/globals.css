@@ -184,6 +184,11 @@ LAYOUT
   padding: 50px;
   grid-area: main;
 }
+
+/* .main-content > * {
+  grid-area: main;
+} */
+
 /*
 ===============
 LAYOUT
@@ -350,6 +355,7 @@ Customer Manager
   grid-template-areas:
     'customer-search add-customer-btn'
     'customers-table customers-info-table';
+  grid-area: main;
 }
 
 .customer-search {
@@ -772,5 +778,19 @@ Administration page
 /*
 ===============
 Administation page
+===============
+*/
+
+/*
+===============
+Driver Account PAge
+===============
+*/
+.driverAccountPage {
+  grid-area: main;
+}
+/*
+===============
+Driver Account PAge
 ===============
 */
