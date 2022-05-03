@@ -65,6 +65,12 @@ export const routes = {
     icon: <Bi.BiGroup />,
     cName: 'nav-listitem',
   },
+  crm: {
+    title: 'Client Relations Manager',
+    path: '/crm',
+    icon: <Bi.BiGroup />,
+    cName: 'nav-listitem',
+  },
   claims: {
     title: 'Claim Manager',
     path: '/claims',
@@ -72,7 +78,7 @@ export const routes = {
     cName: 'nav-listitem',
   },
   warehouse: {
-    title: 'Branch Manager',
+    title: 'warehouse',
     path: '/warehouse',
     icon: <Bi.BiAlarm />,
     cName: 'nav-listitem',
@@ -89,6 +95,12 @@ export const routes = {
     icon: <Bi.BiAccessibility />,
     cName: 'nav-listitem',
   },
+  reports: {
+    title: 'Reports',
+    path: '/reports',
+    icon: <Bi.BiAccessibility />,
+    cName: 'nav-listitem',
+  },
 }
 export const sidebarTypes = {
   SECT: [routes.account, routes.customers, routes.invoices, routes.warehouse],
@@ -100,6 +112,8 @@ export const sidebarTypes = {
     routes.customers,
     routes.invoices,
     routes.warehouse,
+    routes.crm,
+    routes.reports,
   ],
   All: [routes],
 }
