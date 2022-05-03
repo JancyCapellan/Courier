@@ -19,23 +19,32 @@ exports.allProducts = async (req, res) => {
 }
 
 exports.addItem = async (req, res) => {
-  debug(req.body)
-  const item_name = req.body.item_name
-  const item_price = req.body.item_price
-  const item_type = req.body.item_type
-  const newitem = await prisma.product.create({
-    data: {
-      name: item_name,
-      price: item_price,
-      type: item_type,
-    },
-  })
+  try {
+    debug(req.body)
+    const item_name = req.body.item_name
+    const item_price = req.body.item_price
+    const item_type = req.body.item_type
+    const newitem = await prisma.product.create({
+      data: {
+        name: item_name,
+        price: item_price,
+        type: item_type,
+      },
+    })
 
-  res.json(newitem)
+    res.json(newitem)
+  } catch (error) {
+    debug('add item error', error)
+    res.status(500).send('error adding item')
+  }
 }
 
 exports.productTypes = async (req, res) => {
-  const types = await prisma.productType.findMany()
-  console.log('types', types)
-  res.send(types)
+  try {
+    const types = await prisma.productType.findMany({})
+    // console.log('types', types)
+    res.send(types)
+  } catch (error) {
+    debug(error)
+  }
 }
