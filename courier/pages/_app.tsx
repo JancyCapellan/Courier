@@ -22,11 +22,9 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
   const queryClient = new QueryClient({
     defaultOptions: {
       queries: {
-        refetchOnWindowFocus: false,
-        refetchOnMount: false,
-        refetchOnReconnect: false,
-        retry: false,
-        staleTime: 60 * 60 * 1000,
+        // data is always fresh and never garabage collected after last observer is dismounted
+        cacheTime: Infinity,
+        staleTime: Infinity,
       },
     },
   })

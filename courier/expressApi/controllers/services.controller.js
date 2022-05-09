@@ -52,8 +52,8 @@ exports.addProductType = async (req, res) => {
 exports.productTypes = async (req, res) => {
   try {
     const types = await prisma.productType.findMany({})
-    console.log('types', types)
 
+    // logic to turn type object into key/value pair for select options
     function renameKey(obj, oldKey, newKey) {
       obj[newKey] = obj[oldKey]
       delete obj[oldKey]
@@ -64,8 +64,8 @@ exports.productTypes = async (req, res) => {
       renameKey(type, 'type', 'key')
     })
 
+    // add to from of array, first option, front end validation requires first value to be 0 if you want it to give please select type error in current form
     types.unshift({ value: 0, key: 'select type' })
-    console.log('types', types)
 
     res.send(types)
   } catch (error) {
