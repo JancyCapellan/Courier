@@ -10,11 +10,11 @@ const Home = () => {
   console.log('home session', session, 'loading', status)
 
   // effect to move to account page if there is a session already logged in
-  useEffect(() => {
-    if (session) {
-      router.push('/account')
-    }
-  }, [session])
+  // useEffect(() => {
+  //   if (session) {
+  //     router.push('/account')
+  //   }
+  // }, [session])
   return (
     <>
       <div className='home-container'>

@@ -19,6 +19,9 @@ Todo
 14. supertest HTTP server testing library
 15. fanthom for website analytics, googlem analytics is currently banned in EU
 16. faker js creating test data
+17. story book for creating components in isolation
+18. Pandoc   a universal document converter
+19. strongloop process manager - hosting node apps easier, auto restart
 -------
 1. when user is logged in and tried to got to home page redirect to app before homepage content shows. 
 2. fix administration page layout, use react query to handle client side query.

@@ -15,6 +15,7 @@ exports.allProducts = async (req, res) => {
       },
     },
   })
+  debug(products)
   res.json(products)
 }
 
@@ -39,10 +40,33 @@ exports.addItem = async (req, res) => {
   }
 }
 
+exports.addProductType = async (req, res) => {
+  const newType = req.body.new_type
+  try {
+    const addedType = await prisma.productType.create({ data: { type: newType } })
+    debug(addedType)
+    res.json(addedType)
+  } catch (error) {}
+}
+
 exports.productTypes = async (req, res) => {
   try {
     const types = await prisma.productType.findMany({})
-    // console.log('types', types)
+    console.log('types', types)
+
+    function renameKey(obj, oldKey, newKey) {
+      obj[newKey] = obj[oldKey]
+      delete obj[oldKey]
+    }
+
+    types.forEach((type) => {
+      renameKey(type, 'id', 'value')
+      renameKey(type, 'type', 'key')
+    })
+
+    types.unshift({ value: 0, key: 'select type' })
+    console.log('types', types)
+
     res.send(types)
   } catch (error) {
     debug(error)

@@ -5,5 +5,6 @@ const services = require('../controllers/services.controller')
 router.get('/allProducts', services.allProducts)
 router.post('/addItem', services.addItem)
 router.get('/productTypes', services.productTypes)
+router.post('/addProductType', services.addProductType)
 
 module.exports = router
