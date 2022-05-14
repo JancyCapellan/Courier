@@ -5,13 +5,12 @@ npm packages
 2. keycloack w/ nextauth
 3. react form hooks
 	seem to be better suited for lightweighter quick forms, form builder also seems to be a great time saver.
-4. svgo for svg optimizations
-5. mantine for ui library, maybe
-6. zod for validation, alt to YUP
-7. msw mocking server package
-8. cypress tester package
-9. easy-peasy another minimal state management library
-Todo
+4. svgo, for svg optimizations
+5. mantine, for ui library, maybe
+6. zod, for validation, alt to YUP
+7. msw, mocking server package
+8. cypress, tester package
+9. easy-peasy, another minimal state management library
 10. immer immutable objects management library
 11. config npm package to make it easy to make customizable
 12. debug https://www.npmjs.com/package/debug 
@@ -22,7 +21,22 @@ Todo
 17. story book for creating components in isolation
 18. Pandoc   a universal document converter
 19. strongloop process manager - hosting node apps easier, auto restart
+20. tina, open source headless cms
+21. keystone, headless cms seems to be partnered with prisma
+22. directus, headless cms that can be used with existing sql database, current best choice.
+
+
+TODO
 -------
 1. when user is logged in and tried to got to home page redirect to app before homepage content shows. 
 2. fix administration page layout, use react query to handle client side query.
 3. 
+
+
+QUESTIONS
+--------------
+
+1. how to seperate the logic for multiple offices in the same business, 
+2. how are they host or were they hosting the original website.\
+3. any owner/ top role specific tasks 
+4. 

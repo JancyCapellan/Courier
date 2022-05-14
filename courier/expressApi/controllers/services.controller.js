@@ -72,3 +72,20 @@ exports.productTypes = async (req, res) => {
     debug(error)
   }
 }
+
+exports.deleteProductType = async (req, res) => {
+  const typeId = parseInt(req.params.typeId)
+  try {
+    const deletedType = await prisma.productType.delete({
+      where: {
+        id: typeId,
+      },
+    })
+    debug('deleted type', deletedType)
+    res.send('type successfully deleted')
+  } catch (error) {
+    // debug(error)
+    res.status(500)
+    res.send('error: possibly due to a product of this type existing on database')
+  }
+}

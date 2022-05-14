@@ -33,6 +33,13 @@ const ProductEditorTable = () => {
     refetch: refetchProductList,
   } = useQuery('productList', getProductList)
 
+  //react query to delete product type
+  const deleteProductType = async (typeId) => {
+    const res = await axios.delete(`http://localhost:3000/services/deleteProductType/${typeId}`)
+    console.log('delete response:', res)
+    return
+  }
+
   return (
     <>
       {productTypesStatus === 'success' && (
@@ -178,6 +185,7 @@ const ProductEditorTable = () => {
         <thead>
           <tr>
             <th>TYPES</th>
+            <th>&nbsp;</th>
           </tr>
         </thead>
         <tbody>
@@ -187,6 +195,7 @@ const ProductEditorTable = () => {
                 //  value is type_id, key is type_type in DATABASE, changed to match form
                 <tr key={type.value}>
                   <td>{type.key}</td>
+                  {!!type.value && <td onClick={() => deleteProductType(type.value)}>delete</td>}
                 </tr>
               )
             })}
