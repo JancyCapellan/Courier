@@ -177,12 +177,14 @@ LAYOUT
   gap: 0px 0px;
   grid-template-rows: max-content 11fr;
   grid-template-columns: max-content 11fr;
+  overflow-y: hidden;
 }
 .main-content {
   background-color: white;
   margin: 0;
   padding: 50px;
   grid-area: main;
+  overflow-y: scroll;
 }
 
 /* .main-content > * {
