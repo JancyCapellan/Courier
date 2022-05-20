@@ -46,11 +46,11 @@ Content-Type: application/json
 GET http://localhost:3000/order/7
 
 ###
-PUT http://localhost:3000/order/7
+PUT http://localhost:3000/order/2
 Content-Type: application/json
 
 {
-  "pickupDriverId": 3
+  "pickupDriverId": "cl0k3wqoe000608uy29tcc12z"
 }
 
 ###

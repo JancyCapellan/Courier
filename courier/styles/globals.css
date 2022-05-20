@@ -796,3 +796,11 @@ Driver Account PAge
 Driver Account PAge
 ===============
 */
+
+.invoice-details-container {
+  grid-area: main;
+}
+
+.main-grid-area {
+  grid-area: main;
+}

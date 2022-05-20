@@ -1,5 +1,6 @@
 import Sidebar from '../../components/Sidebar'
 import axios from 'axios'
+import Layout from '../../components/Layout'
 
 export const getServerSideProps = async ({ params, res }) => {
   // const router = useRouter()
@@ -35,8 +36,8 @@ const InvoicePage = ({ order }) => {
   // }
   console.log(order)
   return (
-    <Sidebar>
-      <section>
+    <>
+      <section className='invoice-details-container'>
         <h1>Invoice #{order.id}</h1>
         <pre>
           Customer: {order.user.firstName} {order.user.middleName} {order.user.lastName}
@@ -104,8 +105,12 @@ const InvoicePage = ({ order }) => {
           </tbody>
         </table>
       </section>
-    </Sidebar>
+    </>
   )
 }
 
 export default InvoicePage
+
+InvoicePage.getLayout = function getLayout(page) {
+  return <Layout>{page}</Layout>
+}

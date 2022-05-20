@@ -32,7 +32,7 @@ interface user {
 export const getServerSideProps: GetServerSideProps = async ({ res }) => {
   try {
     const result = await axios.get(`http://localhost:3000/order/allOrders`)
-    console.log('response', result.data)
+    // console.log('response', result.data)
     return {
       props: {
         listOfInvoices: result.data,
@@ -138,8 +138,8 @@ export const Invoices: NextPage<{ listOfInvoices: OrderData[] }> = (props) => {
                       <select
                         onChange={(e) => updateOrderDriver(order.id, parseInt(e.target.value))}
                       >
-                        <option value={0}>none/select driver</option>
-                        <option value={3}>Driver Tester</option>
+                        <option value={'null'}>none/select driver</option>
+                        <option value={'cl0k3wqoe000608uy29tcc12z'}>Juan Driver</option>
                       </select>
                     )}
                   </td>

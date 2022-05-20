@@ -1,4 +1,5 @@
 const { PrismaClient } = require('@prisma/client')
+const { debug } = require('console')
 const prisma = new PrismaClient()
 
 exports.submitOrderPrisma = async (req, res) => {
@@ -85,11 +86,11 @@ exports.getAllOrders = async (req, res) => {
     for (const obj in result)
       for (const key in result[obj])
         if (key === 'timePlaced') {
-          console.log('datetime', result[obj][key])
+          // console.log('datetime', result[obj][key])
 
-          console.log(result[obj][key].toLocaleString())
-          console.log(result[obj][key].toTimeString())
-          console.log(result[obj][key].toDateString())
+          // console.log(result[obj][key].toLocaleString())
+          // console.log(result[obj][key].toTimeString())
+          // console.log(result[obj][key].toDateString())
           // result[obj][key] = {
           //   date: result[obj][key].toDateString(),
           //   time: result[obj][key].toTimeString(),
@@ -98,7 +99,7 @@ exports.getAllOrders = async (req, res) => {
           result[obj][key] = result[obj][key].toLocaleString()
         }
 
-    console.log(result)
+    // console.log('allorder', result)
     res.send(result)
   }
 }
@@ -220,12 +221,19 @@ exports.getAllProducts = async (req, res) => {
 
 exports.updateOrder = async (req, res) => {
   const id = parseInt(req.params.orderId)
-  const data = req.body
+  const driverId = req.body.pickupDriverId
+  console.log('updateorder', id, driverId)
   const result = await prisma.order.update({
     where: {
       id: id,
     },
-    data: data,
+    data: {
+      pickupdriver: {
+        connect: {
+          id: driverId,
+        },
+      },
+    },
   })
 
   console.log(result)

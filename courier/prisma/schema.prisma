@@ -74,10 +74,12 @@ model Order {
   location String @default("Shipping Address/owner")
   pickupDriverId String?
   pickupDatetime DateTime?
+  pickupRouteCode Int?
+  pickupRoute Route? @relation(fields: [pickupRouteCode], references: [id])
   items OrderItem[]
   addresses OrderAddressDuo[]
   user User @relation("CUSTOMER",fields: [userId], references:[id] )
-  pickupdriver User? @relation("DRIVER", fields: [pickupDriverId], references:[id])
+  pickupdriver User? @relation(name: "DRIVER", fields: [pickupDriverId], references:[id])
 }
 //  change this to updatable addresses
 // model UserSavedAddresses{
@@ -117,6 +119,11 @@ model OrderItem {
 
 }
 
+model Route {
+  id Int @id @default(autoincrement())
+  areaCode String
+  orders Order[]
+}
 model product {
   id Int @id @default(autoincrement())
   name  String
