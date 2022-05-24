@@ -393,7 +393,11 @@ Customer Manager
   grid-area: 'customers-info-table';
 }
 
-/* create customer modal */
+/*
+================
+MODAL HOC
+================
+*/
 
 .d-block {
   display: block;
@@ -411,7 +415,18 @@ Customer Manager
 .d-none {
   display: none;
 }
-
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba(0, 0, 0, 0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2;
+}
 .modal-container {
   background-color: #fefefe;
   margin: 15% auto; /* 15% from the top and centered */
@@ -432,6 +447,12 @@ Customer Manager
   text-decoration: none;
   cursor: pointer;
 }
+/*
+================
+MODAL HOC
+================
+*/
+
 /*
 ================
 Home page
@@ -804,3 +825,27 @@ Driver Account PAge
 .main-grid-area {
   grid-area: main;
 }
+
+/*
+===============
+Orderform senderFormAdmin
+===============
+*/
+
+.orderform {
+  /* display: flex;
+  flex-direction: column; */
+}
+
+.orderform-shipper-reciever-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+/*
+===============
+Orderform senderFormAdmin
+===============
+*/

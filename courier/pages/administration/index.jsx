@@ -3,7 +3,6 @@ import { useState, useEffect } from 'react'
 import RegistrationForm from '../../components/RegistrationForm.jsx'
 import ModalContainer from '../../components/HOC/ModalContainer'
 import axios from 'axios'
-import { useRouter } from 'next/router'
 import { Formik, Form } from 'formik'
 import * as Yup from 'yup'
 import FormikControl from '../../components/Formik/FormikControl'
@@ -15,16 +14,8 @@ import DriverTable from '../../components/pages/administration/DriverTable.jsx'
 const Administration = () => {
   const [branch, setBranch] = useState()
   const [showModal, setShowModal] = useState(false)
-  const router = useRouter()
 
   const handleModalClose = () => setShowModal(false)
-
-  function openDriverPage(driverId) {
-    console.log('open driver page')
-    router.push({
-      pathname: `/administration/${driverId}`,
-    })
-  }
 
   return (
     <>

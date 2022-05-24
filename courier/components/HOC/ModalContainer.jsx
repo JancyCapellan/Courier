@@ -3,14 +3,30 @@ import React from 'react'
 const ModalContainer = ({ show, handleClose, children }) => {
   const showHideClassName = show ? 'd-block' : 'd-none'
   return (
-    <div className={showHideClassName}>
-      <div className='modal-container'>
-        {children}
-        <button className='modal-close' onClick={handleClose}>
-          close
-        </button>
+    show && (
+      <div
+        className='modal-backdrop'
+        onClick={() => {
+          // close modal when outside of modal is clicked
+          handleClose()
+        }}
+      >
+        <div className={showHideClassName}>
+          <div
+            className='modal-container'
+            onClick={(e) => {
+              // do not close modal if anything inside modal content is clicked
+              e.stopPropagation()
+            }}
+          >
+            {children}
+            <button className='modal-close' onClick={handleClose}>
+              close
+            </button>
+          </div>
+        </div>
       </div>
-    </div>
+    )
   )
 }
 

@@ -3,8 +3,16 @@ import { Formik, Form } from 'formik'
 import * as Yup from 'yup'
 import FormikControl from '../../../components/Formik/FormikControl'
 import { useQuery } from 'react-query'
+import { useRouter } from 'next/router'
 
 const DriverTable = () => {
+  const router = useRouter()
+  function openDriverPage(driverId) {
+    console.log('open driver page')
+    router.push({
+      pathname: `/administration/${driverId}`,
+    })
+  }
   const getDrivers = async () => {
     const { data } = await axios.post(`http://localhost:3000/user/allDrivers`)
     // console.log('DRIVERS DATA', data)

@@ -3,10 +3,9 @@ import { Formik, Form } from 'formik'
 import FormikControl from '../../components/Formik/FormikControl'
 import * as Yup from 'yup'
 import Axios from 'axios'
+import ModalContainer from '../HOC/ModalContainer'
 
 const AddCustomerAddressForm = ({ show, handleClose, currentUser, edit }) => {
-  const showHideClassName = show ? 'd-block' : 'd-none'
-
   // i set select options default here, but will try to make dynamic
   const initialValues = {
     users_id: `${currentUser.id}`,
@@ -15,7 +14,7 @@ const AddCustomerAddressForm = ({ show, handleClose, currentUser, edit }) => {
     address3: '',
     city: '',
     state: '',
-    postal_Code: '',
+    postal_code: '',
     country: 'USA',
     cellphone: '',
     telephone: '',
@@ -24,14 +23,11 @@ const AddCustomerAddressForm = ({ show, handleClose, currentUser, edit }) => {
   // Schema for yup
   const validationSchema = Yup.object({})
 
+  // ! turn this into dynamic option by adding CRUD DB API operations
   const selectOptions = [
     { key: 'UNITED STATES', value: 'USA' },
     { key: 'DOMINICAN REPUBLIC', value: 'DR' },
   ]
-
-  // useEffect(() => {
-  //   console.log('test')
-  // }, [])
 
   const AddCustomerAddress = async (values) => {
     try {
@@ -53,9 +49,10 @@ const AddCustomerAddressForm = ({ show, handleClose, currentUser, edit }) => {
     handleClose()
     console.log('CUSTOMER ADD VALUES:', res)
   }
+
   return (
-    <div className={showHideClassName}>
-      <div className='modal-container'>
+    <>
+      <ModalContainer show={show} handleClose={handleClose}>
         <h2>Add Address</h2>
         <Formik
           className='customer-editor-form'
@@ -73,44 +70,14 @@ const AddCustomerAddressForm = ({ show, handleClose, currentUser, edit }) => {
                   name='country'
                   options={selectOptions}
                 />
-                <FormikControl
-                  control='input'
-                  type='text'
-                  label='Address line 1'
-                  name='address'
-                />
-                <FormikControl
-                  control='input'
-                  type='text'
-                  label='Address line 2'
-                  name='address2'
-                />
-                <FormikControl
-                  control='input'
-                  type='text'
-                  label='Address line 3'
-                  name='address3'
-                />
+                <FormikControl control='input' type='text' label='Address line 1' name='address' />
+                <FormikControl control='input' type='text' label='Address line 2' name='address2' />
+                <FormikControl control='input' type='text' label='Address line 3' name='address3' />
                 <FormikControl control='input' type='text' label='city' name='city' />
                 <FormikControl control='input' type='text' label='state' name='state' />
-                <FormikControl
-                  control='input'
-                  type='text'
-                  label='postal code'
-                  name='postal_code'
-                />
-                <FormikControl
-                  control='input'
-                  type='text'
-                  label='cellphone'
-                  name='cellphone'
-                />
-                <FormikControl
-                  control='input'
-                  type='text'
-                  label='telephone'
-                  name='telephone'
-                />
+                <FormikControl control='input' type='text' label='postal code' name='postal_code' />
+                <FormikControl control='input' type='text' label='cellphone' name='cellphone' />
+                <FormikControl control='input' type='text' label='telephone' name='telephone' />
                 <button type='submit' disabled={!formik.isValid}>
                   Submit
                 </button>
@@ -118,11 +85,8 @@ const AddCustomerAddressForm = ({ show, handleClose, currentUser, edit }) => {
             )
           }}
         </Formik>
-        <button className='modal-close' onClick={handleClose}>
-          close
-        </button>
-      </div>
-    </div>
+      </ModalContainer>
+    </>
   )
 }
 
