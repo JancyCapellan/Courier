@@ -21,13 +21,13 @@ const Administration = () => {
     <>
       <section className='administration-container'>
         <h1>Staff Manager</h1>
+        <button className='btn-31' onClick={() => setShowModal(true)}>
+          Create Staff
+        </button>
         <ModalContainer show={showModal} handleClose={handleModalClose}>
           <RegistrationForm staff={true} />
         </ModalContainer>
 
-        <button className='btn' onClick={() => setShowModal(true)}>
-          Create Staff
-        </button>
         <DriverTable />
 
         <h1>Product manager</h1>

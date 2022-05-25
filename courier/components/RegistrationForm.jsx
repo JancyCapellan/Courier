@@ -1,12 +1,13 @@
-import { Formik, Form, FormikContextType } from 'formik'
+import { Formik, Form } from 'formik'
 import FormikControl from './Formik/FormikControl'
 import * as Yup from 'yup'
 import Link from 'next/link'
 import Router from 'next/router'
 import { useEffect } from 'react'
 import axios from 'axios'
+import { useMutation } from 'react-query'
 
-const register = async (form) => {
+const registerUser = async (form) => {
   const postRegistration = async () => {
     try {
       delete form.password2
@@ -16,32 +17,36 @@ const register = async (form) => {
     } catch (error) {
       console.log(error)
 
-      return 500
+      // return 500
     }
   }
 
-  console.log('Registeration form', form)
-  const res = await postRegistration(form)
-  console.log('REGISTRATION', res)
-  switch (res.status) {
-    case 200:
-      alert('registration completed')
-      return true
+  // console.log('Registeration form', form)
+  // const res = await postRegistration(form)
+  // console.log('REGISTRATION', res)
+  // switch (res.status) {
+  //   case 200:
+  //     alert('registration completed')
+  //     return true
 
-    case 204:
-      alert('ERROR WHILE COMPLETING REGISTRATION')
-      return false
+  //   case 204:
+  //     alert('ERROR WHILE COMPLETING REGISTRATION')
+  //     return false
 
-    case 500:
-      alert('ERROR WHILE REGISTRATING')
-      return false
+  //   case 500:
+  //     alert('ERROR WHILE REGISTRATING')
+  //     return false
 
-    default:
-      throw new Error('res code not 200 or 204')
-  }
+  //   default:
+  //     throw new Error('res code not 200 or 204')
+  // }
 }
 
-const RegistrationForm = ({ staff, customer = false }) => {
+const RegistrationForm = ({
+  staff: registeringStaff,
+  customer: registeringCustomer = false,
+  handleClose,
+}) => {
   // useEffect(() => {
   //   console.log('staff', staff, 'customer', customer)
   // }, [])
@@ -85,22 +90,39 @@ const RegistrationForm = ({ staff, customer = false }) => {
     password: Yup.string().required('* required'),
     password2: Yup.string().required('* required'),
   })
-
-  const onSubmit = async (values) => {
-    setTimeout(() => {
-      if (values.password !== values.password2) {
-        alert('passwords do not match')
-      } else {
-        if (register(values)) {
-          customer ? Router.reload() : staff ? Router.push('/customers') : Router.push('/')
-        }
-        // console.log(values)
-      }
-    }, 1000)
+  const postRegisterUser = useMutation((newUser) => {
+    // delete newUser?.password2
+    return axios.post(process.env.NEXT_PUBLIC_API_URL + 'user/register', newUser)
+  })
+  const onSubmit = async (values, { setSubmitting, resetForm }) => {
+    console.log('register', values)
+    if (values.password !== values.password2) {
+      alert('passwords do not match')
+      return
+    }
+    // delete values.password2
+    postRegisterUser.mutate(values)
+    resetForm()
+    handleClose && handleClose()
+    // setTimeout(() => {
+    //   if (values.password !== values.password2) {
+    //     alert('passwords do not match')
+    //   } else {
+    //     if (register(values)) {
+    //       registeringCustomer
+    //         ? Router.reload()
+    //         : registeringStaff
+    //         ? Router.push('/customers')
+    //         : Router.push('/')
+    //     }
+    //     // console.log(values)
+    //   }
+    // }, 1000)
   }
+
   return (
     <div>
-      {staff ? <h1>Create Staff Account</h1> : <h1> Reigstraion</h1>}
+      {registeringStaff ? <h1>Create Staff Account</h1> : <h1> Reigstraion</h1>}
       <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={onSubmit}>
         {(formik) => {
           return (
@@ -116,7 +138,7 @@ const RegistrationForm = ({ staff, customer = false }) => {
                 label='Re-enter Password'
                 name='password2'
               />
-              {staff ? (
+              {registeringStaff ? (
                 <FormikControl control='select' label='role' name='role' options={selectOptions} />
               ) : (
                 <></>

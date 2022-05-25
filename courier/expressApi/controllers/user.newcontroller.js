@@ -2,6 +2,7 @@ const User = require('../models/user.model.js')
 const { PrismaClient } = require('@prisma/client')
 const jwt = require('jsonwebtoken')
 const { DateTime } = require('luxon')
+const { debug } = require('console')
 const prisma = new PrismaClient()
 
 let refreshTokens = []
@@ -15,12 +16,22 @@ exports.register = async (req, res) => {
       message: 'Content can not be empty!',
     })
   }
-  const result = await prisma.user.create({
-    data: {
-      ...req.body,
-    },
-  })
-  res.json(result)
+
+  // have to remove the confirmation password from form submission,
+  // might move to client sid
+  delete req.body?.password2
+
+  try {
+    const result = await prisma.user.create({
+      data: {
+        ...req.body,
+      },
+    })
+    res.json(result)
+  } catch (error) {
+    debug(error)
+    res.status(500).send('error registerting user')
+  }
 }
 
 // Login in user to correct site

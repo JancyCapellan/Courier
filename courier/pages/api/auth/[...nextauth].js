@@ -24,17 +24,6 @@ const nextAuthOptions = (req, res) => {
         },
         authorize: async (credentials) => {
           // database look up
-          // if (credentials.email === 'john@email.com' && credentials.password === '123') {
-          //   return {
-          //     id: 2,
-          //     name: 'John',
-          //     email: 'johndoe@test.com',
-          //   }
-          // }
-          // const loginForm = {
-          //   email: credentials.email,
-          //   password: credentials.password,
-          // }
 
           //can make part of the api
           const user = await prisma.user.findFirst({

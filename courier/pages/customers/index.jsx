@@ -29,17 +29,18 @@ const Customers = () => {
 
   return (
     <>
-      <div className='customer-manager-page'>
+      <div className='customer-page-container'>
         <h1 className='page-title'>Customer Manager</h1>
+
         <div className='customer-search'>
-          <form id='searchForm' onSubmit={handleSubmit}>
+          <form id='customer-search-form' onSubmit={handleSubmit}>
             <label className='customer-search-label' htmlFor='search'>
-              Search Customer:
+              Search Customer
               <input
                 value={value}
                 id='search'
                 className='customer-search'
-                placeholder='any field'
+                placeholder='Search Customer'
                 onChange={(e) => setValue(e.target.value)}
               ></input>
             </label>
@@ -50,9 +51,12 @@ const Customers = () => {
         </div>
 
         {/* opens modal form */}
-        <button className='btn add-customer-btn' onClick={() => setShowModal(true)}>
-          Add Customer
+        <button className='btn-31 add-customer-btn' onClick={() => setShowModal(true)}>
+          Create Customer
         </button>
+        <ModalContainer show={showModal} handleClose={handleModalClose}>
+          <RegistrationForm staff={false} customer={true} handleClose={handleModalClose} />
+        </ModalContainer>
 
         <CustomerTable
           search={search}
@@ -60,9 +64,6 @@ const Customers = () => {
           setShowEditor={setShowEditor}
         />
       </div>
-      <ModalContainer show={showModal} handleClose={handleModalClose}>
-        <RegistrationForm staff={false} customer={true} />
-      </ModalContainer>
     </>
   )
 }

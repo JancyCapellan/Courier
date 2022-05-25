@@ -117,7 +117,38 @@ img {
   max-height: 100%;
 }
 /* more global css */
+.btn-31 {
+  background-color: rgb(0, 0, 0);
+  border-radius: 4px;
+  border-style: none;
+  box-sizing: border-box;
+  color: #fff;
+  cursor: pointer;
+  display: inline-block;
+  font-family: 'Farfetch Basis', 'Helvetica Neue', Arial, sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.5;
+  margin: 0;
+  max-width: none;
+  min-height: 44px;
+  min-width: 10px;
+  outline: none;
+  overflow: hidden;
+  padding: 9px 20px 8px;
+  position: relative;
+  text-align: center;
+  text-transform: none;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  width: 100%;
+}
 
+.btn-31:hover,
+.btn-31:focus {
+  opacity: 0.75;
+}
 .btn {
   text-transform: uppercase;
   background: var(--clr-primary);
@@ -347,52 +378,24 @@ Customer Manager
 ================
 */
 
-.customer-manager-page {
-  display: grid;
-  gap: 20px;
-  grid-template-columns: min-content min-content;
-
-  grid-template-rows: auto auto;
-
-  grid-template-areas:
-    'customer-search add-customer-btn'
-    'customers-table customers-info-table';
-  grid-area: main;
+.customer-page-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .customer-search {
-  grid-area: 'customer-search';
-  display: flex;
-  margin-bottom: auto;
+  /* display: flex;
+  flex-direction: row; */
 }
-
 .customer-search-label {
-  margin: 0;
-}
-
-.customer-search-btn {
-  /* grid-area: 'customer-search-btn'; */
-  align-self: flex-end;
-  height: min-content;
-}
-
-.customer-table-row:hover {
-  background-color: yellow;
+  display: flex;
+  flex-direction: row;
 }
 
 .add-customer-btn {
-  width: min-content;
-  grid-area: 'add-customer-btn';
+  width: 25%;
 }
-
-.customers-table {
-  grid-area: 'customers-table';
-}
-
-.customers-info-table {
-  grid-area: 'customers-info-table';
-}
-
 /*
 ================
 MODAL HOC

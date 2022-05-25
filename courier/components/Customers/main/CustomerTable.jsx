@@ -49,7 +49,7 @@ function CustomerTable({ search, setCurrentUser }) {
   return (
     <>
       <section className='customers-table'>
-        <h3>Customers</h3>
+        {/* <h3>Customers</h3> */}
         <table>
           <tbody>
             <tr>
