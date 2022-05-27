@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import CustomerTable from '../../components/Customers/main/CustomerTable'
 import ModalContainer from '../../components/HOC/ModalContainer'
-import RegistrationForm from '../../components/RegistrationForm'
+import RegistrationFormModal from '../../components/RegistrationFormModal'
 import Layout from '../../components/Layout'
 
 const Customers = () => {
@@ -55,7 +55,7 @@ const Customers = () => {
           Create Customer
         </button>
         <ModalContainer show={showModal} handleClose={handleModalClose}>
-          <RegistrationForm staff={false} customer={true} handleClose={handleModalClose} />
+          <RegistrationFormModal staff={false} customer={true} handleClose={handleModalClose} />
         </ModalContainer>
 
         <CustomerTable

@@ -1,20 +1,3 @@
-html,
-body {
-  height: 100vh;
-}
-
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu',
-    'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
-}
-
 /*
 ===============
 Variables
@@ -46,16 +29,31 @@ Variables
   --animation-duration: 200ms;
   --animation-timing-curve: ease-in-out;
 }
+
+/*
+===============
+Variables
+===============
+*/
+@font-face {
+  font-family: 'Noto Sans';
+  src: url(../assests/fonts/Noto_Sans/NotoSans-Regular.ttf) format('truetype');
+}
+
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
+html,
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell,
-    'Open Sans', 'Helvetica Neue', sans-serif;
-  background: var(--clr-grey-10);
-  color: var(--clr-grey-1);
+  height: 100vh;
+}
+body {
+  font-family: 'Noto sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu,
+    Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  /* background: var(--clr-grey-10); */
+  /* color: var(--clr-grey-1); */
   line-height: 1.5;
   font-size: 0.875rem;
 }
@@ -179,19 +177,28 @@ td {
 ul {
   list-style-type: none;
 }
-/*
-===============
-multi-page styles
-===============
-*/
+
 .page-title {
   text-align: center;
   padding-bottom: 40px;
 }
 
-/* #__next {
-  height: 100vh;
-} */
+/*
+===============
+Formik form fields
+===============
+*/
+
+.formik-input-container {
+  display: flex;
+  flex-direction: column;
+}
+
+/*
+===============
+Formik form fields
+===============
+*/
 
 /*
 ===============
@@ -567,9 +574,6 @@ input[type='password'] {
   background-color: white;
 }
 
-.form-input-container {
-}
-
 .test {
   color: black;
 }
@@ -581,6 +585,27 @@ input[type='password'] {
 signin page
 ===============
 */
+
+/*
+===============
+Register page
+===============
+*/
+
+.register-page-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+/*
+===============
+Register page
+===============
+*/
+
 /*
 ===============
 Cart

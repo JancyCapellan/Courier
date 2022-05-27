@@ -42,7 +42,7 @@ const registerUser = async (form) => {
   // }
 }
 
-const RegistrationForm = ({
+const RegistrationFormModal = ({
   staff: registeringStaff,
   customer: registeringCustomer = false,
   handleClose,
@@ -157,4 +157,4 @@ const RegistrationForm = ({
   )
 }
 
-export default RegistrationForm
+export default RegistrationFormModal
