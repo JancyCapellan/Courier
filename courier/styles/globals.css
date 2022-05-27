@@ -588,7 +588,7 @@ signin page
 
 /*
 ===============
-Register page
+Register page / Registration page
 ===============
 */
 
@@ -598,6 +598,19 @@ Register page
   justify-content: center;
   align-items: center;
   height: 100vh;
+}
+
+.register-page-container > h1 {
+  margin-bottom: 100px;
+}
+
+.register-page-container > form {
+  min-width: 25%;
+  max-width: 50%;
+}
+
+.register-page-container > a {
+  color: blue;
 }
 
 /*

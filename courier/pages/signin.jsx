@@ -9,9 +9,12 @@ export default function SignIn({ csrfToken }) {
   const router = useRouter()
   const [error, setError] = useState(null)
 
+  console.log('router', router.query?.didRegister)
+
   return (
     <div className='signin-page-container'>
       <h1>LOGIN TO APP</h1>
+      {router.query?.didRegister ? <p>REGISTERED SUCCESSFUL</p> : <></>}
       {error ? (
         <p>
           THERE WAS AN ERROR WHILE LOGGING. CHECK TO MAKE SURE THAT YOU ARE USING THE CORRECT

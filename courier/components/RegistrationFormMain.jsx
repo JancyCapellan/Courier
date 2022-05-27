@@ -29,7 +29,7 @@ const RegistrationFormMain = () => {
     firstName: Yup.string()
       .min(2, '*Names must have at least 2 characters')
       .max(100, "*Names can't be longer than 100 characters")
-      .required('*First Name is required'),
+      .required('First Name is required'),
 
     middleName: Yup.string()
       .min(2, '*Names must have at least 2 characters')
@@ -38,12 +38,12 @@ const RegistrationFormMain = () => {
     lastName: Yup.string()
       .min(2, '*Names must have at least 2 characters')
       .max(100, "*Names can't be longer than 100 characters")
-      .required('*Last Name is required'),
+      .required('Last Name is required'),
 
     email: Yup.string()
       .email('*Must be a valid email address')
       .max(100, '*Email must be less than 100 characters')
-      .required('*Email is required'),
+      .required('Email is required'),
 
     password: Yup.string().required('* required'),
     password2: Yup.string().required('* required'),
@@ -61,8 +61,8 @@ const RegistrationFormMain = () => {
     // delete values.password2
     postRegisterUser.mutate(values)
     Router.push({
-      pathname: '/signin?successfulRegistration=true',
-      query: { registered: true },
+      pathname: '/signin',
+      query: { didRegister: true },
     })
   }
 
@@ -85,18 +85,16 @@ const RegistrationFormMain = () => {
                 name='password2'
               />
 
-              <FormikControl control='select' label='role' name='role' options={selectOptions} />
-
               <button type='submit' disabled={!formik.isValid}>
                 Submit
               </button>
+              <div>
+                Have an Account Already? <Link href='/signin'> Login </Link>
+              </div>
             </Form>
           )
         }}
       </Formik>
-      <div>
-        Have an Account Already? <Link href='/'> Login </Link>
-      </div>
     </>
   )
 }
