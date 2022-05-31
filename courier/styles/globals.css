@@ -391,9 +391,9 @@ Customer Manager
   justify-content: center;
 }
 
-.customer-search {
-  /* display: flex;
-  flex-direction: row; */
+.customer-search-form {
+  display: flex;
+  flex-direction: row;
 }
 .customer-search-label {
   display: flex;

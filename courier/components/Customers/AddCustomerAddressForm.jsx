@@ -7,8 +7,9 @@ import ModalContainer from '../HOC/ModalContainer'
 
 const AddCustomerAddressForm = ({ show, handleClose, currentUser, edit }) => {
   // i set select options default here, but will try to make dynamic
+  console.log('current user for order', currentUser)
   const initialValues = {
-    users_id: `${currentUser.id}`,
+    users_id: `currentUser?.id`,
     address: '',
     address2: '',
     address3: '',

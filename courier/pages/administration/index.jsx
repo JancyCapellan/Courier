@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 // import Sidebar from '../../components/Sidebar'
-import RegistrationForm from '../../components/RegistrationForm.jsx'
+import RegistrationFormModal from '../../components/RegistrationFormModal.jsx'
 import ModalContainer from '../../components/HOC/ModalContainer'
 import axios from 'axios'
 import { Formik, Form } from 'formik'
@@ -25,7 +25,7 @@ const Administration = () => {
           Create Staff
         </button>
         <ModalContainer show={showModal} handleClose={handleModalClose}>
-          <RegistrationForm staff={true} />
+          <RegistrationFormModal staff={true} />
         </ModalContainer>
 
         <DriverTable />

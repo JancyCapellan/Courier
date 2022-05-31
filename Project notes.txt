@@ -28,6 +28,9 @@ npm packages
 
 TODO
 -------
+
+system design document and architectural diagrams
+
 1. when user is logged in and tried to got to home page redirect to app before homepage content shows. 
 2. fix administration page layout, use react query to handle client side query.
 3. choose pickup routes instead of drivers for pickups, drivers get route, will havve option to choose driver also since its mostly done expect error checking
@@ -41,6 +44,7 @@ TODO
 11. Client Relation Manager for handling concerns and questions. 
 12. whats app intergration for crm
 13. fix refresh token for nextauth
+
 
 
 QUESTIONS

@@ -1,24 +1,6 @@
 const express = require('express')
 const router = express.Router()
 const user = require('../controllers/user.newcontroller.js')
-const jwt = require('jsonwebtoken')
-
-function authenticateToken(req, res, next) {
-  const authHeader = req.headers['authorization']
-  const token = authHeader && authHeader.split(' ')[1]
-  if (token == null) return res.sendStatus(401)
-
-  jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
-    // console.log(err)
-    if (err) return res.sendStatus(403)
-    req.user = user
-    next()
-  })
-}
-
-function ISOTimeToReadable(req, res, next) {
-  next()
-}
 
 /*************
  *  USER CRUD
@@ -29,9 +11,10 @@ router.post('/register', user.register)
 //login - prisma
 router.post('/login', user.login)
 // get info after successful login - prisma
-router.get('/loggedInUser', authenticateToken, user.getloggedInUser)
+// router.get('/loggedInUser', authenticateToken, user.getloggedInUser)
 // search customers for customer manager customer table
 router.get('/customerSearch', user.customerSearch)
+router.post('/addresses/add/:userId', user.addUserAddress)
 
 // Update a user with userId
 router.put('/:userId', user.update)
@@ -54,7 +37,7 @@ router.get('/all', user.findAll)
 router.get('/addresses/:userId', user.getAddressesWithId)
 
 // Add user addrerss with userId
-router.post('/addresses/add/:userId', user.AddAddress)
+// router.post('/addresses/add/:userId', user.AddAddress)
 
 // update address with addressId
 router.put('/addresses/update/:addressId', user.updateAddress)

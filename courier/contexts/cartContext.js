@@ -12,7 +12,7 @@ const initialState = {
   total: 0,
   amount: 0,
   formDetails: {},
-  currentOrderUser: {},
+  userForCurrentOrderForm: {},
 }
 
 // redundat, marked for deletion

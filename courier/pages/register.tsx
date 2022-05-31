@@ -4,7 +4,7 @@ import RegistrationFormMain from '../components/RegistrationFormMain.jsx'
 const Register: NextPage = () => {
   return (
     <div className=' register-page-container'>
-      <RegistrationFormMain staff={false} />
+      <RegistrationFormMain />
     </div>
   )
 }

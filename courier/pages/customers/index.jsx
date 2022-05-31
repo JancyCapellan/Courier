@@ -7,7 +7,7 @@ import Layout from '../../components/Layout'
 const Customers = () => {
   const [value, setValue] = useState('')
   const [search, setSearch] = useState(value)
-  const [currentUser, setCurrentUser] = useState({})
+  const [selectedCustomer, setSelectedCustomer] = useState({})
   const [showModal, setShowModal] = useState(false)
   const [showEditor, setShowEditor] = useState(false)
 
@@ -18,14 +18,14 @@ const Customers = () => {
   }
 
   const handleSubmit = (e) => {
-    setCurrentUser({})
+    setSelectedCustomer({})
     e.preventDefault()
     setSearch(value)
   }
 
   useEffect(() => {
-    console.log('currrentUser', currentUser)
-  }, [currentUser, setCurrentUser])
+    console.log('currrentUser', selectedCustomer)
+  }, [selectedCustomer, setSelectedCustomer])
 
   return (
     <>
@@ -33,7 +33,7 @@ const Customers = () => {
         <h1 className='page-title'>Customer Manager</h1>
 
         <div className='customer-search'>
-          <form id='customer-search-form' onSubmit={handleSubmit}>
+          <form className='customer-search-form' onSubmit={handleSubmit}>
             <label className='customer-search-label' htmlFor='search'>
               Search Customer
               <input
@@ -44,10 +44,10 @@ const Customers = () => {
                 onChange={(e) => setValue(e.target.value)}
               ></input>
             </label>
+            <button form='searchForm' onSubmit={() => handleSubmit()}>
+              search
+            </button>
           </form>
-          <button form='searchForm' className='customer-search-btn' onSubmit={handleSubmit}>
-            search
-          </button>
         </div>
 
         {/* opens modal form */}
@@ -60,7 +60,7 @@ const Customers = () => {
 
         <CustomerTable
           search={search}
-          setCurrentUser={setCurrentUser}
+          setCurrentUser={setSelectedCustomer}
           setShowEditor={setShowEditor}
         />
       </div>

@@ -29,9 +29,9 @@ const Order = ({ products }) => {
   // const [value, setValue] = useState('')
   // const [user, setUser] = useState()
 
-  const { currentOrderUser } = useCart()
+  const { userForCurrentOrderForm } = useCart()
   // useEffect(() => {
-  //   console.log('Order for user', currentOrderUser)
+  //   console.log('Order for user', userForCurrentOrderForm)
   // }, [])
 
   const handlePage = (pageCode) => {
@@ -42,7 +42,7 @@ const Order = ({ products }) => {
   function ComponentSwitcher({ handlePage }) {
     switch (currentPage) {
       case 1:
-        return <SenderFormAdmin currentUser={currentOrderUser} handlePage={handlePage} />
+        return <SenderFormAdmin currentUser={userForCurrentOrderForm} handlePage={handlePage} />
       case 2:
         return <Items handlePage={handlePage} products={products} />
       case 3:

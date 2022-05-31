@@ -262,35 +262,8 @@ exports.getAddressesWithId = (req, res) => {
   // if (addresses) res.send(addresses)
 }
 
-exports.AddAddress = (req, res) => {
-  const id = req.params.userId
-  const form = req.body
-  let address = [
-    form.users_id,
-    form.address,
-    form.address2,
-    form.address3,
-    form.city,
-    form.state,
-    form.postal_code,
-    form.country,
-    form.cellphone,
-    form.telephone,
-  ]
-
-  User.addAddress(address, (err, data) => {
-    if (err) {
-      if (err.kind === 'not_found') {
-        res.status(404).send({
-          message: `Not found Customer with id ${id}.`,
-        })
-      } else {
-        res.status(500).send({
-          message: 'Error retrieving Customer with id ' + id,
-        })
-      }
-    } else res.send(data)
-  })
+exports.addUserAddress = (req, res) => {
+  debug(req.body)
 }
 
 exports.updateAddress = (req, res) => {
