@@ -10,12 +10,15 @@ function CustomerTable({ search, setCurrentUser }) {
 
   // TODO: api/services/app/Customer/GetAll?Filter=m&SkipCount=0&MaxResultCount=10... going to use react table for pagination and filtering
 
+  // change effect to use query
+  //
+
   useEffect(() => {
     async function getCustomers() {
       try {
         let res = await axios.get(`http://localhost:3000/user/customerSearch?search=${search}`)
         if (res.status === 200) {
-          // console.log('herere', res.data)
+          console.log('herere', res.data)
           setSearchResults(res.data)
         }
       } catch (error) {

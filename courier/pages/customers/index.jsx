@@ -3,6 +3,7 @@ import CustomerTable from '../../components/Customers/main/CustomerTable'
 import ModalContainer from '../../components/HOC/ModalContainer'
 import RegistrationFormModal from '../../components/RegistrationFormModal'
 import Layout from '../../components/Layout'
+import { useGlobalStore } from '../../store/globalStore'
 
 const Customers = () => {
   const [value, setValue] = useState('')
@@ -10,6 +11,8 @@ const Customers = () => {
   const [selectedCustomer, setSelectedCustomer] = useState({})
   const [showModal, setShowModal] = useState(false)
   const [showEditor, setShowEditor] = useState(false)
+
+  const bears = useGlobalStore((state) => state.bears)
 
   const handleModalClose = () => {
     console.log('close modal')

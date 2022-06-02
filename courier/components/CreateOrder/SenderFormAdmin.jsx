@@ -22,6 +22,8 @@ const SenderFormAdmin = ({ currentUser, handlePage }) => {
   const [showModal, setShowModal] = useState(false)
   const { addForm, formDetails } = useCart()
 
+  console.log(currentUser)
+
   // const history = useHistory()
   // const shipperSelectRef = useRef(null)
 
