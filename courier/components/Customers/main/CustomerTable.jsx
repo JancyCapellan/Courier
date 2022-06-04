@@ -2,32 +2,41 @@ import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import { useCart } from '../../../contexts/cartContext'
 import { useRouter } from 'next/router'
+import { useQuery } from 'react-query'
+import { useGlobalStore } from '../../../store/globalStore'
 
-function CustomerTable({ search, setCurrentUser }) {
-  const [searchResults, setSearchResults] = useState([])
+function CustomerTable({ search }) {
+  // const [searchResults, setSearchResults] = useState([])
   const { changeCurrentOrderUser } = useCart()
+
+  const setCurrentCustomer = useGlobalStore((state) => state.setCurrentCustomer)
   const router = useRouter()
 
-  // TODO: api/services/app/Customer/GetAll?Filter=m&SkipCount=0&MaxResultCount=10... going to use react table for pagination and filtering
+  const getCustomerList = async () => {
+    const { data } = await axios.get(`http://localhost:3000/user/customerSearch?search=${search}`)
+    return data
+  }
+  const { data: customerList, status: getCustomerListStatus } = useQuery(
+    'getCustomerList',
+    getCustomerList
+  )
 
-  // change effect to use query
-  //
+  // useEffect(() => {
 
-  useEffect(() => {
-    async function getCustomers() {
-      try {
-        let res = await axios.get(`http://localhost:3000/user/customerSearch?search=${search}`)
-        if (res.status === 200) {
-          console.log('herere', res.data)
-          setSearchResults(res.data)
-        }
-      } catch (error) {
-        console.log('getcustomer', error)
-      }
-    }
-    getCustomers(search)
-    // console.log(searchResults)
-  }, [search, setSearchResults])
+  //   async function getCustomers() {
+  //     try {
+  //       let res = await axios.get(`http://localhost:3000/user/customerSearch?search=${search}`)
+  //       if (res.status === 200) {
+  //         console.log('herere', res.data)
+  //         setSearchResults(res.data)
+  //       }
+  //     } catch (error) {
+  //       console.log('getcustomer', error)
+  //     }
+  //   }
+  //   getCustomers(search)
+  //   // console.log(searchResults)
+  // }, [search, setSearchResults])
 
   function openCustomerAccountPage(user) {
     switch (user.role) {
@@ -59,30 +68,39 @@ function CustomerTable({ search, setCurrentUser }) {
               <th>ID</th>
               <th>Name</th>
             </tr>
-            {searchResults.map((user) => {
-              return (
-                <tr className='customer-table-row' key={user.id}>
-                  <td onClick={() => setCurrentUser(user)}>{user.id}</td>
-                  <td onClick={() => openCustomerAccountPage(user)}>
-                    {user.firstName} {user.middleName} {user.lastName}
-                  </td>
-                  <td>
-                    <button
-                      onClick={() => {
-                        console.log(`move to order page with ${user.firstName} info`)
-                        setCurrentUser(user)
-                        changeCurrentOrderUser(user)
-                        router.push({
-                          pathname: `/order`,
-                        })
-                      }}
-                    >
-                      order
-                    </button>
-                  </td>
-                </tr>
-              )
-            })}
+            {getCustomerListStatus === 'success' &&
+              customerList.map((customer) => {
+                return (
+                  <tr
+                    className='customer-table-row'
+                    onClick={() => {
+                      setCurrentCustomer(customer)
+                    }}
+                    key={customer.id}
+                  >
+                    <td>{customer.id}</td>
+                    <td onClick={() => openCustomerAccountPage(customer)}>
+                      {customer.firstName} {customer.middleName} {customer.lastName}
+                    </td>
+                    <td>
+                      <button
+                        onClick={() => {
+                          console.log(`move to order page with ${customer.firstName} info`)
+                          // setCurrentUser(user)
+                          setCurrentCustomer(customer)
+
+                          changeCurrentOrderUser(customer)
+                          router.push({
+                            pathname: `/order`,
+                          })
+                        }}
+                      >
+                        order
+                      </button>
+                    </td>
+                  </tr>
+                )
+              })}
           </tbody>
         </table>
       </section>

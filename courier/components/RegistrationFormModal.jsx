@@ -7,46 +7,7 @@ import { useEffect } from 'react'
 import axios from 'axios'
 import { useMutation } from 'react-query'
 
-const registerUser = async (form) => {
-  const postRegistration = async () => {
-    try {
-      delete form.password2
-      const res = await axios.post('http://localhost:3000/user/register', form)
-      console.log('REGISTER RES HERE', res)
-      return res
-    } catch (error) {
-      console.log(error)
-
-      // return 500
-    }
-  }
-
-  // console.log('Registeration form', form)
-  // const res = await postRegistration(form)
-  // console.log('REGISTRATION', res)
-  // switch (res.status) {
-  //   case 200:
-  //     alert('registration completed')
-  //     return true
-
-  //   case 204:
-  //     alert('ERROR WHILE COMPLETING REGISTRATION')
-  //     return false
-
-  //   case 500:
-  //     alert('ERROR WHILE REGISTRATING')
-  //     return false
-
-  //   default:
-  //     throw new Error('res code not 200 or 204')
-  // }
-}
-
-const RegistrationFormModal = ({
-  staff: registeringStaff,
-  customer: registeringCustomer = false,
-  handleClose,
-}) => {
+const RegistrationFormModal = ({ isRegisteringStaff, closeModal }) => {
   // useEffect(() => {
   //   console.log('staff', staff, 'customer', customer)
   // }, [])
@@ -103,21 +64,8 @@ const RegistrationFormModal = ({
     // delete values.password2
     postRegisterUser.mutate(values)
     resetForm()
-    handleClose && handleClose()
-    // setTimeout(() => {
-    //   if (values.password !== values.password2) {
-    //     alert('passwords do not match')
-    //   } else {
-    //     if (register(values)) {
-    //       registeringCustomer
-    //         ? Router.reload()
-    //         : registeringStaff
-    //         ? Router.push('/customers')
-    //         : Router.push('/')
-    //     }
-    //     // console.log(values)
-    //   }
-    // }, 1000)
+    // handleClose && handleClose()
+    closeModal()
   }
 
   return (

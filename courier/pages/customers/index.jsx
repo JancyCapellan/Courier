@@ -8,16 +8,16 @@ import { useGlobalStore } from '../../store/globalStore'
 const Customers = () => {
   const [value, setValue] = useState('')
   const [search, setSearch] = useState(value)
-  const [selectedCustomer, setSelectedCustomer] = useState({})
+
+  // const [selectedCustomer, setSelectedCustomer] = useState({})
+
   const [showModal, setShowModal] = useState(false)
   const [showEditor, setShowEditor] = useState(false)
 
-  const bears = useGlobalStore((state) => state.bears)
+  const currentCustomer = useGlobalStore((state) => state.currentCustomer)
 
-  const handleModalClose = () => {
-    console.log('close modal')
-    setShowModal(false)
-    setShowEditor(false)
+  const toggleModal = () => {
+    setShowModal(!showModal)
   }
 
   const handleSubmit = (e) => {
@@ -25,10 +25,6 @@ const Customers = () => {
     e.preventDefault()
     setSearch(value)
   }
-
-  useEffect(() => {
-    console.log('currrentUser', selectedCustomer)
-  }, [selectedCustomer, setSelectedCustomer])
 
   return (
     <>
@@ -53,19 +49,14 @@ const Customers = () => {
           </form>
         </div>
 
-        {/* opens modal form */}
-        <button className='btn-31 add-customer-btn' onClick={() => setShowModal(true)}>
+        <button className='btn-31 add-customer-btn' onClick={() => toggleModal()}>
           Create Customer
         </button>
-        <ModalContainer show={showModal} handleClose={handleModalClose}>
-          <RegistrationFormModal staff={false} customer={true} handleClose={handleModalClose} />
+        <ModalContainer show={showModal} handleClose={toggleModal}>
+          <RegistrationFormModal isRegisteringStaff={false} closeModal={toggleModal} />
         </ModalContainer>
 
-        <CustomerTable
-          search={search}
-          setCurrentUser={setSelectedCustomer}
-          setShowEditor={setShowEditor}
-        />
+        <CustomerTable search={search} />
       </div>
     </>
   )
