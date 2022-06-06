@@ -37,13 +37,14 @@ system design document and architectural diagrams
 4. add  to the prisma schema one table for routes/areacode list and add relation to order for those routes. every order has a route, many orders in the tables have each one routes from many routes list, which will be seperated by warehouse those routes are centered around. 
 5. lot of filtering options for assigning pickup routes
 6. stops for tmmr become a invoices after completed, same thing but make them different 
-7. checkbox slkelection for batch assingment of driver, checkobx on the iright is checked if a diriver has been assigned
+7. checkbox selection for batch assingment of driver, checkobx on the right is checked if a diriver has been assigned
 8. filter date, not aissgned has to be select to be able to click assign in current website, then zone , then checkbox, select driver then assign zone.
 9. value of the container, value collected, leftover balance, close invoice = account for every item in container after second check  , close warehouse = after containter leaves warehosue and the trucker is pad, 
 10. branches can be managed by inter branch authorized workers, sect and admin, 
 11. Client Relation Manager for handling concerns and questions. 
 12. whats app intergration for crm
 13. fix refresh token for nextauth
+
 
 
 
@@ -54,3 +55,7 @@ QUESTIONS
 2. how are they host or were they hosting the original website.\
 3. any owner/ top role specific tasks 
 4. 
+
+
+DONE TODOS
+-----------

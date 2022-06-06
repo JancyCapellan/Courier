@@ -5,12 +5,10 @@ import Link from 'next/link'
 import Router from 'next/router'
 import { useEffect } from 'react'
 import axios from 'axios'
-import { useMutation } from 'react-query'
+import { useMutation, useQueryClient } from 'react-query'
 
 const RegistrationFormModal = ({ isRegisteringStaff, closeModal }) => {
-  // useEffect(() => {
-  //   console.log('staff', staff, 'customer', customer)
-  // }, [])
+  const queryClient = useQueryClient()
 
   const initialValues = {
     firstName: '',
@@ -51,17 +49,28 @@ const RegistrationFormModal = ({ isRegisteringStaff, closeModal }) => {
     password: Yup.string().required('* required'),
     password2: Yup.string().required('* required'),
   })
-  const postRegisterUser = useMutation((newUser) => {
-    // delete newUser?.password2
-    return axios.post(process.env.NEXT_PUBLIC_API_URL + 'user/register', newUser)
-  })
+
+  const postRegisterUser = useMutation(
+    (newUser) => {
+      return axios.post(process.env.NEXT_PUBLIC_API_URL + 'user/register', newUser)
+    },
+    {
+      onSuccess: (query) => {
+        console.log('data', query)
+        queryClient.setQueryData('getCustomerList', (oldData) => {
+          console.log('olddata', oldData)
+          return [...oldData, query.data]
+        })
+      },
+    }
+  )
   const onSubmit = async (values, { setSubmitting, resetForm }) => {
-    console.log('register', values)
     if (values.password !== values.password2) {
       alert('passwords do not match')
       return
     }
-    // delete values.password2
+    console.log('register', values)
+    delete values?.password2
     postRegisterUser.mutate(values)
     resetForm()
     // handleClose && handleClose()
@@ -70,7 +79,7 @@ const RegistrationFormModal = ({ isRegisteringStaff, closeModal }) => {
 
   return (
     <div>
-      {registeringStaff ? <h1>Create Staff Account</h1> : <h1> Reigstraion</h1>}
+      {isRegisteringStaff ? <h1>Create Staff Account</h1> : <h1> Reigstraion</h1>}
       <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={onSubmit}>
         {(formik) => {
           return (
@@ -86,7 +95,7 @@ const RegistrationFormModal = ({ isRegisteringStaff, closeModal }) => {
                 label='Re-enter Password'
                 name='password2'
               />
-              {registeringStaff ? (
+              {isRegisteringStaff ? (
                 <FormikControl control='select' label='role' name='role' options={selectOptions} />
               ) : (
                 <></>

@@ -31,7 +31,7 @@ const Customers = () => {
       <div className='customer-page-container'>
         <h1 className='page-title'>Customer Manager</h1>
 
-        <div className='customer-search'>
+        {/* <div className='customer-search'>
           <form className='customer-search-form' onSubmit={handleSubmit}>
             <label className='customer-search-label' htmlFor='search'>
               Search Customer
@@ -47,7 +47,7 @@ const Customers = () => {
               search
             </button>
           </form>
-        </div>
+        </div> */}
 
         <button className='btn-31 add-customer-btn' onClick={() => toggleModal()}>
           Create Customer

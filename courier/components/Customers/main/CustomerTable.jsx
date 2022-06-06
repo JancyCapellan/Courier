@@ -69,7 +69,7 @@ function CustomerTable({ search }) {
               <th>Name</th>
             </tr>
             {getCustomerListStatus === 'success' &&
-              customerList.map((customer) => {
+              customerList?.map((customer) => {
                 return (
                   <tr
                     className='customer-table-row'
