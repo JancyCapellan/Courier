@@ -1,8 +1,6 @@
 import NextAuth from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
-import { PrismaAdapter } from '@next-auth/prisma-adapter'
 import { PrismaClient } from '@prisma/client'
-import axios from 'axios'
 
 const prisma = new PrismaClient()
 const nextAuthOptions = (req, res) => {

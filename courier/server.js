@@ -1,15 +1,15 @@
 //3rd party modules
-const express = require('express')
+import express from 'express'
 // const cookieParser = require('cookie-parser')
-const logger = require('morgan')
-const cors = require('cors')
-const next = require('next')
+import logger from 'morgan'
+import cors from 'cors'
+import next from 'next'
 
 //custom modules
 // const indexRouter = require('./routes/index.route')
-const userRouter = require('./expressApi/routes/user.route')
-const orderRouter = require('./expressApi/routes/order.route')
-const servicesRouter = require('./expressApi/routes/services.route')
+import userRouter from './expressApi/routes/user.route.js'
+import orderRouter from './expressApi/routes/order.route.js'
+import servicesRouter from './expressApi/routes/services.route.js'
 //server start
 
 const dev = process.env.NODE_ENV !== 'production'
@@ -48,4 +48,4 @@ app
     process.exit(1)
   })
 
-module.exports = server
+export default server

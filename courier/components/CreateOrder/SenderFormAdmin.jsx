@@ -6,8 +6,9 @@ import FormikControl from '../../components/Formik/FormikControl'
 import * as Yup from 'yup'
 import axios from 'axios'
 import SelectCustomerAddressesModal from './selectCustomerAddressesModal'
+import { useGlobalStore } from '../../store/globalStore'
 
-const SenderFormAdmin = ({ currentUser, handlePage }) => {
+const SenderFormAdmin = ({ handlePage }) => {
   const [selectedShipperAddress, setSelectedShipperAddress] = useState({
     address: '',
     address2: '',
@@ -22,7 +23,8 @@ const SenderFormAdmin = ({ currentUser, handlePage }) => {
   const [showModal, setShowModal] = useState(false)
   const { addForm, formDetails } = useCart()
 
-  console.log(currentUser)
+  const currentCustomer = useGlobalStore((state) => state.currentCustomer)
+  // console.log(currentUser)
 
   // const history = useHistory()
   // const shipperSelectRef = useRef(null)
@@ -42,9 +44,9 @@ const SenderFormAdmin = ({ currentUser, handlePage }) => {
   ]
   const initialValues = {
     shipper: {
-      userId: currentUser.id,
-      firstName: currentUser.firstName,
-      lastName: currentUser.lastName,
+      userId: currentCustomer.id,
+      firstName: currentCustomer.firstName,
+      lastName: currentCustomer.lastName,
       shippedFrom: {
         address_id: selectedShipperAddress.address_id,
         address: selectedShipperAddress.address,
@@ -126,7 +128,7 @@ const SenderFormAdmin = ({ currentUser, handlePage }) => {
         show={showModal}
         handleClose={handleModalClose}
         setAddress={setSelectedShipperAddress}
-        currentUser={currentUser}
+        currentUser={currentCustomer}
       />
 
       <p>selected address: {selectedShipperAddress.address}</p>

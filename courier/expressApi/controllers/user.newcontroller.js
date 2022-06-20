@@ -1,14 +1,12 @@
-const User = require('../models/user.model.js')
-const { PrismaClient } = require('@prisma/client')
-const jwt = require('jsonwebtoken')
-const { DateTime } = require('luxon')
-const { debug } = require('console')
+// import { prisma } from '../utils/globalPrismaClient'
+
+import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient()
 
-let refreshTokens = []
+import { debug } from 'console'
 
 // register new user
-exports.register = async (req, res) => {
+export const register = async (req, res) => {
   console.log('register')
   // Validate request
   if (!req.body) {
@@ -16,7 +14,6 @@ exports.register = async (req, res) => {
       message: 'Content can not be empty!',
     })
   }
-
   // have to remove the confirmation password from form submission,
   // might move to client sid
   delete req.body?.password2
@@ -27,7 +24,9 @@ exports.register = async (req, res) => {
         ...req.body,
       },
     })
-    res.json(result)
+    res.status(200).json(result)
+    // debug('here', result)
+    res.status(200)
   } catch (error) {
     debug(error)
     res.status(500).send('error registerting user')
@@ -35,7 +34,7 @@ exports.register = async (req, res) => {
 }
 
 // Login in user to correct site
-exports.login = async (req, res) => {
+export const login = async (req, res) => {
   if (!req.body) {
     res.status(400).send({
       message: 'Content can not be empty!',
@@ -68,7 +67,7 @@ exports.login = async (req, res) => {
 }
 
 // get user info after login
-exports.getloggedInUser = async (req, res) => {
+export const getloggedInUser = async (req, res) => {
   let user = req.user
   console.log('user', user)
 
@@ -85,7 +84,7 @@ exports.getloggedInUser = async (req, res) => {
   if (result) res.send(result)
 }
 
-exports.allDrivers = async (req, res) => {
+export const allDrivers = async (req, res) => {
   const branch = req.body.branch
   const drivers = await prisma.user.findMany({
     where: {
@@ -98,7 +97,7 @@ exports.allDrivers = async (req, res) => {
 }
 
 // Update a user identified by the userId in the request
-exports.update = async (req, res) => {
+export const update = async (req, res) => {
   const user = await prisma.user.update({
     where: { id: req.body.id },
     data: req.body,
@@ -110,7 +109,7 @@ exports.update = async (req, res) => {
   }
 }
 
-exports.customerSearch = async (req, res) => {
+export const customerSearch = async (req, res) => {
   console.log('search', req.query)
   // const search = toString(req.query.search)
   const search = req.query.search
@@ -158,10 +157,21 @@ exports.customerSearch = async (req, res) => {
     res.send(result)
   }
 }
+export const getAddressesWithUserId = async (req, res) => {
+  debug('request object:\n', req)
+  const userid = req.params.userId
+  debug(req.params)
+  const addresses = await prisma.address.findMany({
+    where: {
+      userId: userid,
+    },
+  })
 
-// ####################    OLD  ###########################
+  if (addresses) res.send(addresses)
+}
 
-exports.addItemToProductsList = (req, res) => {
+export const addUserAddress = async (req, res) => {
+  console.log('register')
   // Validate request
   if (!req.body) {
     res.status(400).send({
@@ -169,48 +179,30 @@ exports.addItemToProductsList = (req, res) => {
     })
   }
 
-  const productList = req.body
-  console.log(list)
-  User.addItemToProductList(productList, (err, data) => {
-    if (err) {
-      res.status(500).send({
-        message: err.message || 'Some error occurred while bulk adding items.',
-      })
-    } else res.status(200).send(data)
-  })
-}
+  const postalCode = parseInt(req.body.postalCode)
 
-exports.getUsers = (req, res) => {
-  // console.log(req)
-  User.getAllWithSearch(req.query.search, (err, data) => {
-    if (err) {
-      if (err.kind === 'not_found') {
-        res.status(404).send({
-          message: `Not found Customer with id ${req.params.customerId}.`,
-        })
-      } else {
-        res.status(500).send({
-          message: 'Error retrieving Customer with id ' + req.params.customerId,
-        })
-      }
-    } else res.status(200).send(data)
+  debug({
+    ...req.body,
+    postalCode,
   })
-}
+  try {
+    const result = await prisma.address.create({
+      data: {
+        ...req.body,
+        postalCode,
+      },
+    })
 
-// Retrieve all users from the database.
-exports.findAll = (req, res) => {
-  User.findAll((err, data) => {
-    console.log('data', data)
-    if (err)
-      res.status(500).send({
-        message: err.message || 'Some error occurred while retrieving users.',
-      })
-    else res.send(data)
-  })
+    res.status(200).json(result)
+    debug('add address result', result)
+  } catch (error) {
+    debug(error)
+    res.status(500).send('error registerting user')
+  }
 }
 
 // Find a single user with a userId
-exports.findOne = async (req, res) => {
+export const findOne = async (req, res) => {
   // const id = parseInt(req.params.userId)
   const id = req.params.userId
   const user = await prisma.user.findUnique({
@@ -221,79 +213,100 @@ exports.findOne = async (req, res) => {
   console.log('unique user', user)
   res.send(user)
 }
+// ####################    OLD  ###########################
 
-exports.findByName = (req, res) => {
-  User.findByName(req.params, (err, data) => {
-    if (err) {
-      if (err.kind === 'not_found') {
-        res.status(404).send({
-          message: `Not found Customer with id ${req.params.customerId}.`,
-        })
-      } else {
-        res.status(500).send({
-          message: 'Error retrieving Customer with id ' + req.params.customerId,
-        })
-      }
-    } else res.send(data)
-  })
-}
+// export const addItemToProductsList = (req, res) => {
+//   // Validate request
+//   if (!req.body) {
+//     res.status(400).send({
+//       message: 'Content can not be empty!',
+//     })
+//   }
 
-exports.getAddressesWithId = (req, res) => {
-  const id = req.params.userId
-  User.getAddresses(id, (err, data) => {
-    if (err) {
-      if (err.kind === 'not_found') {
-        res.status(404).send({
-          message: `Not found Customer with id ${id}.`,
-        })
-      } else {
-        res.status(500).send({
-          message: 'Error retrieving Customer with id ' + id,
-        })
-      }
-    } else res.send(data)
-  })
-  // const addresses = await prisma.address.findUnique({
-  //   where: {
-  //     id: id,
-  //   },
-  // })
+//   const productList = req.body
+//   console.log(list)
+//   User.addItemToProductList(productList, (err, data) => {
+//     if (err) {
+//       res.status(500).send({
+//         message: err.message || 'Some error occurred while bulk adding items.',
+//       })
+//     } else res.status(200).send(data)
+//   })
+// }
 
-  // if (addresses) res.send(addresses)
-}
+// export const getUsers = (req, res) => {
+//   // console.log(req)
+//   User.getAllWithSearch(req.query.search, (err, data) => {
+//     if (err) {
+//       if (err.kind === 'not_found') {
+//         res.status(404).send({
+//           message: `Not found Customer with id ${req.params.customerId}.`,
+//         })
+//       } else {
+//         res.status(500).send({
+//           message: 'Error retrieving Customer with id ' + req.params.customerId,
+//         })
+//       }
+//     } else res.status(200).send(data)
+//   })
+// }
 
-exports.addUserAddress = (req, res) => {
-  debug(req.body)
-}
+// // Retrieve all users from the database.
+// export const findAll = (req, res) => {
+//   User.findAll((err, data) => {
+//     console.log('data', data)
+//     if (err)
+//       res.status(500).send({
+//         message: err.message || 'Some error occurred while retrieving users.',
+//       })
+//     else res.send(data)
+//   })
+// }
 
-exports.updateAddress = (req, res) => {
-  let address = req.body
-  let addressId = req.params.addressId
-  console.log('HERE##')
-  User.updateAddress(addressId, address, (err, data) => {
-    if (err) {
-      console.log('ERROR', err)
-      if (err.kind === 'not_found') {
-        res.status(404).send({
-          message: `Cannot find address with id ${addressId}.`,
-        })
-      } else {
-        res.status(500).send({
-          message: 'Error updating address with id ' + addressId,
-        })
-      }
-    } else res.send(data)
-  })
-}
+// export const findByName = (req, res) => {
+//   User.findByName(req.params, (err, data) => {
+//     if (err) {
+//       if (err.kind === 'not_found') {
+//         res.status(404).send({
+//           message: `Not found Customer with id ${req.params.customerId}.`,
+//         })
+//       } else {
+//         res.status(500).send({
+//           message: 'Error retrieving Customer with id ' + req.params.customerId,
+//         })
+//       }
+//     } else res.send(data)
+//   })
+// }
+
+// export const updateAddress = (req, res) => {
+//   let address = req.body
+//   let addressId = req.params.addressId
+//   console.log('HERE##')
+//   User.updateAddress(addressId, address, (err, data) => {
+//     if (err) {
+//       console.log('ERROR', err)
+//       if (err.kind === 'not_found') {
+//         res.status(404).send({
+//           message: `Cannot find address with id ${addressId}.`,
+//         })
+//       } else {
+//         res.status(500).send({
+//           message: 'Error updating address with id ' + addressId,
+//         })
+//       }
+//     } else res.send(data)
+//   })
+// }
 
 // Delete a user with the specified userId in the request
 
-// exports.delete = (req, res) => {}
+// export const delete = (req, res) => {}
 
 // Delete all users from the database.
-// exports.deleteAll = (req, res) => {}
+// export const deleteAll = (req, res) => {}
 
-// exports.getAllOrders = (req, res) => {
+// export const getAllOrders = (req, res) => {
 //   User.getAllOrders((err, data) => {
 //     if (err) {
 //       console.log('ERROR', err)

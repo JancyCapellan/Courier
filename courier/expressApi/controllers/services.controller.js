@@ -1,8 +1,8 @@
-const { PrismaClient } = require('@prisma/client')
-const { debug } = require('console')
+import { PrismaClient } from '@prisma/client'
+import { debug } from 'console'
 const prisma = new PrismaClient()
 
-exports.allProducts = async (req, res) => {
+export const allProducts = async (req, res) => {
   const products = await prisma.product.findMany({
     select: {
       id: true,
@@ -19,7 +19,7 @@ exports.allProducts = async (req, res) => {
   res.json(products)
 }
 
-exports.addItem = async (req, res) => {
+export const addItem = async (req, res) => {
   try {
     debug(req.body)
     const item_name = req.body.item_name
@@ -40,7 +40,7 @@ exports.addItem = async (req, res) => {
   }
 }
 
-exports.addProductType = async (req, res) => {
+export const addProductType = async (req, res) => {
   const newType = req.body.new_type
   try {
     const addedType = await prisma.productType.create({ data: { type: newType } })
@@ -49,7 +49,7 @@ exports.addProductType = async (req, res) => {
   } catch (error) {}
 }
 
-exports.productTypes = async (req, res) => {
+export const productTypes = async (req, res) => {
   try {
     const types = await prisma.productType.findMany({})
 
@@ -73,7 +73,7 @@ exports.productTypes = async (req, res) => {
   }
 }
 
-exports.deleteProductType = async (req, res) => {
+export const deleteProductType = async (req, res) => {
   const typeId = parseInt(req.params.typeId)
   try {
     const deletedType = await prisma.productType.delete({

@@ -7,7 +7,7 @@ import { useGlobalStore } from '../../../store/globalStore'
 
 function CustomerTable({ search }) {
   // const [searchResults, setSearchResults] = useState([])
-  const { changeCurrentOrderUser } = useCart()
+  // const { changeCurrentOrderUser } = useCart()
 
   const setCurrentCustomer = useGlobalStore((state) => state.setCurrentCustomer)
   const router = useRouter()
@@ -20,23 +20,6 @@ function CustomerTable({ search }) {
     'getCustomerList',
     getCustomerList
   )
-
-  // useEffect(() => {
-
-  //   async function getCustomers() {
-  //     try {
-  //       let res = await axios.get(`http://localhost:3000/user/customerSearch?search=${search}`)
-  //       if (res.status === 200) {
-  //         console.log('herere', res.data)
-  //         setSearchResults(res.data)
-  //       }
-  //     } catch (error) {
-  //       console.log('getcustomer', error)
-  //     }
-  //   }
-  //   getCustomers(search)
-  //   // console.log(searchResults)
-  // }, [search, setSearchResults])
 
   function openCustomerAccountPage(user) {
     switch (user.role) {
@@ -87,9 +70,9 @@ function CustomerTable({ search }) {
                         onClick={() => {
                           console.log(`move to order page with ${customer.firstName} info`)
                           // setCurrentUser(user)
-                          setCurrentCustomer(customer)
+                          // setCurrentCustomer(customer)
 
-                          changeCurrentOrderUser(customer)
+                          // changeCurrentOrderUser(customer)
                           router.push({
                             pathname: `/order`,
                           })

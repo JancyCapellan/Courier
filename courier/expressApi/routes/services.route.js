@@ -1,11 +1,17 @@
-const express = require('express')
+import express from 'express'
 const router = express.Router()
-const services = require('../controllers/services.controller')
+import {
+  allProducts,
+  addItem,
+  productTypes,
+  addProductType,
+  deleteProductType,
+} from '../controllers/services.controller.js'
 
-router.get('/allProducts', services.allProducts)
-router.post('/addItem', services.addItem)
-router.get('/productTypes', services.productTypes)
-router.post('/addProductType', services.addProductType)
-router.delete('/deleteProductType/:typeId', services.deleteProductType)
+router.get('/allProducts', allProducts)
+router.post('/addItem', addItem)
+router.get('/productTypes', productTypes)
+router.post('/addProductType', addProductType)
+router.delete('/deleteProductType/:typeId', deleteProductType)
 
-module.exports = router
+export default router

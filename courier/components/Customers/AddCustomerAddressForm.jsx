@@ -2,20 +2,23 @@ import React, { useEffect } from 'react'
 import { Formik, Form } from 'formik'
 import FormikControl from '../../components/Formik/FormikControl'
 import * as Yup from 'yup'
-import Axios from 'axios'
+import axios from 'axios'
 import ModalContainer from '../HOC/ModalContainer'
+import { useGlobalStore } from '../../store/globalStore'
 
-const AddCustomerAddressForm = ({ show, handleClose, currentUser, edit }) => {
+const AddCustomerAddressForm = ({ show, handleClose, edit }) => {
   // i set select options default here, but will try to make dynamic
-  console.log('current user for order', currentUser)
+
+  const currentCustomer = useGlobalStore((state) => state.currentCustomer)
+  console.log('current user for order', currentCustomer)
   const initialValues = {
-    users_id: currentUser.id,
+    userId: currentCustomer.id,
     address: '',
     address2: '',
     address3: '',
     city: '',
     state: '',
-    postal_code: '',
+    postalCode: '',
     country: 'USA',
     cellphone: '',
     telephone: '',
@@ -32,11 +35,12 @@ const AddCustomerAddressForm = ({ show, handleClose, currentUser, edit }) => {
 
   const AddCustomerAddress = async (values) => {
     try {
-      const res = await Axios.post(
-        `http://localhost:3000/user/addresses/add/${currentUser.id}`,
+      const res = await axios.post(
+        `http://localhost:3000/user/addresses/add/${currentCustomer.id}`,
         values
       )
       if (res.status === 200) alert('Successfully Added')
+      console.log('add address response', res)
       return res
     } catch (err) {
       console.error(err)
@@ -74,11 +78,11 @@ const AddCustomerAddressForm = ({ show, handleClose, currentUser, edit }) => {
                 <FormikControl control='input' type='text' label='Address line 1' name='address' />
                 <FormikControl control='input' type='text' label='Address line 2' name='address2' />
                 <FormikControl control='input' type='text' label='Address line 3' name='address3' />
-                <FormikControl control='input' type='text' label='city' name='city' />
-                <FormikControl control='input' type='text' label='state' name='state' />
-                <FormikControl control='input' type='text' label='postal code' name='postal_code' />
-                <FormikControl control='input' type='text' label='cellphone' name='cellphone' />
-                <FormikControl control='input' type='text' label='telephone' name='telephone' />
+                <FormikControl control='input' type='text' label='City' name='city' />
+                <FormikControl control='input' type='text' label='State' name='state' />
+                <FormikControl control='input' type='text' label='Postal code' name='postalCode' />
+                <FormikControl control='input' type='text' label='Cellphone' name='cellphone' />
+                <FormikControl control='input' type='text' label='Telephone' name='telephone' />
                 <button type='submit' disabled={!formik.isValid}>
                   Submit
                 </button>

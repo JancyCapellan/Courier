@@ -7,7 +7,7 @@ npm packages
 	seem to be better suited for lightweighter quick forms, form builder also seems to be a great time saver.
 4. svgo, for svg optimizations
 5. mantine, for ui library, maybe
-6. zod, for validation, alt to YUP
+6. zod, for validation, alt to YUP but not native for formik validation, more useful for api and adding to TS runtime type validating (TS does not runtime validate just like JS, this helps catch those errors) ***
 7. msw, mocking server package
 8. cypress, tester package
 9. easy-peasy, another minimal state management library
@@ -24,6 +24,8 @@ npm packages
 20. tina, open source headless cms
 21. keystone, headless cms seems to be partnered with prisma
 22. directus, headless cms that can be used with existing sql database, current best choice.
+23. winston logger, semi-atl to morgan that requires customization, but combined with morgan gives us the power of the defaults for morgan.
+24. lodash, small utility library with a lot of useful functions
 
 
 TODO
@@ -45,6 +47,8 @@ system design document and architectural diagrams
 12. whats app intergration for crm
 13. fix refresh token for nextauth
 
+14. use morgan and winston together to full level of logging (lower priority)
+
 
 
 
@@ -55,7 +59,7 @@ QUESTIONS
 2. how are they host or were they hosting the original website.\
 3. any owner/ top role specific tasks 
 4. 
-
+-
 
 DONE TODOS
 -----------

@@ -1,19 +1,27 @@
-const express = require('express')
+import express from 'express'
 const router = express.Router()
-const order = require('../controllers/order.controller')
+import {
+  submitOrderPrisma,
+  getAllOrders,
+  getUserOrders,
+  getUserOrderInfo,
+  getAllProducts,
+  getOrderInfo,
+  updateOrder,
+} from '../controllers/order.controller.js'
 
 /*************
  *  ORDER CRUD
  **************/
 
-router.post('/submitOrder', order.submitOrderPrisma)
-router.get('/allOrders', order.getAllOrders)
-router.get('/user/:userId', order.getUserOrders)
-router.get('/orderInfo', order.getUserOrderInfo)
+router.post('/submitOrder', submitOrderPrisma)
+router.get('/allOrders', getAllOrders)
+router.get('/user/:userId', getUserOrders)
+router.get('/orderInfo', getUserOrderInfo)
 
-// must be in this order or allproducts routes to getOrderInfo
-router.get('/allProducts', order.getAllProducts)
-router.get('/:orderId', order.getOrderInfo)
-router.put('/:orderId', order.updateOrder)
+// must be in this or allproducts routes to getOrderInfo
+router.get('/allProducts', getAllProducts)
+router.get('/:orderId', getOrderInfo)
+router.put('/:orderId', updateOrder)
 
-module.exports = router
+export default router

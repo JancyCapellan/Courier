@@ -1,8 +1,8 @@
-const { PrismaClient } = require('@prisma/client')
-const { debug } = require('console')
+import { debug } from 'console'
+import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient()
 
-exports.submitOrderPrisma = async (req, res) => {
+export const submitOrderPrisma = async (req, res) => {
   if (!req.body) {
     res.status(400).send({
       message: 'Content can not be empty!',
@@ -57,7 +57,7 @@ exports.submitOrderPrisma = async (req, res) => {
   console.log('results', result)
 }
 
-exports.getAllOrders = async (req, res) => {
+export const getAllOrders = async (req, res) => {
   const result = await prisma.order
     .findMany({
       include: {
@@ -104,7 +104,7 @@ exports.getAllOrders = async (req, res) => {
   }
 }
 
-exports.getUserOrders = async (req, res) => {
+export const getUserOrders = async (req, res) => {
   if (!req.body) {
     res.status(400).send({
       message: 'Content can not be empty!',
@@ -125,7 +125,7 @@ exports.getUserOrders = async (req, res) => {
   if (result) res.send(result)
 }
 
-exports.getUserOrderInfo = async (req, res) => {
+export const getUserOrderInfo = async (req, res) => {
   const id = parseInt(req.params.userId)
   if (!req.body) {
     res.status(400).send({
@@ -159,7 +159,7 @@ exports.getUserOrderInfo = async (req, res) => {
   if (result) res.send(result)
 }
 
-exports.getOrderInfo = async (req, res) => {
+export const getOrderInfo = async (req, res) => {
   const id = parseInt(req.params.orderId)
 
   const order = await prisma.order.findUnique({
@@ -212,14 +212,14 @@ exports.getOrderInfo = async (req, res) => {
   // console.log(order)
 }
 
-exports.getAllProducts = async (req, res) => {
+export const getAllProducts = async (req, res) => {
   const result = await prisma.product.findMany({})
 
   console.log(result)
   res.send(result)
 }
 
-exports.updateOrder = async (req, res) => {
+export const updateOrder = async (req, res) => {
   const id = parseInt(req.params.orderId)
   const driverId = req.body.pickupDriverId
   console.log('updateorder', id, driverId)
