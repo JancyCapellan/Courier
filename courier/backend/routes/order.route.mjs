@@ -8,7 +8,7 @@ import {
   getAllProducts,
   getOrderInfo,
   updateOrder,
-} from '../controllers/order.controller.js'
+} from '../controllers/order.controller.mjs'
 
 /*************
  *  ORDER CRUD

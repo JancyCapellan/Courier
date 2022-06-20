@@ -6,7 +6,7 @@ import {
   productTypes,
   addProductType,
   deleteProductType,
-} from '../controllers/services.controller.js'
+} from '../controllers/services.controller.mjs'
 
 router.get('/allProducts', allProducts)
 router.post('/addItem', addItem)

@@ -7,9 +7,9 @@ import next from 'next'
 
 //custom modules
 // const indexRouter = require('./routes/index.route')
-import userRouter from './expressApi/routes/user.route.js'
-import orderRouter from './expressApi/routes/order.route.js'
-import servicesRouter from './expressApi/routes/services.route.js'
+import userRouter from './backend/routes/user.route.mjs'
+import orderRouter from './backend/routes/order.route.mjs'
+import servicesRouter from './backend/routes/services.route.mjs'
 //server start
 
 const dev = process.env.NODE_ENV !== 'production'

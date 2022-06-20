@@ -15,19 +15,6 @@ const initialState = {
   userForCurrentOrderForm: {},
 }
 
-// redundat, marked for deletion
-const postSubmitOrder = async (order) => {
-  try {
-    const res = await Axios.post('http://localhost:3000/order/submitOrder', order)
-    return res
-  } catch (err) {
-    // console.log('here')
-    console.error(err)
-    alert('ERROR IN SUBMISSION')
-    return 500
-  }
-}
-
 const CartProvider = ({ children }) => {
   const [state, dispatch] = useReducer(CartReducer, initialState)
 
@@ -53,9 +40,21 @@ const CartProvider = ({ children }) => {
     dispatch({ type: 'ADD_FORM_DETAILS', payload: form })
     // console.log('HERE')
   }
-  const submitOrder = async (order) => {
+  const submitOrder = (order) => {
+    // redundat, marked for deletion
+    const postSubmitOrder = async (order) => {
+      try {
+        const res = await Axios.post('http://localhost:3000/order/submitOrder', order)
+        return res
+      } catch (err) {
+        // console.log('here')
+        console.error(err)
+        alert('ERROR IN SUBMISSION')
+        return 500
+      }
+    }
     // current error console logs in client side when returning error 500. doesnt currently alert user of error in checkout
-    const res = await postSubmitOrder(order)
+    const res = postSubmitOrder(order)
     // console.log('resssssss', res)
     try {
       // if (res.status === undefined) return

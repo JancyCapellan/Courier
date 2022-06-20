@@ -7,7 +7,7 @@ import {
   findOne,
   allDrivers,
   getAddressesWithUserId,
-} from '../controllers/user.newcontroller.js'
+} from '../controllers/user.newcontroller.mjs'
 
 import express from 'express'
 const router = express.Router()
