@@ -1,4 +1,4 @@
-npm packages
+npm packages -- use ncu to update packages to most current
 -------------
 
 1. helmet

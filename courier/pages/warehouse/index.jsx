@@ -1,8 +1,14 @@
 import React from 'react'
+import KitchenSinkTable from '../../components/kitchenSinkTable'
 import Layout from '../../components/Layout'
 
 const Warehouse = () => {
-  return <section className='main-grid-area'>Warehouse</section>
+  return (
+    <section className='main-grid-area'>
+      {/* <KitchenSinkTable /> */}
+      <div></div>
+    </section>
+  )
 }
 
 export default Warehouse
