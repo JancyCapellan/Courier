@@ -158,7 +158,7 @@ export const customerSearch = async (req, res) => {
   }
 }
 export const getAddressesWithUserId = async (req, res) => {
-  debug('request object:\n', req)
+  // debug('request object:\n', req)
   const userid = req.params.userId
   debug(req.params)
   const addresses = await prisma.address.findMany({

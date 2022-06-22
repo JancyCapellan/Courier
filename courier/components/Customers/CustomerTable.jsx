@@ -1,16 +1,15 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
-import { useCart } from '../../../contexts/cartContext'
 import { useRouter } from 'next/router'
 import { useQuery } from 'react-query'
-import { useGlobalStore } from '../../../store/globalStore'
+import { useGlobalStore } from '../../store/globalStore'
 
 function CustomerTable({ search }) {
   // const [searchResults, setSearchResults] = useState([])
   // const { changeCurrentOrderUser } = useCart()
 
-  const setCurrentCustomer = useGlobalStore((state) => state.setCurrentCustomer)
   const router = useRouter()
+  const setCurrentCustomer = useGlobalStore((state) => state.setCurrentCustomer)
 
   const getCustomerList = async () => {
     const { data } = await axios.get(`http://localhost:3000/user/customerSearch?search=${search}`)

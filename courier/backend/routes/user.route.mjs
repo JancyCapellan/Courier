@@ -9,6 +9,7 @@ import {
   getAddressesWithUserId,
 } from '../controllers/user.newcontroller.mjs'
 
+// import { Router } from 'express'
 import express from 'express'
 const router = express.Router()
 
@@ -22,7 +23,6 @@ router.post('/register', register)
 router.post('/login', login)
 // get info after successful login - prisma
 // router.get('/loggedInUser', authenticateToken, user.getloggedInUser)
-// search customers for customer manager customer table
 router.get('/customerSearch', customerSearch)
 router.post('/addresses/add/:userId', addUserAddress)
 

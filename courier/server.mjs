@@ -10,6 +10,7 @@ import next from 'next'
 import userRouter from './backend/routes/user.route.mjs'
 import orderRouter from './backend/routes/order.route.mjs'
 import servicesRouter from './backend/routes/services.route.mjs'
+import customerRouter from './backend/routes/customer.route.mjs'
 //server start
 
 const dev = process.env.NODE_ENV !== 'production'
@@ -30,6 +31,7 @@ app
     server.use('/user', userRouter)
     server.use('/order', orderRouter)
     server.use('/services', servicesRouter)
+    server.use('/customer', customerRouter)
 
     // not sure if changing to all from get caused any bugs, but the offical example had it as such
     server.all('*', (req, res) => {

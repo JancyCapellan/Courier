@@ -1,11 +1,15 @@
 import React from 'react'
-import KitchenSinkTable from '../../components/kitchenSinkTable'
+import CustomerReactTable from '../../components/Customers/CustomerReactTable'
+import KitchenSinkTable from '../../components/Tables/KitchenSinkTable'
 import Layout from '../../components/Layout'
+import PokemonTable from '../../components/Tables/RQ-RT'
 
 const Warehouse = () => {
   return (
     <section className='main-grid-area'>
       {/* <KitchenSinkTable /> */}
+      <CustomerReactTable />
+      <PokemonTable />
       <div></div>
     </section>
   )

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import CustomerTable from '../../components/Customers/main/CustomerTable'
+import CustomerTable from '../../components/Customers/CustomerTable'
 import ModalContainer from '../../components/HOC/ModalContainer'
 import RegistrationFormModal from '../../components/RegistrationFormModal'
 import Layout from '../../components/Layout'
