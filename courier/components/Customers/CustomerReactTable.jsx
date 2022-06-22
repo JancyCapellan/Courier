@@ -1,26 +1,43 @@
 /* eslint-disable react/jsx-key */
-import React, { useMemo, useState } from 'react'
+import React, { useEffect } from 'react'
 import { usePagination, useTable } from 'react-table'
 import axios from 'axios'
-import { useRouter } from 'next/router'
 import { useQuery } from 'react-query'
 import { useCustomerTableStore } from '../../store/customerTableStore'
 
-const useGetCustomerList = () => {
+const useGetCustomerList = (page, pageSize) => {
+  // const queryPageIndex = useCustomerTableStore((state) => state.queryPageIndex)
+  // const queryPageSize = useCustomerTableStore((state) => state.queryPageSize)
+  // page is queryPageIndex the current page
+  // pageSize is queryPageSize
+  // offest is the page times pageSize to get the total records to count next for the nest rows/page of content
+  const offset = page * pageSize
+
   const getCustomerList = async () => {
-    const { data } = await axios.get(`http://localhost:3000/customer/AllCustomers`)
+    const { data } = await axios.get(
+      `http://localhost:3000/customer/AllCustomers?offset=${offset}&limit=${pageSize}`
+    )
     return data
   }
-  const { data: customerList, status: getCustomerListStatus } = useQuery(
-    'getCustomerList',
-    getCustomerList
+  const {
+    data: customerListData,
+    isLoading,
+    isSuccess,
+    error,
+  } = useQuery(
+    ['getCustomerList', queryPageIndex, queryPageSize],
+    () => getCustomerList(queryPageIndex, queryPageSize),
+    {
+      keepPreviousData: true,
+      staleTime: Infinity,
+    }
   )
-
-  const tableData = useMemo(() => {
+  const customerList = customerListData?.currentCustomerPage
+  const tableData = React.useMemo(() => {
     if (!customerList) return []
     return customerList
   }, [customerList])
-  return [tableData, getCustomerListStatus]
+  return [tableData, isLoading, isSuccess, error, customerListData?.customerTableCount]
 }
 
 const COLUMNS = [
@@ -33,12 +50,52 @@ const COLUMNS = [
     accessor: (data) => `${data.firstName} ${data.lastName}`,
   },
 ]
+
+const getCustomerList = async (page, pageSize) => {
+  const offset = page * pageSize
+  try {
+    const { data } = await axios.get(
+      `http://localhost:3000/customer/AllCustomers?offset=${offset}&limit=${pageSize}`
+    )
+    return data
+  } catch (e) {
+    throw new Error(`API error:${e?.message}`)
+  }
+}
 const Table = () => {
-  const columns = useMemo(() => COLUMNS, [])
-  const [tableData, isLoading] = useGetCustomerList()
-  const queryPageIndex = useCustomerTableStore((state) => state.queryPageIndex)
-  const queryPageSize = useCustomerTableStore((state) => state.queryPageSize)
-  const totalCount = useCustomerTableStore((state) => state.totalCount)
+  const columns = React.useMemo(() => COLUMNS, [])
+  const [queryPageIndex, setQueryPageIndex] = React.useState(0)
+  const [queryPageSize, setQueryPageSize] = React.useState(10)
+
+  // const queryPageIndex = useCustomerTableStore((state) => state.queryPageIndex)
+  // const queryPageSize = useCustomerTableStore((state) => state.queryPageSize)
+  // const setQueryPageIndex = useCustomerTableStore((state) => state.setQueryPageIndex)
+  // const setQueryPageSize = useCustomerTableStore((state) => state.setQueryPageSize)
+  // const [tableData, isLoading, isSuccess, error, tableTotalCount] = useGetCustomerList(
+  //   queryPageIndex,
+  //   queryPageSize
+  // )
+
+  const {
+    data: customerListData,
+    isLoading,
+    isSuccess,
+    error,
+  } = useQuery(
+    ['getCustomerList', queryPageIndex, queryPageSize],
+    () => getCustomerList(queryPageIndex, queryPageSize),
+    {
+      keepPreviousData: true,
+      staleTime: Infinity,
+    }
+  )
+  const customerList = customerListData?.currentCustomerPage
+  const tableData = React.useMemo(() => {
+    if (!customerList) return []
+    return customerList
+  }, [customerList])
+
+  const tableTotalCount = customerListData?.customerTableCount
 
   const {
     getTableProps,
@@ -55,12 +112,11 @@ const Table = () => {
     nextPage,
     previousPage,
     setPageSize,
-    // Get the state from the instance
     state: { pageIndex, pageSize },
   } = useTable(
     {
       columns,
-      data: isLoading === 'success' ? tableData : [],
+      data: isSuccess ? tableData : [],
       initialState: {
         pageIndex: queryPageIndex,
         pageSize: queryPageSize,
@@ -69,55 +125,107 @@ const Table = () => {
       // hook that we'll handle our own data fetching
       // This means we'll also have to provide our own
       // pageCount.
-      pageCount: isLoading === 'success' ? Math.ceil(totalCount / queryPageSize) : null,
+      pageCount: isSuccess ? Math.ceil(tableTotalCount / queryPageSize) : null,
     },
     usePagination
   )
 
-  //! TODO: change to zustand logic then pagination should be close to working,adding filters to sort the customers and i should the be able to move on to admin's staff table and invoices order table
-  // React.useEffect(() => {
-  //   dispatch({ type: PAGE_CHANGED, payload: pageIndex })
-  // }, [pageIndex])
+  React.useEffect(() => {
+    setQueryPageIndex(pageIndex)
+  }, [pageIndex])
 
-  // React.useEffect(() => {
-  //   dispatch({ type: PAGE_SIZE_CHANGED, payload: pageSize })
-  //   gotoPage(0)
-  // }, [pageSize, gotoPage])
+  React.useEffect(() => {
+    // dispatch({ type: PAGE_SIZE_CHANGED, payload: pageSize })
+    setQueryPageSize(pageSize)
+    gotoPage(0)
+  }, [pageSize, gotoPage])
 
+  //total count of items in database side of the table
   // React.useEffect(() => {
-  //   if (tableData?.count) {
-  //     dispatch({
-  //       type: TOTAL_COUNT_CHANGED,
-  //       payload: tableData.count,
-  //     })
+  //   if (tableTotalCount) {
+  //     setTotalCount(tableTotalCount)
   //   }
-  // }, [tableData?.count])
+  // }, [tableTotalCount])
+
+  if (error) {
+    return <p>Error</p>
+  }
+
+  if (isLoading) {
+    return <p>Loading...</p>
+  }
 
   return (
     <>
-      <table {...getTableProps()}>
-        <thead>
-          {headerGroups.map((headerGroup) => (
-            <tr {...headerGroup.getHeaderGroupProps()}>
-              {headerGroup.headers.map((column) => (
-                <th {...column.getHeaderProps()}>{column.render('Header')}</th>
+      {isSuccess ? (
+        <>
+          <div className='pagination'>
+            <button onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
+              {'<<'}
+            </button>{' '}
+            <button onClick={() => previousPage()} disabled={!canPreviousPage}>
+              {'<'}
+            </button>{' '}
+            <button onClick={() => nextPage()} disabled={!canNextPage}>
+              {'>'}
+            </button>{' '}
+            <button onClick={() => gotoPage(pageCount - 1)} disabled={!canNextPage}>
+              {'>>'}
+            </button>{' '}
+            <span>
+              Page{' '}
+              <strong>
+                {pageIndex + 1} of {pageOptions.length}
+              </strong>{' '}
+            </span>
+            <span>
+              | Go to page:{' '}
+              <input
+                type='number'
+                defaultValue={pageIndex + 1}
+                onChange={(e) => {
+                  const page = e.target.value ? Number(e.target.value) - 1 : 0
+                  gotoPage(page)
+                }}
+                style={{ width: '100px' }}
+              />
+            </span>{' '}
+            <select
+              value={pageSize}
+              onChange={(e) => {
+                setPageSize(Number(e.target.value))
+              }}
+            >
+              {[5, 10, 15, 20, 30].map((pageSize) => (
+                <option key={pageSize} value={pageSize}>
+                  Show {pageSize}
+                </option>
               ))}
-            </tr>
-          ))}
-        </thead>
-        <tbody {...getTableBodyProps()}>
-          {page.map((row, i) => {
-            prepareRow(row)
-            return (
-              <tr {...row.getRowProps()}>
-                {row.cells.map((cell) => {
-                  return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
-                })}
-              </tr>
-            )
-          })}
-        </tbody>
-        {/* <tfoot>
+            </select>
+          </div>
+          <table {...getTableProps()}>
+            <thead>
+              {headerGroups.map((headerGroup) => (
+                <tr {...headerGroup.getHeaderGroupProps()}>
+                  {headerGroup.headers.map((column) => (
+                    <th {...column.getHeaderProps()}>{column.render('Header')}</th>
+                  ))}
+                </tr>
+              ))}
+            </thead>
+            <tbody {...getTableBodyProps()}>
+              {page.map((row, i) => {
+                prepareRow(row)
+                return (
+                  <tr {...row.getRowProps()}>
+                    {row.cells.map((cell) => {
+                      return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
+                    })}
+                  </tr>
+                )
+              })}
+            </tbody>
+            {/* <tfoot>
           {footerGroups.map((footerGroup) => (
             <tr {...footerGroup.getFooterGroupProps()}>
               {footerGroup.headers.map((column) => (
@@ -126,55 +234,9 @@ const Table = () => {
             </tr>
           ))}
         </tfoot> */}
-      </table>
-      {/* 
-        Pagination can be built however you'd like. 
-        This is just a very basic UI implementation:
-      */}
-      <div className='pagination'>
-        <button onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
-          {'<<'}
-        </button>{' '}
-        <button onClick={() => previousPage()} disabled={!canPreviousPage}>
-          {'<'}
-        </button>{' '}
-        <button onClick={() => nextPage()} disabled={!canNextPage}>
-          {'>'}
-        </button>{' '}
-        <button onClick={() => gotoPage(pageCount - 1)} disabled={!canNextPage}>
-          {'>>'}
-        </button>{' '}
-        <span>
-          Page{' '}
-          <strong>
-            {pageIndex + 1} of {pageOptions.length}
-          </strong>{' '}
-        </span>
-        <span>
-          | Go to page:{' '}
-          <input
-            type='number'
-            defaultValue={pageIndex + 1}
-            onChange={(e) => {
-              const page = e.target.value ? Number(e.target.value) - 1 : 0
-              gotoPage(page)
-            }}
-            style={{ width: '100px' }}
-          />
-        </span>{' '}
-        <select
-          value={pageSize}
-          onChange={(e) => {
-            setPageSize(Number(e.target.value))
-          }}
-        >
-          {[10, 20, 30, 40, 50].map((pageSize) => (
-            <option key={pageSize} value={pageSize}>
-              Show {pageSize}
-            </option>
-          ))}
-        </select>
-      </div>
+          </table>
+        </>
+      ) : null}
     </>
   )
 }

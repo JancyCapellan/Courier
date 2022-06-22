@@ -9,7 +9,6 @@ const Warehouse = () => {
     <section className='main-grid-area'>
       {/* <KitchenSinkTable /> */}
       <CustomerReactTable />
-      <PokemonTable />
       <div></div>
     </section>
   )
