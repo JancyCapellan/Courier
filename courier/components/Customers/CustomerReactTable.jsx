@@ -11,6 +11,8 @@ import {
 } from 'react-table'
 import axios from 'axios'
 import { useQuery } from 'react-query'
+import { useRouter } from 'next/router'
+import { useGlobalStore } from '../../store/globalStore'
 
 const GlobalFilter = ({ preGlobalFilteredRows, globalFilter, setGlobalFilter }) => {
   const count = preGlobalFilteredRows.length
@@ -29,10 +31,9 @@ const GlobalFilter = ({ preGlobalFilteredRows, globalFilter, setGlobalFilter }) 
           change(e.target.value)
         }}
         // placeholder={`${count} records...`}
-        style={{
-          fontSize: '1.1rem',
-          border: '0',
-        }}
+        // style={{
+        //   fontSize: '1.1rem',
+        // }}
       />
     </span>
   )
@@ -229,7 +230,7 @@ const Table = ({ columns }) => {
                   {headerGroup.headers.map((column) => (
                     <th {...column.getHeaderProps(column.getSortByToggleProps())}>
                       {column.render('Header')}
-                      <span>{column.isSorted ? (column.isSortedDesc ? ' 🔽' : ' 🔼') : ''}</span>
+                      <span>{column.isSorted ? (column.isSortedDesc ? ' 🔽' : ' 🔼') : ' ↕'}</span>
                     </th>
                   ))}
                 </tr>
@@ -264,6 +265,8 @@ const Table = ({ columns }) => {
 }
 
 const CustomerReactTable = () => {
+  const router = useRouter()
+  const setCurrentCustomer = useGlobalStore((state) => state.setCurrentCustomer)
   const columns = React.useMemo(
     () => [
       {
@@ -271,13 +274,33 @@ const CustomerReactTable = () => {
         accessor: 'id', // accessor is the "key" in the data
       },
       {
-        Header: 'First Name',
-        // accessor: (data) => `${data.firstName} ${data.lastName}`,
-        accessor: 'firstName',
+        Header: 'Full Name',
+        accessor: (data) => `${data.firstName} ${data.lastName}`,
       },
+      // {
+      //   Header: 'First Name',
+      //   accessor: 'firstName',
+      // },
+      // {
+      //   Header: 'Last Name',
+      //   accessor: 'lastName',
+      // },
       {
-        Header: 'Last Name',
-        accessor: 'lastName',
+        Header: 'Create Pickup',
+        // oringal has all user data sent from api, row only has data shown to user
+        Cell: ({ row: { original } }) => (
+          <button
+            onClick={() => {
+              console.log(original)
+              setCurrentCustomer(original)
+              router.push({
+                pathname: `/order`,
+              })
+            }}
+          >
+            order
+          </button>
+        ),
       },
     ],
     []

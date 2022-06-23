@@ -112,8 +112,8 @@ export const sidebarTypes = {
     routes.customers,
     routes.invoices,
     routes.warehouse,
-    routes.crm,
-    routes.reports,
+    // routes.crm,
+    // routes.reports,
   ],
   All: [routes],
 }
