@@ -1,55 +1,42 @@
 /* eslint-disable react/jsx-key */
-import React, { useEffect } from 'react'
-import { usePagination, useTable } from 'react-table'
+import React from 'react'
+import {
+  useTable,
+  usePagination,
+  useBlockLayout,
+  useFilters,
+  useGlobalFilter,
+  useAsyncDebounce,
+  useSortBy,
+} from 'react-table'
 import axios from 'axios'
 import { useQuery } from 'react-query'
-import { useCustomerTableStore } from '../../store/customerTableStore'
 
-const useGetCustomerList = (page, pageSize) => {
-  // const queryPageIndex = useCustomerTableStore((state) => state.queryPageIndex)
-  // const queryPageSize = useCustomerTableStore((state) => state.queryPageSize)
-  // page is queryPageIndex the current page
-  // pageSize is queryPageSize
-  // offest is the page times pageSize to get the total records to count next for the nest rows/page of content
-  const offset = page * pageSize
+const GlobalFilter = ({ preGlobalFilteredRows, globalFilter, setGlobalFilter }) => {
+  const count = preGlobalFilteredRows.length
+  const [value, setValue] = React.useState(globalFilter)
+  const change = useAsyncDebounce((value) => {
+    setGlobalFilter(value || undefined)
+  }, 200)
 
-  const getCustomerList = async () => {
-    const { data } = await axios.get(
-      `http://localhost:3000/customer/AllCustomers?offset=${offset}&limit=${pageSize}`
-    )
-    return data
-  }
-  const {
-    data: customerListData,
-    isLoading,
-    isSuccess,
-    error,
-  } = useQuery(
-    ['getCustomerList', queryPageIndex, queryPageSize],
-    () => getCustomerList(queryPageIndex, queryPageSize),
-    {
-      keepPreviousData: true,
-      staleTime: Infinity,
-    }
+  return (
+    <span>
+      Search:{' '}
+      <input
+        value={value || ''}
+        onChange={(e) => {
+          setValue(e.target.value)
+          change(e.target.value)
+        }}
+        // placeholder={`${count} records...`}
+        style={{
+          fontSize: '1.1rem',
+          border: '0',
+        }}
+      />
+    </span>
   )
-  const customerList = customerListData?.currentCustomerPage
-  const tableData = React.useMemo(() => {
-    if (!customerList) return []
-    return customerList
-  }, [customerList])
-  return [tableData, isLoading, isSuccess, error, customerListData?.customerTableCount]
 }
-
-const COLUMNS = [
-  {
-    Header: 'ID',
-    accessor: 'id', // accessor is the "key" in the data
-  },
-  {
-    Header: 'Name',
-    accessor: (data) => `${data.firstName} ${data.lastName}`,
-  },
-]
 
 const getCustomerList = async (page, pageSize) => {
   const offset = page * pageSize
@@ -62,19 +49,11 @@ const getCustomerList = async (page, pageSize) => {
     throw new Error(`API error:${e?.message}`)
   }
 }
-const Table = () => {
-  const columns = React.useMemo(() => COLUMNS, [])
-  const [queryPageIndex, setQueryPageIndex] = React.useState(0)
-  const [queryPageSize, setQueryPageSize] = React.useState(10)
 
-  // const queryPageIndex = useCustomerTableStore((state) => state.queryPageIndex)
-  // const queryPageSize = useCustomerTableStore((state) => state.queryPageSize)
-  // const setQueryPageIndex = useCustomerTableStore((state) => state.setQueryPageIndex)
-  // const setQueryPageSize = useCustomerTableStore((state) => state.setQueryPageSize)
-  // const [tableData, isLoading, isSuccess, error, tableTotalCount] = useGetCustomerList(
-  //   queryPageIndex,
-  //   queryPageSize
-  // )
+let defaultPageSize = 20
+const Table = ({ columns }) => {
+  const [queryPageIndex, setQueryPageIndex] = React.useState(0)
+  const [queryPageSize, setQueryPageSize] = React.useState(defaultPageSize) // same as the first value in the select show option at the bottom of the parition div
 
   const {
     data: customerListData,
@@ -89,45 +68,80 @@ const Table = () => {
       staleTime: Infinity,
     }
   )
-  const customerList = customerListData?.currentCustomerPage
-  const tableData = React.useMemo(() => {
-    if (!customerList) return []
-    return customerList
-  }, [customerList])
 
+  const tableData = React.useMemo(() => {
+    if (!customerListData) return []
+    return customerListData.currentCustomerPage
+  }, [customerListData])
+
+  // const tableTotalCount = React.useMemo(() => customerListData?.customerTableCount, [])
   const tableTotalCount = customerListData?.customerTableCount
+
+  const defaultColumn = React.useMemo(
+    () => ({
+      // Filter: DefaultColumnFilter,
+      width: 215,
+    }),
+    []
+  )
+
+  const filterTypes = React.useMemo(
+    () => ({
+      // Add a new fuzzyTextFilterFn filter type.
+      //  fuzzyText: fuzzyTextFilterFn,
+      // Or, override the default text filter to use
+      // "startWith"
+      text: (rows, id, filterValue) => {
+        return rows.filter((row) => {
+          const rowValue = row.values[id]
+          return rowValue !== undefined
+            ? String(rowValue).toLowerCase().startsWith(String(filterValue).toLowerCase())
+            : true
+        })
+      },
+    }),
+    []
+  )
 
   const {
     getTableProps,
     getTableBodyProps,
     headerGroups,
-    footerGroups,
+    // footerGroups,
     prepareRow,
     page,
     canPreviousPage,
     canNextPage,
     pageOptions,
     pageCount,
+    setGlobalFilter,
     gotoPage,
     nextPage,
     previousPage,
     setPageSize,
-    state: { pageIndex, pageSize },
+    state: { pageIndex, pageSize, globalFilter },
+    // visibleColumns,
+    preGlobalFilteredRows,
   } = useTable(
     {
       columns,
-      data: isSuccess ? tableData : [],
+      data: tableData,
+      defaultColumn,
+      filterTypes,
       initialState: {
         pageIndex: queryPageIndex,
         pageSize: queryPageSize,
       },
-      manualPagination: true, // Tell the usePagination
-      // hook that we'll handle our own data fetching
-      // This means we'll also have to provide our own
-      // pageCount.
+      manualPagination: true,
       pageCount: isSuccess ? Math.ceil(tableTotalCount / queryPageSize) : null,
+      // autoResetSortBy: false,
+      // autoResetExpanded: false,
+      autoResetPage: false,
     },
-    usePagination
+    useGlobalFilter,
+    useSortBy,
+    usePagination,
+    useBlockLayout
   )
 
   React.useEffect(() => {
@@ -135,17 +149,9 @@ const Table = () => {
   }, [pageIndex])
 
   React.useEffect(() => {
-    // dispatch({ type: PAGE_SIZE_CHANGED, payload: pageSize })
     setQueryPageSize(pageSize)
     gotoPage(0)
   }, [pageSize, gotoPage])
-
-  //total count of items in database side of the table
-  // React.useEffect(() => {
-  //   if (tableTotalCount) {
-  //     setTotalCount(tableTotalCount)
-  //   }
-  // }, [tableTotalCount])
 
   if (error) {
     return <p>Error</p>
@@ -196,19 +202,35 @@ const Table = () => {
                 setPageSize(Number(e.target.value))
               }}
             >
-              {[5, 10, 15, 20, 30].map((pageSize) => (
+              {[defaultPageSize, 5, 10, 30, 50, 100].map((pageSize) => (
                 <option key={pageSize} value={pageSize}>
                   Show {pageSize}
                 </option>
               ))}
             </select>
           </div>
+
+          {/* <input
+            type='text'
+            value={globalFilter || ''}
+            onChange={(e) => setGlobalFilter(e.target.value)}
+          /> */}
+
+          <GlobalFilter
+            globalFilter={globalFilter}
+            setGlobalFilter={setGlobalFilter}
+            preGlobalFilteredRows={preGlobalFilteredRows}
+          />
+          {/* {console.log(globalFilter)} */}
           <table {...getTableProps()}>
             <thead>
               {headerGroups.map((headerGroup) => (
                 <tr {...headerGroup.getHeaderGroupProps()}>
                   {headerGroup.headers.map((column) => (
-                    <th {...column.getHeaderProps()}>{column.render('Header')}</th>
+                    <th {...column.getHeaderProps(column.getSortByToggleProps())}>
+                      {column.render('Header')}
+                      <span>{column.isSorted ? (column.isSortedDesc ? ' 🔽' : ' 🔼') : ''}</span>
+                    </th>
                   ))}
                 </tr>
               ))}
@@ -242,10 +264,28 @@ const Table = () => {
 }
 
 const CustomerReactTable = () => {
+  const columns = React.useMemo(
+    () => [
+      {
+        Header: 'ID',
+        accessor: 'id', // accessor is the "key" in the data
+      },
+      {
+        Header: 'First Name',
+        // accessor: (data) => `${data.firstName} ${data.lastName}`,
+        accessor: 'firstName',
+      },
+      {
+        Header: 'Last Name',
+        accessor: 'lastName',
+      },
+    ],
+    []
+  )
   return (
     <div>
       <h1>Customer&apos;s Table</h1>
-      <Table />
+      <Table columns={columns} />
     </div>
   )
 }

@@ -4,6 +4,7 @@ import ModalContainer from '../../components/HOC/ModalContainer'
 import RegistrationFormModal from '../../components/RegistrationFormModal'
 import Layout from '../../components/Layout'
 import { useGlobalStore } from '../../store/globalStore'
+import CustomerReactTable from '../../components/Customers/CustomerReactTable.jsx'
 
 const Customers = () => {
   const [value, setValue] = useState('')
@@ -29,7 +30,7 @@ const Customers = () => {
   return (
     <>
       <div className='customer-page-container'>
-        <h1 className='page-title'>Customer Manager</h1>
+        {/* <h1 className='page-title'>Customer Manager</h1> */}
 
         {/* <div className='customer-search'>
           <form className='customer-search-form' onSubmit={handleSubmit}>
@@ -56,7 +57,8 @@ const Customers = () => {
           <RegistrationFormModal isRegisteringStaff={false} closeModal={toggleModal} />
         </ModalContainer>
 
-        <CustomerTable search={search} />
+        {/* <CustomerTable search={search} /> */}
+        <CustomerReactTable />
       </div>
     </>
   )
