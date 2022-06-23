@@ -13,6 +13,8 @@ import axios from 'axios'
 import { useQuery } from 'react-query'
 import { useRouter } from 'next/router'
 import { useGlobalStore } from '../../store/globalStore'
+import ModalContainer from '../HOC/ModalContainer'
+import RegistrationFormModal from '../RegistrationFormModal'
 
 const GlobalFilter = ({ preGlobalFilteredRows, globalFilter, setGlobalFilter }) => {
   const count = preGlobalFilteredRows.length
@@ -55,6 +57,10 @@ let defaultPageSize = 20
 const Table = ({ columns }) => {
   const [queryPageIndex, setQueryPageIndex] = React.useState(0)
   const [queryPageSize, setQueryPageSize] = React.useState(defaultPageSize) // same as the first value in the select show option at the bottom of the parition div
+  const [showModal, setShowModal] = React.useState(false)
+  const toggleModal = () => {
+    setShowModal(!showModal)
+  }
 
   const {
     data: customerListData,
@@ -211,11 +217,12 @@ const Table = ({ columns }) => {
             </select>
           </div>
 
-          {/* <input
-            type='text'
-            value={globalFilter || ''}
-            onChange={(e) => setGlobalFilter(e.target.value)}
-          /> */}
+          <div className='btn' onClick={() => toggleModal()}>
+            Create Customer
+          </div>
+          <ModalContainer show={showModal} handleClose={toggleModal}>
+            <RegistrationFormModal isRegisteringStaff={false} closeModal={toggleModal} />
+          </ModalContainer>
 
           <GlobalFilter
             globalFilter={globalFilter}

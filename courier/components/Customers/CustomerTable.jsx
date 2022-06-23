@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
-import { useRouter } from 'next/router'
 import { useQuery } from 'react-query'
+import { useRouter } from 'next/router'
 import { useGlobalStore } from '../../store/globalStore'
 
 function CustomerTable({ search }) {
@@ -67,11 +67,8 @@ function CustomerTable({ search }) {
                     <td>
                       <button
                         onClick={() => {
-                          console.log(`move to order page with ${customer.firstName} info`)
-                          // setCurrentUser(user)
-                          // setCurrentCustomer(customer)
-
-                          // changeCurrentOrderUser(customer)
+                          console.log(original)
+                          setCurrentCustomer(original)
                           router.push({
                             pathname: `/order`,
                           })

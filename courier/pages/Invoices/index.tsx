@@ -5,6 +5,7 @@ import axios from 'axios'
 import { useRouter } from 'next/router'
 import DateTime from 'luxon'
 import Layout from '../../components/Layout'
+import PickupListTable from '../../components/Tables/PickupListTable'
 
 type NextPageWithLayout = NextPage & {
   getLayout?: (page: ReactElement) => ReactNode
@@ -29,31 +30,27 @@ interface user {
   lastName: string
 }
 
-export const getServerSideProps: GetServerSideProps = async ({ res }) => {
-  try {
-    const result = await axios.get(`http://localhost:3000/order/allOrders`)
-    // console.log('response', result.data)
-    return {
-      props: {
-        listOfInvoices: result.data,
-      },
-    }
-  } catch (error) {
-    res.statusCode = 500
-    console.log('getcustomer', error)
-    return {
-      props: {},
-    }
-  }
-}
+// export const getServerSideProps: GetServerSideProps = async ({ res }) => {
+//   try {
+//     const result = await axios.get(`http://localhost:3000/order/allOrders`)
+//     // console.log('response', result.data)
+//     return {
+//       props: {
+//         listOfInvoices: result.data,
+//       },
+//     }
+//   } catch (error) {
+//     res.statusCode = 500
+//     console.log('getcustomer', error)
+//     return {
+//       props: {},
+//     }
+//   }
+// }
 
-export const Invoices: NextPage<{ listOfInvoices: OrderData[] }> = (props) => {
+export const Invoices: NextPage<{}> = () => {
   const router = useRouter()
   const [currentBranch, setCurrentBranch] = useState<string>('NYC')
-
-  if (!props.listOfInvoices) {
-    return <h1>error page 404</h1>
-  }
 
   function openInvoice(id: number) {
     router.push({
@@ -73,8 +70,8 @@ export const Invoices: NextPage<{ listOfInvoices: OrderData[] }> = (props) => {
     // router.reload()
   }
 
-  const orderHistory = props.listOfInvoices
-  console.log('list', orderHistory)
+  // const orderHistory = props.listOfInvoices
+  // console.log('list', orderHistory)
   return (
     <Layout>
       <h1>Current ORDERS - {currentBranch}</h1>
@@ -88,70 +85,7 @@ export const Invoices: NextPage<{ listOfInvoices: OrderData[] }> = (props) => {
         </select>
       </label>
 
-      {currentBranch ? (
-        <table>
-          <caption>User Order History</caption>
-          <thead>
-            <tr>
-              <th>Order Id</th>
-              <th>Sent by:</th>
-              <th>Sending to:</th>
-              <th>Datetime placed</th>
-              <th>total cost</th>
-              <th>total items</th>
-              <th>status</th>
-              <th>location</th>
-              <th>Pickup Driver</th>
-              <th>Pickup Time</th>
-            </tr>
-          </thead>
-          <tbody>
-            {orderHistory.map((order: OrderData) => {
-              return (
-                <tr key={order.id}>
-                  <td onClick={() => openInvoice(order.id)}>{order.id}</td>
-                  <td>
-                    {order.user.firstName} {order.user.lastName}
-                  </td>
-                  <td>
-                    {order.recieverFirstName} {order.recieverLastName}
-                  </td>
-                  <td onClick={() => openInvoice(order.id)}>{order.timePlaced}</td>
-                  <td>{order.totalPrice}</td>
-                  <td>{order.totalItems}</td>
-                  <td>{order.status} </td>
-                  <td>{order.location}</td>
-                  <td>
-                    {order.pickupDriverId ? (
-                      <div>
-                        {order.pickupdriver.firstName} {order.pickupdriver.lastName}
-                        <select
-                          style={{ width: '1.5em' }}
-                          onChange={(e) => updateOrderDriver(order.id, parseInt(e.target.value))}
-                        >
-                          <option value={'NULL'}>select driver</option>
-                          <option value={'NULL'}>none</option>
-                          <option value={3}>Driver Tester</option>
-                        </select>
-                      </div>
-                    ) : (
-                      <select
-                        onChange={(e) => updateOrderDriver(order.id, parseInt(e.target.value))}
-                      >
-                        <option value={'null'}>none/select driver</option>
-                        <option value={'cl0k3wqoe000608uy29tcc12z'}>Juan Driver</option>
-                      </select>
-                    )}
-                  </td>
-                  <td>{order.pickupDatetime}</td>
-                </tr>
-              )
-            })}
-          </tbody>
-        </table>
-      ) : (
-        <h3> CHOOSE BRANCH </h3>
-      )}
+      {currentBranch ? <PickupListTable /> : <h3> CHOOSE BRANCH </h3>}
     </Layout>
   )
 }

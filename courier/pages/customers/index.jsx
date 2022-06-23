@@ -50,12 +50,12 @@ const Customers = () => {
           </form>
         </div> */}
 
-        <button className='btn-31 add-customer-btn' onClick={() => toggleModal()}>
+        {/* <button className='btn-31 add-customer-btn' onClick={() => toggleModal()}>
           Create Customer
         </button>
         <ModalContainer show={showModal} handleClose={toggleModal}>
           <RegistrationFormModal isRegisteringStaff={false} closeModal={toggleModal} />
-        </ModalContainer>
+        </ModalContainer> */}
 
         {/* <CustomerTable search={search} /> */}
         <CustomerReactTable />

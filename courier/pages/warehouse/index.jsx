@@ -3,12 +3,14 @@ import CustomerReactTable from '../../components/Customers/CustomerReactTable'
 import KitchenSinkTable from '../../components/Tables/KitchenSinkTable'
 import Layout from '../../components/Layout'
 import PokemonTable from '../../components/Tables/RQ-RT'
+import PickupListTable from '../../components/Tables/PickupListTable'
 
 const Warehouse = () => {
   return (
     <section className='main-grid-area'>
       {/* <KitchenSinkTable /> */}
-      <CustomerReactTable />
+      {/* <CustomerReactTable /> */}
+      <PickupListTable />
       <div></div>
     </section>
   )
