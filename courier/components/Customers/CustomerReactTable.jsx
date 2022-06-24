@@ -55,6 +55,7 @@ const getCustomerList = async (page, pageSize) => {
 
 let defaultPageSize = 20
 const Table = ({ columns }) => {
+  const router = useRouter()
   const [queryPageIndex, setQueryPageIndex] = React.useState(0)
   const [queryPageSize, setQueryPageSize] = React.useState(defaultPageSize) // same as the first value in the select show option at the bottom of the parition div
   const [showModal, setShowModal] = React.useState(false)
@@ -249,7 +250,19 @@ const Table = ({ columns }) => {
                 return (
                   <tr {...row.getRowProps()}>
                     {row.cells.map((cell) => {
-                      return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
+                      return (
+                        <td
+                          onClick={() =>
+                            // console.log(row)
+                            router.push({
+                              pathname: `/customers/${row.values.id}`,
+                            })
+                          }
+                          {...cell.getCellProps()}
+                        >
+                          {cell.render('Cell')}
+                        </td>
+                      )
                     })}
                   </tr>
                 )

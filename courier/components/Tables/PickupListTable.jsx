@@ -155,12 +155,12 @@ const PickupListTable = () => {
                 prepareRow(row)
                 return (
                   <tr
-                    // onClick={() =>
-                    //   router.push({
-                    //     pathname: `/Invoices/${row.original.id}`,
-                    //     // query: { orderId: id },
-                    //   })
-                    // }
+                    onClick={() =>
+                      router.push({
+                        pathname: `/Invoices/${row.original.id}`,
+                        // query: { orderId: id },
+                      })
+                    }
                     {...row.getRowProps()}
                   >
                     {row.cells.map((cell) => {
