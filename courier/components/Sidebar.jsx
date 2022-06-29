@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { sidebarTypes } from './SidebarData'
+import { sidebarTypes, sidebarTypesSelector } from './SidebarData'
 import Link from 'next/link'
 // import logo from '../assets/logo-dark.png'
 import { useSession } from '../customHooks/useSession'
@@ -13,46 +13,13 @@ const Sidebar = () => {
 
   // const { email, role, firstName } = useAuth()
 
-  // useEffect(() => {
-  //   console.log('sidebar render')
-  // })
+  const [session, loading] = useSession()
 
-  // const [session, loading] = useSession()
-  // console.log('sidebar user session data', session, 'loading', loading)
-
-  // logic to set role and name fr
-  // let role, name
-  // if (!loading) {
-  //   ;({ role, name } = session.user)
-  // } else {
-  //   role = 'CUST'
-  // }
-
-  let role = 'ADMIN'
-  //will switch the sidebar data to show links to routes per user role
-  let SidebarData = []
-  const SidebarDataSwitcher = () => {
-    switch (role) {
-      case 'CUST':
-        SidebarData = sidebarTypes.CUST
-        break
-      case 'ADMIN':
-        SidebarData = sidebarTypes.ADMIN
-        break
-      case 'DRIVE':
-        SidebarData = sidebarTypes.DRIVER
-        break
-      case 'SECT':
-        SidebarData = sidebarTypes.SECT
-        break
-      default:
-        SidebarData = sidebarTypes.ADMIN
-        break
-    }
+  let sidebarData
+  if (loading === false) {
+    sidebarData = sidebarTypesSelector(session.user.role)
+    // console.log(SidebarData)
   }
-
-  SidebarDataSwitcher()
-
   return (
     <>
       <nav className={isCollapsed ? 'sidebar collapsed' : 'sidebar'}>
@@ -73,21 +40,27 @@ const Sidebar = () => {
             </div>
           </li>
 
-          {SidebarData.map((item, index) => {
-            return (
-              <li
-                key={index}
-                className={item.cName} // nav-listitem
-              >
-                <Link href={item.path} passHref={true}>
-                  <a className='sidebar-link'>
-                    <div className='sidebar-link-icon'>{item.icon}</div>
-                    <div className='sidebar-link-title'>{item.title}</div>
-                  </a>
-                </Link>
-              </li>
-            )
-          })}
+          {loading === false ? (
+            sidebarData.map((item, index) => {
+              return (
+                <li
+                  key={index}
+                  className={item.cName} // nav-listitem
+                >
+                  <Link href={item.path} passHref={true}>
+                    <a className='sidebar-link'>
+                      <div className='sidebar-link-icon'>{item.icon}</div>
+                      <div className='sidebar-link-title'>{item.title}</div>
+                    </a>
+                  </Link>
+                </li>
+              )
+            })
+          ) : (
+            <>
+              <p>error loading or loading still</p>
+            </>
+          )}
         </ul>
       </nav>
       {/* <main className='main-content'>{children}</main> */}

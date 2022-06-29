@@ -117,3 +117,7 @@ export const sidebarTypes = {
   ],
   All: [routes],
 }
+
+export function sidebarTypesSelector(role) {
+  return sidebarTypes[role]
+}

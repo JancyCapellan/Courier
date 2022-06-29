@@ -96,7 +96,7 @@ export const getAllOrders = async (req, res) => {
           //   time: result[obj][key].toTimeString(),
           // }
 
-          result[obj][key] = result[obj][key].toLocaleString()
+          result[obj][key] = result[obj][key].toLocaleString('en-US')
         }
 
     // console.log('allorder', result)
