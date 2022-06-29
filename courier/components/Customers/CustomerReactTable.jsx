@@ -250,19 +250,7 @@ const Table = ({ columns }) => {
                 return (
                   <tr {...row.getRowProps()}>
                     {row.cells.map((cell) => {
-                      return (
-                        <td
-                          onClick={() =>
-                            // console.log(row)
-                            router.push({
-                              pathname: `/customers/${row.values.id}`,
-                            })
-                          }
-                          {...cell.getCellProps()}
-                        >
-                          {cell.render('Cell')}
-                        </td>
-                      )
+                      return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
                     })}
                   </tr>
                 )
@@ -306,20 +294,32 @@ const CustomerReactTable = () => {
       //   accessor: 'lastName',
       // },
       {
-        Header: 'Create Pickup',
+        Header: 'utility',
         // oringal has all user data sent from api, row only has data shown to user
         Cell: ({ row: { original } }) => (
-          <button
-            onClick={() => {
-              console.log(original)
-              setCurrentCustomer(original)
-              router.push({
-                pathname: `/order`,
-              })
-            }}
-          >
-            order
-          </button>
+          <>
+            <button
+              onClick={() => {
+                console.log(original)
+                setCurrentCustomer(original)
+                router.push({
+                  pathname: `/order`,
+                })
+              }}
+            >
+              order
+            </button>
+            <button
+              onClick={() =>
+                // console.log(row)
+                router.push({
+                  pathname: `/customers/${original.id}`,
+                })
+              }
+            >
+              account page
+            </button>
+          </>
         ),
       },
     ],
