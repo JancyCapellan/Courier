@@ -16,14 +16,8 @@ const RegistrationFormMain = () => {
     email: '',
     password: '',
     password2: '',
-    role: 'CUST',
+    role: 'CUSTOMER',
   }
-
-  const selectOptions = [
-    { key: 'Admin', value: 'ADMIN' },
-    { key: 'Staff', value: 'STAFF' },
-    { key: 'Driver', value: 'DRIVE' },
-  ]
 
   const validationSchema = Yup.object({
     firstName: Yup.string()

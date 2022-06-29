@@ -17,13 +17,13 @@ const RegistrationFormModal = ({ isRegisteringStaff, closeModal }) => {
     email: '',
     password: '',
     password2: '',
-    role: 'CUST',
+    role: 'CUSTOMER',
   }
 
   const selectOptions = [
     { key: 'Admin', value: 'ADMIN' },
     { key: 'Staff', value: 'STAFF' },
-    { key: 'Driver', value: 'DRIVE' },
+    { key: 'Driver', value: 'DRIVER' },
   ]
 
   const validationSchema = Yup.object({
@@ -79,7 +79,7 @@ const RegistrationFormModal = ({ isRegisteringStaff, closeModal }) => {
 
   return (
     <div>
-      {isRegisteringStaff ? <h1>Create Staff Account</h1> : <h1> Reigstraion</h1>}
+      {isRegisteringStaff ? <h1>Create Staff Account</h1> : <h1> Customer Reigstraion</h1>}
       <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={onSubmit}>
         {(formik) => {
           return (

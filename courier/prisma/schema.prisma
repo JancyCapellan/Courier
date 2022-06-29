@@ -85,7 +85,8 @@ model Order {
   totalItems Int
   totalPrice Int
   paymentType String
-  status String @default("pending pickup")
+  statusId Int
+  status orderStatus @relation(fields: [statusId], references: [id])
   // location is one of a list of locations that it is possible for a order to go through during the life time of its journey in the buisness, there will be some overlapping with the location names and the warehouse names. when warehouse location name changes the location list should change to refelect that.
   // location String @default("Shipping Address/owner")
   pickupDriverId String?
@@ -157,7 +158,8 @@ model productType {
 // shipping container that are sent on  the boat
 model containers {
   id Int @id @default(autoincrement())
-  status String
+  statusId Int
+  status orderStatus @relation(fields: [statusId], references: [id])
   orders Order[]
   // location String
   // deliveredDate
@@ -183,9 +185,11 @@ model warehouseDetails {
   // containers containers[]
 }
 
-model status { 
+model orderStatus {
   id Int @id @default(autoincrement())
   message String
+  container containers[]
+  order Order[]
 }
 
 //  Next-Auth models //

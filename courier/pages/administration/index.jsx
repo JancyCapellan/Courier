@@ -25,7 +25,7 @@ const Administration = () => {
           Create Staff
         </button>
         <ModalContainer show={showModal} handleClose={handleModalClose}>
-          <RegistrationFormModal staff={true} />
+          <RegistrationFormModal isRegisteringStaff={true} />
         </ModalContainer>
 
         <DriverTable />
