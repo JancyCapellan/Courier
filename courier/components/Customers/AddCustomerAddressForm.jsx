@@ -5,8 +5,10 @@ import * as Yup from 'yup'
 import axios from 'axios'
 import ModalContainer from '../HOC/ModalContainer'
 import { useGlobalStore } from '../../store/globalStore'
+import { useQueryClient } from 'react-query'
 
 const AddCustomerAddressForm = ({ show, handleClose, edit }) => {
+  const queryClient = useQueryClient()
   // i set select options default here, but will try to make dynamic
 
   const currentCustomer = useGlobalStore((state) => state.currentCustomer)
@@ -40,6 +42,7 @@ const AddCustomerAddressForm = ({ show, handleClose, edit }) => {
         values
       )
       if (res.status === 200) alert('Successfully Added')
+      queryClient.invalidateQueries('getCustomerAddresses')
       console.log('add address response', res)
       return res
     } catch (err) {

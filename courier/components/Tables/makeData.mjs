@@ -1,4 +1,7 @@
+// just for development testing
+
 import namor from 'namor'
+import { faker } from '@faker-js/faker'
 
 const range = (len) => {
   const arr = []
@@ -20,13 +23,26 @@ const newPerson = () => {
   }
 }
 
-function makeData(...lens) {
+const newCustomer = () => {
+  const firstName = faker.name.firstName()
+  const lastName = faker.name.lastName()
+  return {
+    firstName: firstName,
+    middleName: faker.name.middleName(),
+    lastName: lastName,
+    email: faker.internet.email(firstName, lastName, 'email.com'),
+    password: '123',
+    role: 'CUSTOMER',
+  }
+}
+
+export function makeCustomerData(...lens) {
   const makeDataLevel = (depth = 0) => {
     const len = lens[depth]
     return range(len).map((d) => {
       return {
-        ...newPerson(),
-        subRows: lens[depth + 1] ? makeDataLevel(depth + 1) : undefined,
+        ...newCustomer(),
+        // subRows: lens[depth + 1] ? makeDataLevel(depth + 1) : undefined,
       }
     })
   }
@@ -34,4 +50,18 @@ function makeData(...lens) {
   return makeDataLevel()
 }
 
-console.log('makeData', makeData(1))
+function makeData(...lens) {
+  const makeDataLevel = (depth = 0) => {
+    const len = lens[depth]
+    return range(len).map((d) => {
+      return {
+        ...newCustomer(),
+        // subRows: lens[depth + 1] ? makeDataLevel(depth + 1) : undefined,
+      }
+    })
+  }
+
+  return makeDataLevel()
+}
+
+// console.log('makeData', makeCustomerData(3))

@@ -11,12 +11,12 @@ export const getAllCustomers = async (req, res) => {
       skip: skip,
       take: take,
       where: {
-        role: 'CUST',
+        role: 'CUSTOMER',
       },
     })
     const customerTableCount = await prisma.user.count({
       where: {
-        role: 'CUST',
+        role: 'CUSTOMER',
       },
     })
     // debug('all customers\n', allCustomers)
@@ -25,4 +25,21 @@ export const getAllCustomers = async (req, res) => {
     // res.status(500)
     debug('ERROR GETTING CUSTOMERS LIST', error)
   }
+}
+
+export const addManyCustomers = async (req, res) => {
+  const customerList = req.body
+  try {
+    const result = await prisma.user.createMany({
+      data: customerList,
+    })
+    debug('added customers', result)
+    res.json(result)
+  } catch (error) {
+    debug('error with bulk customer insert', error)
+  }
+}
+
+export const getHello = async (req, res) => {
+  res.json('hello')
 }

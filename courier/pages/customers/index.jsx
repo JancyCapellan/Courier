@@ -1,63 +1,41 @@
-import React, { useState, useEffect } from 'react'
-import CustomerTable from '../../components/Customers/CustomerTable'
-import ModalContainer from '../../components/HOC/ModalContainer'
-import RegistrationFormModal from '../../components/RegistrationFormModal'
 import Layout from '../../components/Layout'
-import { useGlobalStore } from '../../store/globalStore'
 import CustomerReactTable from '../../components/Customers/CustomerReactTable.jsx'
+import { makeCustomerData } from '../../components/Tables/makeData.mjs'
+import { backendClient } from '../../components/axiosClient.mjs'
+import { useQueryClient } from 'react-query'
+const postAddManyCustomer = async () => {
+  try {
+    const res = await backendClient.post('/customer/addManyCustomers', makeCustomerData(100))
+    console.log(' added many users', res)
+  } catch (error) {
+    alert('error adding many customers', error)
+  }
+}
 
+// test route
+// const getHello = async () => {
+//   try {
+//     const res = await backendClient.get('/customer/getHello')
+//     console.log('getHello', res)
+//     alert(`server:${res.data}`)
+//   } catch (error) {
+//     alert('error getting hello', error)
+//   }
+// }
 const Customers = () => {
-  const [value, setValue] = useState('')
-  const [search, setSearch] = useState(value)
-
-  // const [selectedCustomer, setSelectedCustomer] = useState({})
-
-  const [showModal, setShowModal] = useState(false)
-  const [showEditor, setShowEditor] = useState(false)
-
-  const currentCustomer = useGlobalStore((state) => state.currentCustomer)
-
-  const toggleModal = () => {
-    setShowModal(!showModal)
-  }
-
-  const handleSubmit = (e) => {
-    setSelectedCustomer({})
-    e.preventDefault()
-    setSearch(value)
-  }
+  const queryClient = useQueryClient()
 
   return (
     <>
       <div className='customer-page-container'>
-        {/* <h1 className='page-title'>Customer Manager</h1> */}
-
-        {/* <div className='customer-search'>
-          <form className='customer-search-form' onSubmit={handleSubmit}>
-            <label className='customer-search-label' htmlFor='search'>
-              Search Customer
-              <input
-                value={value}
-                id='search'
-                className='customer-search'
-                placeholder='Search Customer'
-                onChange={(e) => setValue(e.target.value)}
-              ></input>
-            </label>
-            <button form='searchForm' onSubmit={() => handleSubmit()}>
-              search
-            </button>
-          </form>
-        </div> */}
-
-        {/* <button className='btn-31 add-customer-btn' onClick={() => toggleModal()}>
-          Create Customer
+        <button
+          onClick={() => {
+            postAddManyCustomer()
+            queryClient.invalidateQueries('getCustomerList')
+          }}
+        >
+          create 100 customers
         </button>
-        <ModalContainer show={showModal} handleClose={toggleModal}>
-          <RegistrationFormModal isRegisteringStaff={false} closeModal={toggleModal} />
-        </ModalContainer> */}
-
-        {/* <CustomerTable search={search} /> */}
         <CustomerReactTable />
       </div>
     </>
