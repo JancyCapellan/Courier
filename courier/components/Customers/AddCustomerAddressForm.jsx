@@ -7,7 +7,7 @@ import ModalContainer from '../HOC/ModalContainer'
 import { useGlobalStore } from '../../store/globalStore'
 import { useQueryClient } from 'react-query'
 
-const AddCustomerAddressForm = ({ show, handleClose, edit }) => {
+const AddCustomerAddressForm = ({ show, handleClose }) => {
   const queryClient = useQueryClient()
   // i set select options default here, but will try to make dynamic
 

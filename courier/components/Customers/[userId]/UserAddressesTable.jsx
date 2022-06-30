@@ -44,7 +44,7 @@ const UserAddressesTable = ({ setSelectShipperAddress, handleParentModal }) => {
                     <td>{address.address3}</td>
                     <td>{address.city}</td>
                     <td>{address.state}</td>
-                    <td>{address.postal_code}</td>
+                    <td>{address.postalCode}</td>
                     <td>{address.country}</td>
                     <td>{address.cellphone}</td>
                     <td>{address.telephone}</td>
