@@ -8,22 +8,26 @@ export const submitOrderPrisma = async (req, res) => {
       message: 'Content can not be empty!',
     })
   }
-  console.log('order', req.body)
+  // console.log('order', req.body)
   let order = req.body
   let cartJSON = order.cart
   let total_price = order.total_price
   let amount_items = order.amount_items
 
   for (let i = 0; i < cartJSON.length; i++) {
-    console.log('cart', cartJSON[i])
+    // console.log('cart', cartJSON[i])
     delete cartJSON[i].name
     delete cartJSON[i].price
   }
+  // cartJSON has shape as  {amount: 3,productsId: 1}
   console.log('new cart', cartJSON)
 
   let info = {
-    userId: order.form.shipper.userId,
-    // user: { connect: order.form.shipper.userId },
+    user: {
+      connect: {
+        id: order.form.shipper.userId,
+      },
+    },
     recieverFirstName: order.form.reciever.firstName,
     recieverLastName: order.form.reciever.lastName,
     totalItems: amount_items,
@@ -37,18 +41,40 @@ export const submitOrderPrisma = async (req, res) => {
     addresses: {
       createMany: { data: [order.form.shipper.shippedFrom, order.form.reciever.shippedTo] },
     },
+    status: {
+      connect: {
+        id: 1, //"NEW ORDER" ID
+      },
+    },
   }
+
+  // missing statusm user?
 
   let result = await prisma.order
     .create({
       data: info,
       include: {
-        items: true,
-        addresses: true,
+        user: {
+          select: {
+            firstName: true,
+            lastName: true,
+          },
+        },
+        pickupdriver: {
+          select: {
+            firstName: true,
+            lastName: true,
+          },
+        },
+        status: {
+          select: {
+            message: true,
+          },
+        },
       },
     })
     .catch(async (e) => {
-      res.status(500).send({ error: 'Something failed!' })
+      res.status(500).json(e)
       throw e
     })
 
@@ -71,6 +97,11 @@ export const getAllOrders = async (req, res) => {
           select: {
             firstName: true,
             lastName: true,
+          },
+        },
+        status: {
+          select: {
+            message: true,
           },
         },
       },
@@ -110,7 +141,7 @@ export const getUserOrders = async (req, res) => {
       message: 'Content can not be empty!',
     })
   }
-  const id = parseInt(req.params.userId)
+  const id = req.params.userId
   const result = await prisma.user
     .findUnique({
       where: { id: id },
@@ -122,7 +153,7 @@ export const getUserOrders = async (req, res) => {
       res.status(500).send({ error: 'Something failed!' })
       throw e
     })
-  if (result) res.send(result)
+  if (result) res.json(result)
 }
 
 export const getUserOrderInfo = async (req, res) => {
@@ -195,6 +226,11 @@ export const getOrderInfo = async (req, res) => {
               },
             },
           },
+        },
+      },
+      status: {
+        select: {
+          message: true,
         },
       },
     },

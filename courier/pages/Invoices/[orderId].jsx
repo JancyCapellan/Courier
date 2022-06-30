@@ -53,9 +53,7 @@ const InvoicePage = () => {
             {'\n'}
             total items: {order.totalItems}
             {'\n'}
-            status: {order.status}
-            {'\n'}
-            location: {order.location}
+            status: {order.status.message}
             {'\n'}
             time ordered: {`${order.timePlaced}`} {'\n'}
             {order.routeId} {'\n'}

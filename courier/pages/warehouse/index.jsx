@@ -5,13 +5,13 @@ import Layout from '../../components/Layout'
 import PokemonTable from '../../components/Tables/RQ-RT'
 import PickupListTable from '../../components/Tables/PickupListTable'
 
+const BatchContaintersTable = () => {}
+
 const Warehouse = () => {
   return (
     <section className='main-grid-area'>
-      {/* <KitchenSinkTable /> */}
-      {/* <CustomerReactTable /> */}
-      <PickupListTable />
-      <div></div>
+      <h1> Batch Containers</h1>
+      <h1> Warehouse Supply Inventory</h1>
     </section>
   )
 }

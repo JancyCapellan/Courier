@@ -128,7 +128,6 @@ const SenderFormAdmin = ({ handlePage }) => {
         show={showModal}
         handleClose={handleModalClose}
         setAddress={setSelectedShipperAddress}
-        currentUser={currentCustomer}
       />
 
       <p>selected address: {selectedShipperAddress.address}</p>

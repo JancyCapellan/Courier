@@ -7,8 +7,9 @@ import Sidebar from '../../components/Sidebar'
 import { useRouter } from 'next/router'
 import ModalContainer from '../../components/HOC/ModalContainer'
 import Layout from '../../components/Layout'
-
-// ! customer account page. dynamic entry from customers table
+import { useQuery } from 'react-query'
+import { backendClient } from '../../components/axiosClient.mjs'
+import UserAddressesTable from '../../components/Customers/[userId]/UserAddressesTable'
 
 const AddCustomerAddressForm = ({ show, handleClose, currentUser, edit }) => {
   const showHideClassName = show ? 'd-block' : 'd-none'
@@ -251,9 +252,8 @@ const EditAddressModal = ({ show, handleClose, address }) => {
   )
 }
 
-const CustomerAddresses = ({ user }) => {
-  const [addresses, setAddresses] = useState([])
-  const [editAddress, setEditAddress] = useState({})
+const CustomerAddresses = ({ currentUser }) => {
+  // const [editAddress, setEditAddress] = useState({})
   const [showModal, setShowModal] = useState(false)
   const [showAddressModal, setShowAddressModal] = useState(false)
 
@@ -263,76 +263,82 @@ const CustomerAddresses = ({ user }) => {
     setShowAddressModal(false)
   }
 
-  useEffect(() => {
-    async function getCustomerAddress() {
-      try {
-        let res = await axios.get(`http://localhost:3000/user/addresses/${user.id}`)
-        if (res.status === 200) {
-          // console.table(res.data)
-          setAddresses(res.data)
-        }
-      } catch (error) {
-        console.log('getcustomer', error)
-      }
-    }
-    getCustomerAddress()
-  }, [])
-
   return (
     <>
       <section>
-        <h2>Addresses for {`${user.first_name}`}</h2>
+        <h2>
+          Addresses for {`${currentUser.firstName}`} {`${currentUser.lastName}`}
+        </h2>
         <button onClick={() => setShowModal(true)}>Add Address</button>
+        <UserAddressesTable />
+      </section>
+
+      <AddCustomerAddressForm
+        show={showModal}
+        handleClose={handleModalClose}
+        currentUser={currentUser}
+      />
+      {/* <EditAddressModal
+        show={showAddressModal}
+        handleClose={handleModalClose}
+        address={editAddress}
+      /> */}
+    </>
+  )
+}
+
+// keep
+const CustomerOrderHistory = ({ currentUser }) => {
+  const getUserOrders = async () => {
+    const { data } = await backendClient.get(`/order/userOrder/${currentUser.id}`)
+    return data
+  }
+
+  const { data: orderHistory, status: userOrderStatus } = useQuery(
+    ['userOrders', currentUser.id],
+    () => getUserOrders()
+  )
+
+  return (
+    <>
+      <h1>ORDERS</h1>
+      {userOrderStatus === 'success' ? (
         <table>
-          <tbody>
+          <caption>User Order History</caption>
+          <thead>
             <tr>
-              {/* <th>Address ID</th> */}
-              <th>Address Line 1</th>
-              <th>Address Line 2</th>
-              <th>Address Line 3</th>
-              <th>City</th>
-              <th>State</th>
-              <th>Postal Code</th>
-              <th>Country</th>
-              <th>Cellphone</th>
-              <th>Telephone</th>
+              <th>Order Id</th>
+              <th>time placed</th>
+              <th>Sending to:</th>
+              <th>total cost</th>
+              <th>total items</th>
+              <th>status</th>
+              <th>location</th>
             </tr>
-            {addresses.map((address) => {
+          </thead>
+          <tbody>
+            {orderHistory.map((order) => {
               return (
-                <tr className='customer-table-row' key={address.address_id}>
-                  {/* <td>{address.address_id}</td> */}
-                  <td>{address.address}</td>
-                  {address.address2 ? <td>{address.address2}</td> : <td>N/A</td>}
-                  {address.address3 ? <td>{address.address3}</td> : <td>N/A</td>}
-                  <td>{address.city}</td>
-                  <td>{address.state}</td>
-                  <td>{address.postal_code}</td>
-                  <td>{address.country}</td>
-                  <td>{address.cellphone}</td>
-                  <td>{address.telephone}</td>
+                <tr key={order.id}>
+                  <td>{order.id}</td>
+                  <td>{order.timePlaced}</td>
                   <td>
-                    <button
-                      onClick={() => {
-                        setEditAddress(address)
-                        setShowAddressModal(true)
-                        console.log(address)
-                      }}
-                    >
-                      edit
-                    </button>
+                    {order.recieverFirstName} {order.recieverLastName}
                   </td>
+                  <td>{order.totalPrice}</td>
+                  <td>{order.totalItems}</td>
+                  <td>{order.status} </td>
+                  <td>{order.location}</td>
                 </tr>
               )
             })}
           </tbody>
         </table>
-      </section>
-      <AddCustomerAddressForm show={showModal} handleClose={handleModalClose} currentUser={user} />
-      <EditAddressModal
-        show={showAddressModal}
-        handleClose={handleModalClose}
-        address={editAddress}
-      />
+      ) : (
+        <>
+          <p>order history is loading</p>
+        </>
+      )}
     </>
   )
 }
@@ -442,95 +448,37 @@ const CustomerEditorForm = ({ currentUser }) => {
   )
 }
 
-const CustomerOrderHistory = ({ currentUser }) => {
-  const [orderHistory, setOrderHistory] = useState([])
-  useEffect(() => {
-    async function getCustomerOrders() {
-      try {
-        let res = await axios.get(`http://localhost:3000/order/user/${currentUser.id}`)
-        if (res.status === 200) {
-          console.log('herere', res.data)
-          setOrderHistory(res.data.orders)
-        }
-      } catch (error) {
-        console.log('getcustomer', error)
-      }
-    }
-    getCustomerOrders()
-  }, [])
+const CustomerAccountPage = () => {
+  const router = useRouter()
+  const { userId } = router.query
 
-  return (
-    <>
-      <h1>ORDERS</h1>
-      <table>
-        <caption>User Order History</caption>
-        <thead>
-          <tr>
-            <th>Order Id</th>
-            <th>time placed</th>
-            <th>Sending to:</th>
-            <th>total cost</th>
-            <th>total items</th>
-            <th>status</th>
-            <th>location</th>
-          </tr>
-        </thead>
-        <tbody>
-          {orderHistory.map((order) => {
-            return (
-              <tr key={order.id}>
-                <td>{order.id}</td>
-                <td>{order.timePlaced}</td>
-                <td>
-                  {order.recieverFirstName} {order.recieverLastName}
-                </td>
-                <td>{order.totalPrice}</td>
-                <td>{order.totalItems}</td>
-                <td>{order.status} </td>
-                <td>{order.location}</td>
-              </tr>
-            )
-          })}
-        </tbody>
-      </table>
-    </>
-  )
-}
-
-export const getServerSideProps = async ({ params, res }) => {
-  const { user } = params
-  try {
-    const result = await axios.get(`http://localhost:3000/user/${user}`)
-    console.log('response', result.data)
-    return {
-      props: {
-        user: result.data,
-      },
-    }
-  } catch (error) {
-    res.statusCode = 500
-    console.log('getcustomer', error)
-    return {
-      props: {},
-    }
-  }
-}
-
-const CustomerAccountPage = ({ user }) => {
   const [currentPage, setCurrentPage] = useState(1)
 
-  function ComponentSwitcher({ currentUser }) {
+  const getUserAccountInfo = async () => {
+    try {
+      const { data } = await axios.get(`http://localhost:3000/user/${userId}`)
+      return data
+    } catch (error) {
+      console.log('getcustomer', error)
+    }
+  }
+
+  const { data: user, status: getUserAccountInfoStatus } = useQuery(['getUserAccountInfo'], () =>
+    getUserAccountInfo()
+  )
+
+  function ComponentSwitcher({ user }) {
     switch (currentPage) {
       case 1:
-        return <CustomerEditorForm currentUser={currentUser} />
+        return <CustomerEditorForm currentUser={user} />
       case 2:
-        return <CustomerAddresses user={currentUser} />
+        return <CustomerAddresses currentUser={user} />
       case 3:
-        return <CustomerOrderHistory currentUser={currentUser} />
+        return <CustomerOrderHistory currentUser={user} />
       case 4:
         break
       default:
-        return <CustomerEditorForm currentUser={currentUser} />
+        return <CustomerEditorForm currentUser={user} />
     }
   }
 
@@ -544,7 +492,7 @@ const CustomerAccountPage = ({ user }) => {
         <button>Current Orders</button>
       </nav>
       <br />
-      <ComponentSwitcher currentUser={user} />
+      {getUserAccountInfoStatus === 'success' ? <ComponentSwitcher user={user} /> : <></>}
       <br />
     </>
   )

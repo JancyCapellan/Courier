@@ -7,7 +7,7 @@ import axios from 'axios'
 
 const Checkout = () => {
   const [cashToggle, setCashToggle] = useState(true)
-  const [addressStrings, setAddressStrings] = useState({ shipper: '', reciever: '' })
+  // const [addressStrings, setAddressStrings] = useState({ shipper: '', reciever: '' })
   const { cart, total, amount, formDetails, submitOrder } = useCart()
   // const history = useHistory()
 
@@ -33,7 +33,7 @@ const Checkout = () => {
         }
       })
       .catch((error) => {
-        console.log('Registration Error', error)
+        alert('Order Error', error)
         // alert('Error')
       })
   }

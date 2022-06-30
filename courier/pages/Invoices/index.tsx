@@ -6,6 +6,9 @@ import { useRouter } from 'next/router'
 import DateTime from 'luxon'
 import Layout from '../../components/Layout'
 import PickupListTable from '../../components/Tables/PickupListTable'
+import { backendClient } from '../../components/axiosClient.mjs'
+import { makeOrder } from '../../components/Tables/makeData.mjs'
+import { useQueryClient, useMutation } from 'react-query'
 
 type NextPageWithLayout = NextPage & {
   getLayout?: (page: ReactElement) => ReactNode
@@ -49,6 +52,7 @@ interface user {
 // }
 
 export const Invoices: NextPage<{}> = () => {
+  const queryClient = useQueryClient()
   const router = useRouter()
   const [currentBranch, setCurrentBranch] = useState<string>('NYC')
 
@@ -70,6 +74,24 @@ export const Invoices: NextPage<{}> = () => {
     // router.reload()
   }
 
+  const postAddManyOrders = async () => {
+    try {
+      const res = await backendClient.post('/order/submitOrder', makeOrder(1)[0])
+      console.log(' added orders', res)
+      // TODO: do this to avoid refectching all queries, data saver, and time saver potentially for slower devices.
+      // queryClient.setQueryData('getAllOrders', res.data) //shapes of api response must be same for submit and get orders
+      queryClient.invalidateQueries('getAllOrders')
+      return res.data
+    } catch (error) {
+      console.log('error adding orders', error)
+    }
+  }
+
+  const mutation = useMutation(postAddManyOrders, {
+    // onSuccess: (data) => {
+    //   queryClient.setQueryData('getAllOrders', data)
+    // },
+  })
   // const orderHistory = props.listOfInvoices
   // console.log('list', orderHistory)
   return (
@@ -84,6 +106,14 @@ export const Invoices: NextPage<{}> = () => {
           <option key='MIAMI'>MIAMI</option>
         </select>
       </label>
+
+      <button
+        onClick={() => {
+          mutation.mutate()
+        }}
+      >
+        create mock order
+      </button>
 
       {currentBranch ? <PickupListTable /> : <h3> CHOOSE BRANCH </h3>}
     </Layout>

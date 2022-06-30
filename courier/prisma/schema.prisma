@@ -10,11 +10,6 @@ datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
 }
-// generator erd {
-//   provider = "prisma-erd-generator"
-//   output  = "./ERD.svg"
-// }
-
 
 // enum Role {
 //   USER
@@ -78,6 +73,7 @@ model address {
 model Order {
   id Int @id @default(autoincrement())
   userId String
+  // thecustomer who sent the package, so client/shipper
   user User @relation("CUSTOMER",fields: [userId], references:[id] )
   timePlaced DateTime @default(now())
   recieverFirstName String

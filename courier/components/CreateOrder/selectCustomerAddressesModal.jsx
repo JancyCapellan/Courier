@@ -4,16 +4,13 @@ import axios from 'axios'
 import AddCustomerAddressForm from '../Customers/AddCustomerAddressForm'
 import { useQuery } from 'react-query'
 import { useGlobalStore } from '../../store/globalStore'
+import UserAddressesTable from '../Customers/[userId]/UserAddressesTable'
 
 //opens from the customer order form page wiht the select address button
 const SelectCustomerAddressesModal = ({ show, handleClose, setAddress }) => {
   const [showAddForm, setShowAddForm] = useState(false)
 
   const currentCustomer = useGlobalStore((state) => state.currentCustomer)
-
-  const handleCloseAddAddressFormModal = () => {
-    setShowAddForm(false)
-  }
 
   const getCustomerAddresses = async () => {
     const { data } = await axios.get(
@@ -36,7 +33,7 @@ const SelectCustomerAddressesModal = ({ show, handleClose, setAddress }) => {
         >
           add address
         </button>
-        <AddCustomerAddressForm show={showAddForm} handleClose={handleCloseAddAddressFormModal} />
+        <AddCustomerAddressForm show={showAddForm} handleClose={() => setShowAddForm(false)} />
         <section>
           choose address for: {currentCustomer.firstName} {currentCustomer.lastName}
           <table>
@@ -80,6 +77,10 @@ const SelectCustomerAddressesModal = ({ show, handleClose, setAddress }) => {
                 })}
             </tbody>
           </table>
+          <UserAddressesTable
+            setSelectShipperAddress={setAddress}
+            handleParentModal={handleClose}
+          />
         </section>
       </ModalContainer>
     </>

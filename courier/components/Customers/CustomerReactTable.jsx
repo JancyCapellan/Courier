@@ -300,7 +300,9 @@ const CustomerReactTable = () => {
           <>
             <button
               onClick={() => {
-                console.log(original)
+                // console.log(original)
+                // i could pass this like i did for the account page button but this hides the user id from the user, but then id is passed as a prop and not from the global state,
+                // with global store if i can refresh without presistance, url is by design presisted
                 setCurrentCustomer(original)
                 router.push({
                   pathname: `/order`,
@@ -310,12 +312,12 @@ const CustomerReactTable = () => {
               order
             </button>
             <button
-              onClick={() =>
-                // console.log(row)
+              onClick={() => {
+                setCurrentCustomer(original)
                 router.push({
                   pathname: `/customers/${original.id}`,
                 })
-              }
+              }}
             >
               account page
             </button>

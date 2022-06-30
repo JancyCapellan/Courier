@@ -16,7 +16,7 @@ import {
 
 router.post('/submitOrder', submitOrderPrisma)
 router.get('/allOrders', getAllOrders)
-router.get('/user/:userId', getUserOrders)
+router.get('/userOrder/:userId', getUserOrders)
 router.get('/orderInfo', getUserOrderInfo)
 
 // must be in this or allproducts routes to getOrderInfo

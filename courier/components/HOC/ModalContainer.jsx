@@ -1,5 +1,7 @@
 import React from 'react'
 
+//show is the state of the display t/f
+//handleclose is the toggle/close fn for the modal
 const ModalContainer = ({ show, handleClose, children }) => {
   const showHideClassName = show ? 'd-block' : 'd-none'
   return (

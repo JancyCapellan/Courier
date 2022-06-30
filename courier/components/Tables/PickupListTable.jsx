@@ -46,9 +46,9 @@ const PickupListTable = () => {
       },
       {
         Header: 'Status',
-        accessor: 'status',
+        accessor: 'status.message',
       },
-      { Header: 'Location', accessor: 'location' },
+      // { Header: 'Location', accessor: 'location' },
       {
         Header: 'Driver',
         accessor: (data) => {
@@ -87,12 +87,14 @@ const PickupListTable = () => {
     staleTime: Infinity,
   })
 
+  // console.log(pickupListTable)
+
   const tableData = React.useMemo(() => {
     if (!pickupListTable) return []
     return pickupListTable
   }, [pickupListTable])
 
-  console.log(pickupListTable)
+  console.log('invoices', pickupListTable)
   const {
     getTableProps,
     getTableBodyProps,
