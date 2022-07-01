@@ -9,10 +9,9 @@ import FormikControl from '../../components/Formik/FormikControl'
 import Layout from '../../components/Layout'
 import { useQuery } from 'react-query'
 import ProductEditorTable from '../../components/pages/administration/ProductEditorTable.jsx'
-import DriverTable from '../../components/pages/administration/DriverTable.jsx'
+import StaffTable from '../../components/pages/administration/StaffTable.jsx'
 
 const Administration = () => {
-  const [branch, setBranch] = useState()
   const [showModal, setShowModal] = useState(false)
 
   const handleModalClose = () => setShowModal(false)
@@ -25,10 +24,10 @@ const Administration = () => {
           Create Staff
         </button>
         <ModalContainer show={showModal} handleClose={handleModalClose}>
-          <RegistrationFormModal isRegisteringStaff={true} />
+          <RegistrationFormModal isRegisteringStaff={true} closeModal={handleModalClose} />
         </ModalContainer>
 
-        <DriverTable />
+        <StaffTable />
 
         <h1>Product manager</h1>
         <section className='product-manager-container'>

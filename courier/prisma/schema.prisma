@@ -122,7 +122,7 @@ model OrderAddressDuo{
   country String
   cellphone String?
   telephone String?
-  default Boolean @default(false)
+  // default Boolean @default(false)
   recipient Boolean @default(false)
 }
 

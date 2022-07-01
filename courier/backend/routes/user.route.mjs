@@ -5,9 +5,10 @@ import {
   addUserAddress,
   updateUserInformation,
   findOne,
-  allDrivers,
+  getAllStaff,
   getUserAddressesWithUserId,
   updateUserAddress,
+  getUniqueStaff,
 } from '../controllers/user.newcontroller.mjs'
 
 // import { Router } from 'express'
@@ -34,7 +35,8 @@ router.put('/:userId', updateUserInformation)
 router.get('/:userId', findOne)
 
 // get all drivers by branch
-router.post('/allDrivers', allDrivers)
+router.get('/users/getAllStaff', getAllStaff)
+router.get('/users/getUniqueStaff/:staffId', getUniqueStaff)
 
 router.get('/addresses/:userId', getUserAddressesWithUserId)
 // router.put('/addresses/update/:addressId', updateAddress)

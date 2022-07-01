@@ -78,8 +78,6 @@ export const Invoices: NextPage<{}> = () => {
     try {
       const res = await backendClient.post('/order/submitOrder', makeOrder(1)[0])
       console.log(' added orders', res)
-      // TODO: do this to avoid refectching all queries, data saver, and time saver potentially for slower devices.
-      // queryClient.invalidateQueries('getAllOrders')
       return res.data
     } catch (error) {
       console.log('error adding orders', error)

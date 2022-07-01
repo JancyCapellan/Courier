@@ -6,6 +6,7 @@ import Router from 'next/router'
 import { useEffect } from 'react'
 import axios from 'axios'
 import { useMutation, useQueryClient } from 'react-query'
+import { backendClient } from './axiosClient.mjs'
 
 const RegistrationFormModal = ({ isRegisteringStaff, closeModal }) => {
   const queryClient = useQueryClient()
@@ -51,17 +52,29 @@ const RegistrationFormModal = ({ isRegisteringStaff, closeModal }) => {
   })
 
   const postRegisterUser = useMutation(
-    (newUser) => {
-      return axios.post(process.env.NEXT_PUBLIC_API_URL + 'user/register', newUser)
+    async (newUser) => {
+      const { data } = await backendClient.post('user/register', newUser)
+      return data
     },
     {
-      onSuccess: (query) => {
-        console.log('data', query)
-        queryClient.setQueryData('getCustomerList', (oldData) => {
-          console.log('olddata', oldData)
-          return [...oldData, query.data]
-        })
+      onSuccess: (data) => {
+        // console.log('data', query)
+        {
+          isRegisteringStaff === false &&
+            queryClient.setQueryData('getCustomerList', (oldData) => {
+              console.log('olddata', oldData)
+              return [...oldData, data]
+            })
+        }
+        {
+          isRegisteringStaff === true &&
+            queryClient.setQueryData('getAllStaff', (oldData) => {
+              return [...oldData, data]
+            })
+        }
+        alert('successfully added')
       },
+      onError: (error) => alert(error),
     }
   )
   const onSubmit = async (values, { setSubmitting, resetForm }) => {
@@ -70,9 +83,7 @@ const RegistrationFormModal = ({ isRegisteringStaff, closeModal }) => {
       return
     }
     console.log('register', values)
-    delete values?.password2
     postRegisterUser.mutate(values)
-    resetForm()
     // handleClose && handleClose()
     closeModal()
   }

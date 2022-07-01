@@ -7,8 +7,6 @@ import { debug } from 'console'
 
 // register new user
 export const register = async (req, res) => {
-  console.log('register')
-  // Validate request
   if (!req.body) {
     res.status(400).send({
       message: 'Content can not be empty!',
@@ -26,9 +24,11 @@ export const register = async (req, res) => {
     })
     res.status(200).json(result)
     // debug('here', result)
-    res.status(200)
   } catch (error) {
     debug(error)
+    if (e.code === 'P2002') {
+      res.status(500).send('email already exists')
+    }
     res.status(500).send('error registerting user')
   }
 }
@@ -84,15 +84,35 @@ export const getloggedInUser = async (req, res) => {
   if (result) res.send(result)
 }
 
-export const allDrivers = async (req, res) => {
-  const branch = req.body.branch
+export const getUniqueStaff = async (req, res) => {
+  const { staffId } = req.params
+  try {
+    const staff = await prisma.user.findUnique({
+      where: {
+        id: staffId,
+      },
+    })
+    res.status(200).json(staff)
+  } catch (error) {
+    debug(error)
+    res.status(500).json(error)
+  }
+}
+
+export const getAllStaff = async (req, res) => {
   const drivers = await prisma.user.findMany({
     where: {
-      AND: [{ role: 'DRIVE' }, { branchName: branch }],
+      OR: [{ role: 'DRIVER' }, { role: 'ADMIN' }],
+    },
+    select: {
+      id: true,
+      firstName: true,
+      lastName: true,
+      branchName: true,
     },
   })
 
-  console.log('all drivers sent')
+  // console.log('all drivers sent')
   res.send(drivers)
 }
 

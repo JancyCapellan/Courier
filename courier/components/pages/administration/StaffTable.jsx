@@ -5,20 +5,15 @@ import FormikControl from '../../../components/Formik/FormikControl'
 import { useQuery } from 'react-query'
 import { useRouter } from 'next/router'
 
-const DriverTable = () => {
+const StaffTable = () => {
   const router = useRouter()
-  function openDriverPage(driverId) {
-    console.log('open driver page')
-    router.push({
-      pathname: `/administration/${driverId}`,
-    })
-  }
-  const getDrivers = async () => {
-    const { data } = await axios.post(`http://localhost:3000/user/allDrivers`)
+
+  const getAllStaff = async () => {
+    const { data } = await axios.get(`http://localhost:3000/user/users/getAllStaff`)
     // console.log('DRIVERS DATA', data)
     return data
   }
-  const { data: drivers, status } = useQuery('getDrivers', getDrivers, {
+  const { data: staff, status } = useQuery('getAllStaff', getAllStaff, {
     onSuccess: (data) => {},
     onError: (error) => {
       console.log('error fetching product types', error)
@@ -38,14 +33,22 @@ const DriverTable = () => {
             </tr>
           </thead>
           <tbody>
-            {drivers.map((driver) => {
+            {staff.map((staff) => {
               return (
-                <tr onClick={() => openDriverPage(driver.id)} key={driver.id}>
+                <tr
+                  onClick={() => {
+                    // console.log('staff', staff)
+                    router.push({
+                      pathname: `/administration/${staff.id}`,
+                    })
+                  }}
+                  key={staff.id}
+                >
                   <td>
-                    {driver.firstName} {driver.lastName}
+                    {staff.firstName} {staff.lastName}
                   </td>
                   <td></td>
-                  <td>{driver.branchName}</td>
+                  <td>{staff.branchName}</td>
                 </tr>
               )
             })}
@@ -56,4 +59,4 @@ const DriverTable = () => {
   )
 }
 
-export default DriverTable
+export default StaffTable

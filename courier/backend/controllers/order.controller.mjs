@@ -22,6 +22,9 @@ export const submitOrderPrisma = async (req, res) => {
   // cartJSON has shape as  {amount: 3,productsId: 1}
   console.log('new cart', cartJSON)
 
+  // delete so the add addresses for the order have the same shape
+  delete order.form.shipper.shippedFrom?.default
+
   let info = {
     user: {
       connect: {
