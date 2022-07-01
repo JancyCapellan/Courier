@@ -54,7 +54,7 @@ interface user {
 export const Invoices: NextPage<{}> = () => {
   const queryClient = useQueryClient()
   const router = useRouter()
-  const [currentBranch, setCurrentBranch] = useState<string>('NYC')
+  // const [currentBranch, setCurrentBranch] = useState<string>('NYC')
 
   function openInvoice(id: number) {
     router.push({
@@ -79,8 +79,7 @@ export const Invoices: NextPage<{}> = () => {
       const res = await backendClient.post('/order/submitOrder', makeOrder(1)[0])
       console.log(' added orders', res)
       // TODO: do this to avoid refectching all queries, data saver, and time saver potentially for slower devices.
-      // queryClient.setQueryData('getAllOrders', res.data) //shapes of api response must be same for submit and get orders
-      queryClient.invalidateQueries('getAllOrders')
+      // queryClient.invalidateQueries('getAllOrders')
       return res.data
     } catch (error) {
       console.log('error adding orders', error)
@@ -88,16 +87,18 @@ export const Invoices: NextPage<{}> = () => {
   }
 
   const mutation = useMutation(postAddManyOrders, {
-    // onSuccess: (data) => {
-    //   queryClient.setQueryData('getAllOrders', data)
-    // },
+    onSuccess: (data) => {
+      queryClient.setQueryData<typeof data>('getAllOrders', (oldData: any) => {
+        return [...oldData, data]
+      })
+    },
   })
   // const orderHistory = props.listOfInvoices
   // console.log('list', orderHistory)
   return (
     <Layout>
-      <h1>Current ORDERS - {currentBranch}</h1>
-      <label>
+      <h1>Current ORDERS</h1>
+      {/* <label>
         Branch Name:
         <select name='branches' onChange={(e) => setCurrentBranch(e.currentTarget.value)}>
           <option key='default'>default branch</option>
@@ -105,7 +106,7 @@ export const Invoices: NextPage<{}> = () => {
           <option key='DR'>DR</option>
           <option key='MIAMI'>MIAMI</option>
         </select>
-      </label>
+      </label> */}
 
       <button
         onClick={() => {
@@ -115,7 +116,7 @@ export const Invoices: NextPage<{}> = () => {
         create mock order
       </button>
 
-      {currentBranch ? <PickupListTable /> : <h3> CHOOSE BRANCH </h3>}
+      <PickupListTable />
     </Layout>
   )
 }
