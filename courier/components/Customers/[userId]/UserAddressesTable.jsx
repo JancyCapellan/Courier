@@ -1,4 +1,4 @@
-import { useQuery, useMutation } from 'react-query'
+import { useQuery, useMutation, useQueryClient } from 'react-query'
 import axios from 'axios'
 import { backendClient } from '../../axiosClient.mjs'
 import { useState } from 'react'
@@ -91,6 +91,7 @@ const UserAddressesTable = ({ setSelectShipperAddress, handleParentModal, userId
           showEditModal={showEditModal}
           handleClose={() => setOpenEditModal(false)}
           address={editAddress}
+          userId={userId}
         />
       </section>
     </>
@@ -99,7 +100,8 @@ const UserAddressesTable = ({ setSelectShipperAddress, handleParentModal, userId
 
 export default UserAddressesTable
 
-const EditAddressModal = ({ showEditModal, handleClose, address }) => {
+const EditAddressModal = ({ showEditModal, handleClose, address, userId }) => {
+  const queryClient = useQueryClient()
   const initialValues = {
     address: address.address,
     address2: address.address2,
@@ -120,16 +122,14 @@ const EditAddressModal = ({ showEditModal, handleClose, address }) => {
     { key: 'DOMINICAN REPUBLIC', value: 'DR' },
   ]
 
-  const updateCustomerAddress = async (values) => {
+  const updateCustomerAddress = async (updatedAddressFormValues) => {
     try {
-      const res = await axios.put(
-        `http://localhost:5000/user/addresses/update/${address.address_id}`,
-        values
+      const { data } = await axios.put(
+        `http://localhost:3000/user/addresses/update/${address.id}`,
+        updatedAddressFormValues
       )
-      if (res.status === 200) {
-        alert('UPDATED')
-      }
-      return res
+
+      return data
     } catch (err) {
       console.error('update erorr', err)
       // alert('error')
@@ -137,19 +137,19 @@ const EditAddressModal = ({ showEditModal, handleClose, address }) => {
   }
 
   // need address id
-  const mutation = useMutation(async (updatedAddressFormValues) => {
-    return await axios.put(
-      `http://localhost:3000/user/addresses/update/${address.id}`,
-      updatedAddressFormValues
-    )
+  const editAddressMutation = useMutation(updateCustomerAddress, {
+    onSuccess: (data) => {
+      queryClient.setQueryData(['getCustomerAddresses', userId], (oldData) => {
+        console.log(oldData)
+        // if (!!!oldData) return [data]
+        return [data]
+      })
+      alert('user info edit completed')
+    },
   })
 
   const onSubmit = (values) => {
-    // const res = await updateCustomerAddress(values)
-    console.log('edit form values:', values)
-    mutation.mutate(values, {
-      onSuccess: () => alert('address successfully edited'),
-    })
+    editAddressMutation.mutate(values)
     handleClose()
   }
 

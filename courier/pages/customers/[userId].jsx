@@ -31,9 +31,7 @@ const CustomerAddresses = ({ currentUser }) => {
       <AddCustomerAddressForm
         show={showModal}
         handleClose={() => {
-          // console.log('close modal')
           setShowModal(false)
-          // setShowAddressModal(false)
         }}
       />
     </>
@@ -284,7 +282,7 @@ const CustomerAccountPage = () => {
     <>
       <h2> Customer Account Information</h2>
       <nav>
-        <button onClick={() => setCurrentPage(1)}>Edit Form</button>
+        <button onClick={() => setCurrentPage(1)}>Account Information</button>
         <button onClick={() => setCurrentPage(2)}>Addresses</button>
         <button onClick={() => setCurrentPage(3)}>Order History</button>
       </nav>

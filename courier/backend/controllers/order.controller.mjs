@@ -171,7 +171,17 @@ export const getUserOrders = async (req, res) => {
 
     // if userOrders array is empty, have to check if user even exists
     if (!userOrders?.length) throw 'no orders found or user does not exists, check Id'
-    res.json(userOrders)
+    if (userOrders) {
+      // changing timePlaced for orders into readable local values
+      // time is in 2021-11-01T16:23:29.139Z format, UTC
+      for (const obj in userOrders)
+        for (const key in userOrders[obj])
+          if (key === 'timePlaced') {
+            userOrders[obj][key] = userOrders[obj][key].toLocaleString('en-US')
+          }
+
+      res.json(userOrders)
+    }
   } catch (error) {
     res.status(500).json(error)
   }

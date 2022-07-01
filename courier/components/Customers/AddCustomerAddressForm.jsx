@@ -5,7 +5,7 @@ import * as Yup from 'yup'
 import axios from 'axios'
 import ModalContainer from '../HOC/ModalContainer'
 import { useGlobalStore } from '../../store/globalStore'
-import { useQueryClient } from 'react-query'
+import { useQueryClient, useMutation } from 'react-query'
 
 const AddCustomerAddressForm = ({ show, handleClose }) => {
   const queryClient = useQueryClient()
@@ -35,27 +35,31 @@ const AddCustomerAddressForm = ({ show, handleClose }) => {
     { key: 'DOMINICAN REPUBLIC', value: 'DR' },
   ]
 
-  const AddCustomerAddress = async (values) => {
+  const addCustomerAddress = async (values) => {
     try {
-      const res = await axios.post(
+      const { data } = await axios.post(
         `http://localhost:3000/user/addresses/add/${currentCustomer.id}`,
         values
       )
-      if (res.status === 200) alert('Successfully Added')
-      queryClient.invalidateQueries('getCustomerAddresses')
-      console.log('add address response', res)
-      return res
+      return data
     } catch (err) {
       console.error(err)
       alert('error')
     }
   }
-  //  TODO: after submission, new data is not shown in form unless refresh or search is done
+
+  const mutation = useMutation(addCustomerAddress, {
+    onSuccess: (data) => {
+      queryClient.setQueryData(['getCustomerAddresses', currentCustomer.id], (oldData) => {
+        return [...oldData, data]
+      })
+      alert('user info edit completed')
+    },
+  })
+
   const onSubmit = async (values) => {
-    console.log(values)
-    const res = await AddCustomerAddress(values)
+    mutation.mutate(values)
     handleClose()
-    console.log('CUSTOMER ADD VALUES:', res)
   }
 
   return (

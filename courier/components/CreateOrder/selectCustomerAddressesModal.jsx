@@ -12,17 +12,6 @@ const SelectCustomerAddressesModal = ({ show, handleClose, setAddress }) => {
 
   const currentCustomer = useGlobalStore((state) => state.currentCustomer)
 
-  const getCustomerAddresses = async () => {
-    const { data } = await axios.get(
-      process.env.NEXT_PUBLIC_API_URL + 'user/addresses/' + currentCustomer.id
-    )
-    return data
-  }
-  const { data: customerAddresses, status: getCustomerAddressesStatus } = useQuery(
-    'getCustomerAddresses',
-    getCustomerAddresses
-  )
-
   return (
     <>
       <ModalContainer show={show} handleClose={handleClose}>
@@ -39,6 +28,7 @@ const SelectCustomerAddressesModal = ({ show, handleClose, setAddress }) => {
           <UserAddressesTable
             setSelectShipperAddress={setAddress}
             handleParentModal={handleClose}
+            userId={currentCustomer.id}
           />
         </section>
       </ModalContainer>

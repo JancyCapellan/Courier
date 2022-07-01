@@ -15,7 +15,7 @@ const SenderFormAdmin = ({ handlePage }) => {
     address3: '',
     city: '',
     state: '',
-    postal_code: '',
+    postalCode: '',
     country: '',
     cellphone: '',
     telephone: '',
@@ -24,19 +24,6 @@ const SenderFormAdmin = ({ handlePage }) => {
   const { addForm, formDetails } = useCart()
 
   const currentCustomer = useGlobalStore((state) => state.currentCustomer)
-  // console.log(currentUser)
-
-  // const history = useHistory()
-  // const shipperSelectRef = useRef(null)
-
-  // useEffect(() => {
-  //   console.log('selected address', selectedShipperAddress)
-  // }, [setSelectedShipperAddress])
-
-  const handleModalClose = () => {
-    // console.log('close modal')
-    setShowModal(false)
-  }
 
   const selectOptions = [
     { key: 'UNITED STATES', value: 'USA' },
@@ -48,13 +35,13 @@ const SenderFormAdmin = ({ handlePage }) => {
       firstName: currentCustomer.firstName,
       lastName: currentCustomer.lastName,
       shippedFrom: {
-        address_id: selectedShipperAddress.address_id,
+        // addressId: selectedShipperAddress.id,
         address: selectedShipperAddress.address,
         address2: selectedShipperAddress.address2,
         address3: selectedShipperAddress.address3,
         city: selectedShipperAddress.city,
         state: selectedShipperAddress.state,
-        postalCode: selectedShipperAddress.postal_code,
+        postalCode: selectedShipperAddress.postalCode,
         country: selectedShipperAddress.country,
         cellphone: selectedShipperAddress.cellphone,
         telephone: selectedShipperAddress.telephone,
@@ -126,7 +113,9 @@ const SenderFormAdmin = ({ handlePage }) => {
       <button onClick={() => setShowModal(true)}>select address</button>
       <SelectCustomerAddressesModal
         show={showModal}
-        handleClose={handleModalClose}
+        handleClose={() => {
+          setShowModal(false)
+        }}
         setAddress={setSelectedShipperAddress}
       />
 
