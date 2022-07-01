@@ -142,18 +142,52 @@ export const getUserOrders = async (req, res) => {
     })
   }
   const id = req.params.userId
-  const result = await prisma.user
-    .findUnique({
-      where: { id: id },
+
+  try {
+    const userOrders = await prisma.order.findMany({
+      where: {
+        userId: id,
+      },
       include: {
-        orders: true,
+        status: true,
+        items: {
+          include: {
+            product: {
+              select: {
+                price: true,
+                name: true,
+                productType: {
+                  select: {
+                    type: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+        addresses: true,
       },
     })
-    .catch(async (e) => {
-      res.status(500).send({ error: 'Something failed!' })
-      throw e
-    })
-  if (result) res.json(result)
+
+    // if userOrders array is empty, have to check if user even exists
+    if (!userOrders?.length) throw 'no orders found or user does not exists, check Id'
+    res.json(userOrders)
+  } catch (error) {
+    res.status(500).json(error)
+  }
+
+  // const result = await prisma.user
+  //   .findUnique({
+  //     where: { id: id },
+  //     include: {
+  //       orders: true,
+  //     },
+  //   })
+  //   .catch(async (e) => {
+  //     res.status(500).send({ error: 'Something failed!' })
+  //     throw e
+  //   })
+  // if (result) res.json(result)
 }
 
 export const getUserOrderInfo = async (req, res) => {

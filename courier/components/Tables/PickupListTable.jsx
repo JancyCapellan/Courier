@@ -6,15 +6,6 @@ import axios from 'axios'
 import { GlobalFilter } from './tableFilters'
 import { useRouter } from 'next/router'
 
-const getAllOrders = async () => {
-  try {
-    const { data } = await axios.get('http://localhost:3000/order/allOrders')
-    return data
-  } catch (error) {
-    throw new Error(`API error:${error?.message}`)
-  }
-}
-
 const PickupListTable = () => {
   const router = useRouter()
   const columns = React.useMemo(
@@ -76,7 +67,14 @@ const PickupListTable = () => {
     }),
     []
   )
-
+  const getAllOrders = async () => {
+    try {
+      const { data } = await axios.get('http://localhost:3000/order/allOrders')
+      return data
+    } catch (error) {
+      throw new Error(`API error:${error?.message}`)
+    }
+  }
   const {
     data: pickupListTable,
     isSuccess,
@@ -94,7 +92,7 @@ const PickupListTable = () => {
     return pickupListTable
   }, [pickupListTable])
 
-  console.log('invoices', pickupListTable)
+  // console.log('invoices', pickupListTable)
   const {
     getTableProps,
     getTableBodyProps,

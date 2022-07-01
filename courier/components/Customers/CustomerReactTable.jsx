@@ -313,7 +313,7 @@ const CustomerReactTable = () => {
             </button>
             <button
               onClick={() => {
-                setCurrentCustomer(original)
+                // setCurrentCustomer(original)
                 router.push({
                   pathname: `/customers/${original.id}`,
                 })

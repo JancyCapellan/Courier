@@ -3,10 +3,11 @@ import {
   login,
   customerSearch,
   addUserAddress,
-  update,
+  updateUserInformation,
   findOne,
   allDrivers,
-  getAddressesWithUserId,
+  getUserAddressesWithUserId,
+  updateUserAddress,
 } from '../controllers/user.newcontroller.mjs'
 
 // import { Router } from 'express'
@@ -25,16 +26,17 @@ router.post('/login', login)
 // router.get('/loggedInUser', authenticateToken, user.getloggedInUser)
 router.get('/customerSearch', customerSearch)
 router.post('/addresses/add/:userId', addUserAddress)
+router.put('/addresses/update/:addressId', updateUserAddress)
 
 // Update a user with userId
-router.put('/:userId', update)
+router.put('/:userId', updateUserInformation)
 // Retrieve a single user with userId
 router.get('/:userId', findOne)
 
 // get all drivers by branch
 router.post('/allDrivers', allDrivers)
 
-router.get('/addresses/:userId', getAddressesWithUserId)
+router.get('/addresses/:userId', getUserAddressesWithUserId)
 // router.put('/addresses/update/:addressId', updateAddress)
 
 // ! not in use

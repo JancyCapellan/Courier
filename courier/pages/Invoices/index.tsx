@@ -86,6 +86,7 @@ export const Invoices: NextPage<{}> = () => {
     }
   }
 
+  // useful to see new add order without refreshing or gettting all orders again.
   const mutation = useMutation(postAddManyOrders, {
     onSuccess: (data) => {
       queryClient.setQueryData<typeof data>('getAllOrders', (oldData: any) => {

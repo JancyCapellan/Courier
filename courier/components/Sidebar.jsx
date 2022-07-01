@@ -18,8 +18,8 @@ const Sidebar = () => {
   let sidebarData
   if (loading === false) {
     sidebarData = sidebarTypesSelector(session.user.role)
-    // console.log(SidebarData)
   }
+  // console.log('sidebardata', sidebarData)
   return (
     <>
       <nav className={isCollapsed ? 'sidebar collapsed' : 'sidebar'}>

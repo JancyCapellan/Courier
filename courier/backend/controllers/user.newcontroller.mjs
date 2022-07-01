@@ -97,15 +97,25 @@ export const allDrivers = async (req, res) => {
 }
 
 // Update a user identified by the userId in the request
-export const update = async (req, res) => {
-  const user = await prisma.user.update({
-    where: { id: req.body.id },
-    data: req.body,
-  })
-  console.log(user)
+export const updateUserInformation = async (req, res) => {
+  const { userId } = req.params
+  const updatedUserInfoForm = req.body
+  // console.log('update user address respond', updatedUserInfoForm)
 
-  if (user) {
-    res.send(user).status(200)
+  try {
+    const updatedUserInfo = await prisma.user.update({
+      where: {
+        id: userId,
+      },
+      data: updatedUserInfoForm,
+    })
+
+    console.log('udaptedUserinfo', updatedUserInfo)
+    res.status(200).json(updatedUserInfo)
+  } catch (e) {
+    // console.log('update user address respond', userId, updatedUserInfoForm)
+    console.log(e)
+    res.status(500)
   }
 }
 
@@ -157,17 +167,22 @@ export const customerSearch = async (req, res) => {
     res.send(result)
   }
 }
-export const getAddressesWithUserId = async (req, res) => {
+export const getUserAddressesWithUserId = async (req, res) => {
   // debug('request object:\n', req)
   const userid = req.params.userId
-  debug(req.params)
-  const addresses = await prisma.address.findMany({
-    where: {
-      userId: userid,
-    },
-  })
+  // debug(req.params)
 
-  if (addresses) res.send(addresses)
+  try {
+    const addresses = await prisma.address.findMany({
+      where: {
+        userId: userid,
+      },
+    })
+
+    res.status(200).json(addresses)
+  } catch (error) {
+    console.log(error)
+  }
 }
 
 export const addUserAddress = async (req, res) => {
@@ -201,6 +216,27 @@ export const addUserAddress = async (req, res) => {
   }
 }
 
+export const updateUserAddress = async (req, res) => {
+  const { addressId } = req.params
+  const updatedAddress = req.body
+  console.log('update user address respond', addressId, updatedAddress)
+
+  try {
+    const updatedAddressResult = await prisma.address.update({
+      where: {
+        id: Number(addressId),
+      },
+      data: updatedAddress,
+    })
+
+    res.status(200).json(updatedAddressResult)
+  } catch (e) {
+    console.log(e)
+    res.status(500)
+  }
+  // res.json('worked')
+}
+
 // Find a single user with a userId
 export const findOne = async (req, res) => {
   // const id = parseInt(req.params.userId)
@@ -209,8 +245,14 @@ export const findOne = async (req, res) => {
     where: {
       id: id,
     },
+    // include: {
+    // addresses: true,
+    // orders: true,
+    // pickups: true, // returns the pickups assigned to a user that is usually a driver staff
+    // _count: true, // returns count of includes
+    // },
   })
-  console.log('unique user', user)
+  // console.log('unique user', user)
   res.send(user)
 }
 // ####################    OLD  ###########################

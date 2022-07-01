@@ -52,43 +52,6 @@ const nextAuthOptions = (req, res) => {
             console.log('nextauth signin error')
             return null
           }
-
-          // TODO: this may be a better choice to only have as the login/ Authentication actions
-          // here, but all database queries a part of my epxress backend.
-
-          // try {
-          //   const res = await axios.post('http://localhost:3000/user/login', loginForm)
-          //   const user = res.data
-          //   console.log('res from login', res.data)
-
-          //   if (res.status === 200) return { email: credentials.email }
-
-          //   // return null
-          // } catch {
-          //   return null
-          // }
-          // await axios
-          //   .post('http://localhost:3000/user/login', loginForm)
-          //   .then((res) => {
-          //     const user = res.data
-          //     alert('here', user)
-          //     console.log(' auth user', user)
-          //     response = res
-          //     return user
-          //   })
-          //   .catch((error) => {
-          //     if (error.response) {
-          //       console.log(error.response.status)
-          //       response = error.response
-          //     } else if (error.request) {
-          //       console.log(error.request)
-          //     } else {
-          //       // Something happened in setting up the request that triggered an Error
-          //       console.log('Error', error.message)
-          //     }
-          //     console.log(error.config)
-          //     return null
-          //   })
         },
       }),
     ],
@@ -134,7 +97,7 @@ const nextAuthOptions = (req, res) => {
         if (user) {
           token.user = user.user
           token.id = user.user.id
-          console.log('JWT', token)
+          // console.log('JWT', token)
           return token
         }
 
@@ -148,7 +111,7 @@ const nextAuthOptions = (req, res) => {
           session.user = token.user ? token.user : { ...token.user, ...session.user }
           // session.user = test
         }
-        console.log('nextauth-session', session)
+        // console.log('nextauth-session', session)
 
         return session
       },
