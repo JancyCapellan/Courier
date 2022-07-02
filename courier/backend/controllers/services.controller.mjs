@@ -81,8 +81,14 @@ export const deleteProductType = async (req, res) => {
         id: typeId,
       },
     })
-    debug('deleted type', deletedType)
-    res.send('type successfully deleted')
+    // res.status(200).send(`
+    // <html>
+    //   <body>
+    //     <h1>product type: ${deletedType.type} successfully deleted</h1>
+    //   </body>
+    // </html>
+    // `)
+    res.status(200).json(`type: ${deletedType.type} successfully deleted<`)
   } catch (error) {
     // debug(error)
     res.status(500)

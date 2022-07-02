@@ -3,11 +3,11 @@ import { Formik, Form } from 'formik'
 import * as Yup from 'yup'
 import FormikControl from '../../../components/Formik/FormikControl'
 import { useQuery } from 'react-query'
+import { backendClient } from '../../axiosClient.mjs'
 
 const ProductEditorTable = () => {
-  //react query to retrieve product types
   const getProductTypes = async () => {
-    const { data } = await axios.get('http://localhost:3000/services/productTypes')
+    const { data } = await backendClient.get('services/productTypes')
     return data
   }
   const {
@@ -22,9 +22,8 @@ const ProductEditorTable = () => {
     staleTime: Infinity,
   })
 
-  //react query to retrieve product list
   const getProductList = async () => {
-    const { data } = await axios.get(`http://localhost:3000/services/allProducts`)
+    const { data } = await backendClient.get(`services/allProducts`)
     return data
   }
   const {
@@ -35,8 +34,8 @@ const ProductEditorTable = () => {
 
   //react query to delete product type
   const deleteProductType = async (typeId) => {
-    const res = await axios.delete(`http://localhost:3000/services/deleteProductType/${typeId}`)
-    console.log('delete response:', res)
+    const res = await backendClient.delete(`services/deleteProductType/${typeId}`)
+    refetchProductTypes()
     return
   }
 
@@ -44,7 +43,7 @@ const ProductEditorTable = () => {
     <>
       {productTypesStatus === 'success' && (
         <div>
-          Create Product
+          Create New Product
           <Formik
             // initialValues={{ email: '', password: '', tenantKey: '' }}
             initialValues={{ item_name: ' ', item_price: 0, item_type: 0 }}
@@ -68,7 +67,7 @@ const ProductEditorTable = () => {
               try {
                 const res = await axios.post('http://localhost:3000/services/addItem', values)
                 console.log('add item res', res)
-                alert('added item successfully')
+                // alert('added item successfully')
                 resetForm()
                 // router.push('/administration')
                 refetchProductList()
@@ -126,7 +125,7 @@ const ProductEditorTable = () => {
             console.log('item submission values', values)
             try {
               const res = await axios.post('http://localhost:3000/services/addProductType', values)
-              alert('added type successfully')
+              // alert('added type successfully')
               // router.push('/administration')
               resetForm()
               refetchProductTypes()
@@ -157,6 +156,7 @@ const ProductEditorTable = () => {
         </Formik>
       </div>
 
+      {/* prodcuts table */}
       <table>
         <thead>
           <tr>
@@ -181,6 +181,7 @@ const ProductEditorTable = () => {
         </tbody>
       </table>
 
+      {/* types table */}
       <table>
         <thead>
           <tr>
