@@ -2,7 +2,7 @@ import axios from 'axios'
 import { Formik, Form } from 'formik'
 import * as Yup from 'yup'
 import FormikControl from '../../../components/Formik/FormikControl'
-import { useQuery } from 'react-query'
+import { useQuery, useMutation } from 'react-query'
 import { backendClient } from '../../axiosClient.mjs'
 
 const ProductEditorTable = () => {
@@ -34,9 +34,29 @@ const ProductEditorTable = () => {
 
   //react query to delete product type
   const deleteProductType = async (typeId) => {
-    const res = await backendClient.delete(`services/deleteProductType/${typeId}`)
-    refetchProductTypes()
-    return
+    const res = await backendClient
+      .delete(`services/deleteProductType/${typeId}`)
+      .catch((error) => {
+        if (error.response) {
+          // The request was made and the server responded with a status code
+          // that falls out of the range of 2xx
+          console.log('error reponse')
+          alert(error.response.data)
+          console.log(error.response.status)
+          // console.log(error.response.headers)
+        } else if (error.request) {
+          // The request was made but no response was received
+          // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+          // http.ClientRequest in node.js
+          console.log(error.request)
+        } else {
+          // Something happened in setting up the request that triggered an Error
+          console.log('Error', error.message)
+        }
+        // console.log(error.config)
+      })
+    // refetchProductTypes()
+    // return res.data
   }
 
   return (

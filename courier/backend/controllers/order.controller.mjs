@@ -183,6 +183,7 @@ export const getUserOrders = async (req, res) => {
             userOrders[obj][key] = userOrders[obj][key].toLocaleString('en-US')
           }
 
+      // debug(userOrders)
       res.json(userOrders)
     }
   } catch (error) {

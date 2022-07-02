@@ -1,6 +1,9 @@
 import { PrismaClient } from '@prisma/client'
 import { debug } from 'console'
-const prisma = new PrismaClient()
+import next from 'next'
+const prisma = new PrismaClient({
+  errorFormat: 'pretty',
+})
 
 export const allProducts = async (req, res) => {
   const products = await prisma.product.findMany({
@@ -90,8 +93,10 @@ export const deleteProductType = async (req, res) => {
     // `)
     res.status(200).json(`type: ${deletedType.type} successfully deleted<`)
   } catch (error) {
-    // debug(error)
-    res.status(500)
-    res.send('error: possibly due to a product of this type existing on database')
+    debug(error)
+    if (error.code === 'P2003')
+      res
+        .status(500)
+        .json(`error deleting ${error.meta.field_name}, product of this type exists in database `)
   }
 }

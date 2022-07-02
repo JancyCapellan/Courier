@@ -22,7 +22,7 @@ app
   .then(() => {
     server.use(logger('dev'))
     server.use(express.json())
-    server.use(express.urlencoded({ extended: false }))
+    server.use(express.urlencoded({ extended: true })) // makes nested objects possible in the url
     // server.use(cookieParser())
     server.use(cors())
 
