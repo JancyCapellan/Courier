@@ -8,11 +8,12 @@ import {
   useAsyncDebounce,
   useRowSelect,
 } from 'react-table'
-import { useQuery, useMutation } from 'react-query'
+import { useQuery, useMutation, useQueryClient } from 'react-query'
 import axios from 'axios'
 import { GlobalFilter } from './tableFilters'
 import { useRouter } from 'next/router'
 import { backendClient } from '../axiosClient.mjs'
+import { makeOrder } from './makeData.mjs'
 
 const IndeterminateCheckbox = React.forwardRef(function ICheckbox({ indeterminate, ...rest }, ref) {
   const defaultRef = React.useRef()
@@ -88,6 +89,28 @@ const PickupListTable = () => {
   const [queryPageSize, setQueryPageSize] = React.useState(defaultPageSize)
   const router = useRouter()
 
+  const queryClient = useQueryClient()
+
+  const postAddManyOrders = async () => {
+    try {
+      const res = await backendClient.post('/order/submitOrder', makeOrder(1)[0])
+      console.log(' added orders', res)
+      return res.data
+    } catch (error) {
+      console.log('error adding orders', error)
+    }
+  }
+
+  // useful to see new add order without refreshing or gettting all orders again.
+  const mutationNewOrder = useMutation(postAddManyOrders, {
+    onSuccess: (data) => {
+      queryClient.setQueryData(['getAllOrders', queryPageIndex, queryPageSize], (oldData) => {
+        console.log('new Order:', oldData, queryPageIndex, queryPageSize)
+        return { ...oldData, orders: [...oldData.orders, data] }
+      })
+    },
+  })
+
   const getOrderOptions = async () => {
     try {
       const { data } = await axios.get('http://localhost:3000/order/options/all')
@@ -158,7 +181,6 @@ const PickupListTable = () => {
     async ({ orderIds, newPickUpDriverId }) => {
       // change pickup order for order after single selection
 
-      console.log('newpickupdriverid', newPickUpDriverId, orderIds)
       const { data } = await backendClient.put(`order/update/pickupDriver/many`, {
         ids: orderIds,
         driverId: newPickUpDriverId,
@@ -168,6 +190,8 @@ const PickupListTable = () => {
     },
     {
       onSuccess: (data) => {
+        console.log('newpickupdriverid', newPickUpDriverId, orderIds)
+
         // queryClient.setQueryData(['getAllOrders', currentCustomer.id], (oldData) => {
         //   return [...oldData, data]
         // })
@@ -186,11 +210,10 @@ const PickupListTable = () => {
     },
     {
       onSuccess: (data) => {
-        console.log('updated pickupZone', data)
-
-        // queryClient.setQueryData(['getAllOrders', currentCustomer.id], (oldData) => {
+        // queryClient.setQueryData(['getAllOrders', queryPageIndex, queryPageSize], (oldData) => {
         //   return [...oldData, data]
         // })
+        console.log('updated pickupZone', data)
         // alert('user info edit completed')
       },
     }
@@ -431,7 +454,14 @@ const PickupListTable = () => {
     <>
       {isSuccess ? (
         <>
-          <h1></h1>
+          <h1>test</h1>
+          <button
+            onClick={() => {
+              mutationNewOrder.mutate()
+            }}
+          >
+            create mock order
+          </button>
           <GlobalFilter
             globalFilter={state.globalFilter}
             setGlobalFilter={setGlobalFilter}

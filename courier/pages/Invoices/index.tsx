@@ -56,24 +56,6 @@ export const Invoices: NextPage<{}> = () => {
   const router = useRouter()
   // const [currentBranch, setCurrentBranch] = useState<string>('NYC')
 
-  const postAddManyOrders = async () => {
-    try {
-      const res = await backendClient.post('/order/submitOrder', makeOrder(1)[0])
-      console.log(' added orders', res)
-      return res.data
-    } catch (error) {
-      console.log('error adding orders', error)
-    }
-  }
-
-  // useful to see new add order without refreshing or gettting all orders again.
-  const mutation = useMutation(postAddManyOrders, {
-    onSuccess: (data) => {
-      queryClient.setQueryData<typeof data>('getAllOrders', (oldData: any) => {
-        return [...oldData, data]
-      })
-    },
-  })
   // const orderHistory = props.listOfInvoices
   // console.log('list', orderHistory)
   return (
@@ -88,14 +70,6 @@ export const Invoices: NextPage<{}> = () => {
           <option key='MIAMI'>MIAMI</option>
         </select>
       </label> */}
-
-      <button
-        onClick={() => {
-          mutation.mutate()
-        }}
-      >
-        create mock order
-      </button>
 
       <PickupListTable />
     </Layout>
