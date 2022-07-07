@@ -6,11 +6,16 @@ import { useSession } from '../customHooks/useSession'
 // import * from '../styles/Sidebar.module.css'
 
 const Sidebar = () => {
-  const [isCollapsed, setIsCollapsed] = useState(false)
+  const [isCollapsed, setIsCollapsed] = useState()
   const sidebarToggler = () => {
     setIsCollapsed(!isCollapsed)
+    localStorage.setItem('sidebarToggle', isCollapsed)
   }
 
+  useEffect(() => {
+    const toggle = localStorage.getItem('sidebarToggle')
+    setIsCollapsed(toggle)
+  }, [])
   // const { email, role, firstName } = useAuth()
 
   const [session, loading] = useSession()
