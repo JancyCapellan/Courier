@@ -8,7 +8,7 @@ import axios from 'axios'
 import { useMutation, useQueryClient } from 'react-query'
 import { backendClient } from './axiosClient.mjs'
 
-const RegistrationFormModal = ({ isRegisteringStaff, closeModal }) => {
+const RegistrationFormModal = ({ isRegisteringStaff, closeModal, query }) => {
   const queryClient = useQueryClient()
 
   const initialValues = {
@@ -61,9 +61,12 @@ const RegistrationFormModal = ({ isRegisteringStaff, closeModal }) => {
         // console.log('data', query)
         {
           isRegisteringStaff === false &&
-            queryClient.setQueryData('getCustomerList', (oldData) => {
-              console.log('olddata', oldData)
-              return [...oldData, data]
+            queryClient.setQueryData(query, (oldData) => {
+              console.log('olddata', oldData, query)
+              return {
+                customerTableCount: oldData.customerTableCount + 1,
+                currentCustomerPage: [...oldData.currentCustomerPage, data],
+              }
             })
         }
         {

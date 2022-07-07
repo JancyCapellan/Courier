@@ -222,7 +222,11 @@ const Table = ({ columns }) => {
             Create Customer
           </div>
           <ModalContainer show={showModal} handleClose={toggleModal}>
-            <RegistrationFormModal isRegisteringStaff={false} closeModal={toggleModal} />
+            <RegistrationFormModal
+              isRegisteringStaff={false}
+              closeModal={toggleModal}
+              query={['getCustomerList', queryPageIndex, queryPageSize]}
+            />
           </ModalContainer>
 
           <GlobalFilter
