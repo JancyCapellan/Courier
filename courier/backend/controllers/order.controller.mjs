@@ -333,6 +333,7 @@ export const updateOrderPickupDriverId = async (req, res) => {
   })
 
   console.log(result)
+  res.json(result)
 
   // res.json(driverId)
 }
@@ -350,6 +351,24 @@ export const updateManyOrderPickupDriverId = async (req, res) => {
     },
     data: {
       pickupDriverId: driverId,
+    },
+  })
+
+  console.log(result)
+
+  res.json(result)
+}
+
+export const updateOrderPickupZone = async (req, res) => {
+  const id = parseInt(req.params.orderId)
+  const zoneId = parseInt(req.body.pickupZoneId)
+  console.log('updateorderzone:', id, zoneId)
+  const result = await prisma.order.update({
+    where: {
+      id: id,
+    },
+    data: {
+      pickupZoneId: zoneId,
     },
   })
 

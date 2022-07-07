@@ -139,7 +139,7 @@ const PickupListTable = () => {
       // change pickup order for order after single selection
 
       console.log('newpickupdriverid', newPickUpDriverId, orderId)
-      const { data } = await backendClient.put(`order/update/${orderId}`, {
+      const { data } = await backendClient.put(`order/update/${orderId}/pickupDriver`, {
         driverId: newPickUpDriverId,
       })
       console.log('updated pickup', data)
@@ -175,6 +175,26 @@ const PickupListTable = () => {
       },
     }
   )
+  const mutationPickupZone = useMutation(
+    async ({ orderId, pickupZoneId }) => {
+      // change pickup order for order after single selection
+
+      const { data } = await backendClient.put(`order/update/${orderId}/pickupZone`, {
+        pickupZoneId: pickupZoneId,
+      })
+      return data
+    },
+    {
+      onSuccess: (data) => {
+        console.log('updated pickupZone', data)
+
+        // queryClient.setQueryData(['getAllOrders', currentCustomer.id], (oldData) => {
+        //   return [...oldData, data]
+        // })
+        // alert('user info edit completed')
+      },
+    }
+  )
 
   // * dynamic cells for pickupzone and drivers that updates the memoization whenever orderOptions are fetched successfully
   const columns = React.useMemo(
@@ -191,12 +211,13 @@ const PickupListTable = () => {
             {orderOptionsIsSuccess ? (
               <select
                 onChange={(e) => {
-                  // mutationPickupDriver.mutate(original.id, e.target.value)
+                  console.log('pickupZoneId:', e.target.value)
+                  mutationPickupZone.mutate({ orderId: original.id, pickupZoneId: e.target.value })
                 }}
               >
-                <option value={original.pickupZoneId}>{original.pickupZone}</option>
+                <option value={original.pickupZoneId}>{original.pickupZone?.Name}</option>
                 {orderOptions.pickupZones.map((zone) => (
-                  <option key={`${zone.code}${zone.id}`} value={zone.code}>
+                  <option key={`${zone.code}${zone.id}`} value={zone.id}>
                     {zone.Name}
                   </option>
                 ))}
