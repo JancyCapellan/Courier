@@ -2,5 +2,9 @@
   "verbose": true,
   "ignore": ["node_modules", ".next"],
   "watch": ["server.mjs", "backend/*"],
-  "ext": "js json mjs"
+  "ext": "js json mjs",
+  "execMap": {
+    "ts": "ts-node",
+    "mts": "ts-node"
+  }
 }

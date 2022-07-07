@@ -7,6 +7,10 @@ import PickupListTable from '../../components/Tables/PickupListTable'
 
 const BatchContaintersTable = () => {}
 
+const getBatchContainersDetails = () => {}
+
+const getWarehouseSupplyInventory = () => {}
+
 const Warehouse = () => {
   return (
     <section className='main-grid-area'>

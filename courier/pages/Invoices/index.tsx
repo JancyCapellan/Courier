@@ -56,24 +56,6 @@ export const Invoices: NextPage<{}> = () => {
   const router = useRouter()
   // const [currentBranch, setCurrentBranch] = useState<string>('NYC')
 
-  function openInvoice(id: number) {
-    router.push({
-      pathname: `/Invoices/${id}`,
-      // query: { orderId: id },
-    })
-  }
-
-  async function updateOrderDriver(orderId: number, driverId: number) {
-    console.log('updated order', orderId, driverId)
-
-    const result = await axios.put(`http://localhost:3000/order/${orderId}/`, {
-      pickupDriverId: driverId,
-    })
-
-    console.log('updateOrderDriver', result)
-    // router.reload()
-  }
-
   const postAddManyOrders = async () => {
     try {
       const res = await backendClient.post('/order/submitOrder', makeOrder(1)[0])

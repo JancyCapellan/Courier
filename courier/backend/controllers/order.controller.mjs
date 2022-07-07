@@ -303,10 +303,10 @@ export const getAllProducts = async (req, res) => {
   res.send(result)
 }
 
-export const updateOrder = async (req, res) => {
+export const updateOrderPickupDriverId = async (req, res) => {
   const id = parseInt(req.params.orderId)
-  const driverId = req.body.pickupDriverId
-  console.log('updateorder', id, driverId)
+  const driverId = req.body.driverId
+  // console.log('updateorderpickupdriver by id:', id, driverId)
   const result = await prisma.order.update({
     where: {
       id: id,
@@ -321,6 +321,43 @@ export const updateOrder = async (req, res) => {
   })
 
   console.log(result)
+
+  // res.json(driverId)
+}
+
+export const updateManyOrderPickupDriverId = async (req, res) => {
+  //array of order ids to update,
+  const ids = req.body.ids
+  const driverId = req.body.driverId
+  // console.log('updateorderpickupdriver by id:', id, driverId)
+  const result = await prisma.order.updateMany({
+    where: {
+      id: {
+        in: [1, 2, 3],
+      },
+    },
+    data: {
+      pickupDriverId: driverId,
+    },
+  })
+
+  console.log(result)
+
+  res.json(result)
+}
+
+export const getOrderOptions = async (req, res) => {
+  const pickupZones = await prisma.pickupZone.findMany()
+  const pickupDrivers = await prisma.user.findMany({
+    where: {
+      role: 'DRIVER',
+    },
+  })
+
+  const data = { pickupZones: pickupZones, drivers: pickupDrivers }
+  res.status(200).json(data)
+
+  // console.log('order options\n', pickupZones, pickupDrivers)
 }
 
 // ################### old #####################
