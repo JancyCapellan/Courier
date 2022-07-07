@@ -87,8 +87,12 @@ export const submitOrderPrisma = async (req, res) => {
 }
 
 export const getAllOrders = async (req, res) => {
-  const result = await prisma.order
+  const skip = parseInt(req.query.offset)
+  const take = parseInt(req.query.limit)
+  const orders = await prisma.order
     .findMany({
+      skip: skip,
+      take: take,
       include: {
         user: {
           select: {
@@ -107,18 +111,25 @@ export const getAllOrders = async (req, res) => {
             message: true,
           },
         },
+        pickupZone: {
+          select: {
+            Name: true,
+          },
+        },
       },
     })
     .catch(async (e) => {
       res.status(500).send({ error: 'Something failed!' })
       throw e
     })
-  if (result) {
+
+  const orderCount = await prisma.order.count()
+  if (orders) {
     // changing timePlaced for orders into readable local values
     // time is in 2021-11-01T16:23:29.139Z format, UTC
     //might make it so i can get both date and time seperatly in response
-    for (const obj in result)
-      for (const key in result[obj])
+    for (const obj in orders)
+      for (const key in orders[obj])
         if (key === 'timePlaced') {
           // console.log('datetime', result[obj][key])
 
@@ -130,11 +141,12 @@ export const getAllOrders = async (req, res) => {
           //   time: result[obj][key].toTimeString(),
           // }
 
-          result[obj][key] = result[obj][key].toLocaleString('en-US')
+          orders[obj][key] = orders[obj][key].toLocaleString('en-US')
         }
 
+    let data = { orders: orders, orderCount: orderCount }
     // console.log('allorder', result)
-    res.send(result)
+    res.send(data)
   }
 }
 

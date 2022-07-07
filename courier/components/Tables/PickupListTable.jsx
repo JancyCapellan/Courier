@@ -81,8 +81,11 @@ const EditableCell = ({
 //   { key: 'Driver', value: 'DRIVER' },
 // ]
 
+let defaultPageSize = 30
 const PickupListTable = () => {
   const [multiSelectPickupDriver, setMultiSelectPickupDriver] = React.useState()
+  const [queryPageIndex, setQueryPageIndex] = React.useState(0)
+  const [queryPageSize, setQueryPageSize] = React.useState(defaultPageSize)
   const router = useRouter()
 
   const getOrderOptions = async () => {
@@ -103,23 +106,31 @@ const PickupListTable = () => {
     staleTime: Infinity,
   })
 
-  const getAllOrders = async () => {
+  const getAllOrders = async (page, pageSize) => {
+    const offset = page * pageSize
+
     try {
-      const { data } = await axios.get('http://localhost:3000/order/allOrders')
+      const { data } = await axios.get(
+        `http://localhost:3000/order/allOrders?offset=${offset}&limit=${pageSize}`
+      )
       return data
     } catch (error) {
       throw new Error(`API error:${error?.message}`)
     }
   }
   const {
-    data: pickupListTable,
+    data: allOrders,
     isSuccess,
     isLoading,
     error,
-  } = useQuery('getAllOrders', () => getAllOrders(), {
-    keepPreviousData: true,
-    staleTime: Infinity,
-  })
+  } = useQuery(
+    ['getAllOrders', queryPageIndex, queryPageSize],
+    () => getAllOrders(queryPageIndex, queryPageSize),
+    {
+      keepPreviousData: true,
+      staleTime: Infinity,
+    }
+  )
 
   // to use data have to make status check for each call, consolidating calls into one route will remvoe those multiple calls but i will have to make a new router and return a new shape for the entire page. currently trying to
 
@@ -183,6 +194,7 @@ const PickupListTable = () => {
                   // mutationPickupDriver.mutate(original.id, e.target.value)
                 }}
               >
+                <option value={original.pickupZoneId}>{original.pickupZone}</option>
                 {orderOptions.pickupZones.map((zone) => (
                   <option key={`${zone.code}${zone.id}`} value={zone.code}>
                     {zone.Name}
@@ -219,7 +231,7 @@ const PickupListTable = () => {
                 }}
               >
                 <option value={original.pickupDriverId}>
-                  current: {original.pickupdriver?.firstName} {original.pickupdriver?.lastName}
+                  {original.pickupdriver?.firstName} {original.pickupdriver?.lastName}
                 </option>
                 {orderOptions.drivers.map((driver) => (
                   <option key={driver.id} value={driver.id}>
@@ -238,6 +250,10 @@ const PickupListTable = () => {
         ),
       },
       {
+        Header: 'Customer',
+        accessor: ({ user }) => `${user.firstName} ${user.lastName}`,
+      },
+      {
         Header: 'Shipped To',
         accessor: (data) => `${data.recieverFirstName} ${data.recieverLastName}`,
       },
@@ -253,6 +269,10 @@ const PickupListTable = () => {
       {
         Header: 'Status',
         accessor: 'status.message',
+      },
+      {
+        Header: 'Batch Container',
+        accessor: 'containerId',
       },
       {
         Header: 'utility',
@@ -294,9 +314,11 @@ const PickupListTable = () => {
   // console.log(pickupListTable)
 
   const tableData = React.useMemo(() => {
-    if (!pickupListTable) return []
-    return pickupListTable
-  }, [pickupListTable])
+    if (!allOrders) return []
+    return allOrders.orders
+  }, [allOrders])
+
+  const tableTotalCount = allOrders?.orderCount
 
   // console.log('invoices', pickupListTable)
   const {
@@ -307,16 +329,16 @@ const PickupListTable = () => {
     page,
     rows,
     // footerGroups,
-    // canPreviousPage,
-    // canNextPage,
-    // pageOptions,
-    // pageCount,
+    canPreviousPage,
+    canNextPage,
+    pageOptions,
+    pageCount,
     setGlobalFilter,
-    // gotoPage,
-    // nextPage,
-    // previousPage,
-    // setPageSize,
-    // state: { pageIndex, pageSize, globalFilter },
+    gotoPage,
+    nextPage,
+    previousPage,
+    setPageSize,
+    state: { pageIndex, pageSize, globalFilter },
     // visibleColumns,
     state,
     selectedFlatRows,
@@ -326,9 +348,19 @@ const PickupListTable = () => {
       columns,
       data: tableData,
       // filterTypes,
+      initialState: {
+        pageIndex: queryPageIndex,
+        pageSize: queryPageSize,
+      },
+      manualPagination: true,
+      pageCount: isSuccess ? Math.ceil(tableTotalCount / queryPageSize) : null,
+      // autoResetSortBy: false,
+      // autoResetExpanded: false,
+      autoResetPage: false,
     },
     useGlobalFilter,
     useSortBy,
+    usePagination,
     useRowSelect,
     (hooks) => {
       hooks.visibleColumns.push((columns) => [
@@ -353,49 +385,25 @@ const PickupListTable = () => {
 
         ...columns,
       ])
-      // hooks.visibleColumns.push((columns) => [
-      //   ...columns,
-      //   {
-      //     Header: 'PickupZone',
-      //     accessor: 'pickupZoneId',
-      //     Cell: ({ row: { original } }) => (
-      //       <>
-      //         {orderOptionsIsSuccess ? (
-      //           <select>
-      //             <option key={'BX'}>Bronx</option>
-      //             {/* {driverSelectOptions.map((key, val) => (
-      //           <option key={key}>{val}</option>
-      //         ))} */}
-      //           </select>
-      //         ) : (
-      //           <></>
-      //         )}
-      //         {/* change driver on change but edit mode must be on?, change driver after pressing ok? */}
-      //       </>
-      //     ),
-      //   },
-      //   {
-      //     Header: 'Driver',
-      //     accessor: (data) => {
-      //       if (data.pickupdriver === null) return 'NONE'
-      //       return `${data.pickupdriver?.firstName} ${data.pickupdriver?.lastName}`
-      //     },
-      //     Cell: ({ row: { original } }) => (
-      //       <>
-      //         {/* change driver on change but edit mode must be on?, change driver after pressing ok? */}
-      //         <select>
-      //           <option key={'driver tester'}>Driver Tester</option>
-      //           {/* {driverSelectOptions.map((key, val) => (
-      //           <option key={key}>{val}</option>
-      //         ))} */}
-      //         </select>
-      //       </>
-      //     ),
-      //   },
-      // ])
     }
-    // usePagination
   )
+
+  React.useEffect(() => {
+    setQueryPageIndex(pageIndex)
+  }, [pageIndex])
+
+  React.useEffect(() => {
+    setQueryPageSize(pageSize)
+    gotoPage(0)
+  }, [pageSize, gotoPage])
+
+  if (error) {
+    return <p>Error</p>
+  }
+
+  if (isLoading) {
+    return <p>Loading...</p>
+  }
 
   //  add to filter by order branch location, date to date, orders shown by drivers
   return (
@@ -443,6 +451,51 @@ const PickupListTable = () => {
             undefined,
             2
           )}
+
+          <div className='pagination'>
+            <button onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
+              {'<<'}
+            </button>{' '}
+            <button onClick={() => previousPage()} disabled={!canPreviousPage}>
+              {'<'}
+            </button>{' '}
+            <button onClick={() => nextPage()} disabled={!canNextPage}>
+              {'>'}
+            </button>{' '}
+            <button onClick={() => gotoPage(pageCount - 1)} disabled={!canNextPage}>
+              {'>>'}
+            </button>{' '}
+            <span>
+              Page{' '}
+              <strong>
+                {pageIndex + 1} of {pageOptions.length}
+              </strong>{' '}
+            </span>
+            <span>
+              | Go to page:{' '}
+              <input
+                type='number'
+                defaultValue={pageIndex + 1}
+                onChange={(e) => {
+                  const page = e.target.value ? Number(e.target.value) - 1 : 0
+                  gotoPage(page)
+                }}
+                style={{ width: '100px' }}
+              />
+            </span>{' '}
+            <select
+              value={pageSize}
+              onChange={(e) => {
+                setPageSize(Number(e.target.value))
+              }}
+            >
+              {[defaultPageSize, 20, 50, 100].map((pageSize) => (
+                <option key={pageSize} value={pageSize}>
+                  Show {pageSize}
+                </option>
+              ))}
+            </select>
+          </div>
 
           <table {...getTableProps()}>
             <thead>
