@@ -333,7 +333,7 @@ export const updateManyOrderPickupDriverId = async (req, res) => {
   const result = await prisma.order.updateMany({
     where: {
       id: {
-        in: [1, 2, 3],
+        in: ids,
       },
     },
     data: {

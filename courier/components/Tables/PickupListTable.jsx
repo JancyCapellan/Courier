@@ -431,7 +431,7 @@ const PickupListTable = () => {
               // set order id from selectedFlatRows and update with driver from the global driver multi select above
               // console.log('selected driver', multiSelectPickupDriver)
               mutationManyPickupDriver.mutate({
-                orderId: selectedFlatRows.map((row) => row.original.id),
+                orderIds: selectedFlatRows.map((row) => row.original.id),
                 newPickUpDriverId: multiSelectPickupDriver,
               })
             }}
