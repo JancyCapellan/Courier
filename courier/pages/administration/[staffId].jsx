@@ -61,7 +61,23 @@ const DriverAccountPage = () => {
                 <th>customer address</th>
               </tr>
             </thead>
-            <tbody></tbody>
+            <tbody>
+              {staff.pickups.map((order) => {
+                return (
+                  <tr key={order.id}>
+                    <td>{order.id}</td>
+                    <td>
+                      {order.user.firstName}
+                      {order.user.lastName}
+                    </td>
+
+                    <td>
+                      <pre>{JSON.stringify(order.addresses[0], undefined, 2)}</pre>
+                    </td>
+                  </tr>
+                )
+              })}
+            </tbody>
           </table>
         </section>
       )}

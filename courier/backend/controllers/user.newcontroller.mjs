@@ -91,6 +91,21 @@ export const getUniqueStaff = async (req, res) => {
       where: {
         id: staffId,
       },
+      include: {
+        pickups: {
+          select: {
+            id: true,
+            user: true,
+            addresses: {
+              select: {
+                address: true,
+                address2: true,
+                address3: true,
+              },
+            },
+          },
+        },
+      },
     })
     res.status(200).json(staff)
   } catch (error) {
