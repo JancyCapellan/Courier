@@ -8,7 +8,7 @@ import axios from 'axios'
 import SelectCustomerAddressesModal from './selectCustomerAddressesModal'
 import { useGlobalStore } from '../../store/globalStore'
 
-const SenderFormAdmin = ({ handlePage }) => {
+const SenderFormAdmin = ({ currentCustomer, handlePage }) => {
   const [selectedShipperAddress, setSelectedShipperAddress] = useState({
     address: '',
     address2: '',
@@ -22,8 +22,6 @@ const SenderFormAdmin = ({ handlePage }) => {
   })
   const [showModal, setShowModal] = useState(false)
   const { addForm, formDetails } = useCart()
-
-  const currentCustomer = useGlobalStore((state) => state.currentCustomer)
 
   const selectOptions = [
     { key: 'UNITED STATES', value: 'USA' },

@@ -2,10 +2,10 @@ import Layout from '../../components/Layout'
 import CustomerReactTable from '../../components/Customers/CustomerReactTable.jsx'
 import { makeCustomerData } from '../../components/Tables/makeData.mjs'
 import { backendClient } from '../../components/axiosClient.mjs'
-import { useQueryClient } from 'react-query'
+import { useQueryClient, useMutation } from 'react-query'
 const postAddManyCustomer = async () => {
   try {
-    const res = await backendClient.post('/customer/addManyCustomers', makeCustomerData(100))
+    const res = await backendClient.post('/customer/addManyCustomers', makeCustomerData(5))
     console.log(' added many users', res)
   } catch (error) {
     alert('error adding many customers', error)
@@ -34,7 +34,7 @@ const Customers = () => {
             queryClient.invalidateQueries('getCustomerList')
           }}
         >
-          create 100 customers
+          create 5 customers
         </button>
         <CustomerReactTable />
       </div>

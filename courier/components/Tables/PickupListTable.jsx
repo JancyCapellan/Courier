@@ -106,7 +106,7 @@ const PickupListTable = () => {
     onSuccess: (data) => {
       queryClient.setQueryData(['getAllOrders', queryPageIndex, queryPageSize], (oldData) => {
         console.log('new Order:', oldData, queryPageIndex, queryPageSize)
-        return { ...oldData, orders: [...oldData.orders, data] }
+        return { orderCount: oldData.orderCount + 1, orders: [...oldData.orders, data] }
       })
     },
   })

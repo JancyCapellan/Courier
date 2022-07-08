@@ -185,7 +185,7 @@ export const getUserOrders = async (req, res) => {
     })
 
     // if userOrders array is empty, have to check if user even exists
-    if (!userOrders?.length) throw 'no orders found or user does not exists, check Id'
+    if (!userOrders?.length) return res.json([])
     if (userOrders) {
       // changing timePlaced for orders into readable local values
       // time is in 2021-11-01T16:23:29.139Z format, UTC
@@ -201,19 +201,6 @@ export const getUserOrders = async (req, res) => {
   } catch (error) {
     res.status(500).json(error)
   }
-
-  // const result = await prisma.user
-  //   .findUnique({
-  //     where: { id: id },
-  //     include: {
-  //       orders: true,
-  //     },
-  //   })
-  //   .catch(async (e) => {
-  //     res.status(500).send({ error: 'Something failed!' })
-  //     throw e
-  //   })
-  // if (result) res.json(result)
 }
 
 export const getUserOrderInfo = async (req, res) => {

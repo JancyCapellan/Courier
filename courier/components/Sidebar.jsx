@@ -52,6 +52,7 @@ const Sidebar = () => {
                   key={index}
                   className={item.cName} // nav-listitem
                 >
+                  {/* {item.path === '/account' ? (item.path = `/customer/${session.user.id}`) : ''} */}
                   <Link href={item.path} passHref={true}>
                     <a className='sidebar-link'>
                       <div className='sidebar-link-icon'>{item.icon}</div>

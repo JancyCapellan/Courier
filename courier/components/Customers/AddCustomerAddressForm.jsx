@@ -4,17 +4,14 @@ import FormikControl from '../../components/Formik/FormikControl'
 import * as Yup from 'yup'
 import axios from 'axios'
 import ModalContainer from '../HOC/ModalContainer'
-import { useGlobalStore } from '../../store/globalStore'
 import { useQueryClient, useMutation } from 'react-query'
 
-const AddCustomerAddressForm = ({ show, handleClose }) => {
+const AddCustomerAddressForm = ({ customerId, show, handleClose }) => {
   const queryClient = useQueryClient()
   // i set select options default here, but will try to make dynamic
-
-  const currentCustomer = useGlobalStore((state) => state.currentCustomer)
-  console.log('current user for order', currentCustomer)
+  // console.log('current user for order', currentCustomer)
   const initialValues = {
-    userId: currentCustomer.id,
+    userId: customerId,
     address: '',
     address2: '',
     address3: '',
@@ -36,9 +33,12 @@ const AddCustomerAddressForm = ({ show, handleClose }) => {
   ]
 
   const addCustomerAddress = async (values) => {
+    // let id = currentCustomer.id
+    // if (customerId) id = customerId
+
     try {
       const { data } = await axios.post(
-        `http://localhost:3000/user/addresses/add/${currentCustomer.id}`,
+        `http://localhost:3000/user/addresses/add/${customerId}`,
         values
       )
       return data
@@ -50,10 +50,11 @@ const AddCustomerAddressForm = ({ show, handleClose }) => {
 
   const mutation = useMutation(addCustomerAddress, {
     onSuccess: (data) => {
-      queryClient.setQueryData(['getCustomerAddresses', currentCustomer.id], (oldData) => {
+      alert('user address edit completed')
+      queryClient.setQueryData(['getCustomerAddresses', customerId], (oldData) => {
         return [...oldData, data]
       })
-      alert('user info edit completed')
+      alert('user address edit completed')
     },
   })
 

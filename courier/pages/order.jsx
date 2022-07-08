@@ -1,38 +1,31 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Layout from '../components/Layout'
 import SenderFormAdmin from '../components/CreateOrder/SenderFormAdmin'
 import Items from '../components/CreateOrder/Items'
 import Cart from '../components/CreateOrder/Cart'
 import Checkout from '../components/CreateOrder/Checkout'
 import { useCart } from '../contexts/cartContext'
-import axios from 'axios'
+import { backendClient } from '../components/axiosClient.mjs'
+import { useQuery } from 'react-query'
+import { useRouter } from 'next/router'
+import { useGlobalStore } from '../store/globalStore'
 
-export const getServerSideProps = async ({ res }) => {
-  try {
-    const result = await axios.get(`http://localhost:3000/order/allProducts`)
-    return {
-      props: {
-        products: result.data,
-      },
-    }
-  } catch (error) {
-    res.statusCode = 500
-    console.log('getcustomer', error)
-    return {
-      props: {},
-    }
-  }
-}
-
-const Order = ({ products }) => {
+const Order = () => {
   const [currentPage, setCurrentPage] = useState(1)
-  // const [value, setValue] = useState('')
-  // const [user, setUser] = useState()
+  const getAllProducts = async () => {
+    const { data } = await backendClient.get(`http://localhost:3000/services/AllProducts`)
+    return data
+  }
+  const { data: allProducts, status: allProductsStatus } = useQuery(
+    'getAllProducts',
+    getAllProducts
+  )
 
-  const { userForCurrentOrderForm } = useCart()
-  // useEffect(() => {
-  //   console.log('Order for user', userForCurrentOrderForm)
-  // }, [])
+  const customer = useGlobalStore((state) => state.currentCustomer)
+
+  useEffect(() => {
+    console.log('customer', customer)
+  }, [customer])
 
   const handlePage = (pageCode) => {
     if (pageCode === 'NEXT' && currentPage < 4) setCurrentPage(currentPage + 1)
@@ -42,9 +35,13 @@ const Order = ({ products }) => {
   function ComponentSwitcher({ handlePage }) {
     switch (currentPage) {
       case 1:
-        return <SenderFormAdmin currentUser={userForCurrentOrderForm} handlePage={handlePage} />
+        return <SenderFormAdmin currentCustomer={customer} handlePage={handlePage} />
       case 2:
-        return <Items handlePage={handlePage} products={products} />
+        return (
+          allProductsStatus === 'success' && (
+            <Items handlePage={handlePage} products={allProducts} />
+          )
+        )
       case 3:
         return <Cart handlePage={handlePage} />
       case 4:

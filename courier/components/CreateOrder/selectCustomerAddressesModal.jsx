@@ -22,7 +22,11 @@ const SelectCustomerAddressesModal = ({ show, handleClose, setAddress }) => {
         >
           create new customer address
         </button>
-        <AddCustomerAddressForm show={showAddForm} handleClose={() => setShowAddForm(false)} />
+        <AddCustomerAddressForm
+          customerId={currentCustomer.id}
+          show={showAddForm}
+          handleClose={() => setShowAddForm(false)}
+        />
         <section>
           choose address for: {currentCustomer.firstName} {currentCustomer.lastName}
           <UserAddressesTable

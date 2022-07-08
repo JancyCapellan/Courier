@@ -5,8 +5,27 @@ const prisma = new PrismaClient()
 export const getAllWarehousedetails = async (req, res) => {
   const details = await prisma.warehouseDetails.findMany({
     include: {
-      containers: true,
-      supplies: true,
+      containers: {
+        select: {
+          id: true,
+          orders: {
+            select: {
+              id: true,
+            },
+          },
+          status: {
+            select: {
+              message: true,
+            },
+          },
+        },
+      },
+      supplies: {
+        select: {
+          supplyName: true,
+          inventoryCount: true,
+        },
+      },
     },
   })
   res.json(details)

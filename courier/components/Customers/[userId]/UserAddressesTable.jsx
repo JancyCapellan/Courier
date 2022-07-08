@@ -7,11 +7,12 @@ import ModalContainer from '../../HOC/ModalContainer'
 import FormikControl from '../../Formik/FormikControl'
 import * as Yup from 'yup'
 
-//requires access to the current customer, here i will use zustand to bring it in, will be the repsonsibilty of the componeent calling this one to supply access
+// ! TODO: deleting addresses doesnt work
 const UserAddressesTable = ({ setSelectShipperAddress, handleParentModal, userId }) => {
-  // const currentCustomer = useGlobalStore((state) => state.currentCustomer)
   const [showEditModal, setOpenEditModal] = useState(false)
   const [editAddress, setEditAddress] = useState({})
+
+  console.log('USAT userId', userId)
 
   const getCustomerAddresses = async (customerId) => {
     const { data } = await backendClient.get('user/addresses/' + customerId)
@@ -139,10 +140,10 @@ const EditAddressModal = ({ showEditModal, handleClose, address, userId }) => {
   // need address id
   const editAddressMutation = useMutation(updateCustomerAddress, {
     onSuccess: (data) => {
+      console.log('edit address', data)
       queryClient.setQueryData(['getCustomerAddresses', userId], (oldData) => {
-        console.log(oldData)
-        // if (!!!oldData) return [data]
-        return [data]
+        const filteredData = oldData.filter((oldAddr) => oldAddr.id !== address.id)
+        return [...filteredData, data]
       })
       alert('user info edit completed')
     },

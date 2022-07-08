@@ -310,6 +310,7 @@ const CustomerReactTable = () => {
                 setCurrentCustomer(original)
                 router.push({
                   pathname: `/order`,
+                  query: { customerId: original.id },
                 })
               }}
             >
@@ -317,7 +318,7 @@ const CustomerReactTable = () => {
             </button>
             <button
               onClick={() => {
-                // setCurrentCustomer(original)
+                setCurrentCustomer(original)
                 router.push({
                   pathname: `/customers/${original.id}`,
                 })

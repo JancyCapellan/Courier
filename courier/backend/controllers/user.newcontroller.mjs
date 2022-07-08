@@ -190,7 +190,7 @@ export const customerSearch = async (req, res) => {
 export const getUserAddressesWithUserId = async (req, res) => {
   // debug('request object:\n', req)
   const userid = req.params.userId
-  // debug(req.params)
+  debug(req.params)
 
   try {
     const addresses = await prisma.address.findMany({
@@ -199,6 +199,8 @@ export const getUserAddressesWithUserId = async (req, res) => {
       },
     })
 
+    debug(addresses)
+
     res.status(200).json(addresses)
   } catch (error) {
     console.log(error)
@@ -206,7 +208,7 @@ export const getUserAddressesWithUserId = async (req, res) => {
 }
 
 export const addUserAddress = async (req, res) => {
-  console.log('register')
+  console.log('add user "Address')
   // Validate request
   if (!req.body) {
     res.status(400).send({
@@ -216,10 +218,12 @@ export const addUserAddress = async (req, res) => {
 
   const postalCode = parseInt(req.body.postalCode)
 
-  debug({
-    ...req.body,
-    postalCode,
-  })
+  console.log('user address', req.body)
+
+  // debug({
+  //   ...req.body,
+  //   postalCode,
+  // })
   try {
     const result = await prisma.address.create({
       data: {
