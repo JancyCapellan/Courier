@@ -48,8 +48,8 @@ export const routes = {
     cName: 'nav-listitem',
   },
   createOrder: {
-    title: 'Create Order',
-    path: '/createorder',
+    title: 'Order',
+    path: '/order',
     icon: <Bi.BiBookAdd />,
     cName: 'nav-listitem',
   },
@@ -105,7 +105,7 @@ export const routes = {
 export const sidebarTypes = {
   SECT: [routes.account, routes.customers, routes.invoices, routes.warehouse],
   DRIVER: [routes.account, routes.pickups, routes.warehouse],
-  CUST: [routes.account, routes.createOrder, routes.cart, routes.support],
+  CUSTOMER: [routes.account, routes.createOrder, routes.cart, routes.support],
   ADMIN: [
     routes.administration,
     routes.account,
