@@ -28,23 +28,16 @@ export const routes = {
     icon: <Bi.BiAccessibility />,
     cName: 'nav-listitem',
   },
-  // part  of warehouse now
-  // drivers: {
-  //   title: 'Drivers',
-  //   path: '/account',
-  //   icon: <Bi.BiAccessibility />,
-  //   cName: 'nav-listitem',
-  // },
-  // trucks: {
-  //   title: 'Trucks',
-  //   path: '/account',
-  //   icon: <Bi.BiAccessibility />,
-  //   cName: 'nav-listitem',
-  // },
-  logout: {
-    title: 'Logout',
-    path: '/',
-    icon: <Bi.BiAccessibility />,
+  account: {
+    title: 'Account',
+    path: '/account',
+    icon: <Bi.BiUser />,
+    cName: 'nav-listitem',
+  },
+  driverPage: {
+    title: 'Driver Page',
+    path: '/driverPage',
+    icon: <Bi.BiAdjust />,
     cName: 'nav-listitem',
   },
   createOrder: {
@@ -96,15 +89,15 @@ export const routes = {
     cName: 'nav-listitem',
   },
   reports: {
+    cName: 'nav-listitem',
     title: 'Reports',
     path: '/reports',
     icon: <Bi.BiAccessibility />,
-    cName: 'nav-listitem',
   },
 }
 export const sidebarTypes = {
   SECT: [routes.account, routes.customers, routes.invoices, routes.warehouse],
-  DRIVER: [routes.account, routes.pickups, routes.warehouse],
+  DRIVER: [routes.account, routes.pickups, routes.warehouse, routes.driverPage],
   CUSTOMER: [routes.account, routes.createOrder, routes.cart, routes.support],
   ADMIN: [
     routes.administration,
