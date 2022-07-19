@@ -115,20 +115,31 @@ export const getUniqueStaff = async (req, res) => {
 }
 
 export const getAllStaff = async (req, res) => {
+  const skip = parseInt(req.query.offset)
+  const take = parseInt(req.query.limit)
   const drivers = await prisma.user.findMany({
+    skip: skip,
+    take: take,
     where: {
-      OR: [{ role: 'DRIVER' }, { role: 'ADMIN' }],
+      OR: [{ role: 'DRIVER' }],
     },
     select: {
       id: true,
       firstName: true,
       lastName: true,
       branchName: true,
+      role: true,
+    },
+  })
+
+  const driversTableCount = await prisma.user.count({
+    where: {
+      role: 'CUSTOMER',
     },
   })
 
   // console.log('all drivers sent')
-  res.send(drivers)
+  res.send({ drivers: drivers, driversTotalCount: driversTableCount })
 }
 
 // Update a user identified by the userId in the request
@@ -277,7 +288,7 @@ export const updateUserAddress = async (req, res) => {
 }
 
 // Find a single user with a userId
-export const findOne = async (req, res) => {
+export const getUserAccountInfo = async (req, res) => {
   // const id = parseInt(req.params.userId)
   const id = req.params.userId
   const user = await prisma.user.findUnique({

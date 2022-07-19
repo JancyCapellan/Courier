@@ -196,8 +196,45 @@ const AccountInfoEditorForm = ({ currentUser }) => {
     <>
       <button onClick={() => setShowEditForm(true)}>Show Edit Form</button>
       <div>
-        <h2>User Account Info</h2>
-        <pre>{user}</pre>
+        <table>
+          <caption>User Account Info</caption>
+          <tr>
+            <th>ID</th>
+            <td>{currentUser.id}</td>
+          </tr>
+          <tr>
+            <th>First Name</th>
+            <td>{currentUser.firstName}</td>
+          </tr>
+          <tr>
+            <th>Middle Name</th>
+            <td>{currentUser.middleName}</td>
+          </tr>
+          <tr>
+            <th>Last Name</th>
+            <td>{currentUser.lastName}</td>
+          </tr>
+          <tr>
+            <th>Email</th>
+            <td>{currentUser.email}</td>
+          </tr>
+          <tr>
+            <th>Role</th>
+            <td>{currentUser.role}</td>
+          </tr>
+          <tr>
+            <th>branch</th>
+            <td>{currentUser.branchName}</td>
+          </tr>
+          <tr>
+            <th>Preferred Language</th>
+            <td>{currentUser.preferredLanguage}</td>
+          </tr>
+          <tr>
+            <th>License ID</th>
+            <td>{currentUser.licenseId}</td>
+          </tr>
+        </table>
       </div>
       <ModalContainer show={showEditForm} handleClose={() => setShowEditForm(false)}>
         <Formik
@@ -216,8 +253,18 @@ const AccountInfoEditorForm = ({ currentUser }) => {
                   name='id'
                   disabled
                 />
-                <FormikControl control='input' type='text' label='First Name' name='firstName' />
-                <FormikControl control='input' type='text' label='Middle Name' name='middleName' />
+                <FormikControl
+                  control='input'
+                  type='text'
+                  label='First Name'
+                  name='firstName'
+                />
+                <FormikControl
+                  control='input'
+                  type='text'
+                  label='Middle Name'
+                  name='middleName'
+                />
                 <FormikControl control='input' type='text' label='Last Name' name='lastName' />
                 <FormikControl control='input' type='email' label='email' name='email' />
                 <FormikControl control='input' type='text' label='role' name='role' />

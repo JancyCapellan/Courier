@@ -16,7 +16,7 @@ import { useGlobalStore } from '../../store/globalStore'
 import ModalContainer from '../HOC/ModalContainer'
 import RegistrationFormModal from '../RegistrationFormModal'
 
-const GlobalFilter = ({ preGlobalFilteredRows, globalFilter, setGlobalFilter }) => {
+export const GlobalFilter = ({ preGlobalFilteredRows, globalFilter, setGlobalFilter }) => {
   const count = preGlobalFilteredRows.length
   const [value, setValue] = React.useState(globalFilter)
   const change = useAsyncDebounce((value) => {
@@ -242,7 +242,9 @@ const Table = ({ columns }) => {
                   {headerGroup.headers.map((column) => (
                     <th {...column.getHeaderProps(column.getSortByToggleProps())}>
                       {column.render('Header')}
-                      <span>{column.isSorted ? (column.isSortedDesc ? ' 🔽' : ' 🔼') : ' ↕'}</span>
+                      <span>
+                        {column.isSorted ? (column.isSortedDesc ? ' 🔽' : ' 🔼') : ' ↕'}
+                      </span>
                     </th>
                   ))}
                 </tr>

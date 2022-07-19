@@ -2,7 +2,7 @@ import { PrismaClient } from '@prisma/client'
 import { debug } from 'console'
 const prisma = new PrismaClient()
 
-export const getAllCustomers = async (req, res) => {
+export const getAllCustomerList = async (req, res) => {
   const skip = parseInt(req.query.offset)
   const take = parseInt(req.query.limit)
   // debug('query:', req)
