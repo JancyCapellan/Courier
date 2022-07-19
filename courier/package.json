@@ -10,7 +10,7 @@
     "start": "next start",
     "lint": "next lint",
     "export": "next export",
-    "ss": "node server.mjs"
+    "ss": "next build && set NODE_ENV=production&& node server.mjs"
   },
   "dependencies": {
     "@next-auth/prisma-adapter": "^1.0.3",
