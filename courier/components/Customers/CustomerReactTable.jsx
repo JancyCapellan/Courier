@@ -332,7 +332,7 @@ const CustomerReactTable = () => {
         ),
       },
     ],
-    []
+    [router, setCurrentCustomer]
   )
   return (
     <div>

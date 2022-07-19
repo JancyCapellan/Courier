@@ -1,3 +1,5 @@
+/* eslint-disable react/jsx-key */
+
 import { useState, useMemo, useEffect } from 'react'
 import axios from 'axios'
 import { useQuery } from 'react-query'
@@ -85,7 +87,7 @@ const StaffTable = () => {
         ),
       },
     ],
-    []
+    [router]
   )
 
   const tableData = useMemo(() => {
