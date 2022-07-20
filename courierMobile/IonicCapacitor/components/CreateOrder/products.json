@@ -1,0 +1,220 @@
+{
+  "spanish": [
+    {
+      "name": "Aceite",
+      "id": "0734",
+      "price": 30,
+      "type": 3
+    },
+    {
+      "name": "Aire",
+      "id": "0741",
+      "price": 30,
+      "type": 3
+    },
+    {
+      "name": "Arroz",
+      "id": "0735",
+      "price": 30,
+      "type": 3
+    },
+    {
+      "name": "Bicicleta",
+      "id": "0733",
+      "price": 30,
+      "type": 3
+    },
+    {
+      "name": "Caja Comida",
+      "id": "0705",
+      "price": 30,
+      "type": 1
+    },
+    {
+      "name": "Caja Ropa / Zap",
+      "id": "0707",
+      "price": 30,
+      "type": 1
+    },
+    {
+      "name": "Caja Misc",
+      "id": "0708",
+      "price": 30,
+      "type": 1
+    },
+    {
+      "name": "Colchon",
+      "id": "0719",
+      "price": 30,
+      "type": 3
+    },
+    {
+      "name": "Computdora",
+      "id": "0715",
+      "price": 30,
+      "type": 3
+    },
+    {
+      "name": "Electrónica Misc",
+      "id": "0737",
+      "price": 30,
+      "type": 3
+    },
+    {
+      "name": "Espardar",
+      "id": "0726",
+      "price": 30,
+      "type": 3
+    },
+    {
+      "name": "Estante",
+      "id": "0729",
+      "price": 30,
+      "type": 3
+    },
+    {
+      "name": "Estufa",
+      "id": "0714",
+      "price": 30,
+      "type": 3
+    },
+    {
+      "name": "Espejo",
+      "id": "0731",
+      "price": 30,
+      "type": 3
+    },
+    {
+      "name": "Gabetero",
+      "id": "0727",
+      "price": 30,
+      "type": 3
+    },
+    {
+      "name": "Gomas",
+      "id": "0732",
+      "price": 30,
+      "type": 3
+    },
+    {
+      "name": "Lampara",
+      "id": "0730",
+      "price": 30,
+      "type": 3
+    },
+    {
+      "name": "Lavadora",
+      "id": "0711",
+      "price": 30,
+      "type": 3
+    },
+    {
+      "name": "Microonda",
+      "id": "0713",
+      "price": 30,
+      "type": 3
+    },
+    {
+      "name": "Mesas",
+      "id": "0724",
+      "price": 30,
+      "type": 4
+    },
+    {
+      "name": "Nevera",
+      "id": "0712",
+      "price": 30,
+      "type": 3
+    },
+    {
+      "name": "Parte de Carros",
+      "id": "0716",
+      "price": 30,
+      "type": 3
+    },
+    {
+      "name": "Planta Electrica",
+      "id": "0718",
+      "price": 30,
+      "type": 3
+    },
+    {
+      "name": "Sillas",
+      "id": "0725",
+      "price": 30,
+      "type": 3
+    },
+    {
+      "name": "Secadora",
+      "id": "0742",
+      "price": 30,
+      "type": 3
+    },
+    {
+      "name": "Tanq Comida",
+      "id": "0702",
+      "price": 30,
+      "type": 2
+    },
+    {
+      "name": "Tanq Hierro",
+      "id": "0703",
+      "price": 30,
+      "type": 2
+    },
+    {
+      "name": "Tanq Ropa/Zap",
+      "id": "0701",
+      "price": 30,
+      "type": 2
+    },
+    {
+      "name": "Tanq. Misc",
+      "id": "0704",
+      "price": 30,
+      "type": 2
+    },
+    {
+      "name": "TV",
+      "id": "0709",
+      "price": 30,
+      "type": 3
+    },
+    {
+      "name": "Viuro",
+      "id": "0728",
+      "price": 30,
+      "type": 3
+    },
+    {
+      "name": "Mueble Misc",
+      "id": "0738",
+      "price": 30,
+      "type": 3
+    },
+    {
+      "name": "Cristal Misc",
+      "id": "0739",
+      "price": 30,
+      "type": 3
+    },
+    {
+      "name": "Hierro Misc",
+      "id": "0740",
+      "price": 30,
+      "type": 3
+    },
+    {
+      "name": "Prod. Caseros",
+      "id": "0743",
+      "price": 30,
+      "type": 3
+    },
+    {
+      "name": "Prod. Niños",
+      "id": "0762",
+      "price": 30,
+      "type": 3
+    }
+  ]
+}

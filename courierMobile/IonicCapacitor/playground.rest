@@ -1,0 +1,117 @@
+GET http://localhost:3000/user/loggedInUser
+Authorization:  Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZmlyc3ROYW1lIjoiSmFuY3kiLCJsYXN0TmFtZSI6IkNhcGVsbGFuIiwibWlkZGxlTmFtZSI6IiIsInBhc3N3b3JkIjoiMTIzIiwiZW1haWwiOiJqYW5jeWNhcGVsbGFuOTdAZ21haWwuY29tIiwicm9sZSI6ImFkbWluIiwiY29tcGFueSI6bnVsbCwiYnJhbmNoTmFtZSI6bnVsbCwibGFzdFNhbGVEYXRlIjpudWxsLCJsYXN0TG9naW4iOm51bGwsInByZWZlcnJlZExhbmd1YWdlIjoiRW5nbGlzaCIsImxpY2Vuc2VJZCI6bnVsbCwiaWF0IjoxNjM1MzAyODM5LCJleHAiOjE2MzUzMDY0Mzl9.-9KksOc7S2BwP7WMEEBuPgu-WcS3wx-ipeBYTsaJ4UM
+
+### 
+
+POST http://localhost:3000/user/login
+Content-Type: application/json
+
+{
+  "email": "jancycapellan97@gmail.com",
+  "password": "1234"
+}
+
+###
+
+GET http://localhost:3000/user/customerSearch?search=j
+
+###
+GET http://localhost:3000/order/allProducts
+
+
+###
+GET http://localhost:3000/order/allOrders
+
+###
+GET http://localhost:3000/user/3
+
+###
+
+post http://localhost:3000/user/allDrivers
+Content-Type: application/json
+
+
+###
+
+post http://localhost:3000/services/addItem
+Content-Type: application/json
+
+{
+  "item_name": "item  test",
+  "item_price": 10,
+  "item_type": "BOX"
+}
+
+### // get order Info
+GET http://localhost:3000/order/7
+
+###
+PUT http://localhost:3000/order/2
+Content-Type: application/json
+
+{
+  "pickupDriverId": "cl0k3wqoe000608uy29tcc12z"
+}
+
+###
+GET http://localhost:3000/user/orderInfo?id=1&order=5
+
+###
+
+POST http://localhost:3000/user/submitOrder
+Content-Type: application/json
+
+{
+  "cart": [
+    {
+      "name": "Box of Clothes",
+      "amount": 5,
+      "productsId": 707,
+      "price": 75
+    },
+    {
+      "name": "Children Products",
+      "amount": 4,
+      "productsId": 762,
+      "price": 75
+    }
+  ],
+  "total_price": 675,
+  "amount_items": 9,
+  "form": {
+    "shipper": {
+      "userId": 1,
+      "firstName": "Jancy",
+      "lastName": "Capellan",
+      "shippedFrom": {
+        "address": "314 East 100st apt 6f",
+        "address2": "",
+        "address3": "",
+        "city": "New York City",
+        "state": "NY",
+        "postalCode": 10029,
+        "country": "",
+        "cellphone": "3475209701",
+        "telephone": "",
+        "default": false
+      }
+    },
+    "reciever": {
+      "firstName": "Jessica",
+      "lastName": "jones",
+      "shippedTo": {
+        "address": "471 main ST apt 23",
+        "address2": "e",
+        "address3": "e",
+        "city": "NYC",
+        "state": "NY",
+        "postalCode": 14379,
+        "country": "DR",
+        "cellphone": "1345219999",
+        "telephone": "",
+        "recipient": true
+      }
+    }
+  },
+  "paymentType": "CASH"
+}
