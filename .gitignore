@@ -17,7 +17,6 @@ Project notes.txt
 
 # production
 /build
-
 # misc
 .DS_Store
 *.pem
