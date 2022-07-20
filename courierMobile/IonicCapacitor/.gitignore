@@ -1,12 +1,8 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
 # dependencies
 /node_modules
 /.pnp
 .pnp.js
-
-./android
-./ios
 
 Project notes.txt
 
@@ -19,7 +15,7 @@ Project notes.txt
 
 # production
 /build
-
+/android
 # misc
 .DS_Store
 *.pem
