@@ -2,13 +2,10 @@ import '../styles/globals.css'
 import type { ReactElement, ReactNode } from 'react'
 import type { AppProps } from 'next/app'
 import type { NextPage } from 'next'
-
-import { AuthProvider } from '../contexts/authContext'
 import { CartProvider } from '../contexts/cartContext'
-import { SessionProvider } from 'next-auth/react'
+// import { SessionProvider } from 'next-auth/react'
 import { QueryClientProvider, QueryClient } from 'react-query'
 import { ReactQueryDevtools } from 'react-query/devtools'
-import Sidebar from '../components/Sidebar'
 
 type NextPageWithLayout = NextPage & {
   getLayout?: (page: ReactElement) => ReactNode
