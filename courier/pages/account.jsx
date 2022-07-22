@@ -198,42 +198,44 @@ const AccountInfoEditorForm = ({ currentUser }) => {
       <div>
         <table>
           <caption>User Account Info</caption>
-          <tr>
-            <th>ID</th>
-            <td>{currentUser.id}</td>
-          </tr>
-          <tr>
-            <th>First Name</th>
-            <td>{currentUser.firstName}</td>
-          </tr>
-          <tr>
-            <th>Middle Name</th>
-            <td>{currentUser.middleName}</td>
-          </tr>
-          <tr>
-            <th>Last Name</th>
-            <td>{currentUser.lastName}</td>
-          </tr>
-          <tr>
-            <th>Email</th>
-            <td>{currentUser.email}</td>
-          </tr>
-          <tr>
-            <th>Role</th>
-            <td>{currentUser.role}</td>
-          </tr>
-          <tr>
-            <th>branch</th>
-            <td>{currentUser.branchName}</td>
-          </tr>
-          <tr>
-            <th>Preferred Language</th>
-            <td>{currentUser.preferredLanguage}</td>
-          </tr>
-          <tr>
-            <th>License ID</th>
-            <td>{currentUser.licenseId}</td>
-          </tr>
+          <tbody>
+            <tr>
+              <th>ID</th>
+              <td>{currentUser.id}</td>
+            </tr>
+            <tr>
+              <th>First Name</th>
+              <td>{currentUser.firstName}</td>
+            </tr>
+            <tr>
+              <th>Middle Name</th>
+              <td>{currentUser.middleName}</td>
+            </tr>
+            <tr>
+              <th>Last Name</th>
+              <td>{currentUser.lastName}</td>
+            </tr>
+            <tr>
+              <th>Email</th>
+              <td>{currentUser.email}</td>
+            </tr>
+            <tr>
+              <th>Role</th>
+              <td>{currentUser.role}</td>
+            </tr>
+            <tr>
+              <th>branch</th>
+              <td>{currentUser.branchName}</td>
+            </tr>
+            <tr>
+              <th>Preferred Language</th>
+              <td>{currentUser.preferredLanguage}</td>
+            </tr>
+            <tr>
+              <th>License ID</th>
+              <td>{currentUser.licenseId}</td>
+            </tr>
+          </tbody>
         </table>
       </div>
       <ModalContainer show={showEditForm} handleClose={() => setShowEditForm(false)}>
