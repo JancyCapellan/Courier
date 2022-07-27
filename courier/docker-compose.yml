@@ -1,0 +1,21 @@
+services:
+  nginx:
+    build: ./nginx
+    ports:
+      - 80:80
+      # - 443:443
+  nextjs:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: nextjs_app
+  mysql:
+    container_name: db
+    image: mysql:latest
+    volumes:
+      - nextjsApp-mysql-data:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=wl69trG7FzwzoyxfQTmxjsqF046KEPmi
+      - MYSQL_DATABASE=LCShipping
+volumes:
+  nextjsApp-mysql-data:
