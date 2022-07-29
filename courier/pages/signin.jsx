@@ -5,7 +5,7 @@ import * as Yup from 'yup'
 import { useRouter } from 'next/router'
 import FormikControl from '../components/Formik/FormikControl'
 
-export default function SignIn({ csrfToken }) {
+export default function SignIn() {
   const router = useRouter()
   const [error, setError] = useState(null)
 
