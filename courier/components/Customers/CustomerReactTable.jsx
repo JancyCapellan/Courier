@@ -15,6 +15,7 @@ import { useRouter } from 'next/router'
 import { useGlobalStore } from '../../store/globalStore'
 import ModalContainer from '../HOC/ModalContainer'
 import RegistrationFormModal from '../RegistrationFormModal'
+import { backendClient } from '../axiosClient.mjs'
 
 export const GlobalFilter = ({ preGlobalFilteredRows, globalFilter, setGlobalFilter }) => {
   const count = preGlobalFilteredRows.length
@@ -44,8 +45,8 @@ export const GlobalFilter = ({ preGlobalFilteredRows, globalFilter, setGlobalFil
 const getCustomerList = async (page, pageSize) => {
   const offset = page * pageSize
   try {
-    const { data } = await axios.get(
-      `http://localhost:3000/customer/AllCustomers?offset=${offset}&limit=${pageSize}`
+    const { data } = await backendClient.get(
+      `customer/AllCustomers?offset=${offset}&limit=${pageSize}`
     )
     return data
   } catch (e) {
@@ -242,9 +243,7 @@ const Table = ({ columns }) => {
                   {headerGroup.headers.map((column) => (
                     <th {...column.getHeaderProps(column.getSortByToggleProps())}>
                       {column.render('Header')}
-                      <span>
-                        {column.isSorted ? (column.isSortedDesc ? ' 🔽' : ' 🔼') : ' ↕'}
-                      </span>
+                      <span>{column.isSorted ? (column.isSortedDesc ? ' 🔽' : ' 🔼') : ' ↕'}</span>
                     </th>
                   ))}
                 </tr>

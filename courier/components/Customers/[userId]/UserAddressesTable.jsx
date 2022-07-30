@@ -125,8 +125,8 @@ const EditAddressModal = ({ showEditModal, handleClose, address, userId }) => {
 
   const updateCustomerAddress = async (updatedAddressFormValues) => {
     try {
-      const { data } = await axios.put(
-        `http://localhost:3000/user/addresses/update/${address.id}`,
+      const { data } = await backendClient.put(
+        `user/addresses/update/${address.id}`,
         updatedAddressFormValues
       )
 

@@ -167,7 +167,7 @@ const AccountInfoEditorForm = ({ currentUser }) => {
 
   const postCustomerEdit = async (values) => {
     try {
-      const { data } = await axios.put('http://localhost:3000/user/' + currentUser.id, values)
+      const { data } = await backendClient.put('user/' + currentUser.id, values)
       return data
     } catch (err) {
       alert('error')
@@ -255,18 +255,8 @@ const AccountInfoEditorForm = ({ currentUser }) => {
                   name='id'
                   disabled
                 />
-                <FormikControl
-                  control='input'
-                  type='text'
-                  label='First Name'
-                  name='firstName'
-                />
-                <FormikControl
-                  control='input'
-                  type='text'
-                  label='Middle Name'
-                  name='middleName'
-                />
+                <FormikControl control='input' type='text' label='First Name' name='firstName' />
+                <FormikControl control='input' type='text' label='Middle Name' name='middleName' />
                 <FormikControl control='input' type='text' label='Last Name' name='lastName' />
                 <FormikControl control='input' type='email' label='email' name='email' />
                 <FormikControl control='input' type='text' label='role' name='role' />
@@ -306,7 +296,7 @@ const AccountInfo = () => {
 
   const getUserAccountInfo = async (userId) => {
     try {
-      const { data } = await axios.get(`http://localhost:3000/user/${userId}`)
+      const { data } = await backendClient.get(`user/${userId}`)
       return data
     } catch (error) {
       console.log('getcustomer', error)

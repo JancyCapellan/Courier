@@ -5,6 +5,7 @@ import * as Yup from 'yup'
 import axios from 'axios'
 import ModalContainer from '../HOC/ModalContainer'
 import { useQueryClient, useMutation } from 'react-query'
+import { backendClient } from '../../components/axiosClient.mjs'
 
 const AddCustomerAddressForm = ({ customerId, show, handleClose }) => {
   const queryClient = useQueryClient()
@@ -37,10 +38,7 @@ const AddCustomerAddressForm = ({ customerId, show, handleClose }) => {
     // if (customerId) id = customerId
 
     try {
-      const { data } = await axios.post(
-        `http://localhost:3000/user/addresses/add/${customerId}`,
-        values
-      )
+      const { data } = await backendClient.post(`/user/addresses/add/${customerId}`, values)
       return data
     } catch (err) {
       console.error(err)

@@ -1,6 +1,7 @@
 import React, { useContext, useReducer, useEffect } from 'react'
 import CartReducer from './cartReducer'
 import Axios from 'axios'
+import { backendClient } from '../components/axiosClient.mjs'
 
 const CartContext = React.createContext()
 export const useCart = () => {
@@ -44,7 +45,7 @@ const CartProvider = ({ children }) => {
     // redundat, marked for deletion
     const postSubmitOrder = async (order) => {
       try {
-        const res = await Axios.post('http://localhost:3000/order/submitOrder', order)
+        const res = await backendClient.post('order/submitOrder', order)
         return res
       } catch (err) {
         // console.log('here')

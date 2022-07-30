@@ -158,7 +158,7 @@ const CustomerEditorForm = ({ currentUser }) => {
 
   const postCustomerEdit = async (values) => {
     try {
-      const { data } = await axios.put('http://localhost:3000/user/' + currentUser.id, values)
+      const { data } = await backendClient.put('user/' + currentUser.id, values)
       return data
     } catch (err) {
       alert('error')
@@ -245,7 +245,7 @@ const CustomerAccountPage = () => {
 
   const getUserAccountInfo = async (userId) => {
     try {
-      const { data } = await axios.get(`http://localhost:3000/user/${userId}`)
+      const { data } = await backendClient.get(`user/${userId}`)
       return data
     } catch (error) {
       console.log('getcustomer', error)

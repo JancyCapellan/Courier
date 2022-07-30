@@ -1,7 +1,6 @@
 import React from 'react'
 // import CustomerReactTable from '../../components/Customers/CustomerReactTable'
 import Layout from '../../components/Layout'
-// import PokemonTable from '../../components/Tables/RQ-RT'
 // import PickupListTable from '../../components/Tables/PickupListTable'
 import { backendClient } from '../../components/axiosClient.mjs'
 import { useQuery } from 'react-query'

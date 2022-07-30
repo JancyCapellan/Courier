@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useCart } from '../../contexts/cartContext'
 import Cart from './Cart'
 import axios from 'axios'
+import { backendClient } from '../../components/axiosClient.mjs'
 // import { useHistory } from 'react-router'
 // import QRCode from 'qrcode.react'
 
@@ -22,8 +23,8 @@ const Checkout = () => {
   }
 
   async function postOrder(order) {
-    await axios
-      .post('http://localhost:3000/order/submitOrder', order)
+    await backendClient
+      .post('order/submitOrder', order)
       .then((res) => {
         console.log('res:', res)
 

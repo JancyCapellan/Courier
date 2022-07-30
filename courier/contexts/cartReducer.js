@@ -1,4 +1,5 @@
 import Axios from 'axios'
+import { backendClient } from '../components/axiosClient.mjs'
 // import { useAuth } from './authContext'
 
 const cartReducer = (state, action) => {
@@ -94,7 +95,8 @@ const cartReducer = (state, action) => {
       return { ...state, formDetails: action.payload }
 
     case 'SUBMIT_ORDER':
-      Axios.post('http://localhost:3000/order/submitOrder', action.payload)
+      backendClient
+        .post('order/submitOrder', action.payload)
         .then((res) => {
           console.log('res:', res)
 

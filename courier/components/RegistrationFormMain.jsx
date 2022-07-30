@@ -6,6 +6,7 @@ import Router from 'next/router'
 import { useEffect } from 'react'
 import axios from 'axios'
 import { useMutation } from 'react-query'
+import { backendClient } from './axiosClient.mjs'
 
 // will create a customer base account, can be upgraded to another role by admins
 const RegistrationFormMain = () => {
@@ -44,7 +45,7 @@ const RegistrationFormMain = () => {
   })
   const postRegisterUser = useMutation((newUser) => {
     // delete newUser?.password2
-    return axios.post(process.env.NEXT_PUBLIC_API_URL + 'user/register', newUser)
+    return backendClient.post('user/register', newUser)
   })
   const onSubmit = async (values, { setSubmitting, resetForm }) => {
     console.log('register', values)
@@ -54,6 +55,7 @@ const RegistrationFormMain = () => {
     }
     // delete values.password2
     postRegisterUser.mutate(values)
+    // if mutate succesful else
     Router.push({
       pathname: '/signin',
       query: { didRegister: true },

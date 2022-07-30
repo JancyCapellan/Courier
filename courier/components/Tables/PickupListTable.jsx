@@ -113,7 +113,7 @@ const PickupListTable = () => {
 
   const getOrderOptions = async () => {
     try {
-      const { data } = await axios.get('http://localhost:3000/order/options/all')
+      const { data } = await backendClient.get('order/options/all')
       return data
     } catch (error) {
       throw new Error(`API error:${error?.message}`)
@@ -133,9 +133,7 @@ const PickupListTable = () => {
     const offset = page * pageSize
 
     try {
-      const { data } = await axios.get(
-        `http://localhost:3000/order/allOrders?offset=${offset}&limit=${pageSize}`
-      )
+      const { data } = await backendClient.get(`order/allOrders?offset=${offset}&limit=${pageSize}`)
       return data
     } catch (error) {
       throw new Error(`API error:${error?.message}`)

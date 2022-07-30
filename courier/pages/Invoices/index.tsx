@@ -32,24 +32,6 @@ interface user {
   lastName: string
 }
 
-// export const getServerSideProps: GetServerSideProps = async ({ res }) => {
-//   try {
-//     const result = await axios.get(`http://localhost:3000/order/allOrders`)
-//     // console.log('response', result.data)
-//     return {
-//       props: {
-//         listOfInvoices: result.data,
-//       },
-//     }
-//   } catch (error) {
-//     res.statusCode = 500
-//     console.log('getcustomer', error)
-//     return {
-//       props: {},
-//     }
-//   }
-// }
-
 export const Invoices: NextPage<{}> = () => {
   const queryClient = useQueryClient()
   const router = useRouter()

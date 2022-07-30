@@ -13,7 +13,7 @@ import { useGlobalStore } from '../store/globalStore'
 const Order = () => {
   const [currentPage, setCurrentPage] = useState(1)
   const getAllProducts = async () => {
-    const { data } = await backendClient.get(`http://localhost:3000/services/AllProducts`)
+    const { data } = await backendClient.get('services/AllProducts')
     return data
   }
   const { data: allProducts, status: allProductsStatus } = useQuery(

@@ -1,21 +1,52 @@
+version: '3.9'
 services:
   nginx:
     build: ./nginx
     ports:
       - 80:80
       # - 443:443
+    depends_on:
+      - nextjs
+
   nextjs:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.dev
     container_name: nextjs_app
+    depends_on:
+      - mysql
+    ports:
+      - '3000:3000'
+    restart: always
+    expose:
+      - '3000'
+
+  prisma_studio:
+    # links:
+    #   - mysql
+    depends_on:
+      mysql:
+        condition: service_started
+    container_name: prisma_studio
+    ports:
+      - '5555:5555'
+    build:
+      context: ./prisma
+      dockerfile: Dockerfile
+    # volumes:
+    #   - /app/prisma
+
   mysql:
-    container_name: db
+    container_name: mysql
     image: mysql:latest
     volumes:
       - nextjsApp-mysql-data:/var/lib/mysql
     environment:
       - MYSQL_ROOT_PASSWORD=wl69trG7FzwzoyxfQTmxjsqF046KEPmi
-      - MYSQL_DATABASE=LCShipping
+    # healthcheck:
+    #   test: out=$$(mysqladmin ping -h localhost -P 3306 -u root --password=wl69trG7FzwzoyxfQTmxjsqF046KEPmi 2>&1); echo $$out | grep 'mysqld is alive' || { echo $$out; exit 1; }
+    restart: always
+    expose:
+      - '3306'
 volumes:
   nextjsApp-mysql-data:

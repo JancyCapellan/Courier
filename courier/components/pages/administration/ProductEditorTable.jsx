@@ -85,7 +85,7 @@ const ProductEditorTable = () => {
               const intType = parseInt(values.item_type)
               values.item_type = intType
               try {
-                const res = await axios.post('http://localhost:3000/services/addItem', values)
+                const res = await backendClient.post('services/addItem', values)
                 console.log('add item res', res)
                 // alert('added item successfully')
                 resetForm()
@@ -144,7 +144,7 @@ const ProductEditorTable = () => {
           onSubmit={async (values, { resetForm }) => {
             console.log('item submission values', values)
             try {
-              const res = await axios.post('http://localhost:3000/services/addProductType', values)
+              const res = await backendClient.post('services/addProductType', values)
               // alert('added type successfully')
               // router.push('/administration')
               resetForm()

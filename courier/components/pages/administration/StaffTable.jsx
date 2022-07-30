@@ -15,6 +15,7 @@ import {
 } from 'react-table'
 
 import { GlobalFilter } from '../../Customers/CustomerReactTable.jsx'
+import { backendClient } from '../../axiosClient.mjs'
 
 let defaultPageSize = 20
 
@@ -26,8 +27,8 @@ const StaffTable = () => {
   const getAllStaff = async (page, pageSize) => {
     const offset = page * pageSize
     try {
-      const { data } = await axios.get(
-        `http://localhost:3000/user/users/getAllStaff?offset=${offset}&limit=${pageSize}`
+      const { data } = await backendClient.get(
+        `user/users/getAllStaff?offset=${offset}&limit=${pageSize}`
       )
       // console.log('DRIVERS DATA', data)
       return data
@@ -215,9 +216,7 @@ const StaffTable = () => {
                   {headerGroup.headers.map((column) => (
                     <th {...column.getHeaderProps(column.getSortByToggleProps())}>
                       {column.render('Header')}
-                      <span>
-                        {column.isSorted ? (column.isSortedDesc ? ' 🔽' : ' 🔼') : ' ↕'}
-                      </span>
+                      <span>{column.isSorted ? (column.isSortedDesc ? ' 🔽' : ' 🔼') : ' ↕'}</span>
                     </th>
                   ))}
                 </tr>

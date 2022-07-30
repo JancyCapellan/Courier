@@ -22,7 +22,7 @@ const Home = () => {
           {session ? (
             <>
               <span>Welcome {session?.user?.name}! </span>
-              <button onClick={() => signOut({ callbackUrl: 'http://localhost:3000/' })}>
+              <button onClick={() => signOut({ callbackUrl: process.env.NEXTAUTH_URL })}>
                 Sign out
               </button>
             </>

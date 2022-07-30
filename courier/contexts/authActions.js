@@ -1,4 +1,5 @@
 import Axios from 'axios'
+import { backendClient } from '../components/axiosClient.mjs'
 
 export const postLogin = async (form) => {
   try {
@@ -7,7 +8,8 @@ export const postLogin = async (form) => {
       password: form.password,
     }
     let response
-    await Axios.post('http://localhost:3000/user/login', loginValues)
+    await backendClient
+      .post('user/login', loginValues)
       .then((res) => {
         response = res
       })
@@ -39,7 +41,7 @@ export const postLogin = async (form) => {
 export const getLoggedInUser = async (jwt) => {
   try {
     // console.log('jwt', jwt)
-    const res = await Axios.get('http://localhost:3000/user/loggedInUser', {
+    const res = await backendClient.get('user/loggedInUser', {
       headers: {
         Authorization: 'Bearer ' + jwt,
       },
@@ -62,7 +64,7 @@ export const postRegistration = async (form) => {
     // }
 
     delete form.password2
-    const res = await Axios.post('http://localhost:3000/user/register', form)
+    const res = await backendClient.post('user/register', form)
     console.log('REGISTER RES HERE', res)
     return res
   } catch (error) {

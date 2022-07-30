@@ -3,10 +3,11 @@ import axios from 'axios'
 import Layout from '../../components/Layout'
 import { useRouter } from 'next/router'
 import { useQuery } from 'react-query'
+import { backendClient } from '../../components/axiosClient.mjs'
 
 const getOrderDetails = async (orderId) => {
   try {
-    const { data } = await axios.get(`http://localhost:3000/order/${orderId}`)
+    const { data } = await backendClient.get(`order/${orderId}`)
     console.log('order:', data)
     return data
   } catch (error) {

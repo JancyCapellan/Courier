@@ -3,6 +3,7 @@ import axios from 'axios'
 import { useQuery } from 'react-query'
 import { useRouter } from 'next/router'
 import { useGlobalStore } from '../../store/globalStore'
+import { backendClient } from '../axiosClient.mjs'
 
 function CustomerTable({ search }) {
   // const [searchResults, setSearchResults] = useState([])
@@ -12,7 +13,7 @@ function CustomerTable({ search }) {
   const setCurrentCustomer = useGlobalStore((state) => state.setCurrentCustomer)
 
   const getCustomerList = async () => {
-    const { data } = await axios.get(`http://localhost:3000/user/customerSearch?search=${search}`)
+    const { data } = await backendClient.get(`user/customerSearch?search=${search}`)
     return data
   }
   const { data: customerList, status: getCustomerListStatus } = useQuery(

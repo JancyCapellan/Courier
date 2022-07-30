@@ -42,7 +42,7 @@ export default function SignIn() {
             email: values.email,
             password: values.password,
             // tenantKey: values.tenantKey,
-            callbackUrl: 'http://localhost:3000/account',
+            callbackUrl: process.env.NEXTAUTH_URL + 'account',
           })
           console.log('res', res)
           if (res?.error) {
