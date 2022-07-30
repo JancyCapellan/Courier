@@ -119,7 +119,8 @@ const cartReducer = (state, action) => {
       itemListJSON.map((item) => itemArray.push([item.id, item.name, item.price, item.type]))
       console.log('cartArray', itemArray)
 
-      Axios.post('http://localhost:5000/user/bulkAdd', itemArray)
+      backendClient
+        .post('user/bulkAdd', itemArray)
         .then((res) => {
           console.log('res:', res)
 
