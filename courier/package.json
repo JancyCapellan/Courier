@@ -8,7 +8,7 @@
     "debug": "nodemon --inspect server.mjs",
     "nextdev": "next dev",
     "build": "next build",
-    "startStandalone": "npx prisma migrate deploy && node server.js",
+    "startStandalone": "npx prisma migrate deploy && node server.mjs",
     "pm2:migrate": "npx prisma migrate deploy && pm2-runtime server.js",
     "lint": "next lint",
     "export": "next export",
