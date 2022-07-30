@@ -14,6 +14,10 @@ import customerRouter from './backend/routes/customer.route.mjs'
 import warehouseRouter from './backend/routes/warehouse.route.mjs'
 //server start
 
+let corsOptions = {
+  origin: 'http://jancycapellan.COM:80',
+  optionsSuccessStatus: 200
+}
 const dev = process.env.NODE_ENV !== 'production'
 const app = next({ dev })
 const handle = app.getRequestHandler()
@@ -25,7 +29,7 @@ app
     server.use(express.json())
     server.use(express.urlencoded({ extended: true })) // makes nested objects possible in the url
     // server.use(cookieParser())
-    server.use(cors())
+    server.use(cors(corsOptions))
 
     // server routes
     // server.use('/', indexRouter)
