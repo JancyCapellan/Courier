@@ -12,7 +12,7 @@ export default function SignIn() {
   console.log('router', router.query?.didRegister)
   // const nextauth_url = process.env.NEXTAUTH_URL
   // const signinRedirect = nextauth_url + 'account'
-  const signinRedirect = 'http://localhost:3000/account'
+  const signinRedirect = 'http://jancycapellan.com/account'
 
   return (
     <div className='signin-page-container'>
