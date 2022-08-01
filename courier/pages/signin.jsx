@@ -10,6 +10,9 @@ export default function SignIn() {
   const [error, setError] = useState(null)
 
   console.log('router', router.query?.didRegister)
+  // const nextauth_url = process.env.NEXTAUTH_URL
+  // const signinRedirect = nextauth_url + 'account'
+  const signinRedirect = 'http://localhost:3000/account'
 
   return (
     <div className='signin-page-container'>
@@ -42,7 +45,7 @@ export default function SignIn() {
             email: values.email,
             password: values.password,
             // tenantKey: values.tenantKey,
-            callbackUrl: process.env.NEXT_PUBLIC_API_URL + 'account',
+            callbackUrl: signinRedirect,
           })
           console.log('res', res)
           if (res?.error) {

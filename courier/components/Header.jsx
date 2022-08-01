@@ -10,9 +10,7 @@ function Header() {
         <span>
           Welcome {session?.user.name}! <b>Role: {session?.user.role}</b>
         </span>
-        <button onClick={() => signOut({ callbackUrl: process.env.NEXT_PUBLIC_API_URL })}>
-          Sign out
-        </button>
+        <button onClick={() => signOut({ callbackUrl: process.env.NEXTAUTH_URL })}>Sign out</button>
       </section>
     </header>
   )

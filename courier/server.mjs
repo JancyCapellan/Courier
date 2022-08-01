@@ -14,11 +14,12 @@ import customerRouter from './backend/routes/customer.route.mjs'
 import warehouseRouter from './backend/routes/warehouse.route.mjs'
 //server start
 
-let corsOptions = {
-  origin: 'http://jancycapellan.COM:80',
-  optionsSuccessStatus: 200
-}
+// let corsOptions = {
+//   origin: '*',
+//   optionsSuccessStatus: 200,
+// }
 const dev = process.env.NODE_ENV !== 'production'
+const port = process.env.port || 3000
 const app = next({ dev })
 const handle = app.getRequestHandler()
 const server = express()
@@ -29,7 +30,7 @@ app
     server.use(express.json())
     server.use(express.urlencoded({ extended: true })) // makes nested objects possible in the url
     // server.use(cookieParser())
-    server.use(cors(corsOptions))
+    server.use(cors())
 
     // server routes
     // server.use('/', indexRouter)
@@ -47,8 +48,8 @@ app
       return handle(req, res)
     })
 
-    server.listen(3000, () => {
-      console.log('server is listening on port 3000...')
+    server.listen(port, () => {
+      console.log(`server is listening on port ${port}...`)
     })
   })
   .catch((err) => {
