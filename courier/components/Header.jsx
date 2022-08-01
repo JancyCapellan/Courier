@@ -10,7 +10,9 @@ function Header() {
         <span>
           Welcome {session?.user.name}! <b>Role: {session?.user.role}</b>
         </span>
-        <button onClick={() => signOut({ callbackUrl: 'jancycapellan.com/' })}>Sign out</button>
+        <button onClick={() => signOut({ callbackUrl: 'http://jancycapellan.com/' })}>
+          Sign out
+        </button>
       </section>
     </header>
   )
