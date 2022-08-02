@@ -2,7 +2,6 @@ import React, { useState } from 'react'
 import { Formik, Form } from 'formik'
 import FormikControl from '../../components/Formik/FormikControl'
 import * as Yup from 'yup'
-import axios from 'axios'
 import { useRouter } from 'next/router'
 import ModalContainer from '../../components/HOC/ModalContainer'
 import Layout from '../../components/Layout'
@@ -245,7 +244,7 @@ const CustomerAccountPage = () => {
 
   const getUserAccountInfo = async (userId) => {
     try {
-      const { data } = await backendClient.get(`user/${userId}`)
+      const { data } = await backendClient.get(`/user/${userId}`)
       return data
     } catch (error) {
       console.log('getcustomer', error)
