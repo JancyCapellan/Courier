@@ -32,10 +32,10 @@ const Warehouse = () => {
   }
   return (
     <section className='main-grid-area'>
-      {getWarehouseDetailsIsSuccess ? (
+      {getWarehouseDetailsIsSuccess === 'true' ? (
         <div>
           <h1>
-            Warehouse: {WH.warehouseName} Code: {WH.warehouseCode}
+            Warehouse: {WH?.warehouseName} Code: {WH?.warehouseCode}
           </h1>
 
           <table>
