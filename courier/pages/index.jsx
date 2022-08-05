@@ -9,6 +9,7 @@ const Home = () => {
   const [session, status] = useSession()
   console.log('home session', session, 'loading', status)
 
+  //  background, login, user logged in, title of website, link to register
   return (
     <>
       <div className='home-container'>
