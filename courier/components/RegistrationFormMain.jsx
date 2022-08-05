@@ -57,7 +57,7 @@ const RegistrationFormMain = () => {
     postRegisterUser.mutate(values)
     // if mutate succesful else
     Router.push({
-      pathname: '/signin',
+      pathname: '/',
       query: { didRegister: true },
     })
   }

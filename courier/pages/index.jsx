@@ -25,6 +25,15 @@ const Home = () => {
     <>
       <div className='home-container'>
         <h1> The Courier Dashboard</h1>
+        {router.query?.didRegister ? <p>REGISTERED SUCCESSFUL</p> : <></>}
+        {error ? (
+          <p>
+            THERE WAS AN ERROR WHILE LOGGING. CHECK TO MAKE SURE THAT YOU ARE USING THE CORRECT
+            USERNAME AND PASSWORD.
+          </p>
+        ) : (
+          <></>
+        )}
         <Formik
           // initialValues={{ email: '', password: '', tenantKey: '' }}
           initialValues={{ email: '', password: '' }}
