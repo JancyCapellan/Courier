@@ -85,7 +85,7 @@ const RegistrationFormMain = () => {
                 Submit
               </button>
               <div>
-                Have an Account Already? <Link href='/signin'> Login </Link>
+                Have an Account Already? <Link href='/'> Login </Link>
               </div>
             </Form>
           )

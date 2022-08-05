@@ -1,4 +1,4 @@
-// ! credit to https://github.com/nextauthjs/react-query
+// credit to https://github.com/nextauthjs/react-query
 // ! makes next-auth sessions to be managed by react-query sessions
 
 import { useQuery } from 'react-query'

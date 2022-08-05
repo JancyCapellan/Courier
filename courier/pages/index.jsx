@@ -1,47 +1,86 @@
+import { useState } from 'react'
 import { signIn, signOut } from 'next-auth/react'
 import { useSession } from '../customHooks/useSession'
 import Link from 'next/link'
 import router from 'next/router'
-import { useEffect } from 'react'
+import { Formik, Form } from 'formik'
+import * as Yup from 'yup'
+import FormikControl from '../components/Formik/FormikControl'
+import { useRouter } from 'next/router'
 
 const Home = () => {
-  // use sessions options to make sure react query caches
   const [session, status] = useSession()
-  console.log('home session', session, 'loading', status)
+  const [error, setError] = useState(null)
+
+  const router = useRouter()
+  console.log('router', router.query?.didRegister)
+
+  // const nextauth_url = process.env.NEXTAUTH_URL
+  // const signinRedirect = nextauth_url + 'account'
+  const signinRedirect = process.env.NEXT_PUBLIC_URL_API + 'account'
+  console.log(process.env.NEXT_PUBLIC_URL_API, signinRedirect)
 
   //  background, login, user logged in, title of website, link to register
   return (
     <>
       <div className='home-container'>
-        <header className='home-header'>
-          {session ? (
-            <>
-              <span>Welcome {session?.user?.name}! </span>
-              <button onClick={() => signOut({ callbackUrl: process.env.API_URL })}>
-                Sign out
-              </button>
-            </>
-          ) : (
-            <span>Not signed in</span>
-          )}
-        </header>
-        <h1 className='home-h1'>Shipping company manager</h1>
-        {!session ? (
-          <div className='home-no-session'>
-            <Link href='/signin'>
-              <a className='home-btn'>Signin</a>
-            </Link>
-            <Link href='/register' passHref>
-              <button>register</button>
-            </Link>
-          </div>
-        ) : (
-          <>
-            <Link href='/account' passHref>
-              <button>Your Account</button>
-            </Link>
-          </>
-        )}
+        <h1> The Courier Dashboard</h1>
+        <Formik
+          // initialValues={{ email: '', password: '', tenantKey: '' }}
+          initialValues={{ email: '', password: '' }}
+          validationSchema={Yup.object({
+            email: Yup.string()
+              .max(30, 'Must be 30 characters or less')
+              .email('Invalid email address')
+              .required('Please enter your email'),
+            password: Yup.string().required('Please enter your password'),
+            // tenantKey: Yup.string()
+            //   .max(20, 'Must be 20 characters or less')
+            //   .required('Please enter your organization name'),
+          })}
+          onSubmit={async (values, { setSubmitting }) => {
+            const res = await signIn('login', {
+              redirect: false,
+              email: values.email,
+              password: values.password,
+              // tenantKey: values.tenantKey,
+              callbackUrl: signinRedirect,
+            })
+            console.log('res', res)
+            if (res?.error) {
+              setError(res.error)
+            } else {
+              setError(null)
+            }
+            if (res.url) router.push(res.url)
+            console.log('error', error)
+            setSubmitting(false)
+          }}
+        >
+          {(formik) => {
+            return (
+              <>
+                <Form className='signin-form'>
+                  <h2>Login</h2>
+                  <FormikControl
+                    control='input'
+                    type='email'
+                    label='Email'
+                    name='email'
+                    className='test'
+                  />
+                  <FormikControl control='input' type='password' label='Password' name='password' />
+                  <button type='submit' disabled={!formik.isValid}>
+                    Submit
+                  </button>
+                  <Link href='/register' passHref>
+                    <button>Dont have an account? Register here.</button>
+                  </Link>
+                </Form>
+              </>
+            )
+          }}
+        </Formik>
       </div>
     </>
   )
