@@ -13,12 +13,12 @@ const Home = () => {
   const [error, setError] = useState(null)
 
   const router = useRouter()
-  console.log('router', router.query?.didRegister)
+  // console.log('router', router.query?.didRegister)
 
   // const nextauth_url = process.env.NEXTAUTH_URL
   // const signinRedirect = nextauth_url + 'account'
   const signinRedirect = process.env.NEXT_PUBLIC_URL_API + 'account'
-  console.log(process.env.NEXT_PUBLIC_URL_API, signinRedirect)
+  // console.log(process.env.NEXT_PUBLIC_URL_API, signinRedirect)
 
   //  background, login, user logged in, title of website, link to register
   return (

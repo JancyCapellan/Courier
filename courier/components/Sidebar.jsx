@@ -22,6 +22,7 @@ const Sidebar = () => {
 
   console.log(session)
 
+  // ! error check if not user logged in, RouteGuard should prevent this but if no user is logged in redirect or show something to say so.
   let sidebarData
   if (loading === false) {
     sidebarData = sidebarTypesSelector(session.user.role)

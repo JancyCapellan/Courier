@@ -254,20 +254,27 @@ Sidebar (handles layout with children as main content on page)
 }
 .header {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  flex-direction: column;
+  justify-content: center;
   /* position: sticky; */
-  top: 0;
+  /* top: 0; */
   background-color: black;
   box-shadow: 0 1px 10px 0 rgba(0, 0, 0, 0.4);
   padding: 0 0.5rem;
   height: var(--header-height);
-  /* width: 100%; */
+  width: 100%;
   grid-area: header;
 }
 
 .header-user-info {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
   color: white;
+}
+
+.header-user-info b {
+  color: red;
 }
 
 /* .header-user-info > button {
@@ -372,9 +379,13 @@ Account info
   display: flex;
   flex-direction: column;
 }
-.accountPage {
+.account-page {
   display: flex;
   flex-direction: column;
+  align-items: center;
+}
+
+.account-page h1 {
 }
 .accInfotable {
   /* width: 100vw; */

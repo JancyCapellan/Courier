@@ -194,10 +194,11 @@ const AccountInfoEditorForm = ({ currentUser }) => {
   let user = JSON.stringify(currentUser, undefined, 2)
   return (
     <>
-      <button onClick={() => setShowEditForm(true)}>Show Edit Form</button>
       <div>
         <table>
-          <caption>User Account Info</caption>
+          <caption>
+            <b>User Account Information</b>
+          </caption>
           <tbody>
             <tr>
               <th>ID</th>
@@ -238,6 +239,8 @@ const AccountInfoEditorForm = ({ currentUser }) => {
           </tbody>
         </table>
       </div>
+      <button onClick={() => setShowEditForm(true)}>Edit Account Information</button>
+
       <ModalContainer show={showEditForm} handleClose={() => setShowEditForm(false)}>
         <Formik
           className='customer-editor-form'
@@ -325,8 +328,8 @@ const AccountInfo = () => {
   }
 
   return (
-    <>
-      <h2> Account Information</h2>
+    <section className='account-page'>
+      <h1> Account Information</h1>
       <nav>
         <button onClick={() => setCurrentPage(1)}>Account Information</button>
         <button onClick={() => setCurrentPage(2)}>Addresses</button>
@@ -334,8 +337,8 @@ const AccountInfo = () => {
       </nav>
       <br />
       {getUserAccountInfoStatus === 'success' ? <ComponentSwitcher user={user} /> : <></>}
-      <br />
-    </>
+      {/* <br /> */}
+    </section>
   )
 }
 
