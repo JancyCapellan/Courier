@@ -1,8 +1,9 @@
-import { signOut } from 'next-auth/react'
+import { getSession, signOut } from 'next-auth/react'
 import { useSession } from '../customHooks/useSession'
 
 function Header() {
   const [session, status] = useSession()
+
   // console.log('header session data', session, 'status', status)
   return (
     <header className='header'>

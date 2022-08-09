@@ -347,3 +347,7 @@ export default AccountInfo
 AccountInfo.getLayout = function getLayout(page) {
   return <Layout>{page}</Layout>
 }
+
+AccountInfo.auth = () => {
+  return 'private'
+}

@@ -7,6 +7,7 @@ import { CartProvider } from '../contexts/cartContext'
 import { QueryClientProvider, QueryClient } from 'react-query'
 import { ReactQueryDevtools } from 'react-query/devtools'
 import { RouteGuard } from '../components/RouteGuard'
+import RouteAuth from '../components/RouteAuth'
 
 type NextPageWithLayout = NextPage & {
   getLayout?: (page: ReactElement) => ReactNode
@@ -18,13 +19,13 @@ type AppPropsWithLayout = AppProps & {
 
 function MyApp({ Component, pageProps }: AppPropsWithLayout) {
   const queryClient = new QueryClient({
-    // defaultOptions: {
-    //   queries: {
-    //     // data is always fresh and never garabage collected after last observer is dismounted
-    //     cacheTime: Infinity,
-    //     staleTime: Infinity,
-    //   },
-    // },
+    defaultOptions: {
+      queries: {
+        // data is always fresh and never garabage collected after last observer is dismounted
+        cacheTime: Infinity,
+        staleTime: Infinity,
+      },
+    },
   })
 
   // const EmptyLayout = ({ children }) => <>{children}</>
@@ -34,7 +35,10 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
     // <AuthProvider>
     // <SessionProvider session={pageProps.session}>
     <QueryClientProvider client={queryClient}>
-      <CartProvider>{getLayout(<Component {...pageProps} />)}</CartProvider>
+      <CartProvider>
+        <RouteGuard>{getLayout(<Component {...pageProps} />)}</RouteGuard>
+      </CartProvider>
+
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
 

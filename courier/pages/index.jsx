@@ -34,8 +34,16 @@ const Home = () => {
         ) : (
           <></>
         )}
-        {loadingUser ? (
-          <p> Logged in as {session?.user.firstName} </p>
+        {!!session ? (
+          <>
+            <p> Logged in as {session?.user.firstName} </p>
+            <button onClick={() => signOut({ callbackUrl: process.env.NEXT_PUBLIC_URL_API })}>
+              Sign out
+            </button>
+            <Link href='/account' passHref>
+              <button>account</button>
+            </Link>
+          </>
         ) : (
           <Formik
             // initialValues={{ email: '', password: '', tenantKey: '' }}
@@ -103,4 +111,5 @@ const Home = () => {
     </>
   )
 }
+Home.auth = 'public'
 export default Home
