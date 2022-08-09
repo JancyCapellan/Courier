@@ -1,48 +1,59 @@
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/router';
+import { useState, useEffect } from 'react'
+import { useRouter } from 'next/router'
+import { useSession } from '../customHooks/useSession.js'
+// import { useQueryClient } from 'react-query'
 
-import { userService } from 'services';
+export const RouteGuard = ({ children }) => {
+  const router = useRouter()
+  const [authorized, setAuthorized] = useState(false)
+  const [session, loadingUserSession] = useSession()
+  // const queryClient = useQueryClient()
 
-export { RouteGuard };
+  useEffect(() => {
+    // on initial load - run auth check
+    // console.log('session', session, !session, !!session)
+    authCheck(router.asPath, session)
 
-function RouteGuard({ children }) {
-    const router = useRouter();
-    const [authorized, setAuthorized] = useState(false);
+    // on route change start - hide page content by setting authorized to false
+    const hideContent = () => setAuthorized(false)
+    router.events.on('routeChangeStart', hideContent)
 
-    useEffect(() => {
-        // on initial load - run auth check 
-        authCheck(router.asPath);
+    // on route change complete - run auth check
+    router.events.on('routeChangeComplete', (url) => authCheck(url, session))
 
-        // on route change start - hide page content by setting authorized to false  
-        const hideContent = () => setAuthorized(false);
-        router.events.on('routeChangeStart', hideContent);
-
-        // on route change complete - run auth check 
-        router.events.on('routeChangeComplete', authCheck)
-
-        // unsubscribe from events in useEffect return function
-        return () => {
-            router.events.off('routeChangeStart', hideContent);
-            router.events.off('routeChangeComplete', authCheck);
-        }
-
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
-
-    function authCheck(url) {
-        // redirect to login page if accessing a private page and not logged in 
-        // userService is the useSession hook to check if user is logged, need to add roles to this
-        const publicPaths = ['/register', '/'];
-        const path = url.split('?')[0];
-        if (!userService.userValue && !publicPaths.includes(path)) {
-            setAuthorized(false);
-            router.push({
-                pathname: '/login',
-                query: { returnUrl: router.asPath }
-            });
-        } else {
-            setAuthorized(true);
-        }
+    // unsubscribe from events in useEffect return function
+    return () => {
+      router.events.off('routeChangeStart', hideContent)
+      router.events.off('routeChangeComplete', (url) => authCheck(url, session))
     }
+  }, [])
 
-    return (authorized && children);
+  function authCheck(url, session) {
+    const publicPaths = ['/register', '/']
+    const path = url.split('?')[0]
+    console.log('test:', path, !publicPaths.includes(path), !!session, session)
+
+    if (!publicPaths.includes(path) && !!session) {
+      setAuthorized(true)
+      return
+    }
+    if (!publicPaths.includes(path) && !session) {
+      setAuthorized(false)
+      router.push({
+        pathname: '/',
+      })
+    } else {
+      setAuthorized(true)
+    }
+  }
+
+  if (!authorized) {
+    return (
+      <>
+        <p>loadings</p>
+      </>
+    )
+  } else {
+    return children
+  }
+}

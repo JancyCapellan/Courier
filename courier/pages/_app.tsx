@@ -6,6 +6,7 @@ import { CartProvider } from '../contexts/cartContext'
 // import { SessionProvider } from 'next-auth/react'
 import { QueryClientProvider, QueryClient } from 'react-query'
 import { ReactQueryDevtools } from 'react-query/devtools'
+import { RouteGuard } from '../components/RouteGuard'
 
 type NextPageWithLayout = NextPage & {
   getLayout?: (page: ReactElement) => ReactNode
@@ -17,17 +18,17 @@ type AppPropsWithLayout = AppProps & {
 
 function MyApp({ Component, pageProps }: AppPropsWithLayout) {
   const queryClient = new QueryClient({
-    defaultOptions: {
-      queries: {
-        // data is always fresh and never garabage collected after last observer is dismounted
-        cacheTime: Infinity,
-        staleTime: Infinity,
-      },
-    },
+    // defaultOptions: {
+    //   queries: {
+    //     // data is always fresh and never garabage collected after last observer is dismounted
+    //     cacheTime: Infinity,
+    //     staleTime: Infinity,
+    //   },
+    // },
   })
 
   // const EmptyLayout = ({ children }) => <>{children}</>
-  const getLayout = Component.getLayout ?? ((page) => page)
+  const getLayout = Component.getLayout ?? ((component) => component)
 
   return (
     // <AuthProvider>

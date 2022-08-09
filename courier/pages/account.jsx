@@ -171,7 +171,7 @@ const AccountInfoEditorForm = ({ currentUser }) => {
       return data
     } catch (err) {
       alert('error')
-      console.error(err)
+      console.error('post Customer Edit Error', err)
     }
   }
 

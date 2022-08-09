@@ -8,6 +8,8 @@ import { useGlobalStore } from '../store/globalStore.js'
 
 const Sidebar = () => {
   const [isCollapsed, setIsCollapsed] = useState()
+  const [session, loading] = useSession()
+
   const sidebarToggler = () => {
     setIsCollapsed(!isCollapsed)
     localStorage.setItem('sidebarToggle', isCollapsed)
@@ -18,18 +20,14 @@ const Sidebar = () => {
     setIsCollapsed(toggle)
   }, [])
 
-  const [session, loading] = useSession()
+  const setCurrentCustomer = useGlobalStore((state) => state.setCurrentCustomer)
+  if (!session) return <></>
 
-  console.log(session)
-
-  // ! error check if not user logged in, RouteGuard should prevent this but if no user is logged in redirect or show something to say so.
   let sidebarData
   if (loading === false) {
     sidebarData = sidebarTypesSelector(session.user.role)
   }
   // console.log('sidebardata', sidebarData)
-
-  const setCurrentCustomer = useGlobalStore((state) => state.setCurrentCustomer)
 
   return (
     <>

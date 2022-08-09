@@ -57,17 +57,16 @@ const nextAuthOptions = (req, res) => {
     ],
 
     // adapter: PrismaAdapter(prisma), NOT NEEDED BECAUSE CREDENTIALS DOES NOT PRESIST IN DATABASE
-    secret: process.env.ACCESS_TOKEN_SECRET,
     session: {
       // strategy: 'database',
       jwt: true,
       maxAge: 7 * 24 * 60 * 60,
     },
     pages: {
-      signIn: '/signin',
+      signIn: '/',
     },
     jwt: {
-      secret: process.env.JWT_TOKEN_SECRET,
+      secret: process.env.NEXTAUTH_SECRET,
       encryption: true,
     },
     callbacks: {
