@@ -84,17 +84,15 @@ const Home: NextPage = () => {
   const [error, setError] = useState(false)
 
   const router = useRouter()
+  console.log('Registered?:', router.query?.didRegister)
 
-  // const nextauth_url = process.env.NEXTAUTH_URL
   const signinRedirect = process.env.NEXT_PUBLIC_URL_API + 'account'
-  // console.log(process.env.NEXT_PUBLIC_URL_API, signinRedirect)
 
-  //  background, login, user logged in, title of website, link to register
   return (
     <>
       <div className='home-container'>
         <h1> The Courier Dashboard</h1>
-        {router.query?.didRegister ? <p>REGISTERED SUCCESSFUL</p> : <></>}
+        {router.query?.didRegister}
         {error ? (
           <p>
             THERE WAS AN ERROR WHILE LOGGING. CHECK TO MAKE SURE THAT YOU ARE USING THE CORRECT

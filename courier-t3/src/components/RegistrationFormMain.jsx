@@ -3,10 +3,6 @@ import FormikControl from './Formik/FormikControl'
 import * as Yup from 'yup'
 import Link from 'next/link'
 import Router from 'next/router'
-// import { useEffect } from 'react'
-// import axios from 'axios'
-import { useMutation } from 'react-query'
-import { backendClient } from './axiosClient.mjs'
 import { trpc } from '../utils/trpc'
 
 // will create a customer base account, can be upgraded to another role by admins
@@ -43,24 +39,35 @@ const RegistrationFormMain = () => {
 
     password: Yup.string().required('* required'),
     password2: Yup.string().required('* required'),
+    role: Yup.string().required('Must specifiy role'),
   })
-  const postRegisterUser = useMutation((newUser) => {
-    // delete newUser?.password2
-    return backendClient.post('user/register', newUser)
-  })
+
+  const postRegisterUser = trpc.useMutation(['user.register'])
+
   const onSubmit = async (values, { setSubmitting, resetForm }) => {
-    console.log('register', values)
+    // console.log('register', values)
     if (values.password !== values.password2) {
       alert('passwords do not match')
       return
     }
-    // delete values.password2
-    postRegisterUser.mutate(values)
-    // if mutate succesful else
-    Router.push({
-      pathname: '/',
-      query: { didRegister: true },
+    delete values.password2
+
+    postRegisterUser.mutate(values, {
+      onSuccess: () =>
+        Router.push({
+          pathname: '/',
+          query: { didRegister: 'Registration Successful, Please Log in' },
+        }),
+      onError: (error) => {
+        console.log('registration error:::', error)
+        Router.push({
+          pathname: '/',
+          query: { didRegister: 'Registartion Failed' },
+        })
+      },
     })
+
+    // if mutate succesful else
   }
 
   return (
@@ -70,6 +77,14 @@ const RegistrationFormMain = () => {
         {(formik) => {
           return (
             <Form>
+              <FormikControl
+                control='input'
+                type='text'
+                // label='User Role'
+                name='role'
+                disabled
+                hidden
+              />
               <FormikControl control='input' type='text' label='First Name' name='firstName' />
               <FormikControl control='input' type='text' label='Middle Name' name='middleName' />
               <FormikControl control='input' type='text' label='Last Name' name='lastName' />
