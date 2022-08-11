@@ -1,0 +1,253 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  // previewFeatures = ["interactiveTransactions"]
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// enum Role {
+//   USER
+//   ADMIN
+//   CUSTOMER
+//   DRIVER
+//   STAFF
+// }
+//location vs status?
+enum OrderLocation {
+  withShipper
+  BRONXwarehouse
+  CotainerBoat
+  DRwarehouse
+  MIAMIwarehouse
+  withReciever
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  emailVerified DateTime?
+  image         String?
+  // accounts      Account[]
+  // sessions      Session[]
+  firstName String
+  lastName String
+  middleName String?
+  password String
+  email String @unique
+  role String
+  company String?
+  branchName String?
+  lastSaleDate DateTime?
+  lastLogin DateTime?
+  preferredLanguage String @default("English")
+  licenseId Int? @unique
+  addresses address[]
+  orders Order[] @relation("CUSTOMER")
+  pickups Order[] @relation("DRIVER")
+}
+
+model address {
+  id Int @id @default(autoincrement())
+  userId String
+  address String
+  address2 String?
+  address3 String?
+  city String
+  state String
+  postalCode Int
+  country String
+  cellphone String?
+  telephone String?
+  default Boolean @default(false)
+  recipient Boolean @default(false)
+  user User @relation(fields: [userId], references:[id] )
+}
+
+// change user to userOwnerOfOrder something to make it clear that the user is the customer taht placed the order for service
+model Order {
+  id Int @id @default(autoincrement())
+  userId String
+  // thecustomer who sent the package, so client/shipper
+  user User @relation("CUSTOMER",fields: [userId], references:[id] )
+  timePlaced DateTime @default(now())
+  recieverFirstName String
+  recieverLastName String
+  totalItems Int
+  totalPrice Int
+  paymentType String
+  statusId Int
+  status orderStatus @relation(fields: [statusId], references: [id])
+  location OrderLocation @default(withShipper)
+  // location is one of a list of locations that it is possible for a order to go through during the life time of its journey in the buisness, there will be some overlapping with the location names and the warehouse names. when warehouse location name changes the location list should change to refelect that.
+  // location String @default("Shipping Address/owner")
+  pickupDriverId String?
+  // ! TODO: change to pickupDriver
+  pickupdriver User? @relation(name: "DRIVER", fields: [pickupDriverId], references:[id])
+  pickupDatetime DateTime?
+  // pickupRouteCode Int?
+  // pickupRoute Route? @relation(fields: [pickupRouteCode], references: [id])
+  // id for warehouse of origin, the warehouse that took the originla order
+  items OrderItem[]
+  addresses OrderAddressDuo[]
+  pickupZoneId Int?
+  pickupZone pickupZone? @relation(fields:[pickupZoneId], references: [id])
+  containerId Int?
+  container containers? @relation(fields:[containerId], references: [id])
+}
+// model Route {
+//   id Int @id @default(autoincrement())
+//   areaCode String
+//   orders Order[]
+// }
+model pickupZone {
+  id Int @id @default(autoincrement())
+  Name String
+  Code String
+  order Order[]
+}
+model OrderAddressDuo{
+  id Int @id @default(autoincrement())
+  orderId Int
+  order Order @relation(fields: [orderId],references:[id] )
+  address String
+  address2 String?
+  address3 String?
+  city String
+  state String
+  postalCode Int
+  country String
+  cellphone String?
+  telephone String?
+  // default Boolean @default(false)
+  recipient Boolean @default(false)
+}
+
+model OrderItem {
+  id Int @id @default(autoincrement())
+  orderId Int
+  productsId Int
+  amount Int
+  order Order @relation(fields: [orderId],references:[id] )
+  product product @relation(fields: [productsId], references:[id])
+
+}
+
+
+model product {
+  id Int @id @default(autoincrement())
+  name  String
+  price Int
+  type Int
+  orderItem OrderItem[]
+  productType productType? @relation(fields: [type], references:[id])
+}
+model productType {
+  id Int @id @default(autoincrement())
+  type String
+  product product[]
+}
+
+// shipping container that are sent on  the boat
+model containers {
+  id Int @id @default(autoincrement())
+  statusId Int
+  status containerStatus @relation(fields: [statusId], references: [id])
+  orders Order[]
+  warehouseId Int
+  warehouseDetails warehouseDetails @relation(fields: [warehouseId], references: [id])
+  // location String
+  // deliveredDate
+  // pickupDate
+  // paidFor
+  // reachDestination
+}
+
+model warehouseSupplies {
+  id Int @id @default(autoincrement())
+  supplyName String // tape
+  inventoryCount Int // 10
+  warehouseId Int // warehouse that supply is located in
+  warehouse warehouseDetails @relation(fields: [warehouseId], references: [id])
+  // location String
+}
+
+model warehouseDetails {
+  id Int @id @default(autoincrement())
+  warehouseCode String // BX, DR
+  warehouseName String //bronx, Dominican Republic
+  supplies warehouseSupplies[]
+  containers containers[]
+}
+
+
+model orderStatus {
+  id Int @id @default(autoincrement())
+  message String
+  order Order[]
+}
+
+model containerStatus {
+  id Int @id @default(autoincrement())
+  message String
+  container containers[]
+}
+
+
+//  Next-Auth models used in everytyhing but credentials provider //
+// model Account {
+//   id                 String  @id @default(cuid())
+//   userId             String
+//   type               String
+//   provider           String
+//   providerAccountId  String
+//   refresh_token      String?
+//   access_token       String?
+//   expires_at         Int?
+//   token_type         String?
+//   scope              String?
+//   id_token           String?
+//   session_state      String?
+//   oauth_token_secret String?
+//   oauth_token        String?
+
+//   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+//   @@unique([provider, providerAccountId])
+// }
+
+// model Session {
+//   id           String   @id @default(cuid())
+//   sessionToken String   @unique
+//   userId       String
+//   expires      DateTime
+//   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+// }
+
+// model VerificationToken {
+//   identifier String
+//   token      String   @unique
+//   expires    DateTime
+
+//   @@unique([identifier, token])
+// }
+
+
+// Next-Auth models End //
+
+// model DriverRoutes {
+//   id Int @id @default(autoincrement())
+//   driverId Int
+//   driver User @relation(fields: [driverId], references:[id] )
+//   orders Order[]
+// }
+
+
+// add products to table
+// add table for drivers, routes, route packages
+// add table warehouse batches info
