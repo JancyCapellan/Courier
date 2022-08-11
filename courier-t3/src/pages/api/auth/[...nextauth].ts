@@ -3,9 +3,8 @@ import NextAuth, { type NextAuthOptions } from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
 
 // Prisma adapter for NextAuth, optional and can be removed
-import { PrismaAdapter } from '@next-auth/prisma-adapter'
+// import { PrismaAdapter } from '@next-auth/prisma-adapter'
 import { prisma } from '../../../server/db/client'
-import { env } from '../../../env/server.mjs'
 
 export const authOptions: NextAuthOptions = {
   // Include user.id on session
@@ -18,7 +17,7 @@ export const authOptions: NextAuthOptions = {
     // },
     jwt: async ({ token, user }) => {
       // first time jwt callback is run, user object is available
-      console.log({ token, user })
+      console.log('jwt', { token, user })
       if (user) {
         token.user = user
         token.id = user.id
@@ -28,16 +27,15 @@ export const authOptions: NextAuthOptions = {
 
       return token
     },
-    session: async ({ session, token, user }) => {
-      // console.log('SESSION', session)
+    session: async ({ session, token }) => {
       // let test = { ...session.user, ...token.user }
       if (token) {
-        session.id = user.id
-        session.user = user
-        // session.user = token.user ? token.user : { ...token.user, ...session.user }
+        // TODO: typing for token.user, token.user created above
+        session.user = { ...session.user, ...token.user }
+        // session.user = token.user ? token.user : session.user
         // session.user = test
       }
-      // console.log('nextauth-session', session)
+      console.log('session', { session, token })
 
       return session
     },
@@ -79,14 +77,12 @@ export const authOptions: NextAuthOptions = {
           // console.log('auth user', user)
           // userAccount = user
           return {
-            user: {
-              id: user.id,
-              name: `${user.firstName} ${user.lastName}`,
-              email: user.email,
-              firstName: user.firstName,
-              lastName: user.lastName,
-              role: user.role,
-            },
+            id: user.id,
+            name: `${user.firstName} ${user.lastName}`,
+            email: user.email,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            role: user.role,
           }
         } else {
           console.log('nextauth signin error')

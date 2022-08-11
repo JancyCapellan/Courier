@@ -3,6 +3,8 @@
     "target": "es5",
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
+    "baseUrl": "./src",
+    "checkJs": true,
     "skipLibCheck": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
@@ -14,14 +16,11 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
-    "noUncheckedIndexedAccess": true
+    "noUncheckedIndexedAccess": true,
+    "paths": {
+      "@/components/*": ["components/*"]
+    }
   },
-  "include": [
-    "next-env.d.ts",
-    "next-auth.d.ts",
-    "**/*.ts",
-    "**/*.tsx",
-    "**/*.js"
-  ],
+  "include": ["next-env.d.ts", "next-auth.d.ts", "**/*.ts", "**/*.tsx", "**/*.js", "**/*.jsx"],
   "exclude": ["node_modules"]
 }

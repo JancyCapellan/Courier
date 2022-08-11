@@ -84,9 +84,9 @@ const Home: NextPage = () => {
   const [error, setError] = useState(false)
 
   const router = useRouter()
-  console.log('Registered?:', router.query?.didRegister)
+  // console.log('Registered?:', router.query?.didRegister)
 
-  const signinRedirect = process.env.NEXT_PUBLIC_URL_API + 'account'
+  const signinRedirect = process.env.NEXT_PUBLIC_API_URL + 'account'
 
   return (
     <>
