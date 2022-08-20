@@ -17,7 +17,7 @@ export const authOptions: NextAuthOptions = {
     // },
     jwt: async ({ token, user }) => {
       // first time jwt callback is run, user object is available
-      console.log('jwt', { token, user })
+      // console.log('jwt', { token, user })
       if (user) {
         token.user = user
         token.id = user.id
@@ -35,7 +35,7 @@ export const authOptions: NextAuthOptions = {
         // session.user = token.user ? token.user : session.user
         // session.user = test
       }
-      console.log('session', { session, token })
+      // console.log('session', { session, token })
 
       return session
     },

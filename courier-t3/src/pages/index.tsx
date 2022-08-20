@@ -61,7 +61,11 @@ const HomeT3: NextPage = () => {
   )
 }
 
-const TechnologyCard = ({ name, description, documentation }: TechnologyCardProps) => {
+const TechnologyCard = ({
+  name,
+  description,
+  documentation,
+}: TechnologyCardProps) => {
   return (
     <section className='flex flex-col justify-center p-6 duration-500 border-2 border-gray-500 rounded shadow-xl motion-safe:hover:scale-105'>
       <h2 className='text-lg text-gray-700'>{name}</h2>
@@ -90,13 +94,18 @@ const Home: NextPage = () => {
 
   return (
     <>
+      <Head>
+        <title>Courier's Dashboard</title>
+        <meta name='description' content='webapp for shippers' />
+        <link rel='icon' href='/favicon.ico' />
+      </Head>
       <div className='home-container'>
         <h1> The Courier Dashboard</h1>
         {router.query?.didRegister}
         {error ? (
           <p>
-            THERE WAS AN ERROR WHILE LOGGING. CHECK TO MAKE SURE THAT YOU ARE USING THE CORRECT
-            USERNAME AND PASSWORD.
+            THERE WAS AN ERROR WHILE LOGGING. CHECK TO MAKE SURE THAT YOU ARE
+            USING THE CORRECT USERNAME AND PASSWORD.
           </p>
         ) : (
           <></>
@@ -104,7 +113,11 @@ const Home: NextPage = () => {
         {!!session ? (
           <>
             <p> Logged in as {session?.user?.name} </p>
-            <button onClick={() => signOut({ callbackUrl: process.env.NEXT_PUBLIC_URL_API })}>
+            <button
+              onClick={() =>
+                signOut({ callbackUrl: process.env.NEXT_PUBLIC_URL_API })
+              }
+            >
               Sign out
             </button>
             <Link href='/account' passHref>
@@ -133,12 +146,12 @@ const Home: NextPage = () => {
                 // tenantKey: values.tenantKey,
                 callbackUrl: signinRedirect,
               })
-              console.log('res', res)
+              // console.log('res', res)
               if (res?.error) {
                 setError(true)
               }
               if (res?.url) router.push(res.url)
-              console.log('error', error)
+              // console.log('error', error)
               setSubmitting(false)
             }}
           >

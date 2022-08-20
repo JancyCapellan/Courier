@@ -2,13 +2,15 @@ import React, { useState, useEffect } from 'react'
 import { sidebarTypes, sidebarTypesSelector } from './SidebarData'
 import Link from 'next/link'
 // import logo from '../assets/logo-dark.png'
-import { useSession } from '../customHooks/useSession'
+// import { useSession } from '../customHooks/useSession'
 // import * from '../styles/Sidebar.module.css'
-import { useGlobalStore } from '../store/globalStore.js'
+import { useGlobalStore } from '@/components/globalStore.js'
+import { useSession } from 'next-auth/react'
 
 const Sidebar = () => {
   const [isCollapsed, setIsCollapsed] = useState()
-  const [session, loading] = useSession()
+  // const [session, loading] = useSession()
+  const { data: session, status } = useSession()
 
   const sidebarToggler = () => {
     setIsCollapsed(!isCollapsed)
@@ -21,12 +23,15 @@ const Sidebar = () => {
   }, [])
 
   const setCurrentCustomer = useGlobalStore((state) => state.setCurrentCustomer)
-  if (!session) return <></>
+
+  //if not session return to login? this should be avoided if possible when logging into the app
+  if (!session || status === 'unauthenticated') return <></>
 
   let sidebarData
-  if (loading === false) {
+  if (status === 'authenticated') {
     sidebarData = sidebarTypesSelector(session.user.role)
   }
+
   // console.log('sidebardata', sidebarData)
 
   return (
@@ -49,7 +54,7 @@ const Sidebar = () => {
             </div>
           </li>
 
-          {loading === false ? (
+          {status === 'authenticated' ? (
             sidebarData.map((item, index) => {
               return (
                 <li
@@ -59,7 +64,10 @@ const Sidebar = () => {
                   {/* {item.path === '/account' ? (item.path = `/customer/${session.user.id}`) : ''} */}
                   {item.title === 'Order' ? (
                     <Link href={item.path} passHref={true}>
-                      <a onClick={() => setCurrentCustomer(session.user)} className='sidebar-link'>
+                      <a
+                        onClick={() => setCurrentCustomer(session.user)}
+                        className='sidebar-link'
+                      >
                         <div className='sidebar-link-icon'>{item.icon}</div>
                         <div className='sidebar-link-title'>{item.title}</div>
                       </a>

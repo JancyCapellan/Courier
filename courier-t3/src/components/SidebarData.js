@@ -1,5 +1,5 @@
 import React from 'react'
-import * as Bi from 'react-icons/bi'
+import { UserIcon, UsersIcon } from '@heroicons/react/outline'
 
 // cname is className
 // { staff:[], cust: [], admin:[]}
@@ -7,92 +7,86 @@ export const routes = {
   account: {
     title: 'Account',
     path: '/account',
-    icon: <Bi.BiUser />,
+    icon: <UserIcon className='h-5 w-5 text-blue-500' />,
     cName: 'nav-listitem',
   },
   administration: {
     title: 'Admin',
     path: '/administration',
-    icon: <Bi.BiAnchor />,
+    icon: '',
     cName: 'nav-listitem',
   },
   invoices: {
     title: 'Invoices',
     path: '/Invoices',
-    icon: <Bi.BiAdjust />,
+    icon: '',
     cName: 'nav-listitem',
   },
   pickups: {
     title: 'Pickup Manager',
     path: '/pickup',
-    icon: <Bi.BiAccessibility />,
-    cName: 'nav-listitem',
-  },
-  account: {
-    title: 'Account',
-    path: '/account',
-    icon: <Bi.BiUser />,
+    icon: '',
     cName: 'nav-listitem',
   },
   driverPage: {
     title: 'Driver Page',
     path: '/driverPage',
-    icon: <Bi.BiAdjust />,
+    icon: '',
     cName: 'nav-listitem',
   },
   createOrder: {
     title: 'Order',
     path: '/order',
-    icon: <Bi.BiBookAdd />,
+    icon: '',
     cName: 'nav-listitem',
   },
   cart: {
     title: 'Cart',
     path: '/cart',
-    icon: <Bi.BiCart />,
+    icon: '',
     cName: 'nav-listitem',
   },
   customers: {
     title: 'Customers',
     path: '/customers',
-    icon: <Bi.BiGroup />,
+    icon: '',
     cName: 'nav-listitem',
   },
   crm: {
     title: 'Client Relations Manager',
     path: '/crm',
-    icon: <Bi.BiGroup />,
+    icon: '',
     cName: 'nav-listitem',
   },
   claims: {
     title: 'Claim Manager',
     path: '/claims',
-    icon: <Bi.BiAccessibility />,
+    icon: '',
     cName: 'nav-listitem',
   },
   warehouse: {
     title: 'warehouse',
     path: '/warehouse',
-    icon: <Bi.BiAlarm />,
+    icon: '',
     cName: 'nav-listitem',
   },
   adminstration: {
     title: 'Adminastration',
     path: '/sidebar',
-    icon: <Bi.BiAccessibility />,
+    icon: '',
     cName: 'nav-listitem',
   },
   support: {
     title: 'Support',
     path: '/support',
-    icon: <Bi.BiAccessibility />,
+    icon: '',
     cName: 'nav-listitem',
   },
   reports: {
     cName: 'nav-listitem',
     title: 'Reports',
     path: '/reports',
-    icon: <Bi.BiAccessibility />,
+    icon: '',
   },
 }
 export const sidebarTypes = {

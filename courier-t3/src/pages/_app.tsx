@@ -1,15 +1,39 @@
 // src/pages/_app.tsx
 import { withTRPC } from '@trpc/next'
+import type { NextPage } from 'next'
+import type { AppProps } from 'next/app'
+import type { ReactElement, ReactNode } from 'react'
 import type { AppRouter } from '../server/router'
-import type { AppType } from 'next/dist/shared/lib/utils'
+import type {
+  AppType,
+  NextComponentType,
+  NextPageContext,
+} from 'next/dist/shared/lib/utils'
 import superjson from 'superjson'
 import { SessionProvider } from 'next-auth/react'
 import '../styles/globals.css'
+import { ReactQueryDevtools } from 'react-query/devtools'
 
-const MyApp: AppType = ({ Component, pageProps: { session, ...pageProps } }) => {
+type NextPageWithLayout = NextPage & {
+  getLayout?: (page: ReactElement) => ReactNode
+}
+
+type AppPropsWithLayout = AppProps & {
+  Component: NextPageWithLayout
+}
+
+// this is originally AppType but that doesnt work with getLayout, not enough TS knowledge to fix it
+const MyApp: AppType = ({
+  Component,
+  pageProps: { session, ...pageProps },
+}) => {
+  const getLayout =
+    Component.getLayout ?? ((component: AppPropsWithLayout) => component)
+  const layout = getLayout(<Component {...pageProps} />)
   return (
     <SessionProvider session={session}>
-      <Component {...pageProps} />
+      {layout}
+      <ReactQueryDevtools initialIsOpen={false} />
     </SessionProvider>
   )
 }
@@ -37,7 +61,7 @@ export default withTRPC<AppRouter>({
       /**
        * @link https://react-query.tanstack.com/reference/QueryClient
        */
-      // queryClientConfig: { defaultOptions: { queries: { staleTime: 60 } } },
+      queryClientConfig: { defaultOptions: { queries: { staleTime: 60 } } },
     }
   },
   /**

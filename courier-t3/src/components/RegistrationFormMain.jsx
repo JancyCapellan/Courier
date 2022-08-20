@@ -3,7 +3,7 @@ import FormikControl from './Formik/FormikControl'
 import * as Yup from 'yup'
 import Link from 'next/link'
 import Router from 'next/router'
-import { trpc } from '../utils/trpc'
+import { trpc } from '@/utils/trpc'
 
 // will create a customer base account, can be upgraded to another role by admins
 const RegistrationFormMain = () => {
@@ -44,7 +44,7 @@ const RegistrationFormMain = () => {
 
   const postRegisterUser = trpc.useMutation(['user.register'])
 
-  const onSubmit = async (values, { setSubmitting, resetForm }) => {
+  const onSubmit = async (values) => {
     // console.log('register', values)
     if (values.password !== values.password2) {
       alert('passwords do not match')

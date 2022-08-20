@@ -1,8 +1,9 @@
-import { signOut } from 'next-auth/react'
+import { signOut, useSession } from 'next-auth/react'
 // import { useSession } from '../customHooks/useSession'
 
 function Header() {
   // const [session, status] = useSession()
+  const { data: session, status } = useSession()
 
   // console.log('header session data', session, 'status', status)
   return (
@@ -11,7 +12,11 @@ function Header() {
         <span>
           Welcome {session?.user.name}! | <b>Role: {session?.user.role}</b>
         </span>
-        <button onClick={() => signOut({ callbackUrl: process.env.NEXT_PUBLIC_URL_API })}>
+        <button
+          onClick={() =>
+            signOut({ callbackUrl: process.env.NEXT_PUBLIC_URL_API })
+          }
+        >
           Sign out
         </button>
       </section>
