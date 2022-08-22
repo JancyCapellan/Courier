@@ -14,7 +14,26 @@ type TechnologyCardProps = {
   description: string
   documentation: string
 }
-
+const TechnologyCard = ({
+  name,
+  description,
+  documentation,
+}: TechnologyCardProps) => {
+  return (
+    <section className='flex flex-col justify-center p-6 duration-500 border-2 border-gray-500 rounded shadow-xl motion-safe:hover:scale-105'>
+      <h2 className='text-lg text-gray-700'>{name}</h2>
+      <p className='text-sm text-gray-600'>{description}</p>
+      <a
+        className='mt-3 text-sm underline text-violet-500 decoration-dotted underline-offset-2'
+        href={documentation}
+        target='_blank'
+        rel='noreferrer'
+      >
+        Documentation
+      </a>
+    </section>
+  )
+}
 const HomeT3: NextPage = () => {
   const hello = trpc.useQuery(['example.hello', { text: 'from tRPC' }])
 
@@ -61,27 +80,6 @@ const HomeT3: NextPage = () => {
   )
 }
 
-const TechnologyCard = ({
-  name,
-  description,
-  documentation,
-}: TechnologyCardProps) => {
-  return (
-    <section className='flex flex-col justify-center p-6 duration-500 border-2 border-gray-500 rounded shadow-xl motion-safe:hover:scale-105'>
-      <h2 className='text-lg text-gray-700'>{name}</h2>
-      <p className='text-sm text-gray-600'>{description}</p>
-      <a
-        className='mt-3 text-sm underline text-violet-500 decoration-dotted underline-offset-2'
-        href={documentation}
-        target='_blank'
-        rel='noreferrer'
-      >
-        Documentation
-      </a>
-    </section>
-  )
-}
-
 const Home: NextPage = () => {
   // const [session, loadingUser] = useSession()
   const { data: session, status } = useSession()
@@ -99,8 +97,9 @@ const Home: NextPage = () => {
         <meta name='description' content='webapp for shippers' />
         <link rel='icon' href='/favicon.ico' />
       </Head>
-      <div className='home-container'>
-        <h1> The Courier Dashboard</h1>
+
+      <div className='container mx-auto flex flex-col items-center min-h-screen'>
+        <h1 className=''> The Courier Dashboard</h1>
         {router.query?.didRegister}
         {error ? (
           <p>
@@ -133,7 +132,9 @@ const Home: NextPage = () => {
                 .max(30, 'Must be 30 characters or less')
                 .email('Invalid email address')
                 .required('Please enter your email'),
-              password: Yup.string().required('Please enter your password'),
+              password: Yup.string()
+                .required('Please enter your password')
+                .min(3, 'password is too short'),
               // tenantKey: Yup.string()
               //   .max(20, 'Must be 20 characters or less')
               //   .required('Please enter your organization name'),
@@ -158,14 +159,15 @@ const Home: NextPage = () => {
             {(formik) => {
               return (
                 <>
-                  <Form className='signin-form'>
-                    <h2>Login</h2>
+                  <Form className='container flex flex-col md:w-1/2 my-24'>
+                    <h2 className='block w-full text-center text-grey-darkest mb-6'>
+                      Login
+                    </h2>
                     <FormikControl
                       control='input'
                       type='email'
                       label='Email'
                       name='email'
-                      className='test'
                     />
                     <FormikControl
                       control='input'
@@ -173,11 +175,17 @@ const Home: NextPage = () => {
                       label='Password'
                       name='password'
                     />
-                    <button type='submit' disabled={!formik.isValid}>
+                    <button
+                      type='submit'
+                      disabled={!formik.isValid}
+                      className='btn'
+                    >
                       Submit
                     </button>
                     <Link href='/register' passHref>
-                      <button>Dont have an account? Register here.</button>
+                      <button className='btn'>
+                        Dont have an account? Register here.
+                      </button>
                     </Link>
                   </Form>
                 </>
