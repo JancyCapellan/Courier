@@ -1,15 +1,18 @@
 import Header from './Header'
-import Sidebar from './Sidebar'
+import Sidebar from './Sidebar2'
 
 // * TODO: react memo so only main rerenders and not header and sidebar, but not causing any visuale issue right now
 
 export default function Layout({ children }) {
   return (
-    <div className='layout-dashboard'>
+    <>
       <Header />
-      <Sidebar />
-      <main className='main-content'>{children}</main>
+      <div className='flex flex-row h-screen'>
+        <Sidebar />
+        <main className='grow w-max'>{children}</main>
+      </div>
+
       {/* <Footer /> */}
-    </div>
+    </>
   )
 }

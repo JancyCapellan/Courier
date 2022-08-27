@@ -7,18 +7,13 @@ function Header() {
 
   // console.log('header session data', session, 'status', status)
   return (
-    <header className='header'>
-      <section className='header-user-info'>
-        <span>
-          Welcome {session?.user.name}! | <b>Role: {session?.user.role}</b>
-        </span>
-        <button
-          onClick={() =>
-            signOut({ callbackUrl: process.env.NEXT_PUBLIC_URL_API })
-          }
-        >
-          Sign out
-        </button>
+    <header className='header flex flex-col justify-center bg-black w-screen h-12 py-1 px-2'>
+      <section className='flex flex-row justify-between text-white'>
+        <div>
+          Welcome {session?.user.name}! |{' '}
+          <b className='text-red-600'>Role: {session?.user.role}</b>
+        </div>
+        <button onClick={() => signOut({ callbackUrl: '/' })}>Sign out</button>
       </section>
     </header>
   )

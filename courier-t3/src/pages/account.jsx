@@ -350,7 +350,7 @@ const AccountInfo = () => {
   }
 
   return (
-    <section className='account-page'>
+    <section className='flex flex-col items-center'>
       <h1> Account Information</h1>
       <nav>
         <button onClick={() => setCurrentPage(1)}>Account Information</button>

@@ -94,12 +94,17 @@ const Home: NextPage = () => {
     <>
       <Head>
         <title>Courier's Dashboard</title>
-        <meta name='description' content='webapp for shippers' />
+        <meta
+          name='description'
+          content='webapp for shippers and courier services'
+        />
         <link rel='icon' href='/favicon.ico' />
       </Head>
 
-      <div className='container mx-auto flex flex-col items-center min-h-screen'>
-        <h1 className=''> The Courier Dashboard</h1>
+      <div className='flex flex-row w-full h-16 bg-gray-500 items-center mx-auto'>
+        The Courier Dashboard App
+      </div>
+      <div className='container mx-auto flex flex-col items-center min-h-screen bg-cyan-600'>
         {router.query?.didRegister}
         {error ? (
           <p>
@@ -159,9 +164,9 @@ const Home: NextPage = () => {
             {(formik) => {
               return (
                 <>
-                  <Form className='container flex flex-col md:w-1/2 my-24'>
-                    <h2 className='block w-full text-center text-grey-darkest mb-6'>
-                      Login
+                  <Form className='container flex flex-col md:w-1/2 my-24 max-w-sm'>
+                    <h2 className='block w-full text-center text-grey-darkest mb-6 bold underline text-xl'>
+                      Sign In
                     </h2>
                     <FormikControl
                       control='input'
@@ -175,18 +180,21 @@ const Home: NextPage = () => {
                       label='Password'
                       name='password'
                     />
-                    <button
-                      type='submit'
-                      disabled={!formik.isValid}
-                      className='btn'
-                    >
-                      Submit
-                    </button>
-                    <Link href='/register' passHref>
-                      <button className='btn'>
-                        Dont have an account? Register here.
+                    <div className='flex flex-col items-center'>
+                      <button
+                        type='submit'
+                        disabled={!formik.isValid}
+                        className='btn btn-blue m-2 w-1/2 align-center'
+                      >
+                        Login
                       </button>
-                    </Link>
+                      <Link href='/register' passHref>
+                        <button className='btn btn-blue m-2 w-1/2'>
+                          Don't have an account?{' '}
+                          <span className='text-red-400'>Register here.</span>
+                        </button>
+                      </Link>
+                    </div>
                   </Form>
                 </>
               )
