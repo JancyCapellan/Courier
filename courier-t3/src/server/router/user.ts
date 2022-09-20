@@ -65,23 +65,28 @@ export const userRouter = createProtectedRouter()
   })
   .mutation('editUserInformation', {
     input: z.object({
-      id: z.string(),
-      firstName: z.string(),
-      middleName: z.string().optional(),
-      lastName: z.string(),
-      email: z.string().email(),
-      password: z.string(),
-      role: z.enum(['CUSTOMER', 'ADMIN']), //TODO: TYPEDEF
+      userId: z.string(),
+      form: z.object({
+        firstName: z.string(),
+        middleName: z.string(),
+        lastName: z.string(),
+        email: z.string().email(),
+        preferredLanguage: z.string(),
+      }),
     }),
     async resolve({ ctx, input }) {
       try {
-        console.log(input)
+        // console.log(input)
         const updatedUserInfo = await ctx.prisma.user.update({
           where: {
-            id: input.id,
+            id: input.userId,
           },
-          data: updatedUserInfoForm,
+          data: input.form,
         })
-      } catch (error) {}
+
+        return updatedUserInfo
+      } catch (error) {
+        console.error(error)
+      }
     },
   })

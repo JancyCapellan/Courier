@@ -14,13 +14,13 @@ const InfoEditor = ({ currentUser }) => {
   // console.log('editor current user', currentUser)
 
   const initialValues = {
-    id: currentUser.id,
+    userId: currentUser.id,
     firstName: currentUser.firstName,
     middleName: currentUser.middleName,
     lastName: currentUser.lastName,
-    password: currentUser.password,
+    // password: currentUser.password,
     email: currentUser.email,
-    role: currentUser.role,
+    // role: currentUser.role,
     // company: currentUser.company,
     // branchName: currentUser.branchName,
     // licenseId: currentUser.licenseId,
@@ -47,7 +47,7 @@ const InfoEditor = ({ currentUser }) => {
       .max(100, '*Email must be less than 100 characters')
       .required('*Email is required'),
 
-    role: Yup.string(),
+    // role: Yup.string(),
     // company: Yup.string(),
     // branchName: Yup.string(),
     // licenseId: Yup.string(),
@@ -56,7 +56,7 @@ const InfoEditor = ({ currentUser }) => {
 
   const mutation = trpc.useMutation(['user.editUserInformation'], {
     onSuccess: (data) => {
-      queryClient.setQueryData(['getUserAccountInfo', currentUser.id], () => {
+      queryClient.setQueryData(['user.editUserInformation'], () => {
         return data
       })
       alert('user info edit completed')
@@ -122,19 +122,12 @@ const InfoEditor = ({ currentUser }) => {
           initialValues={initialValues}
           validationSchema={validationSchema}
           onSubmit={async (values) => {
-            mutation.mutate(values)
+            mutation.mutate({ userId: currentUser.id, form: values })
           }}
         >
           {({ isValid }) => {
             return (
               <Form>
-                {/* <FormikControl
-                  control='input'
-                  type='text'
-                  label='Customer ID:'
-                  name='id'
-                  disabled
-                /> */}
                 <FormikControl
                   control='input'
                   type='text'
@@ -159,13 +152,13 @@ const InfoEditor = ({ currentUser }) => {
                   label='email'
                   name='email'
                 />
-                <FormikControl
+                {/* <FormikControl
                   control='input'
                   type='text'
                   label='role'
                   name='role'
                   disabled
-                />
+                /> */}
                 {/* <FormikControl control='input' type='text' label='company' name='company' />
               <FormikControl control='input' type='text' label='branch name' name='branchName' /> */}
                 {/* <FormikControl
