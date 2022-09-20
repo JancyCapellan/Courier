@@ -26,19 +26,19 @@ const AddCustomerAddressForm = ({ customerId, show, handleClose }) => {
 
   // Schema for yup
   const validationSchema = Yup.object({})
-  
+
   // ! turn this into dynamic option by adding CRUD DB API operations
   const selectOptions = [
     { key: 'UNITED STATES', value: 'USA' },
     { key: 'DOMINICAN REPUBLIC', value: 'DR' },
   ]
 
-  const mutation = trpc.useMutation(['user.addAddress'], {
+  const addAddressMutation = trpc.useMutation(['user.addAddress'], {
     onSuccess: (data) => {
-      alert('user address edit completed')
       queryClient.setQueryData(
         ['getCustomerAddresses', customerId],
         (oldData) => {
+          if (typeof oldData === 'undefined') return data
           return [...oldData, data]
         }
       )
@@ -47,7 +47,7 @@ const AddCustomerAddressForm = ({ customerId, show, handleClose }) => {
   })
 
   const onSubmit = async (values) => {
-    mutation.mutate({ userId: userId, addressForm: values })
+    addAddressMutation.mutate({ userId: customerId, addressForm: values })
     handleClose()
   }
 
@@ -108,7 +108,7 @@ const AddCustomerAddressForm = ({ customerId, show, handleClose }) => {
                 />
                 <FormikControl
                   control='input'
-                  type='text'
+                  type='number'
                   label='Postal code'
                   name='postalCode'
                 />

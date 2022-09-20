@@ -1,4 +1,4 @@
-import { z } from 'zod'
+import { string, z } from 'zod'
 import { createProtectedRouter } from './protected-router'
 
 import { TRPCError } from '@trpc/server'
@@ -44,23 +44,26 @@ export const userRouter = createProtectedRouter()
       addressForm: z.object({
         userId: z.string(),
         address: z.string(),
-        address2: z.string(),
-        address3: z.string(),
+        address2: z.string().optional(),
+        address3: z.string().optional(),
         city: z.string(),
         state: z.string(),
         postalCode: z.number(),
         country: z.string(),
         cellphone: z.string(),
-        telephone: z.string(),
+        telephone: z.string().optional(),
       }),
     }),
     async resolve({ ctx, input }) {
       try {
-        const result = await ctx.prisma.address.create({
+        const addedAddress = await ctx.prisma.address.create({
           data: input.addressForm,
         })
-        console.log(result)
-      } catch (error) {}
+        console.log(addedAddress)
+        return addedAddress
+      } catch (error) {
+        console.error(error)
+      }
     },
   })
   .mutation('editUserInformation', {
@@ -88,5 +91,54 @@ export const userRouter = createProtectedRouter()
       } catch (error) {
         console.error(error)
       }
+    },
+  })
+  .query('getUserOrders', {
+    input: z.object({
+      userId: z.string(),
+    }),
+    async resolve({ ctx, input }) {
+      try {
+        const userOrders = await ctx.prisma.order.findMany({
+          where: {
+            userId: input.userId,
+          },
+          include: {
+            status: true,
+            items: {
+              include: {
+                product: {
+                  select: {
+                    price: true,
+                    name: true,
+                    productType: {
+                      select: {
+                        type: true,
+                      },
+                    },
+                  },
+                },
+              },
+            },
+            addresses: true,
+          },
+        })
+
+        // if userOrders array is empty, have to check if user even exists
+        if (!userOrders?.length) return []
+        if (userOrders) {
+          // changing timePlaced for orders into readable local values
+          // time is in 2021-11-01T16:23:29.139Z format, UTC
+          for (const obj in userOrders)
+            for (const key in userOrders[obj])
+              if (key === 'timePlaced') {
+                userOrders[obj][key] =
+                  userOrders[obj][key].toLocaleString('en-US')
+              }
+
+          console.log(userOrders)
+          return userOrders
+        }
+      } catch (error) {}
     },
   })

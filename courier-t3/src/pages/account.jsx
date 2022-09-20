@@ -44,17 +44,11 @@ const UserAddresses = ({ currentUser }) => {
 
 const UserOrderHistory = ({ currentUser }) => {
   const router = useRouter()
-  const getUserOrders = async () => {
-    const { data } = await backendClient.get(
-      `/order/userOrder/${currentUser.id}`
-    )
-    return data
-  }
 
-  const { data: orderHistory, status: userOrderStatus } = useQuery(
-    ['getUserOrders', currentUser.id],
-    () => getUserOrders()
-  )
+  const { data: orderHistory, status: userOrderStatus } = trpc.useQuery([
+    'user.getUserOrders',
+    { userId: currentUser.id },
+  ])
 
   console.log('user order History', orderHistory)
   return (
