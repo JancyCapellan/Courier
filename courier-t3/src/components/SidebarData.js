@@ -1,56 +1,52 @@
 import React from 'react'
-import { UserIcon, UsersIcon } from '@heroicons/react/outline'
+import { HiOutlineUserGroup } from 'react-icons/hi'
+import { FiSettings } from 'react-icons/fi'
+import { GrGroup } from 'react-icons/gr'
+import { FaFileInvoiceDollar, FaWarehouse } from 'react-icons/fa'
+import { MdAdminPanelSettings } from 'react-icons/Md'
 
 // cname is className
 // { staff:[], cust: [], admin:[]}
 export const routes = {
-  account: {
-    title: 'Account',
-    path: '/account',
-    icon: <UserIcon className='h-5 w-5 text-blue-500' />,
-    cName: 'nav-listitem',
-  },
   administration: {
-    title: 'Admin',
+    title: 'Business Administration',
     path: '/administration',
-    icon: '',
-    cName: 'nav-listitem',
+    icon: <MdAdminPanelSettings />,
+  },
+  account: {
+    title: 'User Account',
+    path: '/account',
+    icon: <FiSettings />,
   },
   invoices: {
     title: 'Invoices',
     path: '/Invoices',
-    icon: '',
-    cName: 'nav-listitem',
+    icon: <FaFileInvoiceDollar />,
   },
   pickups: {
     title: 'Pickup Manager',
     path: '/pickup',
     icon: '',
-    cName: 'nav-listitem',
   },
   driverPage: {
     title: 'Driver Page',
     path: '/driverPage',
     icon: '',
-    cName: 'nav-listitem',
   },
   createOrder: {
     title: 'Order',
     path: '/order',
     icon: '',
-    cName: 'nav-listitem',
   },
   cart: {
     title: 'Cart',
     path: '/cart',
     icon: '',
-    cName: 'nav-listitem',
   },
   customers: {
     title: 'Customers',
     path: '/customers',
-    icon: '',
-    cName: 'nav-listitem',
+    icon: <HiOutlineUserGroup />,
   },
   crm: {
     title: 'Client Relations Manager',
@@ -67,14 +63,7 @@ export const routes = {
   warehouse: {
     title: 'warehouse',
     path: '/warehouse',
-    icon: '',
-    cName: 'nav-listitem',
-  },
-  adminstration: {
-    title: 'Adminastration',
-    path: '/sidebar',
-    icon: '',
-    cName: 'nav-listitem',
+    icon: <FaWarehouse />,
   },
   support: {
     title: 'Support',
@@ -103,8 +92,4 @@ export const sidebarTypes = {
     // routes.reports,
   ],
   All: [routes],
-}
-
-export function sidebarTypesSelector(role) {
-  return sidebarTypes[role]
 }

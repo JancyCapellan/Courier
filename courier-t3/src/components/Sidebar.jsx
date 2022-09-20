@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react'
-import { sidebarTypes, sidebarTypesSelector } from './SidebarData'
+import { sidebarTypes } from './SidebarData'
 import Link from 'next/link'
 // import logo from '../assets/logo-dark.png'
 // import { useSession } from '../customHooks/useSession'
 // import * from '../styles/Sidebar.module.css'
 import { useGlobalStore } from '@/components/globalStore.js'
 import { useSession } from 'next-auth/react'
+import { IconContext } from 'react-icons'
 
 const Sidebar = () => {
   const [isCollapsed, setIsCollapsed] = useState()
@@ -29,7 +30,7 @@ const Sidebar = () => {
 
   let sidebarData
   if (status === 'authenticated') {
-    sidebarData = sidebarTypesSelector(session.user.role)
+    sidebarData = sidebarTypes[session.user.role]
   }
 
   // console.log('sidebardata', sidebarData)
@@ -53,41 +54,38 @@ const Sidebar = () => {
               </svg>
             </div>
           </li>
-
-          {status === 'authenticated' ? (
-            sidebarData.map((item, index) => {
-              return (
-                <li
-                  key={index}
-                  className={item.cName} // nav-listitem
-                >
-                  {/* {item.path === '/account' ? (item.path = `/customer/${session.user.id}`) : ''} */}
-                  {item.title === 'Order' ? (
-                    <Link href={item.path} passHref={true}>
-                      <a
-                        onClick={() => setCurrentCustomer(session.user)}
-                        className='sidebar-link'
-                      >
-                        <div className='sidebar-link-icon'>{item.icon}</div>
-                        <div className='sidebar-link-title'>{item.title}</div>
-                      </a>
-                    </Link>
-                  ) : (
-                    <Link href={item.path} passHref={true}>
-                      <a className='sidebar-link'>
-                        <div className='sidebar-link-icon'>{item.icon}</div>
-                        <div className='sidebar-link-title'>{item.title}</div>
-                      </a>
-                    </Link>
-                  )}
-                </li>
-              )
-            })
-          ) : (
-            <>
-              <p>error loading or loading still</p>
-            </>
-          )}
+          <IconContext.Provider value={{ color: 'white', size: '4em' }}>
+            {status === 'authenticated' ? (
+              sidebarData.map((item, index) => {
+                return (
+                  <li key={index} className=''>
+                    {item.title === 'Order' ? (
+                      <Link href={item.path} passHref={true}>
+                        <a
+                          onClick={() => setCurrentCustomer(session.user)}
+                          className='sidebar-link'
+                        >
+                          <div className='sidebar-link-icon'>{item.icon}</div>
+                          <div className='sidebar-link-title'>{item.title}</div>
+                        </a>
+                      </Link>
+                    ) : (
+                      <Link href={item.path} passHref={true}>
+                        <a className='sidebar-link'>
+                          <div className='sidebar-link-icon'>{item.icon}</div>
+                          <div className='sidebar-link-title'>{item.title}</div>
+                        </a>
+                      </Link>
+                    )}
+                  </li>
+                )
+              })
+            ) : (
+              <>
+                <p>error loading or loading still</p>
+              </>
+            )}
+          </IconContext.Provider>
         </ul>
       </nav>
       {/* <main className='main-content'>{children}</main> */}

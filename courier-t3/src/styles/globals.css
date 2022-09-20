@@ -2,9 +2,16 @@
 @tailwind components;
 @tailwind utilities;
 
+/* 
+* {
+  outline: 1px solid #f00 !important;
+}
+*/
+
 .formik-input-container {
   @apply flex flex-col;
 }
+
 .formik-input-container input {
   @apply border border-black py-2 px-2 w-full;
 }
@@ -21,4 +28,8 @@
 }
 .btn-blue:hover {
   @apply bg-blue-700;
+}
+
+.sidebar-link {
+  @apply flex items-center p-2;
 }

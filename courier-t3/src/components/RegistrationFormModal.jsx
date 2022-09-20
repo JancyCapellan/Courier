@@ -1,12 +1,13 @@
 import { Formik, Form } from 'formik'
-import FormikControl from './Formik/FormikControl'
+import FormikControl from '@/components/Formik/FormikControl'
 import * as Yup from 'yup'
 import Link from 'next/link'
-import Router from 'next/router'
-import { trpc } from '@/utils/trpc'
+import { useMutation, useQueryClient } from 'react-query'
+// import { backendClient } from './axiosClient.mjs'
 
-// will create a customer base account, can be upgraded to another role by admins
-const RegistrationFormMain = () => {
+const RegistrationFormModal = ({ isRegisteringStaff, closeModal, query }) => {
+  const queryClient = useQueryClient()
+
   const initialValues = {
     firstName: '',
     middleName: '',
@@ -17,11 +18,17 @@ const RegistrationFormMain = () => {
     role: 'CUSTOMER',
   }
 
+  const selectOptions = [
+    { key: 'Admin', value: 'ADMIN' },
+    { key: 'Staff', value: 'STAFF' },
+    { key: 'Driver', value: 'DRIVER' },
+  ]
+
   const validationSchema = Yup.object({
     firstName: Yup.string()
       .min(2, '*Names must have at least 2 characters')
       .max(100, "*Names can't be longer than 100 characters")
-      .required('First Name is required'),
+      .required('*First Name is required'),
 
     middleName: Yup.string()
       .min(2, '*Names must have at least 2 characters')
@@ -30,49 +37,64 @@ const RegistrationFormMain = () => {
     lastName: Yup.string()
       .min(2, '*Names must have at least 2 characters')
       .max(100, "*Names can't be longer than 100 characters")
-      .required('Last Name is required'),
+      .required('*Last Name is required'),
 
     email: Yup.string()
       .email('*Must be a valid email address')
       .max(100, '*Email must be less than 100 characters')
-      .required('Email is required'),
+      .required('*Email is required'),
 
     password: Yup.string().required('* required'),
     password2: Yup.string().required('* required'),
-    role: Yup.string().required('Must specifiy role'),
   })
 
-  const postRegisterUser = trpc.useMutation(['public.register'])
-
-  const onSubmit = async (values) => {
-    // console.log('register', values)
+  const postRegisterUser = useMutation(
+    async (newUser) => {
+      const { data } = await backendClient.post('user/register', newUser)
+      return data
+    },
+    {
+      onSuccess: (data) => {
+        // console.log('data', query)
+        {
+          isRegisteringStaff === false &&
+            queryClient.setQueryData(query, (oldData) => {
+              console.log('olddata', oldData, query)
+              return {
+                customerTableCount: oldData.customerTableCount + 1,
+                currentCustomerPage: [...oldData.currentCustomerPage, data],
+              }
+            })
+        }
+        {
+          isRegisteringStaff === true &&
+            queryClient.setQueryData('getAllStaff', (oldData) => {
+              return [...oldData, data]
+            })
+        }
+        alert('successfully added')
+      },
+      onError: (error) => alert(error),
+    }
+  )
+  const onSubmit = async (values, { setSubmitting, resetForm }) => {
     if (values.password !== values.password2) {
       alert('passwords do not match')
       return
     }
-    delete values.password2
-
-    postRegisterUser.mutate(values, {
-      onSuccess: () =>
-        Router.push({
-          pathname: '/',
-          query: { didRegister: 'Registration Successful, Please Log in' },
-        }),
-      onError: (error) => {
-        console.log('registration error:::', error)
-        Router.push({
-          pathname: '/',
-          query: { didRegister: 'Registartion Failed' },
-        })
-      },
-    })
-
-    // if mutate succesful else
+    console.log('register', values)
+    postRegisterUser.mutate(values)
+    // handleClose && handleClose()
+    closeModal()
   }
 
   return (
-    <>
-      <h1> Registration</h1>
+    <div>
+      {isRegisteringStaff ? (
+        <h1>Create Staff Account</h1>
+      ) : (
+        <h1> Customer Reigstraion</h1>
+      )}
       <Formik
         initialValues={initialValues}
         validationSchema={validationSchema}
@@ -81,14 +103,6 @@ const RegistrationFormMain = () => {
         {(formik) => {
           return (
             <Form>
-              <FormikControl
-                control='input'
-                type='text'
-                // label='User Role'
-                name='role'
-                disabled
-                hidden
-              />
               <FormikControl
                 control='input'
                 type='text'
@@ -125,19 +139,28 @@ const RegistrationFormMain = () => {
                 label='Re-enter Password'
                 name='password2'
               />
-
+              {isRegisteringStaff ? (
+                <FormikControl
+                  control='select'
+                  label='role'
+                  name='role'
+                  options={selectOptions}
+                />
+              ) : (
+                <></>
+              )}
               <button type='submit' disabled={!formik.isValid}>
                 Submit
               </button>
-              <div>
-                Have an Account Already? <Link href='/'> Login </Link>
-              </div>
             </Form>
           )
         }}
       </Formik>
-    </>
+      <div>
+        Have an Account Already? <Link href='/'> Login </Link>
+      </div>
+    </div>
   )
 }
 
-export default RegistrationFormMain
+export default RegistrationFormModal

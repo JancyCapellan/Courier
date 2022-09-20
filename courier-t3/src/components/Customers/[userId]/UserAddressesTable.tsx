@@ -1,27 +1,25 @@
 import { useQuery, useMutation, useQueryClient } from 'react-query'
-import axios from 'axios'
-import { backendClient } from '../../axiosClient.mjs'
-import { useState } from 'react'
+import React, { useState } from 'react'
 import { Formik, Form } from 'formik'
 import ModalContainer from '../../HOC/ModalContainer'
 import FormikControl from '../../Formik/FormikControl'
 import * as Yup from 'yup'
+import { trpc } from '@/utils/trpc'
 
-// ! TODO: deleting addresses doesnt work
-const UserAddressesTable = ({ setSelectShipperAddress, handleParentModal, userId }) => {
+const UserAddressesTable = ({
+  setSelectShipperAddress,
+  handleParentModal,
+  userId,
+}: {
+  setSelectShipperAddress?: any
+  handleParentModal?: any
+  userId: string
+}) => {
   const [showEditModal, setOpenEditModal] = useState(false)
   const [editAddress, setEditAddress] = useState({})
 
-  console.log('USAT userId', userId)
-
-  const getCustomerAddresses = async (customerId) => {
-    const { data } = await backendClient.get('user/addresses/' + customerId)
-    return data
-  }
-  const { data: customerAddresses, status: getCustomerAddressesStatus } = useQuery(
-    ['getCustomerAddresses', userId],
-    () => getCustomerAddresses(userId)
-  )
+  const { data: customerAddresses, status: getCustomerAddressesStatus } =
+    trpc.useQuery(['user.getAddresses', { userId: userId }])
   return (
     <>
       <section>
@@ -142,7 +140,9 @@ const EditAddressModal = ({ showEditModal, handleClose, address, userId }) => {
     onSuccess: (data) => {
       console.log('edit address', data)
       queryClient.setQueryData(['getCustomerAddresses', userId], (oldData) => {
-        const filteredData = oldData.filter((oldAddr) => oldAddr.id !== address.id)
+        const filteredData = oldData.filter(
+          (oldAddr) => oldAddr.id !== address.id
+        )
         return [...filteredData, data]
       })
       alert('user info edit completed')

@@ -2,22 +2,19 @@
 // import { useSession } from '../customHooks/useSession'
 import React, { useEffect, useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from 'react-query'
-import { Formik, Form } from 'formik'
-import * as Yup from 'yup'
 import { useRouter } from 'next/router'
 import Layout from '@/components/Layout'
 import { useSession } from 'next-auth/react'
 import { trpc } from '@/utils/trpc'
 
-// import ModalContainer from '@/components/HOC/ModalContainer'
+import ModalContainer from '@/components/HOC/ModalContainer'
 // import { backendClient } from '@/components/axiosClient.mjs'
-// import FormikControl from '@/components/Formik/FormikControl'
-// import UserAddressesTable from '@/components/Customers/[userId]/UserAddressesTable'
-// import AddCustomerAddressForm from '@/components/Customers/AddCustomerAddressForm'
+import FormikControl from '@/components/Formik/FormikControl'
+import UserAddressesTable from '@/components/Customers/[userId]/UserAddressesTable'
+import AddCustomerAddressForm from '@/components/Customers/AddCustomerAddressForm'
 // import { useGlobalStore } from '@/components/globalStore'
+import InfoEditor from '@/components/pages/account/InfoEditor'
 
-// accout information, place to change information, recent orders, settings
-// change payment types, add addresses, change phone numbers, send messages
 const UserAddresses = ({ currentUser }) => {
   // const [editAddress, setEditAddress] = useState({})
   const [showModal, setShowModal] = useState(false)
@@ -121,212 +118,10 @@ const UserOrderHistory = ({ currentUser }) => {
   )
 }
 
-const AccountInfoEditorForm = ({ currentUser }) => {
-  // not all of these values are in the form inputs to hide them from being edited.
-  const queryClient = useQueryClient()
-  const [showEditForm, setShowEditForm] = useState(false)
-
-  // console.log('editor current user', currentUser)
-
-  const initialValues = {
-    id: currentUser.id,
-    firstName: currentUser.firstName,
-    middleName: currentUser.middleName,
-    lastName: currentUser.lastName,
-    password: currentUser.password,
-    email: currentUser.email,
-    role: currentUser.role,
-    // company: currentUser.company,
-    // branchName: currentUser.branchName,
-    // licenseId: currentUser.licenseId,
-    preferredLanguage: currentUser.preferredLanguage,
-  }
-
-  const validationSchema = Yup.object({
-    firstName: Yup.string()
-      .min(2, '*Names must have at least 2 characters')
-      .max(100, "*Names can't be longer than 100 characters")
-      .required('*First Name is required'),
-
-    middleName: Yup.string()
-      .min(2, '*Names must have at least 2 characters')
-      .max(100, "*Names can't be longer than 100 characters"),
-
-    lastName: Yup.string()
-      .min(2, '*Names must have at least 2 characters')
-      .max(100, "*Names can't be longer than 100 characters")
-      .required('*Last Name is required'),
-
-    email: Yup.string()
-      .email('*Must be a valid email address')
-      .max(100, '*Email must be less than 100 characters')
-      .required('*Email is required'),
-
-    role: Yup.string(),
-    // company: Yup.string(),
-    // branchName: Yup.string(),
-    // licenseId: Yup.string(),
-    preferredLanguage: Yup.string(),
-  })
-
-  const postCustomerEdit = async (values) => {
-    try {
-      const { data } = await backendClient.put('user/' + currentUser.id, values)
-      return data
-    } catch (err) {
-      alert('error')
-      console.error('post Customer Edit Error', err)
-    }
-  }
-
-  const mutation = useMutation(postCustomerEdit, {
-    onSuccess: (data) => {
-      queryClient.setQueryData(['getUserAccountInfo', currentUser.id], () => {
-        return data
-      })
-      alert('user info edit completed')
-    },
-  })
-
-  const onSubmit = async (values) => {
-    // const res = await postCustomerEdit(values)
-    mutation.mutate(values)
-    // alert('completed')
-    // console.log('CUSTOMER EDITOR VALUES:', res)
-  }
-
-  // let user = JSON.stringify(currentUser, undefined, 2)
-  return (
-    <>
-      <div>
-        <table>
-          <caption>
-            <b>User Account Information</b>
-          </caption>
-          <tbody>
-            <tr>
-              <th>ID</th>
-              <td>{currentUser.id}</td>
-            </tr>
-            <tr>
-              <th>First Name</th>
-              <td>{currentUser.firstName}</td>
-            </tr>
-            <tr>
-              <th>Middle Name</th>
-              <td>{currentUser.middleName}</td>
-            </tr>
-            <tr>
-              <th>Last Name</th>
-              <td>{currentUser.lastName}</td>
-            </tr>
-            <tr>
-              <th>Email</th>
-              <td>{currentUser.email}</td>
-            </tr>
-            <tr>
-              <th>Role</th>
-              <td>{currentUser.role}</td>
-            </tr>
-            <tr>
-              <th>branch</th>
-              <td>{currentUser.branchName}</td>
-            </tr>
-            <tr>
-              <th>Preferred Language</th>
-              <td>{currentUser.preferredLanguage}</td>
-            </tr>
-            <tr>
-              <th>License ID</th>
-              <td>{currentUser.licenseId}</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <button onClick={() => setShowEditForm(true)}>
-        Edit Account Information
-      </button>
-
-      <ModalContainer
-        show={showEditForm}
-        handleClose={() => setShowEditForm(false)}
-      >
-        <Formik
-          className='customer-editor-form'
-          initialValues={initialValues}
-          validationSchema={validationSchema}
-          onSubmit={onSubmit}
-        >
-          {(formik) => {
-            return (
-              <Form>
-                <FormikControl
-                  control='input'
-                  type='text'
-                  label='Customer ID:'
-                  name='id'
-                  disabled
-                />
-                <FormikControl
-                  control='input'
-                  type='text'
-                  label='First Name'
-                  name='firstName'
-                />
-                <FormikControl
-                  control='input'
-                  type='text'
-                  label='Middle Name'
-                  name='middleName'
-                />
-                <FormikControl
-                  control='input'
-                  type='text'
-                  label='Last Name'
-                  name='lastName'
-                />
-                <FormikControl
-                  control='input'
-                  type='email'
-                  label='email'
-                  name='email'
-                />
-                <FormikControl
-                  control='input'
-                  type='text'
-                  label='role'
-                  name='role'
-                />
-                {/* <FormikControl control='input' type='text' label='company' name='company' />
-              <FormikControl control='input' type='text' label='branch name' name='branchName' /> */}
-                {/* <FormikControl
-                control='input'
-                type='text'
-                label='License ID Number'
-                name='licenseId'
-              /> */}
-                <FormikControl
-                  control='input'
-                  type='text'
-                  label='preferred language'
-                  name='preferredLanguage'
-                />
-                <button type='submit' disabled={!formik.isValid}>
-                  Save Changes
-                </button>
-              </Form>
-            )
-          }}
-        </Formik>
-      </ModalContainer>
-    </>
-  )
-}
-
 const AccountInfo = () => {
   // const [session, loading] = useSession()
   const { data: session, status: sessionStatus } = useSession()
-  const [currentPage, setCurrentPage] = useState(-1)
+  const [currentPage, setCurrentPage] = useState(1)
 
   const userInfo = trpc.useQuery(
     ['user.getUserAccountInfo', { userId: session?.user?.id }],
@@ -334,12 +129,12 @@ const AccountInfo = () => {
       enabled: sessionStatus === 'authenticated',
     }
   )
-  console.log({ userInfo })
+  // console.log({ userInfo })
 
   function ComponentSwitcher({ user }) {
     switch (currentPage) {
       case 1:
-        return <AccountInfoEditorForm currentUser={user} />
+        return <InfoEditor currentUser={user} />
       case 2:
         return <UserAddresses currentUser={user} />
       case 3:
@@ -350,20 +145,30 @@ const AccountInfo = () => {
   }
 
   return (
-    <section className='flex flex-col items-center'>
-      <h1> Account Information</h1>
-      <nav>
-        <button onClick={() => setCurrentPage(1)}>Account Information</button>
-        <button onClick={() => setCurrentPage(2)}>Addresses</button>
-        <button onClick={() => setCurrentPage(3)}>Order History</button>
+    <section className='flex flex-col items-center h-full'>
+      <h1 className='mb-4 mt-4 text-4xl font-extrabold tracking-tight leading-none text-gray-900 md:text-5xl lg:text-6xl'>
+        Account Information
+      </h1>
+
+      {/* create  tab menu  */}
+      <nav className='flex flex-row gap-4'>
+        <button className='btn btn-blue' onClick={() => setCurrentPage(1)}>
+          Account Information
+        </button>
+        <button className='btn btn-blue' onClick={() => setCurrentPage(2)}>
+          Addresses
+        </button>
+        <button className='btn btn-blue' onClick={() => setCurrentPage(3)}>
+          Order History
+        </button>
       </nav>
-      <br />
+      {/* <br /> */}
       {userInfo.status === 'success' ? (
-        <ComponentSwitcher user={userInfo.data.user} />
+        <ComponentSwitcher user={userInfo.data} />
       ) : (
         <></>
       )}
-      <br />
+      {/* <br /> */}
     </section>
   )
 }

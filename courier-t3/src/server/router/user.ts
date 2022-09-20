@@ -1,9 +1,71 @@
-import { createRouter } from './context'
 import { z } from 'zod'
+import { createProtectedRouter } from './protected-router'
 
-export const userRouter = createRouter()
-  .mutation('register', {
+import { TRPCError } from '@trpc/server'
+
+export const userRouter = createProtectedRouter()
+  .query('getUserAccountInfo', {
     input: z.object({
+      userId: z.string(),
+    }),
+    async resolve({ ctx, input }) {
+      try {
+        // console.log('userId for user account info:', input)
+        const user = await ctx.prisma.user.findUnique({
+          where: { id: input.userId },
+        })
+        return user
+      } catch (error) {
+        throw error
+      }
+    },
+  })
+  .query('getAddresses', {
+    input: z.object({
+      userId: z.string(),
+    }),
+    async resolve({ ctx, input }) {
+      try {
+        const addresses = await ctx.prisma.address.findMany({
+          where: {
+            userId: input.userId,
+          },
+        })
+
+        return addresses
+      } catch (error) {
+        throw error
+      }
+    },
+  })
+  .mutation('addAddress', {
+    input: z.object({
+      userId: z.string(),
+      addressForm: z.object({
+        userId: z.string(),
+        address: z.string(),
+        address2: z.string(),
+        address3: z.string(),
+        city: z.string(),
+        state: z.string(),
+        postalCode: z.number(),
+        country: z.string(),
+        cellphone: z.string(),
+        telephone: z.string(),
+      }),
+    }),
+    async resolve({ ctx, input }) {
+      try {
+        const result = await ctx.prisma.address.create({
+          data: input.addressForm,
+        })
+        console.log(result)
+      } catch (error) {}
+    },
+  })
+  .mutation('editUserInformation', {
+    input: z.object({
+      id: z.string(),
       firstName: z.string(),
       middleName: z.string().optional(),
       lastName: z.string(),
@@ -13,28 +75,13 @@ export const userRouter = createRouter()
     }),
     async resolve({ ctx, input }) {
       try {
-        console.log('registartion form:', input)
-        const registrationSuccessful = await ctx.prisma.user.create({
-          data: input,
+        console.log(input)
+        const updatedUserInfo = await ctx.prisma.user.update({
+          where: {
+            id: input.id,
+          },
+          data: updatedUserInfoForm,
         })
-        console.log('Registartion Successful:', registrationSuccessful)
-        return { message: 'Registartion Successful:', registrationSuccessful }
-      } catch (error) {
-        throw error
-      }
-    },
-  })
-  .query('getUserAccountInfo', {
-    input: z.object({
-      userId: z.string(),
-    }),
-    async resolve({ ctx, input }) {
-      try {
-        // console.log('userId for user account info:', input)
-        const user = await ctx.prisma.user.findUnique({ where: { id: input.userId } })
-        return user
-      } catch (error) {
-        throw error
-      }
+      } catch (error) {}
     },
   })
