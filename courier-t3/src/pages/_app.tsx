@@ -30,6 +30,7 @@ const MyApp: AppType = ({
   const getLayout =
     Component.getLayout ?? ((component: AppPropsWithLayout) => component)
   const layout = getLayout(<Component {...pageProps} />)
+
   return (
     <SessionProvider session={session}>
       {layout}
@@ -61,7 +62,15 @@ export default withTRPC<AppRouter>({
       /**
        * @link https://react-query.tanstack.com/reference/QueryClient
        */
-      queryClientConfig: { defaultOptions: { queries: { staleTime: 60 } } },
+      queryClientConfig: {
+        defaultOptions: {
+          queries: {
+            // data is always fresh and never garabage collected after last observer is dismounted
+            cacheTime: 1000 * 60 * 10,
+            staleTime: 1000 * 60 * 5,
+          },
+        },
+      },
     }
   },
   /**

@@ -4,9 +4,13 @@ import * as Yup from 'yup'
 import Link from 'next/link'
 import { useMutation, useQueryClient } from 'react-query'
 // import { backendClient } from './axiosClient.mjs'
+import { trpc } from '@/utils/trpc'
+import { useGlobalStore } from './globalStore'
 
 const RegistrationFormModal = ({ isRegisteringStaff, closeModal, query }) => {
   const queryClient = useQueryClient()
+
+  const raisedQuery = useGlobalStore((state) => state.queryToRaise)
 
   const initialValues = {
     firstName: '',
@@ -48,35 +52,36 @@ const RegistrationFormModal = ({ isRegisteringStaff, closeModal, query }) => {
     password2: Yup.string().required('* required'),
   })
 
-  const postRegisterUser = useMutation(
-    async (newUser) => {
-      const { data } = await backendClient.post('user/register', newUser)
-      return data
+  const postRegisterUser = trpc.useMutation(['public.register'], {
+    onSuccess: (data) => {
+      // console.log('data', query)
+      {
+        isRegisteringStaff === false &&
+          queryClient.setQueryData(query, (oldData) => {
+            console.log('olddata', oldData, query, data)
+            alert('successfully registered customer')
+
+            return {
+              customerTableCount: oldData.customerTableCount + 1,
+              currentCustomerPage: [
+                ...oldData.currentCustomerPage,
+                data.registrationSuccessful,
+              ],
+            }
+          })
+      }
+      {
+        isRegisteringStaff === true &&
+          queryClient.setQueryData(raisedQuery, (oldData) => {
+            return {
+              drivers: [...oldData.drivers, data.registrationSuccessful],
+              driversTotalCount: oldData.driversTotalCount + 1,
+            }
+          })
+      }
     },
-    {
-      onSuccess: (data) => {
-        // console.log('data', query)
-        {
-          isRegisteringStaff === false &&
-            queryClient.setQueryData(query, (oldData) => {
-              console.log('olddata', oldData, query)
-              return {
-                customerTableCount: oldData.customerTableCount + 1,
-                currentCustomerPage: [...oldData.currentCustomerPage, data],
-              }
-            })
-        }
-        {
-          isRegisteringStaff === true &&
-            queryClient.setQueryData('getAllStaff', (oldData) => {
-              return [...oldData, data]
-            })
-        }
-        alert('successfully added')
-      },
-      onError: (error) => alert(error),
-    }
-  )
+    onError: (error) => alert(error),
+  })
   const onSubmit = async (values, { setSubmitting, resetForm }) => {
     if (values.password !== values.password2) {
       alert('passwords do not match')

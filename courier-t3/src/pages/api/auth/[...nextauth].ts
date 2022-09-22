@@ -1,13 +1,13 @@
 import NextAuth, { type NextAuthOptions } from 'next-auth'
-// import DiscordProvider from 'next-auth/providers/discord'
 import CredentialsProvider from 'next-auth/providers/credentials'
 
 // Prisma adapter for NextAuth, optional and can be removed
-// import { PrismaAdapter } from '@next-auth/prisma-adapter'
+import { PrismaAdapter } from '@next-auth/prisma-adapter'
 import { prisma } from '../../../server/db/client'
 
 export const authOptions: NextAuthOptions = {
   // Include user.id on session
+  debug: true,
   callbacks: {
     // session({ session, user }) {
     //   if (session.user) {
@@ -15,13 +15,17 @@ export const authOptions: NextAuthOptions = {
     //   }
     //   return session
     // },
-    jwt: async ({ token, user }) => {
+    jwt: async ({ token, user, account, profile, isNewUser }) => {
       // first time jwt callback is run, user object is available
       // console.log('jwt', { token, user })
+
+      if (account) {
+        token.accessToken = account.access_token
+      }
       if (user) {
         token.user = user
-        token.id = user.id
-        // console.log('JWT', token)
+        // token.id = user.id
+        console.log('JWT', token)
         return token
       }
 
@@ -30,18 +34,17 @@ export const authOptions: NextAuthOptions = {
     session: async ({ session, token }) => {
       // let test = { ...session.user, ...token.user }
       if (token) {
-        // TODO: typing for token.user, token.user created above
-        session.user = { ...session.user, ...token.user }
+        session.user = token.user
+        // session.jwt = token.jwt
         // session.user = token.user ? token.user : session.user
         // session.user = test
       }
-      // console.log('session', { session, token })
-
+      console.log(session)
       return session
     },
   },
   // Configure one or more authentication providers
-  // adapter: PrismaAdapter(prisma),
+  adapter: PrismaAdapter(prisma),
   providers: [
     // DiscordProvider({
     //   clientId: env.DISCORD_CLIENT_ID,
@@ -92,7 +95,7 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   session: {
-    // strategy: 'database',
+    strategy: 'jwt',
     maxAge: 7 * 24 * 60 * 60,
   },
   pages: {

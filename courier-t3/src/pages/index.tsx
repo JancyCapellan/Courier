@@ -35,6 +35,7 @@ const Home: NextPage = () => {
       </div>
       <div className='w-screen flex flex-col items-center grow bg-cyan-600'>
         {router.query?.didRegister}
+        {router.query?.error ? <p>{router.query.error}</p> : <></>}
         {error ? (
           <p>
             THERE WAS AN ERROR WHILE LOGGING. CHECK TO MAKE SURE THAT YOU ARE

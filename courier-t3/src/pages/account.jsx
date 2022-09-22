@@ -1,46 +1,10 @@
-// import { useAuth } from '../contexts/authContext'
-// import { useSession } from '../customHooks/useSession'
 import React, { useEffect, useState } from 'react'
-import { useQuery, useMutation, useQueryClient } from 'react-query'
 import { useRouter } from 'next/router'
 import Layout from '@/components/Layout'
 import { useSession } from 'next-auth/react'
 import { trpc } from '@/utils/trpc'
-
-import ModalContainer from '@/components/HOC/ModalContainer'
-// import { backendClient } from '@/components/axiosClient.mjs'
-import FormikControl from '@/components/Formik/FormikControl'
-import UserAddressesTable from '@/components/Customers/[userId]/UserAddressesTable'
-import AddCustomerAddressForm from '@/components/Customers/AddCustomerAddressForm'
-// import { useGlobalStore } from '@/components/globalStore'
 import InfoEditor from '@/components/pages/account/InfoEditor'
-
-const UserAddresses = ({ currentUser }) => {
-  // const [editAddress, setEditAddress] = useState({})
-  const [showModal, setShowModal] = useState(false)
-  // const [showAddressModal, setShowAddressModal] = useState(false)
-  // const [showEditModal, setOpenEditModal] = useState(false)
-
-  return (
-    <>
-      <section>
-        <h2>
-          Addresses for {`${currentUser.firstName}`} {`${currentUser.lastName}`}
-        </h2>
-        <button onClick={() => setShowModal(true)}>Add Address</button>
-        <UserAddressesTable userId={currentUser.id} />
-      </section>
-
-      <AddCustomerAddressForm
-        customerId={currentUser.id}
-        show={showModal}
-        handleClose={() => {
-          setShowModal(false)
-        }}
-      />
-    </>
-  )
-}
+import { CustomerAddresses as UserAddresses } from '@/components/pages/customers/CustomerAddresses'
 
 const UserOrderHistory = ({ currentUser }) => {
   const router = useRouter()
@@ -140,9 +104,7 @@ const AccountInfo = () => {
 
   return (
     <section className='flex flex-col items-center h-full'>
-      <h1 className='mb-4 mt-4 text-4xl font-extrabold tracking-tight leading-none text-gray-900 md:text-5xl lg:text-6xl'>
-        Account Information
-      </h1>
+      <h1>Account Information</h1>
 
       {/* create  tab menu  */}
       <nav className='flex flex-row gap-4'>

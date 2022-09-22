@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { Formik, Form } from 'formik'
-import FormikControl from '../../components/Formik/FormikControl'
+import FormikControl from '../../Formik/FormikControl'
 import * as Yup from 'yup'
 import ModalContainer from '@/components/HOC/ModalContainer'
 import { useQueryClient, useMutation } from 'react-query'
@@ -36,13 +36,13 @@ const AddCustomerAddressForm = ({ customerId, show, handleClose }) => {
   const addAddressMutation = trpc.useMutation(['user.addAddress'], {
     onSuccess: (data) => {
       queryClient.setQueryData(
-        ['getCustomerAddresses', customerId],
+        ['user.getAddresses', { userId: customerId }],
         (oldData) => {
           if (typeof oldData === 'undefined') return data
           return [...oldData, data]
         }
       )
-      alert('user address edit completed')
+      // alert('user address edit completed')
     },
   })
 

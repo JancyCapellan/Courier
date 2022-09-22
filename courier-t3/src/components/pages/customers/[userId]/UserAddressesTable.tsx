@@ -1,18 +1,18 @@
-import { useQuery, useMutation, useQueryClient } from 'react-query'
+import { useMutation, useQueryClient } from 'react-query'
 import React, { useState } from 'react'
 import { Formik, Form } from 'formik'
-import ModalContainer from '../../HOC/ModalContainer'
-import FormikControl from '../../Formik/FormikControl'
+import ModalContainer from '../../../HOC/ModalContainer'
+import FormikControl from '../../../Formik/FormikControl'
 import * as Yup from 'yup'
 import { trpc } from '@/utils/trpc'
 
 const UserAddressesTable = ({
   setSelectShipperAddress,
-  handleParentModal,
+  handleCloseParentModal,
   userId,
 }: {
   setSelectShipperAddress?: any
-  handleParentModal?: any
+  handleCloseParentModal?: any
   userId: string
 }) => {
   const [showEditModal, setOpenEditModal] = useState(false)
@@ -57,10 +57,12 @@ const UserAddressesTable = ({
                       {setSelectShipperAddress ? (
                         <button
                           onClick={() => {
-                            console.log(address)
+                            // console.log(address)
                             setSelectShipperAddress(address)
-                            {
-                              handleParentModal && handleParentModal()
+                            console.log('func here?', handleCloseParentModal)
+                            if (handleCloseParentModal) {
+                              console.log('CLOSE MODAL')
+                              handleCloseParentModal()
                             }
                           }}
                         >

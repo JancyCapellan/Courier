@@ -39,6 +39,7 @@ const nextAuthOptions = (req, res) => {
             // console.log('auth user', user)
             // userAccount = user
             return {
+              // used by JWT callback
               user: {
                 id: user.id,
                 name: `${user.firstName} ${user.lastName}`,
@@ -107,7 +108,9 @@ const nextAuthOptions = (req, res) => {
         // let test = { ...session.user, ...token.user }
         if (token) {
           session.id = token.user.id
-          session.user = token.user ? token.user : { ...token.user, ...session.user }
+          session.user = token.user
+            ? token.user
+            : { ...token.user, ...session.user }
           // session.user = test
         }
         // console.log('nextauth-session', session)

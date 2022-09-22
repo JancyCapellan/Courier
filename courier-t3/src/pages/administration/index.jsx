@@ -15,7 +15,7 @@ const Administration = () => {
     <>
       <section className='administration-container'>
         <h1>Staff Manager</h1>
-        <button className='btn-31' onClick={() => setShowModal(true)}>
+        <button className='btn btn-blue' onClick={() => setShowModal(true)}>
           Create Staff
         </button>
         <ModalContainer show={showModal} handleClose={handleModalClose}>
@@ -28,7 +28,7 @@ const Administration = () => {
         <StaffTable />
 
         <h1>Product manager</h1>
-        <section className='product-manager-container'>
+        <section className='flex flex-row justify-center bg-slate-400 '>
           <ProductEditorTable />
         </section>
       </section>

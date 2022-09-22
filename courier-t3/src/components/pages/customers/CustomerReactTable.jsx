@@ -1,4 +1,4 @@
-/* eslint-disable react/jsx-key */
+//@ts-nocheck
 import React from 'react'
 import {
   useTable,
@@ -9,15 +9,18 @@ import {
   useAsyncDebounce,
   useSortBy,
 } from 'react-table'
-import axios from 'axios'
 import { useQuery } from 'react-query'
 import { useRouter } from 'next/router'
-import { useGlobalStore } from '../../store/globalStore'
-import ModalContainer from '../HOC/ModalContainer'
-import RegistrationFormModal from '../RegistrationFormModal'
-import { backendClient } from '../axiosClient.mjs'
+import { useGlobalStore } from '@/components/globalStore'
+import ModalContainer from '../../HOC/ModalContainer'
+import RegistrationFormModal from '../../RegistrationFormModal'
+import { trpc } from '@/utils/trpc'
 
-export const GlobalFilter = ({ preGlobalFilteredRows, globalFilter, setGlobalFilter }) => {
+export const GlobalFilter = ({
+  preGlobalFilteredRows,
+  globalFilter,
+  setGlobalFilter,
+}) => {
   const count = preGlobalFilteredRows.length
   const [value, setValue] = React.useState(globalFilter)
   const change = useAsyncDebounce((value) => {
@@ -42,18 +45,6 @@ export const GlobalFilter = ({ preGlobalFilteredRows, globalFilter, setGlobalFil
   )
 }
 
-const getCustomerList = async (page, pageSize) => {
-  const offset = page * pageSize
-  try {
-    const { data } = await backendClient.get(
-      `customer/AllCustomers?offset=${offset}&limit=${pageSize}`
-    )
-    return data
-  } catch (e) {
-    throw new Error(`API error:${e?.message}`)
-  }
-}
-
 let defaultPageSize = 20
 const Table = ({ columns }) => {
   const router = useRouter()
@@ -69,9 +60,11 @@ const Table = ({ columns }) => {
     isLoading,
     isSuccess,
     error,
-  } = useQuery(
-    ['getCustomerList', queryPageIndex, queryPageSize],
-    () => getCustomerList(queryPageIndex, queryPageSize),
+  } = trpc.useQuery(
+    [
+      'customers.getCustomerList',
+      { queryPageIndex: queryPageIndex, queryPageSize: queryPageSize },
+    ],
     {
       keepPreviousData: true,
       staleTime: Infinity,
@@ -104,7 +97,9 @@ const Table = ({ columns }) => {
         return rows.filter((row) => {
           const rowValue = row.values[id]
           return rowValue !== undefined
-            ? String(rowValue).toLowerCase().startsWith(String(filterValue).toLowerCase())
+            ? String(rowValue)
+                .toLowerCase()
+                .startsWith(String(filterValue).toLowerCase())
             : true
         })
       },
@@ -184,7 +179,10 @@ const Table = ({ columns }) => {
             <button onClick={() => nextPage()} disabled={!canNextPage}>
               {'>'}
             </button>{' '}
-            <button onClick={() => gotoPage(pageCount - 1)} disabled={!canNextPage}>
+            <button
+              onClick={() => gotoPage(pageCount - 1)}
+              disabled={!canNextPage}
+            >
               {'>>'}
             </button>{' '}
             <span>
@@ -219,14 +217,20 @@ const Table = ({ columns }) => {
             </select>
           </div>
 
-          <div className='btn' onClick={() => toggleModal()}>
+          <div className='btn btn-blue ' onClick={() => toggleModal()}>
             Create Customer
           </div>
           <ModalContainer show={showModal} handleClose={toggleModal}>
             <RegistrationFormModal
               isRegisteringStaff={false}
               closeModal={toggleModal}
-              query={['getCustomerList', queryPageIndex, queryPageSize]}
+              query={[
+                'customers.getCustomerList',
+                {
+                  queryPageIndex: queryPageIndex,
+                  queryPageSize: queryPageSize,
+                },
+              ]}
             />
           </ModalContainer>
 
@@ -241,9 +245,17 @@ const Table = ({ columns }) => {
               {headerGroups.map((headerGroup) => (
                 <tr {...headerGroup.getHeaderGroupProps()}>
                   {headerGroup.headers.map((column) => (
-                    <th {...column.getHeaderProps(column.getSortByToggleProps())}>
+                    <th
+                      {...column.getHeaderProps(column.getSortByToggleProps())}
+                    >
                       {column.render('Header')}
-                      <span>{column.isSorted ? (column.isSortedDesc ? ' 🔽' : ' 🔼') : ' ↕'}</span>
+                      <span>
+                        {column.isSorted
+                          ? column.isSortedDesc
+                            ? ' 🔽'
+                            : ' 🔼'
+                          : ' ↕'}
+                      </span>
                     </th>
                   ))}
                 </tr>
@@ -255,7 +267,9 @@ const Table = ({ columns }) => {
                 return (
                   <tr {...row.getRowProps()}>
                     {row.cells.map((cell) => {
-                      return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
+                      return (
+                        <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
+                      )
                     })}
                   </tr>
                 )
@@ -304,13 +318,14 @@ const CustomerReactTable = () => {
         Cell: ({ row: { original } }) => (
           <>
             <button
+              className='btn btn-blue'
               onClick={() => {
                 // console.log(original)
                 // i could pass this like i did for the account page button but this hides the user id from the user, but then id is passed as a prop and not from the global state,
                 // with global store if i can refresh without presistance, url is by design presisted
                 setCurrentCustomer(original)
                 router.push({
-                  pathname: `/order`,
+                  pathname: `/createOrder`,
                   query: { customerId: original.id },
                 })
               }}
@@ -318,6 +333,7 @@ const CustomerReactTable = () => {
               order
             </button>
             <button
+              className='btn btn-blue ml-2'
               onClick={() => {
                 setCurrentCustomer(original)
                 router.push({

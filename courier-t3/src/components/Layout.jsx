@@ -9,7 +9,7 @@ export default function Layout({ children }) {
       <Header />
       <div className='flex flex-row h-screen'>
         <Sidebar />
-        <main className='grow w-max'>{children}</main>
+        <main className='grow w-max p-12'>{children}</main>
       </div>
 
       {/* <Footer /> */}

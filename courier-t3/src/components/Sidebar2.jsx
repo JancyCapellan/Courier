@@ -8,19 +8,19 @@ import { IconContext } from 'react-icons'
 const Sidebar = () => {
   const { data: session, status } = useSession()
 
-  const [showSidebar, setShowSidebar] = useState()
+  const [closeSidebar, setCloseSidebar] = useState()
 
   const router = useRouter()
 
   // useEffect(() => {
   //   const toggle = localStorage.getItem('sidebarToggle')
-  //   setShowSidebar(toggle)
+  //   setCloseSidebar(toggle)
   // }, [])
 
   // useEffect(() => {
   //   // storing input name
-  //   localStorage.setItem('toggle', JSON.stringify(showSidebar))
-  // }, [showSidebar])
+  //   localStorage.setItem('toggle', JSON.stringify(closeSidebar))
+  // }, [closeSidebar])
 
   // ! route guard should function better than this
   // useEffect(() => {
@@ -35,6 +35,23 @@ const Sidebar = () => {
   //   }
   // }, [session, status])
 
+  // useEffect(() => {
+  //   let sidebarData
+  //   if (status === 'authenticated') {
+  //     sidebarData = sidebarTypes[session?.user?.role]
+  //     if (typeof sidebarData === 'undefined')
+  //       router.push({
+  //         pathname: '/',
+  //         query: { error: 'sidebar data error, session object data missing' },
+  //       })
+  //   } else {
+  //     router.push({
+  //       pathname: '/',
+  //       query: { error: 'sidebar data error, session object data missing' },
+  //     })
+  //   }
+  // }, [status])
+
   let sidebarData
   if (status === 'authenticated')
     sidebarData = sidebarTypes[session?.user?.role]
@@ -42,14 +59,14 @@ const Sidebar = () => {
   return (
     <>
       <div
-        className={`w-1/5 bg-black  text-white h-full flex flex-col items-center ease-in-out  ${
-          showSidebar ? 'w-1/12' : 'w-1/5'
+        className={` bg-black  text-white h-full flex flex-col items-center ease-in-out ${
+          closeSidebar ? 'w-1/12' : ' w-1/5 '
         }`}
       >
         <button className=' flex items-center cursor-pointer'>
           <svg
             onClick={() => {
-              setShowSidebar(!showSidebar)
+              setCloseSidebar(!closeSidebar)
             }}
             fill='#2563EB'
             viewBox='0 0 100 80'
@@ -75,10 +92,14 @@ const Sidebar = () => {
                             onClick={() => setCurrentCustomer(session.user)}
                             className='sidebar-link'
                           >
-                            <div className={` ${showSidebar ? 'p-1 ' : 'p-5'}`}>
+                            <div
+                              className={` ${closeSidebar ? 'p-1 ' : 'p-5'}`}
+                            >
                               {item.icon}
                             </div>
-                            <div className={` ${showSidebar ? 'p-1 ' : 'p-5'}`}>
+                            <div
+                              className={` ${closeSidebar ? 'p-1 ' : 'p-5'}`}
+                            >
                               {item.title}
                             </div>
                           </a>
@@ -86,11 +107,11 @@ const Sidebar = () => {
                       ) : (
                         <Link href={item.path} passHref={true}>
                           <a className='sidebar-link'>
-                            <div className={` ${showSidebar ? '' : 'p-1'}`}>
+                            <div className={` ${closeSidebar ? '' : 'p-1'}`}>
                               {item.icon}
                             </div>
                             <div
-                              className={` ${showSidebar ? 'hidden' : 'p-1'}`}
+                              className={` ${closeSidebar ? 'hidden' : 'p-1'}`}
                             >
                               {item.title}
                             </div>

@@ -1,3 +1,4 @@
+//@ts-nocheck
 import create from 'zustand'
 import { devtools, persist } from 'zustand/middleware'
 
@@ -5,35 +6,88 @@ export const useCart = create(
   devtools(
     persist(
       (set, get) => ({
+        queryToRaise: {},
         currentCustomer: {},
-        total: 0,
-        totalqty: 0,
-        cartContent: [],
+        currentOrder: {
+          cart: [],
+          total_price: 0,
+          total_items: 0,
+          orderForm: {},
+          payment: {
+            type: '',
+            extra: {},
+          },
+        },
+        cartContent: [], // array of item.jsx objects,
+        setQueryToRaiseState: (query) =>
+          set((state) => {
+            return {
+              ...state,
+              queryToRaise: query,
+            }
+          }),
+        addFormToOrder: (form) =>
+          set((state) => {
+            return {
+              ...state,
+              currentOrder: {
+                ...state.currentOrder,
+                orderForm: form,
+              },
+            }
+          }),
+        addItemToCart: (item) =>
+          set((state) => {
+            return {
+              ...state,
+              currentOrder: {
+                ...state.currentOrder,
+                cart: [...state.cart, item],
+              },
+            }
+          }),
         addTocart: (params) => {
           set((state) => ({
             totalqty: state.totalqty + 1,
-            total: state.total + parseFloat(params.price),
+            totalPrice: state.totalPrice + parseFloat(params.price),
             cartContent: [...state.cartContent, params],
           }))
         },
         updatecart: ({ params, mycart }) => {
           set((state) => ({
             totalqty: state.totalqty + 1,
-            total: state.total + parseFloat(params.price),
+            totalPrice: state.totalPrice + parseFloat(params.price),
             cartContent: mycart,
           }))
         },
-        clearCart: () => set({ totalqty: 0, total: 0, cartContent: [] }),
+        clearCart: () => set({ totalqty: 0, totalPrice: 0, cartContent: [] }),
         removeFromCart: (params) =>
           set((state) => ({
-            total: state.total - params.price * params.quantity,
+            totalPrice: state.totalPrice - params.price * params.quantity,
             totalqty: state.totalqty - params.quantity,
-            cartContent: state.cartContent.filter((item) => item.id !== params.id),
+            cartContent: state.cartContent.filter(
+              (item) => item.id !== params.id
+            ),
           })),
+        toggleAmount: (params) => {
+          set((state) => ({}))
+        },
         setCurrentCustomer: (customer) =>
-          set(() => ({ currentCustomer: customer }), false, 'setCurrentCustomer'),
+          set(
+            () => ({ currentCustomer: customer }),
+            false,
+            'setCurrentCustomer'
+          ),
       }),
-      { name: 'cart', serialize: (state) => JSON.stringify(state) }
+      // storage name
+      {
+        name: 'cart',
+        serialize: (state) => JSON.stringify(state),
+        // partialize: (state) =>
+        //   Object.fromEntries(
+        //     Object.entries(state).filter(([key]) => !['foo'].includes(key))
+        //   ),
+      }
     )
   )
 )
@@ -48,21 +102,3 @@ export const useCart = create(
 // })
 
 export const useGlobalStore = useCart
-
-//  example customer, must update to typing
-// id: 'ckx50tt3s0000e0uync9ykryh'
-// name: null
-// emailVerified: null
-// image: null
-// firstName: 'Jancy'
-// lastName: 'Capellan'
-// middleName: ''
-// password: '123'
-// email: 'jancycapellan97@gmail.com'
-// role: 'ADMIN'
-// company: null
-// branchName: null
-// lastSaleDate: null
-// lastLogin: null
-// preferredLanguage: 'English'
-// licenseId: null

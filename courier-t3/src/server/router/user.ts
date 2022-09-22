@@ -1,5 +1,5 @@
 import { string, z } from 'zod'
-import { createProtectedRouter } from './protected-router'
+import { createProtectedRouter } from './protected-routers'
 
 import { TRPCError } from '@trpc/server'
 
