@@ -5,14 +5,18 @@ import Sidebar from './Sidebar2'
 
 export default function Layout({ children }) {
   return (
-    <>
-      <Header />
-      <div className='flex flex-row h-screen'>
-        <Sidebar />
-        <main className='grow w-max p-12'>{children}</main>
+    <div className='flex h-screen'>
+      <div className='flex-1 flex flex-col overflow-hidden'>
+        <Header />
+        <div className='flex h-full'>
+          <Sidebar />
+          <main className='flex flex-col w-full bg-white overflow-x-hidden overflow-y-auto mt-12 ml-12 pr-12'>
+            {children}
+          </main>
+        </div>
       </div>
 
       {/* <Footer /> */}
-    </>
+    </div>
   )
 }
