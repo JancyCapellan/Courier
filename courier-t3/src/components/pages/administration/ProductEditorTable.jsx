@@ -34,7 +34,7 @@ const ProductEditorTable = () => {
       refetchProductTypes()
     },
     onError: (e) => {
-      alert('Couldnt remove type', e)
+      alert('Couldnt remove type')
     },
   })
 
