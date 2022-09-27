@@ -2,11 +2,11 @@ import React from 'react'
 import CartItem from './CartItem'
 import { useGlobalStore } from '@/components/globalStore'
 
-const Cart = ({ handlePage }) => {
+const Cart = () => {
   // const { cart, total, clearCart } = useCart()
-  const cart = useGlobalStore((state) => state.cartContent)
-  const totalPrice = useGlobalStore((state) => state.totalPrice)
-  const totalqty = useGlobalStore((state) => state.totalqty)
+  const cart = useGlobalStore((state) => state.currentOrder.cart)
+  const totalPrice = useGlobalStore((state) => state.currentOrder.total_price)
+  const totalItems = useGlobalStore((state) => state.currentOrder.total_items)
   const clearCart = useGlobalStore((state) => state.clearCart)
 
   if (cart.length === 0) {
@@ -38,18 +38,13 @@ const Cart = ({ handlePage }) => {
         <hr />
         <div className='cart-total'>
           <h4>
-            total <span>${totalPrice}</span>
+            total: <span>${totalPrice}</span>
           </h4>
         </div>
         <button className='btn clear-btn' onClick={() => clearCart()}>
           clear cart
         </button>
       </footer>
-      {handlePage ? (
-        <button onClick={() => handlePage('NEXT')}>CONTINE TO CHECKOUT</button>
-      ) : (
-        ''
-      )}
     </section>
   )
 }

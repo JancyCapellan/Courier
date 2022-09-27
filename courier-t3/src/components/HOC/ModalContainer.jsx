@@ -1,6 +1,8 @@
 import React from 'react'
 import { useEffect } from 'react'
 
+//TODO: add show and handleclose into this components, the name of the button/components that will open the modal should be a prop so ModalContainer = ({component, children})
+
 //show is the state of the display t/f
 //handleclose is the toggle/close fn for the modal
 const ModalContainer = ({ show, handleClose, children }) => {

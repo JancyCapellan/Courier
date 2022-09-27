@@ -6,18 +6,25 @@ const cartReducer = (state, action) => {
   // console.log('CART REDUCER', action)
   switch (action.type) {
     case 'ADD_ITEM':
-      const updatedCart = [...state.cart]
+      const updatedCart = [...state.cart] //currentCart in context
       const updatedItemIndex = updatedCart.findIndex(
-        (item) => item.productsId === action.payload.productsId
+        (item) => item.productsId === action.payload.productsId //use item prop, action.payload is the item passed to add_item function
       )
 
       if (updatedItemIndex < 0) {
+        // if not item of same type in cart add item to cart
         updatedCart.push({ ...action.payload, amount: action.payload.amount })
       } else {
+        // if there is an item update the item information with the new addition
         const updatedItem = {
+          //current Item in cart
           ...updatedCart[updatedItemIndex],
         }
-        updatedItem.amount = parseInt(updatedItem.amount) + parseInt(action.payload.amount)
+        // update the price of the item , currentItem + new item addition
+        updatedItem.amount =
+          parseInt(updatedItem.amount) + parseInt(action.payload.amount)
+
+        // change the item in the currentCart with the updatedVersion
         updatedCart[updatedItemIndex] = updatedItem
       }
       return { ...state, cart: updatedCart }
@@ -28,7 +35,9 @@ const cartReducer = (state, action) => {
     case 'REMOVE':
       return {
         ...state,
-        cart: state.cart.filter((cartItem) => cartItem.productsId !== action.payload),
+        cart: state.cart.filter(
+          (cartItem) => cartItem.productsId !== action.payload
+        ),
       }
     // case 'INCREASE':
     //   let tempCart = state.cart.map((cartItem) => {
@@ -116,7 +125,9 @@ const cartReducer = (state, action) => {
       let itemListJSON = action.payload
       // console.log(state, order)
 
-      itemListJSON.map((item) => itemArray.push([item.id, item.name, item.price, item.type]))
+      itemListJSON.map((item) =>
+        itemArray.push([item.id, item.name, item.price, item.type])
+      )
       console.log('cartArray', itemArray)
 
       backendClient

@@ -5,7 +5,7 @@ import * as Yup from 'yup'
 import SelectCustomerAddressesModal from './selectCustomerAddressesModal'
 import { useGlobalStore } from '@/components/globalStore'
 
-const SenderFormAdmin = ({ currentCustomer, handlePage }) => {
+const SenderFormAdmin = ({ currentCustomer }) => {
   const [selectedShipperAddress, setSelectedShipperAddress] = useState({
     address: '',
     address2: '',

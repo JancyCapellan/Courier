@@ -5,24 +5,27 @@ import { trpc } from '@/utils/trpc'
 
 // const jsonProdcutsES = products.spanish
 
-const Items = ({ handlePage }) => {
+const Items = () => {
   const { data: allProducts, status: allProductsStatus } = trpc.useQuery([
     'public.getAllProducts',
   ])
   return (
     <>
-      <h1> Create Order</h1>
       <section>
-        <h2> Items</h2>
+        <h1> Items</h1>
 
         <section className='items-section'>
           <div className='itemsList'>
-            {products.map((item) => {
-              return <Item key={item.id} {...item} />
-            })}
+            {allProductsStatus === 'success' ? (
+              allProducts.map((item) => {
+                return <Item key={item.id} {...item} />
+              })
+            ) : (
+              <></>
+            )}
           </div>
         </section>
-        <button onClick={() => handlePage('NEXT')}>NEXT</button>
+        {/* <button onClick={() => handlePage('NEXT')}>NEXT</button> */}
       </section>
     </>
   )

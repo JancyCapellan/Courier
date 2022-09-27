@@ -1,11 +1,11 @@
-import { useGlobalStore } from '@/components/globalStore'
+import { usePersistedLocallyStore } from '@/components/globalStore'
 import React, { useState } from 'react'
 // import { useCart } from '../../contexts/cartContext'
 
 const Item = ({ name, price, id }) => {
-  const [qty, setQty] = useState(1)
+  const [qty, setQty] = useState('1')
 
-  const addItemToCart = useGlobalStore((state) => state.addItemToCart)
+  const addItemToCart = usePersistedLocallyStore((state) => state.addItemToCart)
 
   // item to add to cart that will be submitted for order,
   let item = {
@@ -15,6 +15,7 @@ const Item = ({ name, price, id }) => {
     productsId: id,
   }
 
+  // if (qty === 1)
   return (
     <article className='itemBox'>
       <div className='itemImage'>{name}</div>
@@ -37,6 +38,7 @@ const Item = ({ name, price, id }) => {
       <button
         className='itemSubmitButton'
         onClick={() => {
+          console.log(item)
           addItemToCart(item)
         }}
       >

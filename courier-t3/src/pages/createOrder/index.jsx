@@ -2,6 +2,7 @@ import { useGlobalStore } from '@/components/globalStore'
 import SenderFormAdmin from '@/components/pages/order/CreateOrder/SenderFormAdmin'
 import Layout from '@/components/Layout'
 import Items from '@/components/pages/order/CreateOrder/Items'
+import Cart from '@/components/pages/order/CreateOrder/Cart'
 
 const createOrder = () => {
   const currentCustomer = useGlobalStore((state) => state.currentCustomer)
@@ -13,6 +14,7 @@ const createOrder = () => {
         <h1>Choose Services</h1>
         <Items />
         <h1>review order</h1>
+        <Cart />
         <h1>checkout</h1>
       </section>
     </>
