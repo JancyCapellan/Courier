@@ -13,8 +13,11 @@ function Select(props) {
         {options.map((option) => {
           // console.log('select field option', option)
           return (
-            <option key={option.key || option.id} value={option.value}>
-              {option.key}
+            <option
+              key={option.key || option.type}
+              value={option.value || option.id}
+            >
+              {option.type || option.key}
             </option>
           )
         })}

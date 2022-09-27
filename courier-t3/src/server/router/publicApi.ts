@@ -25,16 +25,44 @@ export const publicApiRouter = createRouter()
     },
   })
   .query('getAllProducts', {
-    async resolve({ ctx, input }) {
-      const products = await ctx.prisma.product.findMany({})
+    async resolve({ ctx }) {
+      const products = await ctx.prisma.product.findMany({
+        select: {
+          id: true,
+          name: true,
+          price: true,
+          productType: {
+            select: {
+              type: true,
+            },
+          },
+        },
+      })
 
       return products
     },
   })
   .query('getAllProductTypes', {
     async resolve({ ctx }) {
-      const productTypes = await ctx.prisma.productType.findMany({})
+      const productTypes = await ctx.prisma.productType.findMany()
 
-      return productTypes
+      let typeArray = []
+      for (const typeObject of productTypes) {
+        typeArray.push(typeObject.id.toString())
+      }
+
+      console.log(typeArray)
+
+      productTypes.unshift({
+        id: -1,
+        type: 'PICK A TYPE',
+      })
+
+      console.log(productTypes)
+
+      return {
+        productTypes: productTypes,
+        typeArray: typeArray,
+      }
     },
   })

@@ -20,6 +20,7 @@ export const staffApi = createProtectedRouter()
         return deletedProductType
       } catch (error) {
         console.error('delete product error', error)
+        throw error
       }
     },
   })
@@ -63,6 +64,7 @@ export const staffApi = createProtectedRouter()
       item_type: z.number(),
     }),
     async resolve({ ctx, input }) {
+      console.log('addProduct', input)
       try {
         const newItem = await ctx.prisma.product.create({
           data: {
@@ -93,6 +95,39 @@ export const staffApi = createProtectedRouter()
         return newProductType
       } catch (error) {
         console.error('delete product error', error)
+      }
+    },
+  })
+  .query('getUniqueStaff', {
+    input: z.object({
+      staffId: z.string(),
+    }),
+    async resolve({ ctx, input }) {
+      try {
+        const staffInfo = await ctx.prisma.user.findUnique({
+          where: {
+            id: input.staffId,
+          },
+          include: {
+            pickups: {
+              select: {
+                id: true,
+                user: true,
+                addresses: {
+                  select: {
+                    address: true,
+                    address2: true,
+                    address3: true,
+                  },
+                },
+              },
+            },
+          },
+        })
+
+        return staffInfo
+      } catch (error) {
+        console.log('error getting staff information', error)
       }
     },
   })

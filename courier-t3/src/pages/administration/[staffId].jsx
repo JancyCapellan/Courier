@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import Layout from '../../components/Layout'
-import { backendClient } from '../../components/axiosClient.mjs'
-import { useQuery } from 'react-query'
+// import { useQuery } from 'react-query'
+import { trpc } from '@/utils/trpc'
 
 const DriverAccountPage = () => {
   const router = useRouter()
   // const { staff } = router.query
   // console.log('staff page router: ', router)
-  const [staffId, setStaffId] = useState(false)
+  const [staffId, setStaffId] = useState('')
 
   // * avoid router not being hydratged during a rerender or during page refersh
   useEffect(() => {
@@ -17,20 +17,18 @@ const DriverAccountPage = () => {
     setStaffId(router.query.staffId)
   }, [router.isReady, router.query.staffId])
 
-  const getUniqueStaff = async () => {
-    const { data } = await backendClient.get(`user/users/getUniqueStaff/` + staffId)
-    // console.log('DRIVERS DATA', data)
-    return data
-  }
-  const { data: staff, status: getStaffStatus } = useQuery('getUniqueStaff', getUniqueStaff, {
-    enabled: staffId !== false,
-    onSuccess: (data) => {
-      console.log('account page:', data)
-    },
-    onError: (error) => {
-      console.log('error fetching product types', error)
-    },
-  })
+  const { data: staff, status: getStaffStatus } = trpc.useQuery(
+    ['staff.getUniqueStaff', { staffId: staffId }],
+    {
+      enabled: staffId !== '',
+      onSuccess: (data) => {
+        console.log('account page:', data)
+      },
+      onError: (error) => {
+        console.log('error fetching product types', error)
+      },
+    }
+  )
 
   console.log('staff', staff)
 
@@ -72,7 +70,9 @@ const DriverAccountPage = () => {
                     </td>
 
                     <td>
-                      <pre>{JSON.stringify(order.addresses[0], undefined, 2)}</pre>
+                      <pre>
+                        {JSON.stringify(order.addresses[0], undefined, 2)}
+                      </pre>
                     </td>
                   </tr>
                 )

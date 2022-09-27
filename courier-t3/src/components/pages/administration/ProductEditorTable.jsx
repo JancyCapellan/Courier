@@ -9,9 +9,11 @@ const ProductEditorTable = () => {
     status: productTypesStatus,
     refetch: refetchProductTypes,
   } = trpc.useQuery(['public.getAllProductTypes'], {
-    onSuccess: (data) => {},
+    onSuccess: (data) => {
+      // console.log('PRODUCT TYPES:', data)
+    },
     onError: (error) => {
-      console.log('error fetching product types')
+      console.log('error fetching product types', error)
     },
     staleTime: Infinity,
   })
@@ -22,10 +24,27 @@ const ProductEditorTable = () => {
     refetch: refetchProductList,
   } = trpc.useQuery(['public.getAllProducts'])
 
-  const deleteType = trpc.useMutation(['staff.deleteProductType'])
+  const createProduct = trpc.useMutation(['staff.addProduct'], {
+    onSuccess: () => {
+      refetchProductList()
+    },
+  })
+  const deleteType = trpc.useMutation(['staff.deleteProductType'], {
+    onSuccess: () => {
+      refetchProductTypes()
+    },
+    onError: (e) => {
+      alert('Couldnt remove type', e)
+    },
+  })
 
-  const createProduct = trpc.useMutation(['staff.addProduct'])
-  const createProductType = trpc.useMutation(['staff.addProductType'])
+  const createProductType = trpc.useMutation(['staff.addProductType'], {
+    onSuccess: () => {
+      refetchProductTypes()
+    },
+  })
+
+  // let productTypesArray = productTypes.
 
   return (
     <>
@@ -33,7 +52,11 @@ const ProductEditorTable = () => {
         <div>
           Create New Product
           <Formik
-            initialValues={{ item_name: ' ', item_price: 0, item_type: 0 }}
+            initialValues={{
+              item_name: ' ',
+              item_price: 0,
+              item_type: -1,
+            }}
             validationSchema={Yup.object({
               item_name: Yup.string()
                 .min(3, 'must be at least 3 characters long')
@@ -41,22 +64,19 @@ const ProductEditorTable = () => {
               item_price: Yup.number().required(
                 'please enter a price for this item'
               ),
-              item_type: Yup.number()
-                .required('Please select the item type')
-                .min(1, 'must select a type'),
+              item_type: Yup.mixed()
+                .oneOf(productTypes.typeArray)
+                .required('Please select the item type'),
             })}
             onSubmit={async (values, { resetForm }) => {
               console.log('item submission values', values)
 
-              const intType = parseInt(values.item_type)
-              values.item_type = intType
+              //item_type is a string from the select component
+              values.item_type = parseInt(values.item_type)
               try {
-                createProductType.mutate(values)
-                // alert('added item successfully')
+                console.log('create new product', values)
+                createProduct.mutate(values)
                 resetForm()
-                // router.push('/administration')
-                refetchProductList()
-                // return res
               } catch (error) {
                 // console.log(error)
                 alert('error adding item. please make sure type is selected')
@@ -84,12 +104,16 @@ const ProductEditorTable = () => {
                   />
                   <FormikControl
                     control='select'
-                    options={productTypes}
+                    options={productTypes.productTypes}
                     label='Type'
                     name='item_type'
                     className=''
                   />
-                  <button type='submit' disabled={!formik.isValid}>
+                  <button
+                    className='btn btn-blue'
+                    type='submit'
+                    disabled={!formik.isValid}
+                  >
                     Submit
                   </button>
                 </Form>
@@ -111,10 +135,7 @@ const ProductEditorTable = () => {
             try {
               createProductType.mutate(values)
 
-              console.log('added type')
-
               resetForm()
-              refetchProductTypes()
             } catch (error) {
               // console.log(error)
               alert('error adding type. ')
@@ -177,9 +198,9 @@ const ProductEditorTable = () => {
         </thead>
         <tbody>
           {productTypesStatus === 'success' &&
-            productTypes.map((type) => {
+            productTypes.productTypes.map((type) => {
+              if (type.id === -1) return <tr key={type.id}></tr>
               return (
-                //  value is type_id, key is type_type in DATABASE, changed to match form
                 <tr key={type.id}>
                   <td>{type.type}</td>
                   {!!type.type && (

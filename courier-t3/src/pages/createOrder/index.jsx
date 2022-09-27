@@ -7,13 +7,13 @@ const createOrder = () => {
   const currentCustomer = useGlobalStore((state) => state.currentCustomer)
   return (
     <>
-      <section>
+      <section className=''>
         <h1>Shipping Details</h1>
         <SenderFormAdmin currentCustomer={currentCustomer} />
-        <h2>Choose Services</h2>
+        <h1>Choose Services</h1>
         <Items />
-        <h2>review order</h2>
-        <h2>checkout</h2>
+        <h1>review order</h1>
+        <h1>checkout</h1>
       </section>
     </>
   )
