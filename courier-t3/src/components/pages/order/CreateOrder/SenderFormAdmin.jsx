@@ -103,7 +103,7 @@ const SenderFormAdmin = ({ currentCustomer }) => {
     //  !add form to globalstore currentOrder object
     addFormToOrder(values)
 
-    handlePage && handlePage('NEXT')
+    // handlePage && handlePage('NEXT')
     // console.log('form added', formDetails)
   }
 
