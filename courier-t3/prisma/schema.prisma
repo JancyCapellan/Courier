@@ -5,7 +5,9 @@ generator client {
   provider = "prisma-client-js"
   // previewFeatures = ["interactiveTransactions"]
 }
-
+generator erd {
+  provider = "prisma-erd-generator"
+}
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
@@ -50,6 +52,7 @@ model User {
   addresses address[]
   orders Order[] @relation("CUSTOMER")
   pickups Order[] @relation("DRIVER")
+  currentOrderSession shoppingSession?
 }
 
 model address {
@@ -146,6 +149,8 @@ model product {
   type Int
   orderItem OrderItem[]
   productType productType? @relation(fields: [type], references:[id])
+  shoppingSessionItem shoppingSessionItem[]
+
 }
 model productType {
   id Int @id @default(autoincrement())
@@ -196,6 +201,24 @@ model containerStatus {
   id Int @id @default(autoincrement())
   message String
   container containers[]
+}
+
+model shoppingSession {
+  id Int @id @default(autoincrement())
+  userId String @unique
+  user User @relation(fields: [userId], references:[id] )
+  items shoppingSessionItem[]
+  // current orderForm with addresses
+
+}
+
+model shoppingSessionItem {
+  id Int @id @default(autoincrement())
+  sessionId Int
+  shoppingSession shoppingSession @relation(fields: [sessionId], references: [id])
+  quantity Int
+  productId Int
+  product product @relation(fields: [productId], references: [id])
 }
 
 

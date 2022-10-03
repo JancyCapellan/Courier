@@ -20,20 +20,20 @@ const Home: NextPage = () => {
   const signinRedirect = process.env.NEXT_PUBLIC_API_URL + 'account'
 
   return (
-    <div className='flex flex-col h-screen'>
+    <div className="flex flex-col h-screen">
       <Head>
         <title>Courier's Dashboard</title>
         <meta
-          name='description'
-          content='webapp for shippers and courier services'
+          name="description"
+          content="webapp for shippers and courier services"
         />
-        <link rel='icon' href='/favicon.ico' />
+        <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <div className='flex flex-row w-full h-16 bg-gray-500 items-center mx-auto just'>
+      <div className="flex flex-row w-full h-16 bg-gray-500 items-center mx-auto just">
         The Courier Dashboard App
       </div>
-      <div className='w-screen flex flex-col items-center grow bg-cyan-600'>
+      <div className="w-screen flex flex-col items-center grow bg-cyan-600">
         {router.query?.didRegister}
         {router.query?.error ? <p>{router.query.error}</p> : <></>}
         {error ? (
@@ -45,18 +45,18 @@ const Home: NextPage = () => {
           <></>
         )}
         {!!session ? (
-          <div className='flex flex-col w-fit justify-center mt-16'>
+          <div className="flex flex-col w-fit justify-center mt-16">
             <p> Logged in as {session?.user?.name} </p>
             <button
-              className='btn btn-blue'
+              className="btn btn-blue"
               onClick={() =>
                 signOut({ callbackUrl: process.env.NEXT_PUBLIC_URL_API })
               }
             >
               Sign out
             </button>
-            <Link href='/account' passHref>
-              <button className='btn btn-blue'>account</button>
+            <Link href="/account" passHref>
+              <button className="btn btn-blue">account</button>
             </Link>
           </div>
         ) : (
@@ -95,34 +95,34 @@ const Home: NextPage = () => {
             {(formik) => {
               return (
                 <>
-                  <Form className='flex flex-col md:w-1/2 my-24 max-w-sm'>
-                    <h2 className='block w-full text-center text-grey-darkest mb-6 bold underline text-xl'>
+                  <Form className="flex flex-col md:w-1/2 my-24 max-w-sm">
+                    <h2 className="block w-full text-center text-grey-darkest mb-6 bold underline text-xl">
                       Sign In
                     </h2>
                     <FormikControl
-                      control='input'
-                      type='email'
-                      label='Email'
-                      name='email'
+                      control="input"
+                      type="email"
+                      label="Email"
+                      name="email"
                     />
                     <FormikControl
-                      control='input'
-                      type='password'
-                      label='Password'
-                      name='password'
+                      control="input"
+                      type="password"
+                      label="Password"
+                      name="password"
                     />
-                    <div className='flex flex-col items-center'>
+                    <div className="flex flex-col items-center">
                       <button
-                        type='submit'
+                        type="submit"
                         disabled={!formik.isValid}
-                        className='btn btn-blue m-2 w-1/2 align-center'
+                        className="btn btn-blue m-2 w-1/2 align-center"
                       >
                         Login
                       </button>
-                      <Link href='/register' passHref>
-                        <button className='btn btn-blue m-2 w-1/2'>
+                      <Link href="/register" passHref>
+                        <button className="btn btn-blue m-2 w-1/2">
                           Don't have an account?{' '}
-                          <span className='text-red-400'>Register here.</span>
+                          <span className="text-red-400">Register here.</span>
                         </button>
                       </Link>
                     </div>

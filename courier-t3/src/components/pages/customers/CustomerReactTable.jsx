@@ -11,7 +11,10 @@ import {
 } from 'react-table'
 import { useQuery } from 'react-query'
 import { useRouter } from 'next/router'
-import { useGlobalStore } from '@/components/globalStore'
+import {
+  useGlobalStore,
+  usePersistedLocallyStore,
+} from '@/components/globalStore'
 import ModalContainer from '../../HOC/ModalContainer'
 import RegistrationFormModal from '../../RegistrationFormModal'
 import { trpc } from '@/utils/trpc'
@@ -293,7 +296,9 @@ const Table = ({ columns }) => {
 
 const CustomerReactTable = () => {
   const router = useRouter()
-  const setCurrentCustomer = useGlobalStore((state) => state.setCurrentCustomer)
+  const setCurrentCustomer = usePersistedLocallyStore(
+    (state) => state.setCurrentCustomer
+  )
   const columns = React.useMemo(
     () => [
       {

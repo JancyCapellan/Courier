@@ -3,7 +3,7 @@ import { Formik, Form } from 'formik'
 import FormikControl from '@/components/Formik/FormikControl'
 import * as Yup from 'yup'
 import SelectCustomerAddressesModal from './selectCustomerAddressesModal'
-import { useGlobalStore } from '@/components/globalStore'
+import { usePersistedLocallyStore } from '@/components/globalStore'
 
 const SenderFormAdmin = ({ currentCustomer }) => {
   const [selectedShipperAddress, setSelectedShipperAddress] = useState({
@@ -20,7 +20,9 @@ const SenderFormAdmin = ({ currentCustomer }) => {
   const [showModal, setShowModal] = useState(false)
   // const { addForm } = useCart()
 
-  const addFormToOrder = useGlobalStore((state) => state.addFormToOrder)
+  const addFormToOrder = usePersistedLocallyStore(
+    (state) => state.addFormToOrder
+  )
 
   const selectOptions = [
     { key: 'UNITED STATES', value: 'USA' },
@@ -100,6 +102,7 @@ const SenderFormAdmin = ({ currentCustomer }) => {
   const onSubmit = (values) => {
     // addForm(values)
 
+    console.log('adding order form to store', values)
     //  !add form to globalstore currentOrder object
     addFormToOrder(values)
 
@@ -108,10 +111,10 @@ const SenderFormAdmin = ({ currentCustomer }) => {
   }
 
   return (
-    <section id='deliveryInformation'>
+    <section id="deliveryInformation">
       {/* <h1> Delviery Information</h1> */}
 
-      <button className='btn btn-blue' onClick={() => setShowModal(true)}>
+      <button className="btn btn-blue" onClick={() => setShowModal(true)}>
         select address
       </button>
       <SelectCustomerAddressesModal
@@ -132,9 +135,9 @@ const SenderFormAdmin = ({ currentCustomer }) => {
         {(formik) => {
           return (
             <>
-              <Form className='flex flex-col justify-center'>
-                <div className='flex flex-row items-center justify-center'>
-                  <div className='orderform-shipper'>
+              <Form className="flex flex-col justify-center">
+                <div className="flex flex-row items-center justify-center">
+                  <div className="orderform-shipper">
                     <h3>Shipper</h3>
                     {/* <FormikControl
                     control='select'
@@ -144,73 +147,73 @@ const SenderFormAdmin = ({ currentCustomer }) => {
                     innerRef={shipperSelectRef}
                   /> */}
                     <FormikControl
-                      control='input'
-                      type='text'
-                      label='First Name'
-                      name='shipper.firstName'
+                      control="input"
+                      type="text"
+                      label="First Name"
+                      name="shipper.firstName"
                     />
                     <FormikControl
-                      control='input'
-                      type='text'
-                      label='Last Name'
-                      name='shipper.lastName'
+                      control="input"
+                      type="text"
+                      label="Last Name"
+                      name="shipper.lastName"
                     />
                     <FormikControl
-                      control='input'
-                      type='text'
-                      label='Shipper Address'
-                      name='shipper.shippedFrom.address'
+                      control="input"
+                      type="text"
+                      label="Shipper Address"
+                      name="shipper.shippedFrom.address"
                     />
                     <FormikControl
-                      control='input'
-                      type='text'
-                      label='Shipper Address2'
-                      name='shipper.shippedFrom.address2'
+                      control="input"
+                      type="text"
+                      label="Shipper Address2"
+                      name="shipper.shippedFrom.address2"
                     />
                     <FormikControl
-                      control='input'
-                      type='text'
-                      label='Shipper Address3'
-                      name='shipper.shippedFrom.address3'
+                      control="input"
+                      type="text"
+                      label="Shipper Address3"
+                      name="shipper.shippedFrom.address3"
                     />
                     <FormikControl
-                      control='input'
-                      type='text'
-                      label='Shipper City'
-                      name='shipper.shippedFrom.city'
+                      control="input"
+                      type="text"
+                      label="Shipper City"
+                      name="shipper.shippedFrom.city"
                     />
                     <FormikControl
-                      control='input'
-                      type='text'
-                      label='shipper State'
-                      name='shipper.shippedFrom.state'
+                      control="input"
+                      type="text"
+                      label="shipper State"
+                      name="shipper.shippedFrom.state"
                     />
                     <FormikControl
-                      control='input'
-                      type='number'
-                      label='shipper Postal Code'
-                      name='shipper.shippedFrom.postalCode'
+                      control="input"
+                      type="number"
+                      label="shipper Postal Code"
+                      name="shipper.shippedFrom.postalCode"
                     />
                     <FormikControl
-                      control='select'
-                      label='Country'
-                      name='shipper.shippedFrom.country'
+                      control="select"
+                      label="Country"
+                      name="shipper.shippedFrom.country"
                       options={selectOptions}
                     />
                     <FormikControl
-                      control='input'
-                      type='text'
-                      label='shipper cellphone'
-                      name='shipper.shippedFrom.cellphone'
+                      control="input"
+                      type="text"
+                      label="shipper cellphone"
+                      name="shipper.shippedFrom.cellphone"
                     />
                     <FormikControl
-                      control='input'
-                      type='text'
-                      label='shipper telephone'
-                      name='shipper.shippedFrom.telephone'
+                      control="input"
+                      type="text"
+                      label="shipper telephone"
+                      name="shipper.shippedFrom.telephone"
                     />
                   </div>
-                  <div className='orderform-reciever'>
+                  <div className="orderform-reciever">
                     <h3>Reciever</h3>
                     {/* <FormikControl
                   control='select'
@@ -218,66 +221,66 @@ const SenderFormAdmin = ({ currentCustomer }) => {
                   options={selectOptions}
                 /> */}
                     <FormikControl
-                      control='input'
-                      label='First Name'
-                      name='reciever.firstName'
+                      control="input"
+                      label="First Name"
+                      name="reciever.firstName"
                     />
                     <FormikControl
-                      control='input'
-                      label='Last Name'
-                      name='reciever.lastName'
+                      control="input"
+                      label="Last Name"
+                      name="reciever.lastName"
                     />
                     <FormikControl
-                      control='input'
-                      label='reciever Address'
-                      name='reciever.shippedTo.address'
+                      control="input"
+                      label="reciever Address"
+                      name="reciever.shippedTo.address"
                     />
                     <FormikControl
-                      control='input'
-                      label='reciever Address2'
-                      name='reciever.shippedTo.address2'
+                      control="input"
+                      label="reciever Address2"
+                      name="reciever.shippedTo.address2"
                     />
                     <FormikControl
-                      control='input'
-                      label='reciever Address3'
-                      name='reciever.shippedTo.address3'
+                      control="input"
+                      label="reciever Address3"
+                      name="reciever.shippedTo.address3"
                     />
                     <FormikControl
-                      control='input'
-                      label='reciever City'
-                      name='reciever.shippedTo.city'
+                      control="input"
+                      label="reciever City"
+                      name="reciever.shippedTo.city"
                     />
                     <FormikControl
-                      control='input'
-                      label='reciever State'
-                      name='reciever.shippedTo.state'
+                      control="input"
+                      label="reciever State"
+                      name="reciever.shippedTo.state"
                     />
                     <FormikControl
-                      control='input'
-                      type='number'
-                      label='reciever Postal Code'
-                      name='reciever.shippedTo.postalCode'
+                      control="input"
+                      type="number"
+                      label="reciever Postal Code"
+                      name="reciever.shippedTo.postalCode"
                     />
                     <FormikControl
-                      control='select'
-                      label='Country'
-                      name='reciever.shippedTo.country'
+                      control="select"
+                      label="Country"
+                      name="reciever.shippedTo.country"
                       options={selectOptions}
                     />
                     <FormikControl
-                      control='input'
-                      label='reciever cellphone'
-                      name='reciever.shippedTo.cellphone'
+                      control="input"
+                      label="reciever cellphone"
+                      name="reciever.shippedTo.cellphone"
                     />
                     <FormikControl
-                      control='input'
-                      label='reciever telephone'
-                      name='reciever.shippedTo.telephone'
+                      control="input"
+                      label="reciever telephone"
+                      name="reciever.shippedTo.telephone"
                     />
                   </div>
                 </div>
 
-                <button type='submit' disabled={!formik.isValid}>
+                <button type="submit" disabled={!formik.isValid}>
                   Submit
                 </button>
               </Form>

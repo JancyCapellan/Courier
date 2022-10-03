@@ -1,44 +1,59 @@
-import { useGlobalStore } from '@/components/globalStore'
+import { usePersistedLocallyStore } from '@/components/globalStore'
+// import AfterStoreHyrdation from '@/components/HOC/AfterStoreHyrdation'
 import React from 'react'
 // import { useCart } from '../../contexts/cartContext'
 
 const CartItem = ({ productsId, name, amount, img, title, price }) => {
   // const { remove, toggleAmount } = useCart()
 
-  const removeFromCart = useGlobalStore((state) => state.removeFromCart)
-  const toggleAmount = useGlobalStore((state) => state.toggleAmount)
+  const removeFromCart = usePersistedLocallyStore(
+    (state) => state.removeFromCart
+  )
+  const toggleAmount = usePersistedLocallyStore((state) => state.toggleAmount)
+
+  // const isHydrated = usePersistedLocallyStore((state) => state.hasHydrated)
+  // if (!isHydrated) {
+  //   return <p>Loading CartItem...</p>
+  // }
+
   return (
-    <article className='cart-item'>
+    <article className="">
       {/* <img src={img} alt={title} /> */}
+
       <p>{name}</p>
       <div>
-        <h4>{title}</h4>
-        <h4 className='item-price'>${price}</h4>
+        {/* <h4>{title}</h4> */}
+        {/* <div className="item-price">${price}</div> */}
         {/* remove button */}
-        <button className='remove-btn' onClick={() => remove(productsId)}>
+        <button
+          className="remove-btn"
+          onClick={() => removeFromCart(productsId)}
+        >
           remove
         </button>
       </div>
       <div>
         {/* increase amount */}
         <button
-          className='amount-btn'
+          className="amount-btn"
           onClick={() => toggleAmount(productsId, 'inc')}
         >
-          <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'>
-            <path d='M10.707 7.05L10 6.343 4.343 12l1.414 1.414L10 9.172l4.243 4.242L15.657 12z' />
-          </svg>
+          {/* <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"> */}
+          {/*   <path d="M10.707 7.05L10 6.343 4.343 12l1.414 1.414L10 9.172l4.243 4.242L15.657 12z" /> */}
+          {/* </svg> */}
+          {/* ^ */}+
         </button>
         {/* amount */}
-        <p className='amount'>{amount}</p>
+        <p className="amount">{amount}</p>
         {/* decrease amount */}
         <button
-          className='amount-btn'
+          className="amount-btn"
           onClick={() => toggleAmount(productsId, 'dec')}
         >
-          <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'>
-            <path d='M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z' />
-          </svg>
+          {/* &#x2304; */}
+          {/* <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"> */}
+          {/*   <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" /> */}
+          {/* </svg> */}-
         </button>
       </div>
     </article>

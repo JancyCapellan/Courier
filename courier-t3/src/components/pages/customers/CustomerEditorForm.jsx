@@ -76,8 +76,10 @@ export const CustomerEditorForm = ({ currentUser }) => {
   let user = JSON.stringify(currentUser, undefined, 2)
   return (
     <>
-      <button onClick={() => setShowEditForm(true)}>Show Edit Form</button>
-      <div className='mt-4'>
+      <button className="btn btn-blue" onClick={() => setShowEditForm(true)}>
+        Show Edit Form
+      </button>
+      <div className="mt-4">
         <table>
           <caption>
             <b>Customer Account Information</b>
@@ -127,7 +129,7 @@ export const CustomerEditorForm = ({ currentUser }) => {
         handleClose={() => setShowEditForm(false)}
       >
         <Formik
-          className='customer-editor-form'
+          className="customer-editor-form"
           initialValues={initialValues}
           validationSchema={validationSchema}
           onSubmit={onSubmit}
@@ -143,34 +145,34 @@ export const CustomerEditorForm = ({ currentUser }) => {
                   disabled
                 /> */}
                 <FormikControl
-                  control='input'
-                  type='text'
-                  label='First Name'
-                  name='firstName'
+                  control="input"
+                  type="text"
+                  label="First Name"
+                  name="firstName"
                 />
                 <FormikControl
-                  control='input'
-                  type='text'
-                  label='Middle Name'
-                  name='middleName'
+                  control="input"
+                  type="text"
+                  label="Middle Name"
+                  name="middleName"
                 />
                 <FormikControl
-                  control='input'
-                  type='text'
-                  label='Last Name'
-                  name='lastName'
+                  control="input"
+                  type="text"
+                  label="Last Name"
+                  name="lastName"
                 />
                 <FormikControl
-                  control='input'
-                  type='email'
-                  label='email'
-                  name='email'
+                  control="input"
+                  type="email"
+                  label="email"
+                  name="email"
                 />
                 <FormikControl
-                  control='input'
-                  type='text'
-                  label='role'
-                  name='role'
+                  control="input"
+                  type="text"
+                  label="role"
+                  name="role"
                 />
                 {/* <FormikControl control='input' type='text' label='company' name='company' />
               <FormikControl control='input' type='text' label='branch name' name='branchName' /> */}
@@ -181,12 +183,12 @@ export const CustomerEditorForm = ({ currentUser }) => {
                 name='licenseId'
               /> */}
                 <FormikControl
-                  control='input'
-                  type='text'
-                  label='preferred language'
-                  name='preferredLanguage'
+                  control="input"
+                  type="text"
+                  label="preferred language"
+                  name="preferredLanguage"
                 />
-                <button type='submit' disabled={!formik.isValid}>
+                <button type="submit" disabled={!formik.isValid}>
                   Save Changes
                 </button>
               </Form>

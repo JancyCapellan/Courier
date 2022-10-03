@@ -12,7 +12,7 @@ export const staffApi = createProtectedRouter()
     }),
     async resolve({ ctx, input }) {
       try {
-        const deletedProductType = await prisma?.productType.delete({
+        const deletedProductType = await ctx.prisma.productType.delete({
           where: {
             id: input.typeId,
           },

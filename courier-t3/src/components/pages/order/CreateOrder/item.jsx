@@ -17,26 +17,26 @@ const Item = ({ name, price, id }) => {
 
   // if (qty === 1)
   return (
-    <article className='itemBox'>
-      <div className='itemImage'>{name}</div>
-      <label className='labelItemCount'>
+    <article className="">
+      <div className="">{name}</div>
+      <label className="">
         Qty:
         <select
-          id='itemCount'
-          className='itemCount'
+          id="itemCount"
+          className=""
           onChange={(e) => {
             setQty(e.target.value)
           }}
         >
-          <option value='1'>1</option>
-          <option value='2'>2</option>
-          <option value='3'>3</option>
-          <option value='4'>4</option>
-          <option value='5'>5</option>
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
         </select>
       </label>
       <button
-        className='itemSubmitButton'
+        className=""
         onClick={() => {
           console.log(item)
           addItemToCart(item)

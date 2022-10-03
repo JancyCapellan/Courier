@@ -1,14 +1,25 @@
-import { useGlobalStore } from '@/components/globalStore'
+import {
+  useGlobalStore,
+  usePersistedLocallyStore,
+} from '@/components/globalStore'
 import SenderFormAdmin from '@/components/pages/order/CreateOrder/SenderFormAdmin'
 import Layout from '@/components/Layout'
 import Items from '@/components/pages/order/CreateOrder/Items'
 import Cart from '@/components/pages/order/CreateOrder/Cart'
+import { useRouter } from 'next/router'
+import AfterStoreHyrdation from '@/components/HOC/AfterStoreHyrdation'
 
 const createOrder = () => {
-  const currentCustomer = useGlobalStore((state) => state.currentCustomer)
+  const currentCustomer = usePersistedLocallyStore(
+    (state) => state.currentCustomer
+  )
+
+  const router = useRouter()
+
+  const cu = router.query.customerId
   return (
     <>
-      <section className=''>
+      <section className="">
         <h1>Shipping Details</h1>
         <SenderFormAdmin currentCustomer={currentCustomer} />
         <h1>Choose Services</h1>
