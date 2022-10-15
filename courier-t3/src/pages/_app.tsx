@@ -14,7 +14,13 @@ import { SessionProvider } from 'next-auth/react'
 import '../styles/globals.css'
 import { ReactQueryDevtools } from 'react-query/devtools'
 
-type NextPageWithLayout = NextPage & {
+// type NextPageWithLayout<P = {}> = NextPage<P> & {
+//   getLayout?: (page: ReactNode) => ReactNode
+// }
+export type NextPageWithLayout<
+  TProps = Record<string, unknown>,
+  TInitialProps = TProps
+> = NextPage<TProps, TInitialProps> & {
   getLayout?: (page: ReactElement) => ReactNode
 }
 
@@ -22,19 +28,18 @@ type AppPropsWithLayout = AppProps & {
   Component: NextPageWithLayout
 }
 
-// this is originally AppType but that doesnt work with getLayout, not enough TS knowledge to fix it
-const MyApp: AppType = ({
-  Component,
-  pageProps: { session, ...pageProps },
-}) => {
-  const getLayout =
-    Component.getLayout ?? ((component: AppPropsWithLayout) => component)
+//typing is better this time but according to: https://dev.to/ofilipowicz/next-js-per-page-layouts-and-typescript-lh5,
+//there is more generics that can be used advance these types.
+const MyApp: AppType = ({ Component, pageProps }: AppPropsWithLayout) => {
+  const getLayout = Component.getLayout ?? ((page: ReactNode) => page)
   const layout = getLayout(<Component {...pageProps} />)
 
   return (
-    <SessionProvider session={session}>
-      {layout}
-      <ReactQueryDevtools initialIsOpen={false} />
+    <SessionProvider session={pageProps.session}>
+      <>
+        {layout}
+        <ReactQueryDevtools initialIsOpen={false} />
+      </>
     </SessionProvider>
   )
 }

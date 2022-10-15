@@ -8,12 +8,20 @@ export const useGlobalStore = create(
     // persist(
     (set, get) => ({
       queryToRaise: {},
+      refetchCart: {},
       currentCustomer: {},
       setQueryToRaiseState: (query) =>
         set((state) => {
           return {
             ...state,
             queryToRaise: query,
+          }
+        }),
+      setRefetchCart: (refetchFn) =>
+        set((state) => {
+          return {
+            ...state,
+            refetchCart: refetchFn,
           }
         }),
     })

@@ -3,7 +3,7 @@
 
 import { useQuery } from 'react-query'
 import { useRouter } from 'next/router'
-
+// import { trpc } from "@/utils/trpc"
 export async function fetchSession() {
   const res = await fetch('/api/auth/session')
   const session = await res.json()

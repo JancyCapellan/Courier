@@ -7,6 +7,7 @@ import { exampleRouter } from './example'
 import { userRouter } from './user'
 import { customerRouter } from './customers'
 import { staffApi } from './staffProtected'
+import { cartApi } from './cartApi'
 
 export const appRouter = createRouter()
   .transformer(superjson)
@@ -15,6 +16,6 @@ export const appRouter = createRouter()
   .merge('public.', publicApiRouter)
   .merge('customers.', customerRouter)
   .merge('staff.', staffApi)
-
+  .merge('cart.', cartApi)
 // export type definition of API
 export type AppRouter = typeof appRouter

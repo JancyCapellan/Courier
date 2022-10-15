@@ -4,8 +4,10 @@ import FormikControl from '@/components/Formik/FormikControl'
 import * as Yup from 'yup'
 import SelectCustomerAddressesModal from './selectCustomerAddressesModal'
 import { usePersistedLocallyStore } from '@/components/globalStore'
+import { trpc } from '@/utils/trpc'
+import { useRouter } from 'next/router'
 
-const SenderFormAdmin = ({ currentCustomer }) => {
+const SenderFormAdmin = () => {
   const [selectedShipperAddress, setSelectedShipperAddress] = useState({
     address: '',
     address2: '',
@@ -28,11 +30,19 @@ const SenderFormAdmin = ({ currentCustomer }) => {
     { key: 'UNITED STATES', value: 'USA' },
     { key: 'DOMINICAN REPUBLIC', value: 'DR' },
   ]
+
+  const router = useRouter()
+  const customerId = router.query.customerId
+  const { data: currentCustomer, status: customerInfoQueryStatus } =
+    trpc.useQuery(['user.getUserAccountInfo', { userId: customerId }])
+
+  if (customerInfoQueryStatus === 'loading') return <div>Loading...</div>
+
   const initialValues = {
     shipper: {
-      userId: currentCustomer.id,
-      firstName: currentCustomer.firstName,
-      lastName: currentCustomer.lastName,
+      userId: currentCustomer?.id,
+      firstName: currentCustomer?.firstName,
+      lastName: currentCustomer?.lastName,
       shippedFrom: {
         // addressId: selectedShipperAddress.id,
         address: selectedShipperAddress.address,
@@ -123,6 +133,7 @@ const SenderFormAdmin = ({ currentCustomer }) => {
           setShowModal(false)
         }}
         setAddress={setSelectedShipperAddress}
+        currentCustomer={currentCustomer}
       />
 
       {/* <p>selected address: {selectedShipperAddress.address}</p> */}

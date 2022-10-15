@@ -6,10 +6,10 @@ import {
 import { CustomerAddresses } from '../../customers/CustomerAddresses'
 
 //opens from the customer order form page wiht the select address button
-const SelectCustomerAddressesModal = ({ show, handleClose, setAddress }) => {
-  const currentCustomer = usePersistedLocallyStore(
-    (state) => state.currentCustomer
-  )
+const SelectCustomerAddressesModal = ({ show, handleClose, setAddress, currentCustomer}) => {
+  // const currentCustomer = usePersistedLocallyStore(
+  //   (state) => state.currentCustomer
+  // )
 
   return (
     <>

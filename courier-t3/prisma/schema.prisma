@@ -203,6 +203,10 @@ model containerStatus {
   container containers[]
 }
 
+// change this to cart, thinking about future saving of carts in a different table
+// these tables should just focus on a singular user's order session, even when staff make orders for other users 
+// they should still have one cart, so a customer can have two different orders being made by two different users,
+// maybe make a way to save orders so another admin/staff may takeover the order??
 model shoppingSession {
   id Int @id @default(autoincrement())
   userId String @unique
@@ -213,12 +217,14 @@ model shoppingSession {
 }
 
 model shoppingSessionItem {
-  id Int @id @default(autoincrement())
+  // id Int @default(autoincrement())
   sessionId Int
-  shoppingSession shoppingSession @relation(fields: [sessionId], references: [id])
+  shoppingSession shoppingSession @relation(fields: [sessionId], references: [id] ,onDelete: Cascade, onUpdate: Cascade)
   quantity Int
   productId Int
   product product @relation(fields: [productId], references: [id])
+
+  @@id([sessionId, productId], name: "CartItemId")
 }
 
 

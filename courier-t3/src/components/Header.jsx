@@ -3,8 +3,11 @@ import { useRouter } from 'next/router'
 import { usePersistedLocallyStore } from './globalStore'
 // import { useSession } from '../customHooks/useSession'
 
+// import { useSession } from '@/components/hooks/useSession'
+
 function Header() {
   // const [session, status] = useSession()
+  // const [session, isloading] = useSession()
   const { data: session, status } = useSession()
   const clearLocalStorage = usePersistedLocallyStore(
     (state) => state.clearLocalStorage

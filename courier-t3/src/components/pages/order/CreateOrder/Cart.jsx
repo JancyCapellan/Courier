@@ -1,76 +1,38 @@
 import React, { useEffect, useState } from 'react'
 import CartItem from './CartItem'
-import {
-  useCheckHydration,
-  usePersistedLocallyStore,
-} from '@/components/globalStore'
-// import AfterStoreHyrdation from '@/components/HOC/AfterStoreHyrdation'
-import shallow from 'zustand/shallow'
+import { trpc } from '@/utils/trpc'
+import { useSession } from 'next-auth/react'
+import { useGlobalStore } from '@/components/globalStore'
+
 const Cart = () => {
-  // const { cart, total, clearCart } = useCart()
-  // const cart = usePersistedLocallyStore((state) => state.cartStore.cart)
-  // console.log('cart: ', cart)
-  // const totalPrice = usePersistedLocallyStore(
-  //   (state) => state.cartStore.total_price
-  // )
-  // const totalItems = usePersistedLocallyStore(
-  //   (state) => state.cartStore.total_items
-  // )
-  // const clearCart = usePersistedLocallyStore((state) => state.clearCart)
+  const setRefetchCart = useGlobalStore((state) => state.setRefetchCart)
 
-  // const isHydrated = useCheckHydration()
-  const { isHydrated, cart, clearCart } = usePersistedLocallyStore(
-    (state) => ({
-      isHydrated: state.hasHydrated,
-      cart: state.cartStore.cart,
-      clearCart: state.clearCart,
-    }),
-    shallow
-  )
-  // if (!isHydrated) {
-  //   return (
-  //     <section>
-  //       <h1>Hydration Test</h1>
-  //       <p>Loading Cart...</p>
-  //     </section>
-  //   )
-  // }
+  const { data: session, status: sessionStatus } = useSession()
+  const {
+    data: cartSession,
+    status: cartStatus,
+    refetch: refetchCart,
+  } = trpc.useQuery(['cart.getCartSession', { userId: session?.user?.id }])
 
-  // const [cart, setCart] = useState(cartfromStore)
-  // useEffect(() => {
-  //   setCart(cartfromStore)
-  // }, [cart])
-  // if (cart.length === 0) {
-  //   return (
-  //     <section className="flex flex-col items-center">
-  //       {/* cart header */}
-  //       <h1>Current Cart</h1>
-  //       <p className="empty-cart">is currently empty</p>
-  //     </section>
-  //   )
-  // }
+  useEffect(() => {
+    setRefetchCart(refetchCart)
+  }, [refetchCart])
+
+  const clearCart = trpc.useMutation(['cart.clearUserCartSession'], {
+    onSuccess: () => refetchCart(),
+  })
+
+  if (sessionStatus === 'unauthenticated')
+    return <div>error loading session...</div>
+  if (sessionStatus === 'loading' || cartStatus === 'loading')
+    return <div>Loading Cart...</div>
+
   return (
     <section className="flex flex-col items-center">
       <h1>Current Cart</h1>
 
-      {/* {!!isHydrated ? ( */}
-      {/*   cart.map((item) => { */}
-      {/*     // if (!isHydrated) { */}
-      {/*     //   return <p>Loading CartItems...</p> */}
-      {/*     // } */}
-      {/*     return <CartItem key={item.productsId} {...item} /> */}
-      {/*   }) */}
-      {/* ) : ( */}
-      {/*   <p>Loading...</p> */}
-      {/* )} */}
-
-      {/* <AfterStoreHyrdation> */}
-      {/*   {cart.map((item) => { */}
-      {/*     return <CartItem key={item.productsId} {...item} /> */}
-      {/*   })} */}
-      {/* </AfterStoreHyrdation> */}
-      {cart?.map((item) => {
-        return <CartItem key={item.productsId} {...item} />
+      {cartSession?.items.map((item) => {
+        return <CartItem key={item.productId} {...item} />
       })}
 
       {/* <hr /> */}
@@ -79,7 +41,10 @@ const Cart = () => {
       {/*     total: <span>${totalPrice}</span> */}
       {/*   </h4> */}
       {/* </div> */}
-      <button className="btn clear-btn" onClick={() => clearCart()}>
+      <button
+        className="btn clear-btn"
+        onClick={() => clearCart.mutate({ sessionId: cartSession.id })}
+      >
         clear cart
       </button>
     </section>
