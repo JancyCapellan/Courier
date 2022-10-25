@@ -9,30 +9,36 @@ export const cartApi = createProtectedRouter()
       userId: z.string(),
     }),
     async resolve({ ctx, input }) {
-      const cartSession = await ctx.prisma.shoppingSession.findUnique({
-        where: {
-          userId: input.userId,
-        },
-        select: {
-          items: {
-            select: {
-              sessionId: true,
-              quantity: true,
-              productId: true,
-              product: {
-                select: {
-                  name: true,
-                  price: true,
-                  productType: true,
+      try {
+        const cartSession = await ctx.prisma.cart.findUnique({
+          where: {
+            userId: input.userId,
+          },
+          select: {
+            items: {
+              select: {
+                quantity: true,
+                productId: true,
+                product: {
+                  select: {
+                    name: true,
+                    price: true,
+                    productType: true,
+                  },
                 },
               },
+              orderBy: {
+                id: 'asc',
+              },
             },
+            cartId: true,
           },
-          id: true,
-          // userId: true,
-        },
-      })
-      return cartSession
+        })
+        console.log('cartSession:', cartSession)
+        return cartSession
+      } catch (error) {
+        console.error('error findign cart', error)
+      }
     },
   })
   .mutation('addToCartSession', {
@@ -47,38 +53,39 @@ export const cartApi = createProtectedRouter()
     }),
     async resolve({ ctx, input }) {
       async function findOrCreateCart() {
-        const cartSession = await ctx.prisma.shoppingSession.findUnique({
+        const cart = await ctx.prisma.cart.findUnique({
           where: {
             userId: input.userId,
           },
           select: {
-            id: true,
+            // id: true,
+            cartId: true,
           },
         })
 
-        if (!cartSession) {
-          const newCart = await ctx.prisma.shoppingSession.create({
+        if (!cart) {
+          const newCart = await ctx.prisma.cart.create({
             data: {
               userId: input.userId,
             },
             select: {
-              id: true,
+              cartId: true,
             },
           })
 
           return newCart
         }
 
-        return cartSession
+        return cart
       }
 
-      const cartId = await findOrCreateCart()
+      const { cartId } = await findOrCreateCart()
 
-      const prevItemQuantity = await ctx.prisma.shoppingSessionItem.findUnique({
+      const prevItemQuantity = await ctx.prisma.cartItem.findUnique({
         where: {
           CartItemId: {
             productId: input.item.productId,
-            sessionId: cartId.id,
+            cartId: cartId,
           },
         },
         select: {
@@ -88,33 +95,34 @@ export const cartApi = createProtectedRouter()
 
       const prevQty = prevItemQuantity?.quantity ?? 0
 
-      const addedItem = await ctx.prisma.shoppingSessionItem.upsert({
+      const addedItem = await ctx.prisma.cartItem.upsert({
         where: {
           CartItemId: {
             productId: input.item.productId,
-            sessionId: cartId.id,
+            cartId: cartId,
           },
         },
         create: {
           productId: input.item.productId,
           quantity: input.item.amount,
-          sessionId: cartId.id,
+          cartId: cartId,
         },
         update: {
           quantity: input.item.amount + prevQty,
         },
       })
+      console.log('item added to cart:', addedItem)
       return addedItem
     },
   })
   .mutation('clearUserCartSession', {
     input: z.object({
-      sessionId: z.number(),
+      cartId: z.string(),
     }),
     async resolve({ ctx, input }) {
-      const clearedCartSession = await ctx.prisma.shoppingSession.delete({
+      const clearedCartSession = await ctx.prisma.cart.delete({
         where: {
-          id: input.sessionId,
+          cartId: input.cartId,
         },
       })
       return clearedCartSession
@@ -123,16 +131,41 @@ export const cartApi = createProtectedRouter()
   .mutation('removeItemFromCart', {
     input: z.object({
       productId: z.number(),
-      sessionId: z.number(),
+      cartId: z.string(),
     }),
     async resolve({ ctx, input }) {
-      const removedItem = await ctx.prisma.shoppingSessionItem.delete({
+      const removedItem = await ctx.prisma.cartItem.delete({
         where: {
           CartItemId: {
             productId: input.productId,
-            sessionId: input.sessionId,
+            cartId: input.cartId,
           },
         },
       })
+      return removedItem
+    },
+  })
+  .mutation('toggleCartItemAmount', {
+    input: z.object({
+      productId: z.number(),
+      cartId: z.string(),
+      toggleType: z.string(),
+      currentQuantity: z.number(),
+    }),
+    async resolve({ ctx, input }) {
+      let quantityChange = input.toggleType === 'inc' ? 1 : -1
+      console.log(quantityChange)
+      const removedItem = await ctx.prisma.cartItem.update({
+        where: {
+          CartItemId: {
+            productId: input.productId,
+            cartId: input.cartId,
+          },
+        },
+        data: {
+          quantity: input.currentQuantity + quantityChange,
+        },
+      })
+      return removedItem
     },
   })

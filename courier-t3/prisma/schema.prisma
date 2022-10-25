@@ -52,7 +52,7 @@ model User {
   addresses address[]
   orders Order[] @relation("CUSTOMER")
   pickups Order[] @relation("DRIVER")
-  currentOrderSession shoppingSession?
+  currentOrder cart?
 }
 
 model address {
@@ -149,7 +149,7 @@ model product {
   type Int
   orderItem OrderItem[]
   productType productType? @relation(fields: [type], references:[id])
-  shoppingSessionItem shoppingSessionItem[]
+  cartItem cartItem[]
 
 }
 model productType {
@@ -207,24 +207,25 @@ model containerStatus {
 // these tables should just focus on a singular user's order session, even when staff make orders for other users 
 // they should still have one cart, so a customer can have two different orders being made by two different users,
 // maybe make a way to save orders so another admin/staff may takeover the order??
-model shoppingSession {
-  id Int @id @default(autoincrement())
+model cart {
+  id Int @id @default(autoincrement()) // change to uuID
+  cartId String @unique @default(uuid())
   userId String @unique
   user User @relation(fields: [userId], references:[id] )
-  items shoppingSessionItem[]
+  items cartItem[]
   // current orderForm with addresses
 
 }
 
-model shoppingSessionItem {
-  // id Int @default(autoincrement())
-  sessionId Int
-  shoppingSession shoppingSession @relation(fields: [sessionId], references: [id] ,onDelete: Cascade, onUpdate: Cascade)
+model cartItem {
+  id Int @default(autoincrement())
+  cartId String @map("shoppingSessionId")
+  shoppingSession cart @relation(fields: [cartId], references: [cartId] ,onDelete: Cascade, onUpdate: Cascade)
   quantity Int
   productId Int
   product product @relation(fields: [productId], references: [id])
 
-  @@id([sessionId, productId], name: "CartItemId")
+  @@id([cartId, productId], name: "CartItemId")
 }
 
 

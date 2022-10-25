@@ -4,7 +4,7 @@ import { trpc } from '@/utils/trpc'
 import React from 'react'
 // import { useCart } from '../../contexts/cartContext'
 
-const CartItem = ({ productId, quantity, product, sessionId }) => {
+const CartItem = ({ productId, quantity, product, cartId, refetchCart }) => {
   // const { remove, toggleAmount } = useCart()
 
   // const removeFromCart = usePersistedLocallyStore(
@@ -18,7 +18,11 @@ const CartItem = ({ productId, quantity, product, sessionId }) => {
   // }
 
   const removeFromCart = trpc.useMutation(['cart.removeItemFromCart'], {
-    onSuccess: () => console.log('item removed'),
+    onSuccess: () => refetchCart(),
+  })
+
+  const toggleAmount = trpc.useMutation(['cart.toggleCartItemAmount'], {
+    onSuccess: () => refetchCart(),
   })
 
   return (
@@ -33,7 +37,10 @@ const CartItem = ({ productId, quantity, product, sessionId }) => {
         <button
           className="remove-btn"
           onClick={() =>
-            removeFromCart.mutate({ productId: productId, sessionId })
+            removeFromCart.mutate({
+              productId: productId,
+              cartId: cartId,
+            })
           }
         >
           remove
@@ -43,7 +50,14 @@ const CartItem = ({ productId, quantity, product, sessionId }) => {
         {/* increase amount */}
         <button
           className="amount-btn"
-          onClick={() => toggleAmount(productId, 'inc')}
+          onClick={() =>
+            toggleAmount.mutate({
+              productId: productId,
+              cartId: cartId,
+              toggleType: 'inc',
+              currentQuantity: quantity,
+            })
+          }
         >
           {/* <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"> */}
           {/*   <path d="M10.707 7.05L10 6.343 4.343 12l1.414 1.414L10 9.172l4.243 4.242L15.657 12z" /> */}
@@ -55,7 +69,22 @@ const CartItem = ({ productId, quantity, product, sessionId }) => {
         {/* decrease amount */}
         <button
           className="amount-btn"
-          onClick={() => toggleAmount(productId, 'dec')}
+          onClick={() => {
+            if (quantity === 1) {
+              removeFromCart.mutate({
+                productId: productId,
+                cartId: cartId,
+              })
+              return
+            }
+
+            toggleAmount.mutate({
+              productId: productId,
+              cartId: cartId,
+              toggleType: 'dec',
+              currentQuantity: quantity,
+            })
+          }}
         >
           {/* &#x2304; */}
           {/* <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"> */}

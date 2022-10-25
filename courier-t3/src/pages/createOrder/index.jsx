@@ -21,7 +21,7 @@ const createOrder = () => {
     <>
       <section className="">
         <h1>Shipping Details</h1>
-        <SenderFormAdmin currentCustomer={currentCustomer} />
+        <SenderFormAdmin />
         <h1>Choose Services</h1>
         <Items />
         <h1>review order</h1>

@@ -22,8 +22,13 @@ const Cart = () => {
     onSuccess: () => refetchCart(),
   })
 
-  if (sessionStatus === 'unauthenticated')
-    return <div>error loading session...</div>
+  if (sessionStatus === 'unauthenticated' || cartStatus === 'error')
+    return (
+      <div>
+        <h1>Current Cart</h1>
+        error loading session...
+      </div>
+    )
   if (sessionStatus === 'loading' || cartStatus === 'loading')
     return <div>Loading Cart...</div>
 
@@ -32,7 +37,14 @@ const Cart = () => {
       <h1>Current Cart</h1>
 
       {cartSession?.items.map((item) => {
-        return <CartItem key={item.productId} {...item} />
+        return (
+          <CartItem
+            key={item.productId}
+            {...item}
+            cartId={cartSession.cartId}
+            refetchCart={refetchCart}
+          />
+        )
       })}
 
       {/* <hr /> */}
@@ -43,7 +55,7 @@ const Cart = () => {
       {/* </div> */}
       <button
         className="btn clear-btn"
-        onClick={() => clearCart.mutate({ sessionId: cartSession.id })}
+        onClick={() => clearCart.mutate({ cartId: cartSession.cartId })}
       >
         clear cart
       </button>
