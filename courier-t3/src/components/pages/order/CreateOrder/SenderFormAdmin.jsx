@@ -6,6 +6,7 @@ import SelectCustomerAddressesModal from './selectCustomerAddressesModal'
 import { usePersistedLocallyStore } from '@/components/globalStore'
 import { trpc } from '@/utils/trpc'
 import { useRouter } from 'next/router'
+import { useSession } from 'next-auth/react'
 
 const SenderFormAdmin = () => {
   const [selectedShipperAddress, setSelectedShipperAddress] = useState({
@@ -20,24 +21,28 @@ const SenderFormAdmin = () => {
     telephone: '',
   })
   const [showModal, setShowModal] = useState(false)
-  // const { addForm } = useCart()
+  const [formValues, setFormValues] = useState(null)
+  const { data: session, status: sessionStatus } = useSession()
 
-  const addFormToOrder = usePersistedLocallyStore(
-    (state) => state.addFormToOrder
+  const { data: formDetails, status: formDetailsStatus } = trpc.useQuery(
+    ['cart.getAddressesFromCart', { userId: session?.user?.id }],
+    {
+      enabled: sessionStatus === 'authenticated',
+    }
   )
+  const saveFormToCart = trpc.useMutation(['cart.saveAddressesFormToCart'])
+
+  const router = useRouter()
+  const customerId = router.query.customerId
+
+  const { data: currentCustomer, status: customerInfoQueryStatus } =
+    trpc.useQuery(['user.getUserAccountInfo', { userId: customerId }])
 
   const selectOptions = [
     { key: 'UNITED STATES', value: 'USA' },
     { key: 'DOMINICAN REPUBLIC', value: 'DR' },
   ]
-
-  const router = useRouter()
-  const customerId = router.query.customerId
-  const { data: currentCustomer, status: customerInfoQueryStatus } =
-    trpc.useQuery(['user.getUserAccountInfo', { userId: customerId }])
-
-  if (customerInfoQueryStatus === 'loading') return <div>Loading...</div>
-
+  // get addresses fromm user cart and make then inital values or change the form values to them
   const initialValues = {
     shipper: {
       userId: currentCustomer?.id,
@@ -54,7 +59,7 @@ const SenderFormAdmin = () => {
         country: selectedShipperAddress.country,
         cellphone: selectedShipperAddress.cellphone,
         telephone: selectedShipperAddress.telephone,
-        default: false,
+        // default: false,
       },
     },
     reciever: {
@@ -70,7 +75,7 @@ const SenderFormAdmin = () => {
         country: 'DR',
         cellphone: '',
         telephone: '',
-        recipient: true,
+        recipient: true, // needed for cart addresses primary key
       },
     },
   }
@@ -100,7 +105,7 @@ const SenderFormAdmin = () => {
         address3: Yup.string().notRequired(),
         city: Yup.string(),
         state: Yup.string(),
-        postalCode: Yup.string(),
+        postalCode: Yup.number(),
         country: Yup.string(),
         cellphone: Yup.string(),
         telephone: Yup.string().notRequired(),
@@ -114,11 +119,15 @@ const SenderFormAdmin = () => {
 
     console.log('adding order form to store', values)
     //  !add form to globalstore currentOrder object
-    addFormToOrder(values)
+    // addFormToOrder(values)
+    saveFormToCart.mutate({ userId: session?.user?.id, ...values })
 
     // handlePage && handlePage('NEXT')
     // console.log('form added', formDetails)
   }
+
+  if (customerInfoQueryStatus === 'loading' || formDetailsStatus === 'loading')
+    return <div>Loading...</div>
 
   return (
     <section id="deliveryInformation">
@@ -292,7 +301,7 @@ const SenderFormAdmin = () => {
                 </div>
 
                 <button type="submit" disabled={!formik.isValid}>
-                  Submit
+                  save to order
                 </button>
               </Form>
             </>

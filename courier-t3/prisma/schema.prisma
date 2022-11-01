@@ -7,6 +7,7 @@ generator client {
 }
 generator erd {
   provider = "prisma-erd-generator"
+  includeRelationFromFields = true
 }
 datasource db {
   provider = "postgresql"
@@ -90,8 +91,7 @@ model Order {
   // location is one of a list of locations that it is possible for a order to go through during the life time of its journey in the buisness, there will be some overlapping with the location names and the warehouse names. when warehouse location name changes the location list should change to refelect that.
   // location String @default("Shipping Address/owner")
   pickupDriverId String?
-  // ! TODO: change to pickupDriver
-  pickupdriver User? @relation(name: "DRIVER", fields: [pickupDriverId], references:[id])
+  pickupDriver User? @relation(name: "DRIVER", fields: [pickupDriverId], references:[id])
   pickupDatetime DateTime?
   // pickupRouteCode Int?
   // pickupRoute Route? @relation(fields: [pickupRouteCode], references: [id])
@@ -114,6 +114,7 @@ model pickupZone {
   Code String
   order Order[]
 }
+
 model OrderAddressDuo{
   id Int @id @default(autoincrement())
   orderId Int
@@ -146,15 +147,15 @@ model product {
   id Int @id @default(autoincrement())
   name  String
   price Int
-  type Int
+  type String
   orderItem OrderItem[]
-  productType productType? @relation(fields: [type], references:[id])
+  productType productType? @relation(fields: [type], references:[type])
   cartItem cartItem[]
 
 }
 model productType {
   id Int @id @default(autoincrement())
-  type String
+  type String @unique
   product product[]
 }
 
@@ -213,10 +214,32 @@ model cart {
   userId String @unique
   user User @relation(fields: [userId], references:[id] )
   items cartItem[]
+  addresses CartOrderAddresses[]
+  // order addresses saved in cart table before being added to order table
   // current orderForm with addresses
-
+  
 }
+model CartOrderAddresses{
+  id Int @default(autoincrement())
+  cartId String
+  // .query("getAddressesFromCart")
+  firstName String
+  lastName String
+  cart cart @relation(fields: [cartId], references:[cartId] )
+  address String
+  address2 String?
+  address3 String?
+  city String
+  state String
+  postalCode Int
+  country String
+  cellphone String?
+  telephone String?
+  // default Boolean @default(false)
+  recipient Boolean @default(false)
 
+  @@id([cartId, recipient])
+}
 model cartItem {
   id Int @default(autoincrement())
   cartId String @map("shoppingSessionId")

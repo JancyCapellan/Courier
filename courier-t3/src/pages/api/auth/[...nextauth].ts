@@ -39,7 +39,7 @@ export const authOptions: NextAuthOptions = {
         // session.user = token.user ? token.user : session.user
         // session.user = test
       }
-      console.log('nextauth session:', session)
+      // console.log('nextauth session:', session)
       return session
     },
   },

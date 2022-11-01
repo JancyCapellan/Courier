@@ -1,10 +1,38 @@
+import { MdOutlineWifiTetheringErrorRounded } from 'react-icons/Md'
 import { z } from 'zod'
 // import { createRouter } from L
 import { createRouter } from './context'
 import { createProtectedRouter } from './protected-routers'
 
+async function findOrCreateCart(prisma, userId) {
+  const cart = await prisma.cart.findUnique({
+    where: {
+      userId: userId,
+    },
+    select: {
+      id: true,
+      cartId: true,
+    },
+  })
+
+  if (!cart) {
+    const newCart = await prisma.cart.create({
+      data: {
+        userId: userId,
+      },
+      select: {
+        cartId: true,
+      },
+    })
+
+    return newCart
+  }
+
+  return cart
+}
+
 export const cartApi = createProtectedRouter()
-  .query('getCartSession', {
+  .query('getCartItems', {
     input: z.object({
       userId: z.string(),
     }),
@@ -43,7 +71,7 @@ export const cartApi = createProtectedRouter()
   })
   .mutation('addToCartSession', {
     input: z.object({
-      userId: z.string(),
+      userId: z.string(), //logged in user
       item: z.object({
         name: z.string(),
         price: z.number(), // not needed since items are connected to the itemTable in which the order would have recieved its details
@@ -52,34 +80,7 @@ export const cartApi = createProtectedRouter()
       }),
     }),
     async resolve({ ctx, input }) {
-      async function findOrCreateCart() {
-        const cart = await ctx.prisma.cart.findUnique({
-          where: {
-            userId: input.userId,
-          },
-          select: {
-            // id: true,
-            cartId: true,
-          },
-        })
-
-        if (!cart) {
-          const newCart = await ctx.prisma.cart.create({
-            data: {
-              userId: input.userId,
-            },
-            select: {
-              cartId: true,
-            },
-          })
-
-          return newCart
-        }
-
-        return cart
-      }
-
-      const { cartId } = await findOrCreateCart()
+      const { cartId } = await findOrCreateCart(ctx.prisma, input.userId)
 
       const prevItemQuantity = await ctx.prisma.cartItem.findUnique({
         where: {
@@ -115,12 +116,12 @@ export const cartApi = createProtectedRouter()
       return addedItem
     },
   })
-  .mutation('clearUserCartSession', {
+  .mutation('clearUserCartSessionItems', {
     input: z.object({
       cartId: z.string(),
     }),
     async resolve({ ctx, input }) {
-      const clearedCartSession = await ctx.prisma.cart.delete({
+      const clearedCartSession = await ctx.prisma.cartItem.deleteMany({
         where: {
           cartId: input.cartId,
         },
@@ -167,5 +168,94 @@ export const cartApi = createProtectedRouter()
         },
       })
       return removedItem
+    },
+  })
+  .mutation('saveAddressesFormToCart', {
+    input: z.object({
+      // reciever and shipper
+      userId: z.string(),
+      shipper: z.object({
+        userId: z.string(),
+        firstName: z.string(),
+        lastName: z.string(),
+        shippedFrom: z.object({
+          address: z.string(),
+          address2: z.string(),
+          address3: z.string(),
+          city: z.string(),
+          state: z.string(),
+          postalCode: z.number(),
+          country: z.string(),
+          cellphone: z.string(),
+          telephone: z.string(),
+        }),
+      }),
+      reciever: z.object({
+        firstName: z.string(),
+        lastName: z.string(),
+        shippedTo: z.object({
+          address: z.string(),
+          address2: z.string(),
+          address3: z.string(),
+          city: z.string(),
+          state: z.string(),
+          postalCode: z.number(),
+          country: z.string(),
+          cellphone: z.string(),
+          telephone: z.string(),
+        }),
+      }),
+    }),
+    async resolve({ ctx, input }) {
+      const { cartId } = await findOrCreateCart(ctx.prisma, input.userId)
+
+      console.log('addeding addresses to form:', JSON.stringify(input))
+      const addedShipper = await ctx.prisma.cartOrderAddresses.upsert({
+        where: {
+          cartId_recipient: {
+            cartId: cartId,
+            recipient: false,
+          },
+        },
+        create: {
+          cartId: cartId,
+          recipient: false,
+          ...input.shipper.shippedFrom,
+        },
+        update: input.shipper.shippedFrom,
+      })
+
+      const addedReciever = await ctx.prisma.cartOrderAddresses.upsert({
+        where: {
+          cartId_recipient: {
+            cartId: cartId,
+            recipient: true,
+          },
+        },
+        create: {
+          cartId: cartId,
+          recipient: true,
+          ...input.reciever.shippedTo,
+        },
+        update: input.reciever.shippedTo,
+      })
+
+      // console.log({ addedShipper, addedReciever })
+
+      return true
+    },
+  })
+  .query('getAddressesFromCart', {
+    input: z.object({
+      userId: z.string(),
+    }),
+    async resolve({ ctx, input }) {
+      const { cartId } = await findOrCreateCart(ctx.prisma, input.userId)
+      const formAddresses = await ctx.prisma.cartOrderAddresses.findMany({
+        where: {
+          cartId: cartId,
+        },
+      })
+      return formAddresses
     },
   })

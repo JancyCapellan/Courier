@@ -12,13 +12,13 @@ const Cart = () => {
     data: cartSession,
     status: cartStatus,
     refetch: refetchCart,
-  } = trpc.useQuery(['cart.getCartSession', { userId: session?.user?.id }])
+  } = trpc.useQuery(['cart.getCartItems', { userId: session?.user?.id }])
 
   useEffect(() => {
     setRefetchCart(refetchCart)
   }, [refetchCart])
 
-  const clearCart = trpc.useMutation(['cart.clearUserCartSession'], {
+  const clearCart = trpc.useMutation(['cart.clearUserCartSessionItems'], {
     onSuccess: () => refetchCart(),
   })
 
@@ -35,6 +35,7 @@ const Cart = () => {
   return (
     <section className="flex flex-col items-center">
       <h1>Current Cart</h1>
+      <p>CartId: {cartSession.cartId}</p>
 
       {cartSession?.items.map((item) => {
         return (
