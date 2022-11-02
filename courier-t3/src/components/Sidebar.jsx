@@ -39,17 +39,17 @@ const Sidebar = () => {
     <>
       <nav className={isCollapsed ? 'sidebar collapsed' : 'sidebar'}>
         <span>{/* Welcome {name}! <b>Role: {role}</b> */}</span>
-        <ul className='sidebar-list'>
-          <li key='sidebarToggle' className=''>
-            <div className='sidebar-toggle-btn' onClick={sidebarToggler}>
+        <ul className="sidebar-list">
+          <li key="sidebarToggle" className="">
+            <div className="sidebar-toggle-btn" onClick={sidebarToggler}>
               <svg
-                viewBox='0 0 24 24'
-                preserveAspectRatio='xMidYMid meet'
-                focusable='false'
-                className='menu-icon'
+                viewBox="0 0 24 24"
+                preserveAspectRatio="xMidYMid meet"
+                focusable="false"
+                className="menu-icon"
               >
                 <g>
-                  <path d='M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z'></path>
+                  <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"></path>
                 </g>
               </svg>
             </div>
@@ -58,23 +58,23 @@ const Sidebar = () => {
             {status === 'authenticated' ? (
               sidebarData.map((item, index) => {
                 return (
-                  <li key={index} className=''>
+                  <li key={index} className="">
                     {item.title === 'Order' ? (
                       <Link href={item.path} passHref={true}>
-                        <a
+                        <div
                           onClick={() => setCurrentCustomer(session.user)}
-                          className='sidebar-link'
+                          className="sidebar-link"
                         >
-                          <div className='sidebar-link-icon'>{item.icon}</div>
-                          <div className='sidebar-link-title'>{item.title}</div>
-                        </a>
+                          <div className="sidebar-link-icon">{item.icon}</div>
+                          <div className="sidebar-link-title">{item.title}</div>
+                        </div>
                       </Link>
                     ) : (
                       <Link href={item.path} passHref={true}>
-                        <a className='sidebar-link'>
-                          <div className='sidebar-link-icon'>{item.icon}</div>
-                          <div className='sidebar-link-title'>{item.title}</div>
-                        </a>
+                        <div className="sidebar-link">
+                          <div className="sidebar-link-icon">{item.icon}</div>
+                          <div className="sidebar-link-title">{item.title}</div>
+                        </div>
                       </Link>
                     )}
                   </li>

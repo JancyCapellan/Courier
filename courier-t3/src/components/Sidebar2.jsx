@@ -63,19 +63,19 @@ const Sidebar = () => {
           closeSidebar ? 'w-1/12' : ' w-1/5 '
         }`}
       >
-        <button className=' flex items-center cursor-pointer'>
+        <button className=" flex items-center cursor-pointer">
           <svg
             onClick={() => {
               setCloseSidebar(!closeSidebar)
             }}
-            fill='#2563EB'
-            viewBox='0 0 100 80'
-            width='40'
-            height='40'
+            fill="#2563EB"
+            viewBox="0 0 100 80"
+            width="40"
+            height="40"
           >
-            <rect width='100' height='10'></rect>
-            <rect y='30' width='100' height='10'></rect>
-            <rect y='60' width='100' height='10'></rect>
+            <rect width="100" height="10"></rect>
+            <rect y="30" width="100" height="10"></rect>
+            <rect y="60" width="100" height="10"></rect>
           </svg>
         </button>
 
@@ -85,12 +85,12 @@ const Sidebar = () => {
               {status === 'authenticated' ? (
                 sidebarData.map((item, index) => {
                   return (
-                    <li key={index} className=''>
+                    <li key={index} className="">
                       {item.title === 'Order' ? (
                         <Link href={item.path} passHref={true}>
-                          <a
+                          <div
                             onClick={() => setCurrentCustomer(session.user)}
-                            className='sidebar-link'
+                            className="sidebar-link"
                           >
                             <div
                               className={` ${closeSidebar ? 'p-1 ' : 'p-5'}`}
@@ -102,11 +102,11 @@ const Sidebar = () => {
                             >
                               {item.title}
                             </div>
-                          </a>
+                          </div>
                         </Link>
                       ) : (
                         <Link href={item.path} passHref={true}>
-                          <a className='sidebar-link'>
+                          <div className="sidebar-link">
                             <div className={` ${closeSidebar ? '' : 'p-1'}`}>
                               {item.icon}
                             </div>
@@ -115,7 +115,7 @@ const Sidebar = () => {
                             >
                               {item.title}
                             </div>
-                          </a>
+                          </div>
                         </Link>
                       )}
                     </li>
