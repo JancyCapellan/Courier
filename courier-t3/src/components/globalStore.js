@@ -9,6 +9,7 @@ export const useGlobalStore = create(
     (set, get) => ({
       queryToRaise: {},
       refetchCart: {},
+      refetchCartAddresses: {},
       currentCustomer: {},
       setQueryToRaiseState: (query) =>
         set((state) => {
@@ -22,6 +23,20 @@ export const useGlobalStore = create(
           return {
             ...state,
             refetchCart: refetchFn,
+          }
+        }),
+      setRefetchCartAddresses: (refetchFn) =>
+        set((state) => {
+          return {
+            ...state,
+            refetchCartAddresses: refetchFn,
+          }
+        }),
+      setCurrentlySelectedCreateOrderCustomerId: (customerId) =>
+        set((state) => {
+          return {
+            ...state,
+            currentCustomer: customerId,
           }
         }),
     })

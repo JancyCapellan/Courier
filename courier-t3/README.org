@@ -1,0 +1,50 @@
+#+title: Readme
+#+Author: Jancy Capellan
+#+EMAIL:     (concat "fniessen" at-sign "Jancycapellan97@gmail.com")
+#+DESCRIPTION: Readme for Courier Dashboard App
+#+KEYWORDS:  org-mode, syntax, quick reference, cheat sheet, recommended practices
+#+LANGUAGE:  en
+#+OPTIONS:   H:4 num:nil toc:2 p:t
+
+* Kobe motivation
+"Those times when you get up early and you work hard. Those times you stay up late and you work hard. Those times when you don't feel like working. You're too tired. You don't want to push yourself, but you do it anyway. That is actually the dream."
+then he goes on to say that if you are able to learn from this statement and follow through you will be able to acccomplish, not only your dream but, something greater.
+
+Any time i feel tired or defeated or unfocused, I should recit this in my head. the start of my personal mantra.
+
+* Imporant Notes :Important:
+https://support.stripe.com/questions/chrome-80-samesite-cookie-change
+Chrome 80 SameSite cookie change
+In February 2020, Google released Chrome 80 and began rolling out new cookie behavior. Details of this change and Google’s rollout plans are available at https://www.chromium.org/updates/same-site.
+
+This change requires cross-site cookies to explicitly declare themselves with the SameSite attribute. Cookies that do not do this will result in a Chrome warning in the developer console and being ignored (not sent with any applicable requests).
+
+All Stripe products (i.e. Elements, Checkout, etc.) that use cookies accessible across sites have been updated and will function the same as before the Chrome 80 release.
+
+However, there may still be some cookies set by the Stripe Dashboard, Support Site, or home page that will trigger the Chrome warning on other sites that include the Stripe.js library. We will continue to work at reducing/eliminating these, but these remaining instances do not impact any functionality of Stripe products and only result in a benign warning in the developer console.
+
+* TODO TODOs [12%]
+:PROPERTIES:
+:COOKIE_DATA: TODOs recursive
+:END:
+
+- [-] finishing checkout page
+  - [X] test
+  - [ ]
+- [ ] invoice page date filtering
+- [ ] warehouse page creation
+- [ ] simple scalable css/tailwind with app focus
+- [ ] capicator app testing
+- [ ] running test production server with app
+
+
+
+* Current thoughts
+- I'm currently working on creating check out sessions so the stripe sessions seem to take line items which are the price IDs and quantity of the items from the store but it doesn't seem to take much other variables like customer name or address so I think I have to keep track which I'm already a.m. of the invoice or the checkout number session I get from stripe and put it in my database with my order and solo order with all the data of addresses items etc. I connected to the specific Stripe checkout session.
+- So there are other parameters to put in the check out session but the checkout sessions regards the customer of the order to be the paying customer, this may be a little weird for my project where the sender and payer are likely different, so would creating stripe customer wiht the payment information and using those customers as part of my list even matter? i dont think so,  it Would probably be better to just have the function as I have now where I personally take care of the customers information and then I can connect also that order to the customer or should I just sold for now I guess I'm just not gonna do anything with the stripe customers they're there and they're connected to the orders they paid so I guess that's how you can find them but I'm not sure what purpose they would have on my frontend
+
+* Sub 2 [1/3]
+- [ ] eggs
+- [X] bacon
+- [ ] pancakes
+*

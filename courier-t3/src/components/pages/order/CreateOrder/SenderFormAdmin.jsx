@@ -3,12 +3,24 @@ import { Formik, Form } from 'formik'
 import FormikControl from '@/components/Formik/FormikControl'
 import * as Yup from 'yup'
 import SelectCustomerAddressesModal from './selectCustomerAddressesModal'
-import { usePersistedLocallyStore } from '@/components/globalStore'
+import {
+  useGlobalStore,
+  usePersistedLocallyStore,
+} from '@/components/globalStore'
 import { trpc } from '@/utils/trpc'
 import { useRouter } from 'next/router'
 import { useSession } from 'next-auth/react'
+import { useGlobalFilter } from 'react-table'
+import { set } from 'zod'
 
 const SenderFormAdmin = () => {
+  const router = useRouter()
+  const customerId = router.query.customerId
+  console.log(
+    '🚀 ~ file: SenderFormAdmin.jsx ~ line 19 ~ SenderFormAdmin ~ customerId',
+    customerId
+  )
+  const { data: session, status: sessionStatus } = useSession()
   const [selectedShipperAddress, setSelectedShipperAddress] = useState({
     address: '',
     address2: '',
@@ -22,61 +34,103 @@ const SenderFormAdmin = () => {
   })
   const [showModal, setShowModal] = useState(false)
   const [formValues, setFormValues] = useState(null)
-  const { data: session, status: sessionStatus } = useSession()
+  // console.log(
+  //   '🚀 ~ file: SenderFormAdmin.jsx ~ line 25 ~ SenderFormAdmin ~ formValues',
+  //   formValues
+  // )
 
-  const { data: formDetails, status: formDetailsStatus } = trpc.useQuery(
-    ['cart.getAddressesFromCart', { userId: session?.user?.id }],
+  const setRefetchCartAddresses = useGlobalStore(
+    (state) => state.setRefetchCartAddresses
+  )
+
+  const refetchCart = useGlobalStore((state) => state.refetchCart)
+
+  const {
+    data: formDetails,
+    status: formDetailsStatus,
+    refetch: refetchCartAddresses,
+  } = trpc.useQuery(
+    [
+      'cart.getAddressesFromCart',
+      { userId: session?.user?.id, customerId: customerId },
+    ],
     {
       enabled: sessionStatus === 'authenticated',
     }
   )
-  const saveFormToCart = trpc.useMutation(['cart.saveAddressesFormToCart'])
-
-  const router = useRouter()
-  const customerId = router.query.customerId
+  // console.log(
+  //   '🚀 ~ file: SenderFormAdmin.jsx ~ line 32 ~ SenderFormAdmin ~ formDetails',
+  //   formDetails
+  // )
+  const saveAddressesFormToCart = trpc.useMutation([
+    'cart.saveAddressesFormToCart',
+  ])
 
   const { data: currentCustomer, status: customerInfoQueryStatus } =
     trpc.useQuery(['user.getUserAccountInfo', { userId: customerId }])
+
+  useEffect(() => {
+    setRefetchCartAddresses(refetchCartAddresses)
+  }, [refetchCartAddresses])
+
+  useEffect(() => {
+    console.log(
+      '🚀 ~ file: SenderFormAdmin.jsx ~ line 68 ~ SenderFormAdmin ~ formDetails',
+      formDetails
+    )
+    if (formDetails == null) {
+      console.log('form set to intital values')
+      return
+    }
+
+    setFormValues({
+      shipper: formDetails[0],
+      reciever: formDetails[1],
+    })
+
+    return () => {}
+  }, [formDetails])
+
+  // console.log(
+  //   '🚀 ~ file: SenderFormAdmin.jsx ~ line 77 ~ SenderFormAdmin ~ formValues',
+  //   formValues
+  // )
 
   const selectOptions = [
     { key: 'UNITED STATES', value: 'USA' },
     { key: 'DOMINICAN REPUBLIC', value: 'DR' },
   ]
-  // get addresses fromm user cart and make then inital values or change the form values to them
+
   const initialValues = {
     shipper: {
-      userId: currentCustomer?.id,
+      // userId: currentCustomer?.id,
       firstName: currentCustomer?.firstName,
       lastName: currentCustomer?.lastName,
-      shippedFrom: {
-        // addressId: selectedShipperAddress.id,
-        address: selectedShipperAddress.address,
-        address2: selectedShipperAddress.address2,
-        address3: selectedShipperAddress.address3,
-        city: selectedShipperAddress.city,
-        state: selectedShipperAddress.state,
-        postalCode: selectedShipperAddress.postalCode,
-        country: selectedShipperAddress.country,
-        cellphone: selectedShipperAddress.cellphone,
-        telephone: selectedShipperAddress.telephone,
-        // default: false,
-      },
+      // addressId: selectedShipperAddress.id,
+      address: selectedShipperAddress.address,
+      address2: selectedShipperAddress.address2,
+      address3: selectedShipperAddress.address3,
+      city: selectedShipperAddress.city,
+      state: selectedShipperAddress.state,
+      postalCode: selectedShipperAddress.postalCode,
+      country: selectedShipperAddress.country,
+      cellphone: selectedShipperAddress.cellphone,
+      telephone: selectedShipperAddress.telephone,
+      recipient: false,
     },
     reciever: {
       firstName: '',
       lastName: '',
-      shippedTo: {
-        address: '',
-        address2: '',
-        address3: '',
-        city: '',
-        state: '',
-        postalCode: '',
-        country: 'DR',
-        cellphone: '',
-        telephone: '',
-        recipient: true, // needed for cart addresses primary key
-      },
+      address: '',
+      address2: '',
+      address3: '',
+      city: '',
+      state: '',
+      postalCode: '',
+      country: 'DR',
+      cellphone: '',
+      telephone: '',
+      recipient: true, // needed for cart addresses primary key
     },
   }
 
@@ -84,32 +138,28 @@ const SenderFormAdmin = () => {
     shipper: Yup.object().shape({
       firstName: Yup.string(),
       lastName: Yup.string(),
-      shippedFrom: Yup.object({
-        address: Yup.string(),
-        address2: Yup.string().notRequired(),
-        address3: Yup.string().notRequired(),
-        city: Yup.string(),
-        state: Yup.string(),
-        postalCode: Yup.number(),
-        country: Yup.string(),
-        cellphone: Yup.string(),
-        telephone: Yup.string().notRequired(),
-      }),
+      address: Yup.string(),
+      address2: Yup.string().notRequired(),
+      address3: Yup.string().notRequired(),
+      city: Yup.string(),
+      state: Yup.string(),
+      postalCode: Yup.number(),
+      country: Yup.string(),
+      cellphone: Yup.string(),
+      telephone: Yup.string().notRequired(),
     }),
     reciever: Yup.object().shape({
       firstName: Yup.string(),
       lastName: Yup.string(),
-      shippedTo: Yup.object({
-        address: Yup.string(),
-        address2: Yup.string().notRequired(),
-        address3: Yup.string().notRequired(),
-        city: Yup.string(),
-        state: Yup.string(),
-        postalCode: Yup.number(),
-        country: Yup.string(),
-        cellphone: Yup.string(),
-        telephone: Yup.string().notRequired(),
-      }),
+      address: Yup.string(),
+      address2: Yup.string().notRequired(),
+      address3: Yup.string().notRequired(),
+      city: Yup.string(),
+      state: Yup.string(),
+      postalCode: Yup.number(),
+      country: Yup.string(),
+      cellphone: Yup.string(),
+      telephone: Yup.string().notRequired(),
     }),
   })
 
@@ -120,7 +170,11 @@ const SenderFormAdmin = () => {
     console.log('adding order form to store', values)
     //  !add form to globalstore currentOrder object
     // addFormToOrder(values)
-    saveFormToCart.mutate({ userId: session?.user?.id, ...values })
+    saveAddressesFormToCart.mutate({
+      userId: session?.user?.id,
+      customerId: customerId,
+      ...values,
+    })
 
     // handlePage && handlePage('NEXT')
     // console.log('form added', formDetails)
@@ -147,7 +201,7 @@ const SenderFormAdmin = () => {
 
       {/* <p>selected address: {selectedShipperAddress.address}</p> */}
       <Formik
-        initialValues={initialValues}
+        initialValues={formValues || initialValues}
         validationSchema={validationSchema}
         onSubmit={onSubmit}
         enableReinitialize={true}
@@ -182,55 +236,55 @@ const SenderFormAdmin = () => {
                       control="input"
                       type="text"
                       label="Shipper Address"
-                      name="shipper.shippedFrom.address"
+                      name="shipper.address"
                     />
                     <FormikControl
                       control="input"
                       type="text"
                       label="Shipper Address2"
-                      name="shipper.shippedFrom.address2"
+                      name="shipper.address2"
                     />
                     <FormikControl
                       control="input"
                       type="text"
                       label="Shipper Address3"
-                      name="shipper.shippedFrom.address3"
+                      name="shipper.address3"
                     />
                     <FormikControl
                       control="input"
                       type="text"
                       label="Shipper City"
-                      name="shipper.shippedFrom.city"
+                      name="shipper.city"
                     />
                     <FormikControl
                       control="input"
                       type="text"
                       label="shipper State"
-                      name="shipper.shippedFrom.state"
+                      name="shipper.state"
                     />
                     <FormikControl
                       control="input"
                       type="number"
                       label="shipper Postal Code"
-                      name="shipper.shippedFrom.postalCode"
+                      name="shipper.postalCode"
                     />
                     <FormikControl
                       control="select"
                       label="Country"
-                      name="shipper.shippedFrom.country"
+                      name="shipper.country"
                       options={selectOptions}
                     />
                     <FormikControl
                       control="input"
                       type="text"
                       label="shipper cellphone"
-                      name="shipper.shippedFrom.cellphone"
+                      name="shipper.cellphone"
                     />
                     <FormikControl
                       control="input"
                       type="text"
                       label="shipper telephone"
-                      name="shipper.shippedFrom.telephone"
+                      name="shipper.telephone"
                     />
                   </div>
                   <div className="orderform-reciever">
@@ -253,54 +307,58 @@ const SenderFormAdmin = () => {
                     <FormikControl
                       control="input"
                       label="reciever Address"
-                      name="reciever.shippedTo.address"
+                      name="reciever.address"
                     />
                     <FormikControl
                       control="input"
                       label="reciever Address2"
-                      name="reciever.shippedTo.address2"
+                      name="reciever.address2"
                     />
                     <FormikControl
                       control="input"
                       label="reciever Address3"
-                      name="reciever.shippedTo.address3"
+                      name="reciever.address3"
                     />
                     <FormikControl
                       control="input"
                       label="reciever City"
-                      name="reciever.shippedTo.city"
+                      name="reciever.city"
                     />
                     <FormikControl
                       control="input"
                       label="reciever State"
-                      name="reciever.shippedTo.state"
+                      name="reciever.state"
                     />
                     <FormikControl
                       control="input"
                       type="number"
                       label="reciever Postal Code"
-                      name="reciever.shippedTo.postalCode"
+                      name="reciever.postalCode"
                     />
                     <FormikControl
                       control="select"
                       label="Country"
-                      name="reciever.shippedTo.country"
+                      name="reciever.country"
                       options={selectOptions}
                     />
                     <FormikControl
                       control="input"
                       label="reciever cellphone"
-                      name="reciever.shippedTo.cellphone"
+                      name="reciever.cellphone"
                     />
                     <FormikControl
                       control="input"
                       label="reciever telephone"
-                      name="reciever.shippedTo.telephone"
+                      name="reciever.telephone"
                     />
                   </div>
                 </div>
 
-                <button type="submit" disabled={!formik.isValid}>
+                <button
+                  type="submit"
+                  disabled={!formik.isValid}
+                  onClick={() => refetchCart()}
+                >
                   save to order
                 </button>
               </Form>

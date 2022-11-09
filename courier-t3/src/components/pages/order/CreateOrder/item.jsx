@@ -5,11 +5,14 @@ import {
 // import { useSession } from '@/components/hooks/useSession'
 import { trpc } from '@/utils/trpc'
 import { useSession } from 'next-auth/react'
+import { useRouter } from 'next/router'
 import React, { useState } from 'react'
 // import { useCart } from '../../contexts/cartContext'
 
-const Item = ({ name, price, id }) => {
+const Item = ({ name, price, id, stripePriceId, stripeProductId }) => {
   const [qty, setQty] = useState('1')
+
+  const router = useRouter()
 
   // const addItemToCart = usePersistedLocallyStore((state) => state.addItemToCart)
   // the cart is local for the current page, but i want it to be on DB
@@ -30,12 +33,16 @@ const Item = ({ name, price, id }) => {
     price: price,
     amount: parseInt(qty),
     productId: id,
+    stripePriceId: stripePriceId,
+    stripeProductId: stripeProductId,
   }
 
   // if (qty === 1)
   return (
     <article className="">
-      <div className="">{name}</div>
+      <div className="">
+        {name}: ${price / 100}
+      </div>
       <label htmlFor="quantity">
         <input
           type="number"
@@ -70,7 +77,11 @@ const Item = ({ name, price, id }) => {
         className=""
         onClick={() => {
           if (status === 'authenticated')
-            addToCart.mutate({ userId: session.user.id, item: item })
+            addToCart.mutate({
+              userId: session?.user?.id,
+              customerId: router.query.customerId,
+              item: item,
+            })
         }}
       >
         add to cart

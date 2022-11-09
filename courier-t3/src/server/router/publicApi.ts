@@ -31,38 +31,54 @@ export const publicApiRouter = createRouter()
           id: true,
           name: true,
           price: true,
-          productType: {
-            select: {
-              type: true,
-            },
-          },
+          stripePriceId: true,
+          stripeProductId: true,
+          // productType: {
+          //   select: {
+          //     type: true,
+          //   },
+          // },
         },
       })
 
       return products
     },
   })
-  .query('getAllProductTypes', {
-    async resolve({ ctx }) {
-      const productTypes = await ctx.prisma.productType.findMany()
+// .query('getAllProductTypes', {
+//   async resolve({ ctx }) {
+//     const productTypes = await ctx.prisma.productType.findMany({
+//       select: {
+//         type: true,
+//       },
+//     })
 
-      let typeArray = []
-      for (const typeObject of productTypes) {
-        typeArray.push(typeObject.id.toString())
-      }
+//     // this was used when type select in create new product was based on the id of the type instead of its string name
+//     let typeArray = []
+//     for (const typeObject of productTypes) {
+//       // typeArray.push(typeObject.id.toString())
+//       typeArray.push(typeObject.type)
+//     }
 
-      console.log(typeArray)
+//     // console.log(
+//     //   '🚀 ~ file: publicApi.ts ~ line 51 ~ resolve ~ typeArray',
+//     //   typeArray
+//     // )
+//     // console.log(typeArray)
 
-      productTypes.unshift({
-        id: -1,
-        type: 'PICK A TYPE',
-      })
+//     productTypes.unshift({
+//       // id: -1,
+//       type: 'PICK A TYPE',
+//     })
+//     console.log(
+//       '🚀 ~ file: publicApi.ts ~ line 65 ~ resolve ~ productTypes',
+//       productTypes
+//     )
 
-      console.log(productTypes)
+//     // console.log(productTypes)
 
-      return {
-        productTypes: productTypes,
-        typeArray: typeArray,
-      }
-    },
-  })
+//     return {
+//       productTypes: productTypes,
+//       typeArray: typeArray,
+//     }
+//   },
+// })

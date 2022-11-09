@@ -8,25 +8,68 @@ import Items from '@/components/pages/order/CreateOrder/Items'
 import Cart from '@/components/pages/order/CreateOrder/Cart'
 import { useRouter } from 'next/router'
 import AfterStoreHyrdation from '@/components/HOC/AfterStoreHyrdation'
+import { trpc } from '@/utils/trpc'
+import { useSession } from 'next-auth/react'
+import StaffTable from '@/components/pages/administration/StaffTable'
+// import Checkout from './checkout'
+import Link from 'next/link'
+import getStripe from '@/utils/get-stripejs'
+
+const stripePromise = getStripe()
 
 const createOrder = () => {
-  const currentCustomer = usePersistedLocallyStore(
-    (state) => state.currentCustomer
-  )
+  const { data: session, status: sessionStatus } = useSession()
+  const clearCart = trpc.useMutation(['cart.clearCart'], {
+    onSuccess: () => {
+      //refetch form and items
+      trpc.useContext
+    },
+  })
 
+  const refetchCart = useGlobalStore((state) => state.refetchCart)
+  const refetchCartAddresses = useGlobalStore(
+    (state) => state.refetchCartAddresses
+  )
   const router = useRouter()
 
-  const cu = router.query.customerId
+  // not needed since any component on the route has access to query parameters
+  // const setCurrentlySelectedCreateOrderCustomerId = useGlobalStore(
+  //   (state) => state.setCurrentlySelectedCreateOrderCustomerId
+  // )
+  // setCurrentlySelectedCreateOrderCustomerId(router.query.customerId)
+
+  // console.log(
+  //   '🚀 ~ file: index.jsx ~ line 30 ~ createOrder ~ router',
+  //   router.query.customerId
+  // )
+
   return (
     <>
       <section className="">
+        {sessionStatus === 'authenticated' && (
+          <button
+            onClick={() => {
+              clearCart.mutate({ userId: session?.user?.id })
+              refetchCart()
+              refetchCartAddresses()
+              router.reload()
+            }}
+          >
+            clear entire cart
+          </button>
+        )}
+
         <h1>Shipping Details</h1>
         <SenderFormAdmin />
         <h1>Choose Services</h1>
         <Items />
         <h1>review order</h1>
         <Cart />
-        <h1>checkout</h1>
+        <Link href={`/createOrder/checkout/${router.query.customerId}`}>
+          <button className="btn btn-blue">Review Order before checkout</button>
+        </Link>
+
+        {/* <PreCheckout /> */}
       </section>
     </>
   )

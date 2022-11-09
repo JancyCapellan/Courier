@@ -172,7 +172,7 @@ const Table = ({ columns }) => {
     <>
       {isSuccess ? (
         <>
-          <div className='pagination'>
+          <div className="pagination">
             <button onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
               {'<<'}
             </button>{' '}
@@ -197,7 +197,7 @@ const Table = ({ columns }) => {
             <span>
               | Go to page:{' '}
               <input
-                type='number'
+                type="number"
                 defaultValue={pageIndex + 1}
                 onChange={(e) => {
                   const page = e.target.value ? Number(e.target.value) - 1 : 0
@@ -220,7 +220,7 @@ const Table = ({ columns }) => {
             </select>
           </div>
 
-          <div className='btn btn-blue ' onClick={() => toggleModal()}>
+          <div className="btn btn-blue " onClick={() => toggleModal()}>
             Create Customer
           </div>
           <ModalContainer show={showModal} handleClose={toggleModal}>
@@ -299,6 +299,9 @@ const CustomerReactTable = () => {
   const setCurrentCustomer = usePersistedLocallyStore(
     (state) => state.setCurrentCustomer
   )
+  // const setCurrentlySelectedCreateOrderCustomerId = useGlobalStore(
+  //   (state) => state.setCurrentlySelectedCreateOrderCustomerId
+  // )
   const columns = React.useMemo(
     () => [
       {
@@ -323,12 +326,12 @@ const CustomerReactTable = () => {
         Cell: ({ row: { original } }) => (
           <>
             <button
-              className='btn btn-blue'
+              className="btn btn-blue"
               onClick={() => {
                 // console.log(original)
                 // i could pass this like i did for the account page button but this hides the user id from the user, but then id is passed as a prop and not from the global state,
                 // with global store if i can refresh without presistance, url is by design presisted
-                // setCurrentCustomer(original) 
+                // setCurrentCustomer(original)
                 router.push({
                   pathname: `/createOrder`,
                   query: { customerId: original.id },
@@ -338,7 +341,7 @@ const CustomerReactTable = () => {
               order
             </button>
             <button
-              className='btn btn-blue ml-2'
+              className="btn btn-blue ml-2"
               onClick={() => {
                 setCurrentCustomer(original)
                 router.push({

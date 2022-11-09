@@ -13,6 +13,8 @@ import superjson from 'superjson'
 import { SessionProvider } from 'next-auth/react'
 import '../styles/globals.css'
 import { ReactQueryDevtools } from 'react-query/devtools'
+import '@stripe/stripe-js' // https://github.com/stripe/stripe-js#ensuring-stripejs-is-available-everywhere
+import getStripe from '@/utils/get-stripejs'
 
 // type NextPageWithLayout<P = {}> = NextPage<P> & {
 //   getLayout?: (page: ReactNode) => ReactNode
@@ -28,6 +30,7 @@ type AppPropsWithLayout = AppProps & {
   Component: NextPageWithLayout
 }
 
+const stripePromise = getStripe()
 //typing is better this time but according to: https://dev.to/ofilipowicz/next-js-per-page-layouts-and-typescript-lh5,
 //there is more generics that can be used advance these types.
 const MyApp: AppType = ({ Component, pageProps }: AppPropsWithLayout) => {

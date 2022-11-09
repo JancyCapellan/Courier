@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "es5",
+    "target": "ES6",
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "baseUrl": "./src",
@@ -28,7 +28,9 @@
     "**/*.ts",
     "**/*.tsx",
     "**/*.js",
-    "**/*.jsx"
+    "**/*.jsx",
+    "src/components/test2.mjs",
+    "src/server/test.jts"
   ],
   "exclude": ["node_modules"]
 }

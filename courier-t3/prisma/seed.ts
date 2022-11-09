@@ -21,30 +21,24 @@ async function main() {
       },
     ],
   })
+  console.log('✅ ~ file: seed.ts ~ line 24 ~ main ~ testUsers', testUsers)
 
-  const testProductTypes = await prisma.productType.createMany({
-    data: [
-      {
-        type: 'BOX',
-      },
-      {
-        type: 'TANK',
-      },
-      {
-        type: 'MISC',
-      },
-    ],
-  })
+  // const testProducts = await prisma.product.createMany({
+  //   data: [
+  //     {
+  //       name: 'Box of used clothes',
+  //       price: 10000, //10000 cents == $100
+  //       type: 'BOX',
+  //     },
+  //     {
+  //       name: 'Box of New clothes',
+  //       price: 15000,
+  //       type: 'BOX',
+  //     },
+  //   ],
+  // })
 
-  const testProducts = await prisma.product.createMany({
-    data: [
-      {
-        name: 'Box of used clothes',
-        price: 100,
-        type: 'BOX',
-      },
-    ],
-  })
+  // add products from stripe is available to DB, hopefully sync issues dont happen if for some reason a product has a different stripe productID/priceID in DB than stripe db
 }
 
 main()

@@ -5,10 +5,10 @@ generator client {
   provider = "prisma-client-js"
   // previewFeatures = ["interactiveTransactions"]
 }
-generator erd {
-  provider = "prisma-erd-generator"
-  includeRelationFromFields = true
-}
+// generator erd {
+//   provider = "prisma-erd-generator"
+//   includeRelationFromFields = true
+// }
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
@@ -53,7 +53,9 @@ model User {
   addresses address[]
   orders Order[] @relation("CUSTOMER")
   pickups Order[] @relation("DRIVER")
-  currentOrder cart?
+  currentCart cart[] @relation("cartCreator")
+  cartCustomer cart[] @relation("customer")
+
 }
 
 model address {
@@ -83,7 +85,7 @@ model Order {
   recieverFirstName String
   recieverLastName String
   totalItems Int
-  totalPrice Int
+  totalPrice BigInt // $1 == 100cents, $100 box = 10000 or 10000 cents this is for compatibility with finance apps and keep track of money accurately using 64bits instead of a float or numeric or deicmal (psql)
   paymentType String
   statusId Int
   status orderStatus @relation(fields: [statusId], references: [id])
@@ -146,18 +148,20 @@ model OrderItem {
 model product {
   id Int @id @default(autoincrement())
   name  String
-  price Int
-  type String
+  price Int // in USD cents, $50.25 = 5025
+  stripePriceId String? @unique
+  stripeProductId String? @unique
   orderItem OrderItem[]
-  productType productType? @relation(fields: [type], references:[type])
+  // type String
+  // productType productType? @relation(fields: [type], references:[type])
   cartItem cartItem[]
 
 }
-model productType {
-  id Int @id @default(autoincrement())
-  type String @unique
-  product product[]
-}
+// model productType {
+//   id Int @id @default(autoincrement())
+//   type String @unique
+//   product product[]
+// }
 
 // shipping container that are sent on  the boat
 model containers {
@@ -209,41 +213,45 @@ model containerStatus {
 // they should still have one cart, so a customer can have two different orders being made by two different users,
 // maybe make a way to save orders so another admin/staff may takeover the order??
 model cart {
-  id Int @id @default(autoincrement()) // change to uuID
+  id Int @default(autoincrement()) // change to uuID
   cartId String @unique @default(uuid())
-  userId String @unique
-  user User @relation(fields: [userId], references:[id] )
+  customerId String
+  customer User @relation(fields: [customerId], references: [id], name: "customer")
+  creatingUserId String
+  cartCreator User @relation(fields: [creatingUserId], references:[id], name:"cartCreator")
   items cartItem[]
   addresses CartOrderAddresses[]
   // order addresses saved in cart table before being added to order table
   // current orderForm with addresses
+
+  @@id([creatingUserId, customerId])
   
 }
 model CartOrderAddresses{
   id Int @default(autoincrement())
   cartId String
   // .query("getAddressesFromCart")
-  firstName String
-  lastName String
-  cart cart @relation(fields: [cartId], references:[cartId] )
-  address String
+  firstName String?
+  lastName String?
+  cart cart @relation(fields: [cartId], references:[cartId] ,onDelete: Cascade)
+  address String?
   address2 String?
   address3 String?
-  city String
-  state String
-  postalCode Int
-  country String
+  city String?
+  state String?
+  postalCode Int?
+  country String?
   cellphone String?
   telephone String?
   // default Boolean @default(false)
   recipient Boolean @default(false)
 
-  @@id([cartId, recipient])
+  @@id([cartId, recipient]) //reciever: recipient==true, shipper:recipient==false; address, one form for both addresses caused me to use another varibale mot hadnle the difference between addresses.
 }
 model cartItem {
   id Int @default(autoincrement())
   cartId String @map("shoppingSessionId")
-  shoppingSession cart @relation(fields: [cartId], references: [cartId] ,onDelete: Cascade, onUpdate: Cascade)
+  cart cart @relation(fields: [cartId], references: [cartId] ,onDelete: Cascade, onUpdate: Cascade)
   quantity Int
   productId Int
   product product @relation(fields: [productId], references: [id])

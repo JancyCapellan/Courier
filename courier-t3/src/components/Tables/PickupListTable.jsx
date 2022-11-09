@@ -9,13 +9,14 @@ import {
   useRowSelect,
 } from 'react-table'
 import { useQuery, useMutation, useQueryClient } from 'react-query'
-import axios from 'axios'
 import { GlobalFilter } from './tableFilters'
 import { useRouter } from 'next/router'
-import { backendClient } from '../axiosClient.mjs'
 import { makeOrder } from './makeData.mjs'
 
-const IndeterminateCheckbox = React.forwardRef(function ICheckbox({ indeterminate, ...rest }, ref) {
+const IndeterminateCheckbox = React.forwardRef(function ICheckbox(
+  { indeterminate, ...rest },
+  ref
+) {
   const defaultRef = React.useRef()
   const resolvedRef = ref || defaultRef
 
@@ -25,13 +26,15 @@ const IndeterminateCheckbox = React.forwardRef(function ICheckbox({ indeterminat
 
   return (
     <>
-      <input type='checkbox' ref={resolvedRef} {...rest} />
+      <input type="checkbox" ref={resolvedRef} {...rest} />
     </>
   )
 })
 
 // Define a default UI for filtering
-function DefaultColumnFilter({ column: { filterValue, preFilteredRows, setFilter } }) {
+function DefaultColumnFilter({
+  column: { filterValue, preFilteredRows, setFilter },
+}) {
   const count = preFilteredRows.length
 
   return (
@@ -93,7 +96,10 @@ const PickupListTable = () => {
 
   const postAddManyOrders = async () => {
     try {
-      const res = await backendClient.post('/order/submitOrder', makeOrder(1)[0])
+      const res = await backendClient.post(
+        '/order/submitOrder',
+        makeOrder(1)[0]
+      )
       console.log(' added orders', res)
       return res.data
     } catch (error) {
@@ -104,10 +110,16 @@ const PickupListTable = () => {
   // useful to see new add order without refreshing or gettting all orders again.
   const mutationNewOrder = useMutation(postAddManyOrders, {
     onSuccess: (data) => {
-      queryClient.setQueryData(['getAllOrders', queryPageIndex, queryPageSize], (oldData) => {
-        console.log('new Order:', oldData, queryPageIndex, queryPageSize)
-        return { orderCount: oldData.orderCount + 1, orders: [...oldData.orders, data] }
-      })
+      queryClient.setQueryData(
+        ['getAllOrders', queryPageIndex, queryPageSize],
+        (oldData) => {
+          console.log('new Order:', oldData, queryPageIndex, queryPageSize)
+          return {
+            orderCount: oldData.orderCount + 1,
+            orders: [...oldData.orders, data],
+          }
+        }
+      )
     },
   })
 
@@ -133,7 +145,9 @@ const PickupListTable = () => {
     const offset = page * pageSize
 
     try {
-      const { data } = await backendClient.get(`order/allOrders?offset=${offset}&limit=${pageSize}`)
+      const { data } = await backendClient.get(
+        `order/allOrders?offset=${offset}&limit=${pageSize}`
+      )
       return data
     } catch (error) {
       throw new Error(`API error:${error?.message}`)
@@ -160,9 +174,12 @@ const PickupListTable = () => {
       // change pickup order for order after single selection
 
       console.log('newpickupdriverid', newPickUpDriverId, orderId)
-      const { data } = await backendClient.put(`order/update/${orderId}/pickupDriver`, {
-        driverId: newPickUpDriverId,
-      })
+      const { data } = await backendClient.put(
+        `order/update/${orderId}/pickupDriver`,
+        {
+          driverId: newPickUpDriverId,
+        }
+      )
       console.log('updated pickup', data)
       return data
     },
@@ -179,10 +196,13 @@ const PickupListTable = () => {
     async ({ orderIds, newPickUpDriverId }) => {
       // change pickup order for order after single selection
 
-      const { data } = await backendClient.put(`order/update/pickupDriver/many`, {
-        ids: orderIds,
-        driverId: newPickUpDriverId,
-      })
+      const { data } = await backendClient.put(
+        `order/update/pickupDriver/many`,
+        {
+          ids: orderIds,
+          driverId: newPickUpDriverId,
+        }
+      )
       // console.log('updated pickup', data)
       return data
     },
@@ -201,9 +221,12 @@ const PickupListTable = () => {
     async ({ orderId, pickupZoneId }) => {
       // change pickup order for order after single selection
 
-      const { data } = await backendClient.put(`order/update/${orderId}/pickupZone`, {
-        pickupZoneId: pickupZoneId,
-      })
+      const { data } = await backendClient.put(
+        `order/update/${orderId}/pickupZone`,
+        {
+          pickupZoneId: pickupZoneId,
+        }
+      )
       return data
     },
     {
@@ -233,10 +256,15 @@ const PickupListTable = () => {
               <select
                 onChange={(e) => {
                   console.log('pickupZoneId:', e.target.value)
-                  mutationPickupZone.mutate({ orderId: original.id, pickupZoneId: e.target.value })
+                  mutationPickupZone.mutate({
+                    orderId: original.id,
+                    pickupZoneId: e.target.value,
+                  })
                 }}
               >
-                <option value={original.pickupZoneId}>{original.pickupZone?.Name}</option>
+                <option value={original.pickupZoneId}>
+                  {original.pickupZone?.Name}
+                </option>
                 {orderOptions.pickupZones.map((zone) => (
                   <option key={`${zone.code}${zone.id}`} value={zone.id}>
                     {zone.Name}
@@ -273,7 +301,8 @@ const PickupListTable = () => {
                 }}
               >
                 <option value={original.pickupDriverId}>
-                  {original.pickupdriver?.firstName} {original.pickupdriver?.lastName}
+                  {original.pickupdriver?.firstName}{' '}
+                  {original.pickupdriver?.lastName}
                 </option>
                 {orderOptions.drivers.map((driver) => (
                   <option key={driver.id} value={driver.id}>
@@ -297,7 +326,8 @@ const PickupListTable = () => {
       },
       {
         Header: 'Shipped To',
-        accessor: (data) => `${data.recieverFirstName} ${data.recieverLastName}`,
+        accessor: (data) =>
+          `${data.recieverFirstName} ${data.recieverLastName}`,
       },
       {
         Header: 'Time placed',
@@ -345,7 +375,9 @@ const PickupListTable = () => {
         return rows.filter((row) => {
           const rowValue = row.values[id]
           return rowValue !== undefined
-            ? String(rowValue).toLowerCase().startsWith(String(filterValue).toLowerCase())
+            ? String(rowValue)
+                .toLowerCase()
+                .startsWith(String(filterValue).toLowerCase())
             : true
         })
       },
@@ -501,7 +533,7 @@ const PickupListTable = () => {
             2
           )}
 
-          <div className='pagination'>
+          <div className="pagination">
             <button onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
               {'<<'}
             </button>{' '}
@@ -511,7 +543,10 @@ const PickupListTable = () => {
             <button onClick={() => nextPage()} disabled={!canNextPage}>
               {'>'}
             </button>{' '}
-            <button onClick={() => gotoPage(pageCount - 1)} disabled={!canNextPage}>
+            <button
+              onClick={() => gotoPage(pageCount - 1)}
+              disabled={!canNextPage}
+            >
               {'>>'}
             </button>{' '}
             <span>
@@ -523,7 +558,7 @@ const PickupListTable = () => {
             <span>
               | Go to page:{' '}
               <input
-                type='number'
+                type="number"
                 defaultValue={pageIndex + 1}
                 onChange={(e) => {
                   const page = e.target.value ? Number(e.target.value) - 1 : 0
@@ -551,9 +586,17 @@ const PickupListTable = () => {
               {headerGroups.map((headerGroup) => (
                 <tr {...headerGroup.getHeaderGroupProps()}>
                   {headerGroup.headers.map((column) => (
-                    <th {...column.getHeaderProps(column.getSortByToggleProps())}>
+                    <th
+                      {...column.getHeaderProps(column.getSortByToggleProps())}
+                    >
                       {column.render('Header')}
-                      <span>{column.isSorted ? (column.isSortedDesc ? ' 🔽' : ' 🔼') : ' ↕'}</span>
+                      <span>
+                        {column.isSorted
+                          ? column.isSortedDesc
+                            ? ' 🔽'
+                            : ' 🔼'
+                          : ' ↕'}
+                      </span>
                     </th>
                   ))}
                 </tr>
@@ -573,7 +616,9 @@ const PickupListTable = () => {
                     {...row.getRowProps()}
                   >
                     {row.cells.map((cell) => {
-                      return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
+                      return (
+                        <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
+                      )
                     })}
                   </tr>
                 )

@@ -5,12 +5,12 @@ import Sidebar from './Sidebar2'
 
 export default function Layout({ children }) {
   return (
-    <div className='flex h-screen'>
-      <div className='flex-1 flex flex-col overflow-hidden'>
+    <div className="flex h-screen">
+      <div className="flex-1 flex flex-col overflow-hidden">
         <Header />
-        <div className='flex h-full'>
+        <div className="flex h-full">
           <Sidebar />
-          <main className='flex flex-col w-full bg-white overflow-x-hidden overflow-y-auto p-6'>
+          <main className="flex flex-col w-full bg-white overflow-x-hidden overflow-y-auto p-6 mb-6">
             {children}
           </main>
         </div>

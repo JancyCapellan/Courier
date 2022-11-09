@@ -29,10 +29,12 @@ const CartItem = ({ productId, quantity, product, cartId, refetchCart }) => {
     <article className="">
       {/* <img src={img} alt={title} /> */}
 
-      <p>{product.name}</p>
+      <p>
+        <b>{product.name}</b>
+      </p>
       <div>
         {/* <h4>{title}</h4> */}
-        <div className="item-price">${product.price}</div>
+        <div className="item-price">${product.price / 100}</div>
         {/* remove button */}
         <button
           className="remove-btn"

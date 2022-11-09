@@ -6,7 +6,12 @@ import ModalContainer from '@/components/HOC/ModalContainer'
 import { Formik, Form } from 'formik'
 import FormikControl from '@/components/Formik/FormikControl'
 
+// ! errors when no user is logged in and component is loaded
 const InfoEditor = ({ currentUser }) => {
+  console.log(
+    '🚀 ~ file: InfoEditor.jsx ~ line 10 ~ InfoEditor ~ currentUser',
+    currentUser
+  )
   // not all of these values are in the form inputs to hide them from being edited.
   const queryClient = useQueryClient()
   const [showEditForm, setShowEditForm] = useState(false)
@@ -65,7 +70,7 @@ const InfoEditor = ({ currentUser }) => {
 
   return (
     <>
-      <div className='mt-4'>
+      <div className="mt-4">
         <table>
           <caption>
             <b>User Account Information</b>
@@ -129,28 +134,28 @@ const InfoEditor = ({ currentUser }) => {
             return (
               <Form>
                 <FormikControl
-                  control='input'
-                  type='text'
-                  label='First Name'
-                  name='firstName'
+                  control="input"
+                  type="text"
+                  label="First Name"
+                  name="firstName"
                 />
                 <FormikControl
-                  control='input'
-                  type='text'
-                  label='Middle Name'
-                  name='middleName'
+                  control="input"
+                  type="text"
+                  label="Middle Name"
+                  name="middleName"
                 />
                 <FormikControl
-                  control='input'
-                  type='text'
-                  label='Last Name'
-                  name='lastName'
+                  control="input"
+                  type="text"
+                  label="Last Name"
+                  name="lastName"
                 />
                 <FormikControl
-                  control='input'
-                  type='email'
-                  label='email'
-                  name='email'
+                  control="input"
+                  type="email"
+                  label="email"
+                  name="email"
                 />
                 {/* <FormikControl
                   control='input'
@@ -168,12 +173,12 @@ const InfoEditor = ({ currentUser }) => {
                 name='licenseId'
               /> */}
                 <FormikControl
-                  control='input'
-                  type='text'
-                  label='preferred language'
-                  name='preferredLanguage'
+                  control="input"
+                  type="text"
+                  label="preferred language"
+                  name="preferredLanguage"
                 />
-                <button type='submit' disabled={!isValid}>
+                <button type="submit" disabled={!isValid}>
                   Save Changes
                 </button>
               </Form>
