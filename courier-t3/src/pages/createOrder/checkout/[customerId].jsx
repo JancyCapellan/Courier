@@ -44,6 +44,8 @@ const Checkout = () => {
     }
   )
 
+  const createOrderInvoice = trpc.useMutation(['stripe.createOrderInvoice'])
+
   if (sessionStatus === 'loading' || cartStatus === 'loading')
     return <div>Loading...</div>
 
@@ -132,6 +134,23 @@ const Checkout = () => {
           pay online
         </button>
         <button className="btn btn-blue">paying in cash?</button>
+        <button
+          onClick={() => {
+            // Using the asPath field may lead to a mismatch between client and server if the page is rendered using server-side rendering or automatic static optimization. Avoid using asPath until the isReady field is true.
+            if (router.isReady) {
+              createOrderInvoice.mutate({
+                userId: session?.user?.id,
+                customerId: router.query.customerId,
+                redirectUrl: router.asPath,
+              })
+            } else {
+              // TODO: change to modal, maybe crossplatorm issue
+              alert('try again, router wasnt ready')
+            }
+          }}
+        >
+          Create Invoice to be paid later
+        </button>
       </div>
     </section>
   )

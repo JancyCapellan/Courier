@@ -23,15 +23,19 @@ All Stripe products (i.e. Elements, Checkout, etc.) that use cookies accessible 
 
 However, there may still be some cookies set by the Stripe Dashboard, Support Site, or home page that will trigger the Chrome warning on other sites that include the Stripe.js library. We will continue to work at reducing/eliminating these, but these remaining instances do not impact any functionality of Stripe products and only result in a benign warning in the developer console.
 
-* TODO TODOs [12%]
+* TODO TODOs [11%]
 :PROPERTIES:
 :COOKIE_DATA: TODOs recursive
 :END:
 
 - [-] finishing checkout page
-  - [X] test
-  - [ ]
-- [ ] invoice page date filtering
+  - [X] stripe checkout test work
+  - [ ] create stripe invoice, for more control of order and to allow app DB to more easily incorport the old invoice system to allow flexbility when working with invoicing work flow
+    - [ ] create invoice first
+    - [ ] create invoice items and connect to invoice
+- [ ] invoice
+  - [ ]  replace api calls with trpc
+  - [ ] invoice table date filtering
 - [ ] warehouse page creation
 - [ ] simple scalable css/tailwind with app focus
 - [ ] capicator app testing
@@ -42,6 +46,7 @@ However, there may still be some cookies set by the Stripe Dashboard, Support Si
 * Current thoughts
 - I'm currently working on creating check out sessions so the stripe sessions seem to take line items which are the price IDs and quantity of the items from the store but it doesn't seem to take much other variables like customer name or address so I think I have to keep track which I'm already a.m. of the invoice or the checkout number session I get from stripe and put it in my database with my order and solo order with all the data of addresses items etc. I connected to the specific Stripe checkout session.
 - So there are other parameters to put in the check out session but the checkout sessions regards the customer of the order to be the paying customer, this may be a little weird for my project where the sender and payer are likely different, so would creating stripe customer wiht the payment information and using those customers as part of my list even matter? i dont think so,  it Would probably be better to just have the function as I have now where I personally take care of the customers information and then I can connect also that order to the customer or should I just sold for now I guess I'm just not gonna do anything with the stripe customers they're there and they're connected to the orders they paid so I guess that's how you can find them but I'm not sure what purpose they would have on my frontend
+- Check out and payment works on but now I need to make sure that the payment is connected to the order so I'm not sure what gets returned by stripe on success other than sisters so I guess just using the stripe
 
 * Sub 2 [1/3]
 - [ ] eggs
