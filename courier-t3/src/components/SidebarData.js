@@ -3,7 +3,7 @@ import { HiOutlineUserGroup } from 'react-icons/hi'
 import { FiSettings } from 'react-icons/fi'
 import { GrGroup } from 'react-icons/gr'
 import { FaFileInvoiceDollar, FaWarehouse } from 'react-icons/fa'
-import { MdAdminPanelSettings } from 'react-icons/Md'
+import { MdAdminPanelSettings } from 'react-icons/md'
 
 // cname is className
 // { staff:[], cust: [], admin:[]}
