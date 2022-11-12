@@ -7,10 +7,11 @@ import { useRouter } from 'next/router'
 // review cart order, addresses, and items, and proceed to stripe checkout and creating an invoice for the order
 const Checkout = () => {
   const router = useRouter()
-  console.log('🚀 ~ file: checkout.jsx ~ line 10 ~ Checkout ~ router', router)
+  // console.log('🚀 ~ file: checkout.jsx ~ line 10 ~ Checkout ~ router', router)
 
   const { data: session, status: sessionStatus } = useSession()
 
+  // TODO: change returned object to have explicit addresses, rn it is just explected that index 0 is shipper customer and index 1 is recieving person
   const { data: cart, status: cartStatus } = trpc.useQuery(
     [
       'cart.getCartSession',
@@ -44,7 +45,7 @@ const Checkout = () => {
     }
   )
 
-  const createOrderInvoice = trpc.useMutation(['stripe.createOrderInvoice'])
+  // const createOrderInvoice = trpc.useMutation(['stripe.createOrderInvoice'])
 
   if (sessionStatus === 'loading' || cartStatus === 'loading')
     return <div>Loading...</div>
@@ -133,8 +134,10 @@ const Checkout = () => {
         >
           pay online
         </button>
-        <button className="btn btn-blue">paying in cash?</button>
-        <button
+
+        {/* TODO: after click, cart is add to orderTable and paymentType is updated to cash */}
+        <button className="btn btn-blue">pay in cash</button>
+        {/* <button
           onClick={() => {
             // Using the asPath field may lead to a mismatch between client and server if the page is rendered using server-side rendering or automatic static optimization. Avoid using asPath until the isReady field is true.
             if (router.isReady) {
@@ -150,7 +153,7 @@ const Checkout = () => {
           }}
         >
           Create Invoice to be paid later
-        </button>
+        </button> */}
       </div>
     </section>
   )

@@ -415,3 +415,40 @@ export const cartApi = createProtectedRouter()
       }
     },
   })
+  .mutation('createOrder', {
+    input: z.object({
+      customerId: z.string(),
+      userId: z.string(),
+    }),
+    async resolve({ ctx, input }) {
+      // find cart made by user for customer, add info to order table, remove cart entry
+
+      const { cartId } = await findCart(
+        ctx.prisma,
+        input.userId,
+        input.customerId
+      )
+
+      const cartDetails = await ctx.prisma.cart.findUnique({
+        where: {
+          cartId: cartId,
+        },
+        include: {
+          items: true,
+          addresses: true,
+        },
+      })
+      console.log(
+        '🚀 ~ file: cartApi.ts ~ line 437 ~ resolve ~ cartDetails',
+        cartDetails
+      )
+
+      //TODO: add cartdetails here then add webhook checkout.session.completged to the same order, then the order should have the needed info to complete it. then routes and pickup times cna be placed on the order.
+      const createdOrder = await ctx.prisma.order.create({
+        data: {
+          // userid customer id
+          //
+        },
+      })
+    },
+  })

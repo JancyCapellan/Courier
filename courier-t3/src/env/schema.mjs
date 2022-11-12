@@ -11,6 +11,7 @@ export const serverSchema = z.object({
   NEXTAUTH_SECRET: z.string(),
   NEXTAUTH_URL: z.string().url(),
   STRIPE_SECRET_KEY: z.string(),
+  STRIPE_WEBHOOK_SECRET: z.string(),
   // DISCORD_CLIENT_ID: z.string(),
   // DISCORD_CLIENT_SECRET: z.string(),
 })

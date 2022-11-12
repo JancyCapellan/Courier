@@ -22,14 +22,7 @@ datasource db {
 //   STAFF
 // }
 //location vs status?
-enum OrderLocation {
-  withShipper
-  BRONXwarehouse
-  CotainerBoat
-  DRwarehouse
-  MIAMIwarehouse
-  withReciever
-}
+
 
 model User {
   id            String    @id @default(cuid())
@@ -74,36 +67,45 @@ model address {
   recipient Boolean @default(false)
   user User @relation(fields: [userId], references:[id] )
 }
-
-// change user to userOwnerOfOrder something to make it clear that the user is the customer taht placed the order for service
+enum OrderLocation {
+  withShipper
+  BRONXwarehouse
+  CotainerBoat
+  DRwarehouse
+  MIAMIwarehouse
+  withReciever
+}
+// TODO: finsihing order route chooser
 model Order {
   id Int @id @default(autoincrement())
-  userId String
-  // thecustomer who sent the package, so client/shipper
-  user User @relation("CUSTOMER",fields: [userId], references:[id] )
+  userId String // thecustomer who sent the package, so client/shipper
+  customer User @relation("CUSTOMER",fields: [userId], references:[id] )
   timePlaced DateTime @default(now())
-  recieverFirstName String
-  recieverLastName String
-  totalItems Int
-  totalPrice BigInt // $1 == 100cents, $100 box = 10000 or 10000 cents this is for compatibility with finance apps and keep track of money accurately using 64bits instead of a float or numeric or deicmal (psql)
-  paymentType String
-  statusId Int
-  status orderStatus @relation(fields: [statusId], references: [id])
-  location OrderLocation @default(withShipper)
-  // location is one of a list of locations that it is possible for a order to go through during the life time of its journey in the buisness, there will be some overlapping with the location names and the warehouse names. when warehouse location name changes the location list should change to refelect that.
+  // recieverFirstName String
+  // recieverLastName String
+  //totalItems Int? // technically have this in the orderItems tables if query all the items
+  //totalPrice BigInt? // $1 == 100cents, $100 box = 10000 or 10000 cents this is for compatibility with finance apps and keep track of money accurately using 64bits instead of a float or numeric or deicmal (psql)
+  
+  paymentType String // cash, card, etc //webhook from stripe or cash confirmation page updates
+  statusMessage String // id of status, can make into the status string itself if message is unique
+  status orderStatus @relation(fields: [statusMessage], references: [message])
+  
+  // location OrderLocation @default(withShipper) // location is one of a list of locations that it is possible for a order to go through during the life time of its journey in the buisness, there will be some overlapping with the location names and the warehouse names. when warehouse location name changes the location list should change to refelect that.
   // location String @default("Shipping Address/owner")
+  
   pickupDriverId String?
   pickupDriver User? @relation(name: "DRIVER", fields: [pickupDriverId], references:[id])
   pickupDatetime DateTime?
   // pickupRouteCode Int?
   // pickupRoute Route? @relation(fields: [pickupRouteCode], references: [id])
-  // id for warehouse of origin, the warehouse that took the originla order
   items OrderItem[]
   addresses OrderAddressDuo[]
   pickupZoneId Int?
   pickupZone pickupZone? @relation(fields:[pickupZoneId], references: [id])
   containerId Int?
   container containers? @relation(fields:[containerId], references: [id])
+  
+  stripeCheckoutId String? //need stripe informmation to connect order to relevent stripe checkout session, with this id i can query specific orders when updating with information from stripe checkout
 }
 // model Route {
 //   id Int @id @default(autoincrement())
@@ -121,6 +123,8 @@ model OrderAddressDuo{
   id Int @id @default(autoincrement())
   orderId Int
   order Order @relation(fields: [orderId],references:[id] )
+  firstName String
+  lastName String
   address String
   address2 String?
   address3 String?
@@ -130,18 +134,22 @@ model OrderAddressDuo{
   country String
   cellphone String?
   telephone String?
-  // default Boolean @default(false)
   recipient Boolean @default(false)
 }
 
 model OrderItem {
   id Int @id @default(autoincrement())
   orderId Int
-  productsId Int
-  amount Int
   order Order @relation(fields: [orderId],references:[id] )
+  quantity Int
+  productsId Int
   product product @relation(fields: [productsId], references:[id])
 
+}
+model orderStatus {
+  id Int @id @default(autoincrement())
+  message String @unique
+  order Order[]
 }
 
 
@@ -196,11 +204,6 @@ model warehouseDetails {
 }
 
 
-model orderStatus {
-  id Int @id @default(autoincrement())
-  message String
-  order Order[]
-}
 
 model containerStatus {
   id Int @id @default(autoincrement())
