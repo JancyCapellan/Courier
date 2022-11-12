@@ -1,10 +1,11 @@
 #+title: Readme
 #+Author: Jancy Capellan
-#+EMAIL:     (concat "fniessen" at-sign "Jancycapellan97@gmail.com")
+#+EMAIL:  Jancycapellan97@gmail.com
 #+DESCRIPTION: Readme for Courier Dashboard App
 #+KEYWORDS:  org-mode, syntax, quick reference, cheat sheet, recommended practices
 #+LANGUAGE:  en
 #+OPTIONS:   H:4 num:nil toc:2 p:t
+#+STARTUP: hideblocks
 
 * Kobe motivation
 "Those times when you get up early and you work hard. Those times you stay up late and you work hard. Those times when you don't feel like working. You're too tired. You don't want to push yourself, but you do it anyway. That is actually the dream."
@@ -13,6 +14,7 @@ then he goes on to say that if you are able to learn from this statement and fol
 Any time i feel tired or defeated or unfocused, I should recit this in my head. the start of my personal mantra.
 
 * Imporant Notes :Important:
+
 https://support.stripe.com/questions/chrome-80-samesite-cookie-change
 Chrome 80 SameSite cookie change
 In February 2020, Google released Chrome 80 and began rolling out new cookie behavior. Details of this change and Google’s rollout plans are available at https://www.chromium.org/updates/same-site.
@@ -23,33 +25,218 @@ All Stripe products (i.e. Elements, Checkout, etc.) that use cookies accessible 
 
 However, there may still be some cookies set by the Stripe Dashboard, Support Site, or home page that will trigger the Chrome warning on other sites that include the Stripe.js library. We will continue to work at reducing/eliminating these, but these remaining instances do not impact any functionality of Stripe products and only result in a benign warning in the developer console.
 
+** PSQL NOTES:
+- pg_dump then psql to restore
+** Stripe Api
+checkout session is created an returns an object such as :
+#+BEGIN_SRC js
+    stripeCheckoutSession {
+    id: 'cs_test_a1ykPBcFjocTkJWlzJoEeQlh2Bvscbxg6XauC8lUaQW1L0Qq5lIGPdUyKc',
+    object: 'checkout.session',
+    after_expiration: null,
+    allow_promotion_codes: null,
+    amount_subtotal: 30075,
+    amount_total: 30075,
+    automatic_tax: { enabled: false, status: null },
+    billing_address_collection: null,
+    cancel_url: 'http://localhost:3000/createOrder/checkout/cla33e9de0000s4zwr0mqsbue?stripe=cancelled?stripe=cancelled?stripe=cancelled',
+    client_reference_id: null,
+    consent: null,
+    consent_collection: null,
+    created: 1668124247,
+    currency: 'usd',
+    customer: null,
+    customer_creation: 'if_required',
+    customer_details: null,
+    customer_email: null,
+    expires_at: 1668210647,
+    livemode: false,
+    locale: null,
+    metadata: {},
+    mode: 'payment',
+    payment_intent: null,
+    payment_link: null,
+    payment_method_collection: 'always',
+    payment_method_options: {},
+    payment_method_types: [ 'card' ],
+    payment_status: 'unpaid',
+    phone_number_collection: { enabled: false },
+    recovered_from: null,
+    setup_intent: null,
+    shipping_address_collection: null,
+    shipping_cost: null,
+    shipping_details: null,
+    shipping_options: [],
+    status: 'open',
+    submit_type: null,
+    subscription: null,
+    success_url: 'http://localhost:3000/createOrder/orderCompleted?result=success',
+    total_details: { amount_discount: 0, amount_shipping: 0, amount_tax: 0 },
+    url: 'https://checkout.stripe.com/c/pay/cs_test_a1ykPBcFjocTkJWlzJoEeQlh2Bvscbxg6XauC8lUaQW1L0Qq5lIGPdUyKc#fidkdWxOYHwnPyd1blpxYHZxWjA0SX9INFVEU089U2hXd3NCSGNPXGNrUzxhQDE9UUtsbXJKMEtXd01KZz10UmxXcXFUU3ZfUFVVR2dGN25cSGxvf0oxSWhdUDRXUkYxYVFBdjBCTjdVZlA2NTVgPWBzMDZ9SycpJ2N3amhWYHdzYHcnP3F3cGApJ2lkfGpwcVF8dWAnPyd2bGtiaWBabHFgaCcpJ2BrZGdpYFVpZGZgbWppYWB3dic%2FcXdwYHgl'
+    }
+#+END_SRC
+then events occur as such,  if payment is attempted, payment_intent.created, if fails charge.failed then payment_intent.payment_failed, if not then charge.succeed, then payment_intent.succeeded then checkout.session.completed, this session contains the information for payment of the checkout as:
+#+BEGIN_SRC js
+{
+  "id": "cs_test_a1oCN5GCIdYFZ2Np9R83kHPDU6ISI3u7cQCO5csUM9QWxipFmkgBG3qnNq",
+  "object": "checkout.session",
+  "livemode": false,
+  "payment_intent": "pi_3M2KUqAVJ8VmRrvG18ysXqso",
+  "status": "complete",
+  "after_expiration": null,
+  "allow_promotion_codes": null,
+  "amount_subtotal": 100000,
+  "amount_total": 100000,
+  "automatic_tax": {
+    "enabled": false,
+    "status": null
+  },
+  "billing_address_collection": null,
+  "cancel_url": "http://localhost:3000/createOrder/checkout/cla30lca20001s44jurl40ju3?stripe=cancelled?stripe=cancelled",
+  "client_reference_id": null,
+  "consent": null,
+  "consent_collection": null,
+  "created": 1668024034,
+  "currency": "usd",
+  "customer": null,
+  "customer_creation": "if_required",
+  "customer_details": {
+    "address": {
+      "city": null,
+      "country": "US",
+      "line1": null,
+      "line2": null,
+      "postal_code": "10029",
+      "state": null
+    },
+    "email": "customer@email.com",
+    "name": "customer",
+    "phone": null,
+    "tax_exempt": "none",
+    "tax_ids": [
+    ]
+  },
+  "customer_email": null,
+  "expires_at": 1668110433,
+  "locale": null,
+  "metadata": {
+  },
+  "mode": "payment",
+  "payment_link": null,
+  "payment_method_collection": "always",
+  "payment_method_options": {
+  },
+  "payment_method_types": [
+    "card"
+  ],
+  "payment_status": "paid",
+  "phone_number_collection": {
+    "enabled": false
+  },
+  "recovered_from": null,
+  "setup_intent": null,
+  "shipping_address_collection": null,
+  "shipping_cost": null,
+  "shipping_details": null,
+  "shipping_options": [
+  ],
+  "submit_type": null,
+  "subscription": null,
+  "success_url": "http://localhost:3000/createOrder/checkout/cla30lca20001s44jurl40ju3?stripe=cancelled?result=success",
+  "total_details": {
+    "amount_discount": 0,
+    "amount_shipping": 0,
+    "amount_tax": 0
+  },
+  "url": null
+}
+#+END_SRC
+
+- https://support.stripe.com/questions/passing-the-stripe-fee-on-to-customers
+  passing fee to customer isnt always legal, one way to go around this is to increase prices to make up for the fees. stripe is about 2.9% + 30cents
+- webhooks
+  testing: you need to run  stripe listen continously to use stripe trigger
+
+** ORDERS
+the orders table in courier_app Database should include: cartDetails, stripe checkout information, etc
+
+
 * TODO TODOs [11%]
 :PROPERTIES:
 :COOKIE_DATA: TODOs recursive
 :END:
 
-- [-] finishing checkout page
-  - [X] stripe checkout test work
-  - [ ] create stripe invoice, for more control of order and to allow app DB to more easily incorport the old invoice system to allow flexbility when working with invoicing work flow
-    - [ ] create invoice first
-    - [ ] create invoice items and connect to invoice
-- [ ] invoice
+
+# - [ ] invoice (NOT needed as checkout in stripe has the essense of an invoice when completed, then the payment intent id is used to charge the customer)
+  # - [ ] create stripe invoice, for more control of order and to allow app DB to more easily incorport the old invoice system to allow flexbility when working with invoicing work flow
+    # - [ ] create invoice first
+    # - [ ] create invoice items and connect to invoice
+
+- [ ] sync database with stripe information when seeding, important,  if after the first time the app was made and items and invoices were added to stripe then the database is reset for whatever reason, the seed does not currently re-add the missing invoices and items from stripe,
+  want to keep the courier_app database as the main source of truth as much as possible,
+  - [ ] sync items between stripe and Database
+  - [ ] sync invoices
   - [ ]  replace api calls with trpc
   - [ ] invoice table date filtering
+- [X] finishing checkout page
+  - [X] stripe checkout test work
 - [ ] warehouse page creation
-- [ ] simple scalable css/tailwind with app focus
 - [ ] capicator app testing
+  - [ ] simple scalable css/tailwind with app focus
 - [ ] running test production server with app
+  - [ ] nginx plus pm2 running node on linux server with psql db
+- [ ] ci/cd, dockerized app for faster updates
 
+* LongTerm Todos by page
+** PageTodos [0%]
+:PROPERTIES:
+:COOKIE_DATA: PageTodos recursive
+:END:
 
+- [ ] createOrder
+  - [ ] createOrder?customerId="..."
+    - [ ] debounce adding or removing items from cart for faster performance, maybe dev mode made this slower
+    - [ ] stlying the main three components
+  - [ ] createOrder/Checkout/[customerId]
 
 * Current thoughts
 - I'm currently working on creating check out sessions so the stripe sessions seem to take line items which are the price IDs and quantity of the items from the store but it doesn't seem to take much other variables like customer name or address so I think I have to keep track which I'm already a.m. of the invoice or the checkout number session I get from stripe and put it in my database with my order and solo order with all the data of addresses items etc. I connected to the specific Stripe checkout session.
 - So there are other parameters to put in the check out session but the checkout sessions regards the customer of the order to be the paying customer, this may be a little weird for my project where the sender and payer are likely different, so would creating stripe customer wiht the payment information and using those customers as part of my list even matter? i dont think so,  it Would probably be better to just have the function as I have now where I personally take care of the customers information and then I can connect also that order to the customer or should I just sold for now I guess I'm just not gonna do anything with the stripe customers they're there and they're connected to the orders they paid so I guess that's how you can find them but I'm not sure what purpose they would have on my frontend
 - Check out and payment works on but now I need to make sure that the payment is connected to the order so I'm not sure what gets returned by stripe on success other than sisters so I guess just using the stripe
+- invoices make then add items one by one,  if i can make all adding items run in async,then i want to make sure the invoices are added to my db and to invoices tables where they can be filetered and updated with important info. stripe will hold the important information for payment and relevant information to connect it back to a DB order with an stripe invoice ID, that way i can query for all infromation without losing any info for an order. a order has then three parts, the create order/cart, the invoice (i think im not going to use checkout for most things but its is connected), and the final order with the cart details and invoice/checkout information. in terms of data backup stripe will have invoices with enough information  in the meta data to indentitfy the information bacck to the app Db.  The APP DB will need a backup quite often, i would not want to lose information. the old information from the old app will hopefully be migrated into the DB to keep everything in on central place.
 
-* Sub 2 [1/3]
-- [ ] eggs
-- [X] bacon
-- [ ] pancakes
-*
+- TODAY:
+  - When the checkout session is complete created and the customer completes the payment section on the stripe check out the check out session returns an object with that object I should update in the database the checkout number and the payment intent number with the checkout number I can curious stripe to find the check out information which is basically the invoice and with payment intent I can look at a webhook and update the payment to completed after the charge goes through
+  - Invoice page needs to be changed to use to your PC and it needs to take in a couple more information about the stripe orders including the database orders. Once the invoice table is able to show all invoices their status and pick up drivers are able to be assigned or routes are able to be assigned to each invoice then I am confident its usuable.
+
+- Meeting Talking points
+  After I am able to keep track of orders then we can update orders, create order receipts, deal with QR codes and anything else. I still have to work on styling the website so it's more responsive on the mobile side but currently 85% of back end and basic front end functionality is connected and ready to production testing
+
+- Mobile Version of the app for only staff? payments are my biggest issue on mobile for customers rn, but drivers specifically dont need to pay only manage the orders on their route. the website is still available on the mobile web browsers with full normal funtionality.
+
+** current Notes
+nginx pm2 wokrs with running nextjs in dev mode.
+
+* Documentating the entire application
+** README Draft
+- to start production, nginx, pm2, node, and psql(or whatever DB are specified in schema.prisma is changed to reflect) are needed on linux server.
+- psql must have account not root made as user to control database
+  - created a new admin user and create courier_app DATABASE
+- also install nginx on linux server, configuration a little later
+- example .env file required
+    #+BEGIN_SRC shell
+    PORT=3000
+    DATABASE_URL=postgresql://jancycapellan:findtheblow1!@localhost:5432/courier_app
+    NEXT_PUBLIC_API_URL=http://localhost:3000/
+    NEXTAUTH_URL=http://localhost:3000
+    NEXTAUTH_SECRET=somesuperseceretencryptionkey    NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_51LzM1PAVJ8VmRrvGMfJYfnV9dE48TNihwO5NRrHOb8qWiRttQVsZUPPBbC2kYMijzO4LmXU1RWC4dTDs5GK2PcU300e8ev53xN
+    STRIPE_SECRET_KEY=sk_test_asdnsaksndskdefamnfceimfmikenfaoinfoiekf2if34583efu2fn39812FAKEKEY
+#+END_SRC
+
+- with DATABASE and user created, NPM INSTALL
+- created base DATABASE if not already backedup
+  - make prisma db (dont know the right command at this moment)
+    - use npx prisma migrate deploy with the production migrations made from the schema.prisma file
+  - npx prisma db seed to add the needed base data if none already, wont work if the database has not recieved the latest migration.
+** summary
+- this is a nextjs app built ontop of the idea of becoming a mobile app, current using capacitor to create webview apps, since this applicatio does not need that much perfomance for its function.
