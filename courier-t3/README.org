@@ -1,7 +1,7 @@
-#+title: Readme
+#+title: Read-me
 #+Author: Jancy Capellan
 #+EMAIL:  Jancycapellan97@gmail.com
-#+DESCRIPTION: Readme for Courier Dashboard App
+#+DESCRIPTION: Read-me for Courier Dashboard App
 #+KEYWORDS:  org-mode, syntax, quick reference, cheat sheet, recommended practices
 #+LANGUAGE:  en
 #+OPTIONS:   H:4 num:nil toc:2 p:t
@@ -9,11 +9,11 @@
 
 * Kobe motivation
 "Those times when you get up early and you work hard. Those times you stay up late and you work hard. Those times when you don't feel like working. You're too tired. You don't want to push yourself, but you do it anyway. That is actually the dream."
-then he goes on to say that if you are able to learn from this statement and follow through you will be able to acccomplish, not only your dream but, something greater.
+then he goes on to say that if you are able to learn from this statement and follow through you will be able to accomplish, not only your dream but, something greater.
 
-Any time i feel tired or defeated or unfocused, I should recit this in my head. the start of my personal mantra.
+Any time i feel tired or defeated or unfocused, I should recite this in my head. the start of my personal mantra.
 
-* Imporant Notes :Important:
+* Important Notes :Important:
 
 https://support.stripe.com/questions/chrome-80-samesite-cookie-change
 Chrome 80 SameSite cookie change
@@ -27,7 +27,13 @@ However, there may still be some cookies set by the Stripe Dashboard, Support Si
 
 ** PSQL NOTES:
 - pg_dump then psql to restore
-** Stripe Api
+** Stripe API
+Going to Save the stripe checkout into the database if the checkout was successful so we can have all the data from stripe
+related to the order payment backup-ed up on our DB.
+
+webhooks to look for:
+payment_intent.succeeded, chekout.session.completed (this references the payment intent so i don't really need this information)
+
 checkout session is created an returns an object such as :
 #+BEGIN_SRC js
     stripeCheckoutSession {
@@ -153,15 +159,15 @@ then events occur as such,  if payment is attempted, payment_intent.created, if 
 #+END_SRC
 
 - https://support.stripe.com/questions/passing-the-stripe-fee-on-to-customers
-  passing fee to customer isnt always legal, one way to go around this is to increase prices to make up for the fees. stripe is about 2.9% + 30cents
+  passing fee to customer isn't always legal, one way to go around this is to increase prices to make up for the fees. stripe is about 2.9% + 30cents
 - webhooks
-  testing: you need to run  stripe listen continously to use stripe trigger
+  testing: you need to run  stripe listen continuously to use stripe trigger
 
 ** ORDERS
 the orders table in courier_app Database should include: cartDetails, stripe checkout information, etc
 
 
-* TODO TODOs [11%]
+* TODO TODOs [0%]
 :PROPERTIES:
 :COOKIE_DATA: TODOs recursive
 :END:
@@ -172,14 +178,16 @@ the orders table in courier_app Database should include: cartDetails, stripe che
     # - [ ] create invoice first
     # - [ ] create invoice items and connect to invoice
 
-- [ ] sync database with stripe information when seeding, important,  if after the first time the app was made and items and invoices were added to stripe then the database is reset for whatever reason, the seed does not currently re-add the missing invoices and items from stripe,
-  want to keep the courier_app database as the main source of truth as much as possible,
+- [ ] sync database with stripe information (when seeding, important,  if after the first time the app was made and items and invoices were added to stripe then the database is reset for whatever reason, the seed does not currently re-add the missing invoices and items from stripe
+  want to keep the courier_app database as the main source of truth as much as possible)
   - [ ] sync items between stripe and Database
   - [ ] sync invoices
   - [ ]  replace api calls with trpc
   - [ ] invoice table date filtering
-- [X] finishing checkout page
-  - [X] stripe checkout test work
+- [ ] finishing checkout page
+  - [ ] stripe checkout test work
+  - [ ] add checkout json from webhookk into order table in local db
+  - [ ]
 - [ ] warehouse page creation
 - [ ] capicator app testing
   - [ ] simple scalable css/tailwind with app focus
@@ -201,9 +209,9 @@ the orders table in courier_app Database should include: cartDetails, stripe che
 
 * Current thoughts
 - I'm currently working on creating check out sessions so the stripe sessions seem to take line items which are the price IDs and quantity of the items from the store but it doesn't seem to take much other variables like customer name or address so I think I have to keep track which I'm already a.m. of the invoice or the checkout number session I get from stripe and put it in my database with my order and solo order with all the data of addresses items etc. I connected to the specific Stripe checkout session.
-- So there are other parameters to put in the check out session but the checkout sessions regards the customer of the order to be the paying customer, this may be a little weird for my project where the sender and payer are likely different, so would creating stripe customer wiht the payment information and using those customers as part of my list even matter? i dont think so,  it Would probably be better to just have the function as I have now where I personally take care of the customers information and then I can connect also that order to the customer or should I just sold for now I guess I'm just not gonna do anything with the stripe customers they're there and they're connected to the orders they paid so I guess that's how you can find them but I'm not sure what purpose they would have on my frontend
+- So there are other parameters to put in the check out session but the checkout sessions regards the customer of the order to be the paying customer, this may be a little weird for my project where the sender and payer are likely different, so would creating stripe customer with the payment information and using those customers as part of my list even matter? i don't think so,  it Would probably be better to just have the function as I have now where I personally take care of the customers information and then I can connect also that order to the customer or should I just sold for now I guess I'm just not gonna do anything with the stripe customers they're there and they're connected to the orders they paid so I guess that's how you can find them but I'm not sure what purpose they would have on my frontend
 - Check out and payment works on but now I need to make sure that the payment is connected to the order so I'm not sure what gets returned by stripe on success other than sisters so I guess just using the stripe
-- invoices make then add items one by one,  if i can make all adding items run in async,then i want to make sure the invoices are added to my db and to invoices tables where they can be filetered and updated with important info. stripe will hold the important information for payment and relevant information to connect it back to a DB order with an stripe invoice ID, that way i can query for all infromation without losing any info for an order. a order has then three parts, the create order/cart, the invoice (i think im not going to use checkout for most things but its is connected), and the final order with the cart details and invoice/checkout information. in terms of data backup stripe will have invoices with enough information  in the meta data to indentitfy the information bacck to the app Db.  The APP DB will need a backup quite often, i would not want to lose information. the old information from the old app will hopefully be migrated into the DB to keep everything in on central place.
+- invoices make then add items one by one,  if i can make all adding items run in sync,then i want to make sure the invoices are added to my db and to invoices tables where they can been filtered and updated with important info. stripe will hold the important information for payment and relevant information to connect it back to a DB order with an stripe invoice ID, that way i can query for all information without losing any info for an order. a order has then three parts, the create order/cart, the invoice (i think im not going to use checkout for most things but its is connected), and the final order with the cart details and invoice/checkout information. in terms of data backup stripe will have invoices with enough information  in the meta data to indentitfy the information back to the app Db.  The APP DB will need a backup quite often, i would not want to lose information. the old information from the old app will hopefully be migrated into the DB to keep everything in on central place.
 
 - TODAY:
   - When the checkout session is complete created and the customer completes the payment section on the stripe check out the check out session returns an object with that object I should update in the database the checkout number and the payment intent number with the checkout number I can curious stripe to find the check out information which is basically the invoice and with payment intent I can look at a webhook and update the payment to completed after the charge goes through
@@ -217,8 +225,14 @@ the orders table in courier_app Database should include: cartDetails, stripe che
 ** current Notes
 nginx pm2 wokrs with running nextjs in dev mode.
 
-* Documentating the entire application
-** README Draft
+* Documenting the entire application
+** Parts to Documentation
+
+** links
+- https://www.comentum.com/web-application-development-process.html
+- https://www.altexsoft.com/blog/business/technical-documentation-in-software-development-types-best-practices-and-tools/
+
+** README Draft Notes
 - to start production, nginx, pm2, node, and psql(or whatever DB are specified in schema.prisma is changed to reflect) are needed on linux server.
 - psql must have account not root made as user to control database
   - created a new admin user and create courier_app DATABASE

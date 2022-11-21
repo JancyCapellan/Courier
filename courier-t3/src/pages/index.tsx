@@ -17,7 +17,7 @@ const Home: NextPage = () => {
   const router = useRouter()
   // console.log('Registered?:', router.query?.didRegister)
 
-  const signinRedirect = process.env.NEXT_PUBLIC_API_URL + 'account'
+  // const signinRedirect = process.env.NEXT_PUBLIC_API_URL + 'account'
 
   return (
     <div className="flex flex-col h-screen">
@@ -81,7 +81,7 @@ const Home: NextPage = () => {
                 email: values.email,
                 password: values.password,
                 // tenantKey: values.tenantKey,
-                callbackUrl: signinRedirect,
+                callbackUrl: process.env.NEXT_PUBLIC_API_URL + 'account',
               })
               // console.log('res', res)
               if (res?.error) {

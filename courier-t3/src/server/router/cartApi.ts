@@ -107,7 +107,7 @@ export const cartApi = createProtectedRouter()
         },
       })
       console.log(
-        '🚀 ~ file: cartApi.ts ~ line 79 ~ resolve ~ cartSession',
+        '🚀 ~ file: cartApi.ts ~ line 110 ~ resolve ~ cartSession',
         cartSession
       )
       return cartSession
@@ -415,40 +415,85 @@ export const cartApi = createProtectedRouter()
       }
     },
   })
-  .mutation('createOrder', {
+  .mutation('createOrderAfterCheckout', {
     input: z.object({
       customerId: z.string(),
       userId: z.string(),
     }),
     async resolve({ ctx, input }) {
       // find cart made by user for customer, add info to order table, remove cart entry
-
-      const { cartId } = await findCart(
-        ctx.prisma,
-        input.userId,
-        input.customerId
-      )
-
-      const cartDetails = await ctx.prisma.cart.findUnique({
+      //TODO: after checkout is competed stripe returns to app this endpoint is called to make sure the checkout was completed and successly added to the app database, the  webhook for checkout session completed will also attempt to add the checkout to the order. the stripe checkout information is not avaible here, outside porblem from the webhook that does have the stripe object. how do i get that information into the order after the checkout is completed? i have access to the stripecheckoutID from the moment the checkout was created after pay online was choosen, maybe cache or create the order at that moment, the order will be a temp order from the cart details and create checkout session details, the stripe checkout details will be updated by the webhook after the fact but to start off having all the cart session infromation and a way to query stripe checkout is better than no information.
+      const cartSession = await ctx.prisma.cart.findUnique({
         where: {
-          cartId: cartId,
+          creatingUserId_customerId: {
+            creatingUserId: input.userId,
+            customerId: input.customerId,
+          },
         },
-        include: {
-          items: true,
-          addresses: true,
+        select: {
+          cartId: true,
+          customerId: true,
+          creatingUserId: true,
+          items: {
+            select: {
+              quantity: true,
+              product: {
+                select: {
+                  name: true,
+                  stripePriceId: true,
+                  stripeProductId: true,
+                  price: true,
+                },
+              },
+            },
+          },
+          addresses: {
+            select: {
+              firstName: true,
+              lastName: true,
+              address: true,
+              address2: true,
+              address3: true,
+              city: true,
+              state: true,
+              postalCode: true,
+              country: true,
+              cellphone: true,
+              telephone: true,
+              recipient: true,
+            },
+          },
         },
       })
       console.log(
-        '🚀 ~ file: cartApi.ts ~ line 437 ~ resolve ~ cartDetails',
-        cartDetails
+        '🚀 ~ file: cartApi.ts ~ line 468 ~ resolve ~ cartSession',
+        cartSession
       )
+      // const { cartId } = await findCart(
+      //   ctx.prisma,
+      //   input.userId,
+      //   input.customerId
+      // )
 
-      //TODO: add cartdetails here then add webhook checkout.session.completged to the same order, then the order should have the needed info to complete it. then routes and pickup times cna be placed on the order.
-      const createdOrder = await ctx.prisma.order.create({
-        data: {
-          // userid customer id
-          //
-        },
-      })
+      // const cartDetails = await ctx.prisma.cart.findUnique({
+      //   where: {
+      //     cartId: cartId,
+      //   },
+      //   include: {
+      //     items: true,
+      //     addresses: true,
+      //   },
+      // })
+      // console.log(
+      //   '🚀 ~ file: cartApi.ts ~ line 437 ~ resolve ~ cartDetails',
+      //   cartDetails
+      // )
+
+      // const createdOrder = await ctx.prisma.order.create({
+      //   data: {
+      //     // userid customer id
+      //     //
+      //   },
+      // })
     },
   })

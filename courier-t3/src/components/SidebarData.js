@@ -79,6 +79,7 @@ export const routes = {
   },
 }
 export const sidebarTypes = {
+  //TODO: ICONS AND DOUBLE CHECK ROUTES
   SECT: [routes.account, routes.customers, routes.invoices, routes.warehouse],
   DRIVER: [routes.account, routes.pickups, routes.warehouse, routes.driverPage],
   CUSTOMER: [routes.account, routes.createOrder, routes.cart, routes.support],

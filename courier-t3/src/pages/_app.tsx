@@ -15,6 +15,7 @@ import '../styles/globals.css'
 import { ReactQueryDevtools } from 'react-query/devtools'
 import '@stripe/stripe-js' // https://github.com/stripe/stripe-js#ensuring-stripejs-is-available-everywhere
 import getStripe from '@/utils/get-stripejs'
+import RouteGuard from '@/utils/RouteGuard'
 
 // type NextPageWithLayout<P = {}> = NextPage<P> & {
 //   getLayout?: (page: ReactNode) => ReactNode
@@ -39,10 +40,10 @@ const MyApp: AppType = ({ Component, pageProps }: AppPropsWithLayout) => {
 
   return (
     <SessionProvider session={pageProps.session}>
-      <>
+      <RouteGuard>
         {layout}
         <ReactQueryDevtools initialIsOpen={false} />
-      </>
+      </RouteGuard>
     </SessionProvider>
   )
 }

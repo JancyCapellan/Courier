@@ -5,6 +5,7 @@ import { useRouter } from 'next/router'
 import Link from 'next/link'
 import { IconContext } from 'react-icons'
 
+// ! CURRENT MAIN SIDEBAR
 const Sidebar = () => {
   const { data: session, status } = useSession()
 

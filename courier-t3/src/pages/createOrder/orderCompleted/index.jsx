@@ -8,18 +8,17 @@ const index = () => {
   const [redirectSeconds, setRedirectSeconds] = useState(10)
 
   const router = useRouter()
-  // console.log('🚀 ~ file: index.jsx ~ line 11 ~ index ~ router', router)
-  const { customerId, result } = router.query
+  const { customerId, checkout } = router.query
 
   const { data: session, status: sessionStatus } = useSession()
-  const createOrder = trpc.useMutation(['cart.createOrder'])
-
-  // useEffect(() => {
-  //   console.log('🚀 ~ file: index.jsx ~ line 9 ~ index ~ result', result)
-  // }, [result])
+  const createOrder = trpc.useMutation(['cart.createOrderAfterCheckout'])
 
   useEffect(() => {
-    if (customerId && result === 'success' && sessionStatus === 'authenticated')
+    if (
+      customerId &&
+      checkout === 'success' &&
+      sessionStatus === 'authenticated'
+    ) {
       createOrder.mutate(
         { customerId: customerId, userId: session?.user?.id },
         {
@@ -30,16 +29,18 @@ const index = () => {
           },
         }
       )
+    }
+
     if (!customerId) console.log('NO CUSTOMER ID IN QUERY PARAMETERS')
     //? should i redirect after order is made or wait for the timer
 
     // return () => {
     //   second`
     // }
-  }, [result, customerId, sessionStatus])
+  }, [checkout, customerId, sessionStatus])
 
   useEffect(() => {
-    if (result) {
+    if (checkout) {
       if (redirectSeconds == 0) {
         // TODO: user role determines where they get redirected
         // router.push('/account')
@@ -51,9 +52,9 @@ const index = () => {
         setRedirectSeconds((redirectSeconds) => redirectSeconds - 1)
       }, 1000)
     }
-  }, [redirectSeconds, result])
+  }, [redirectSeconds, checkout])
 
-  if (result !== 'success') {
+  if (checkout !== 'success') {
     return (
       <div>
         Checkout redirected here but according to Stripes checkout something

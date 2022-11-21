@@ -1,131 +1,140 @@
-# Create T3 App
+# Welcome to Courier Shipping Project
 
-This is an app bootstrapped according to the [init.tips](https://init.tips) stack, also known as the T3-Stack.
+# <img src="http://homepages.cae.wisc.edu/~ece533/images/fruits.png" width="50"> ABC_COMPANY
 
-## Why are there `.js` files in here?
+## A SOME_ABC Company Pvt Ltd employee management app
 
-As per [T3-Axiom #3](https://github.com/t3-oss/create-t3-app/tree/next#3-typesafety-isnt-optional), we believe take typesafety as a first class citizen. Unfortunately, not all frameworks and plugins support TypeScript which means some of the configuration files have to be `.js` files.
+App Name : Courier Shipping Dashboard
 
-We try to emphasize that these files are javascript for a reason, by explicitly declaring its type (`cjs` or `mjs`) depending on what's supported by the library it is used by. Also, all the `js` files in this project are still typechecked using a `@ts-check` comment at the top.
+Development Team :
 
-## What's next? How do I make an app with this?
+Jancy Capellan
 
-We try to keep this project as simple as possible, so you can start with the most basic configuration and then move on to more advanced configuration.
+John Dev (Android developer : May 2018 - June 2019),
 
-If you are not familiar with the different technologies used in this project, please refer to the respective docs. If you still are in the wind, please join our [Discord](https://t3.gg/discord) and ask for help.
+Design Team : Wan Chung, Lee Chi
 
-- [Next-Auth.js](https://next-auth.js.org)
-- [Prisma](https://prisma.io)
-- [TailwindCSS](https://tailwindcss.com)
-- [tRPC](https://trpc.io) (using @next version? [see v10 docs here](https://alpha.trpc.io))
+Management : Nikola Tisola (Sr Manger : May 2012 - June 2016), Thomas Eden (Sr Manger : July2016 - till date)
 
-## How do I deploy this?
+Web URL : http://ROCKETAPP.SOMECOMPANY.COM
 
-### Vercel
+---
 
-We recommend deploying to [Vercel](https://vercel.com/?utm_source=t3-oss&utm_campaign=oss). It makes it super easy to deploy NextJs apps.
+**About this file**  
+The purpose of this file is to provide overview, setup instructions and background information of the project. If you have joined this project as a part of the development team, please ensure this file is up to date.
 
-- Push your code to a GitHub repository.
-- Go to [Vercel](https://vercel.com/?utm_source=t3-oss&utm_campaign=oss) and sign up with GitHub.
-- Create a Project and import the repository you pushed your code to.
-- Add your environment variables.
-- Click **Deploy**
-- Now whenever you push a change to your repository, Vercel will automatically redeploy your website!
+**Note : Any dependencies added / modified to this project which affect the running of the code in this git repository must be listed in this file. All developers must ensure that the instructions mentioned in this file are sufficient to enable a new developer to obtain a executable copy of the lastest code in this repository, without involvement from any other human assistance.**
 
-### Docker
+---
 
-You can also dockerize this stack and deploy a container.
+**Tools and Hardware Requirements Declaration**
 
-1. In your [next.config.mjs](./next.config.mjs), add the `output: "standalone"` option to your config.
-2. Create a `.dockerignore` file with the following contents:
-   <details>
-   <summary>.dockerignore</summary>
+I) Software requirements
 
-   ```
-   Dockerfile
-   .dockerignore
-   node_modules
-   npm-debug.log
-   README.md
-   .next
-   .git
-   ```
+1. Ubuntu OS
+2. Maven
+3. JDK
+4. Camera drivers
+5. Web Cam Device
+6. Http Server
+7. MySQL and MySQL drivers
 
-  </details>
+II) Hardware requirements
 
-3. Create a `Dockerfile` with the following contents:
-   <details>
-   <summary>Dockerfile</summary>
+1. Minimum 8 GB RAM
+2. Minimum 12 GB Available Disk Space
+3. Wifi Availablility
+4. Web Camera
 
-   ```Dockerfile
-   # Install dependencies only when needed
-   FROM node:16-alpine AS deps
-   # Check https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine to understand why libc6-compat might be needed.
-   RUN apk add --no-cache libc6-compat
-   WORKDIR /app
+---
 
-   # Install dependencies based on the preferred package manager
-   COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* ./
-   RUN \
-      if [ -f yarn.lock ]; then yarn --frozen-lockfile; \
-      elif [ -f package-lock.json ]; then npm ci; \
-      elif [ -f pnpm-lock.yaml ]; then yarn global add pnpm && pnpm i; \
-      else echo "Lockfile not found." && exit 1; \
-      fi
+**Project Technical Specifications**
 
+- This project is a cordova based project which uses Angular 7  
+  framework.
+- The angular code is first compiled using angular-cli commands,  
+  then the output is moved to the cordova www directory. After which  
+  the cordova build command generates final android / iOS output.
+- The API is provided from customer
+- The design for reference is from XYZ Company Pvt Ltd Mumbai design  
+  Team.
 
-   # Rebuild the source code only when needed
-   FROM node:16-alpine AS builder
-   WORKDIR /app
-   COPY --from=deps /app/node_modules ./node_modules
-   COPY . .
+---
 
-   # Next.js collects completely anonymous telemetry data about general usage.
-   # Learn more here: https://nextjs.org/telemetry
-   # Uncomment the following line in case you want to disable telemetry during the build.
-   # ENV NEXT_TELEMETRY_DISABLED 1
+**Setup Instructions**  
+As mentioned earlier , this is a cordova-angular project,  
+The below mentioned steps may vary significantly across various operating systems, please follow them accordingly.
 
-   RUN yarn build
+These instructions are aimed at a developer who has been added to the project team, after the project development has already been initiated,
 
-   # If using npm comment out above and use below instead
-   # RUN npm run build
+Therefore the aim is to get the code from the git repository to run on the developer's system, so as to allow him / her to continue with further development.
 
-   # Production image, copy all the files and run next
-   FROM node:16-alpine AS runner
-   WORKDIR /app
+---
 
-   ENV NODE_ENV production
-   # Uncomment the following line in case you want to disable telemetry during runtime.
-   # ENV NEXT_TELEMETRY_DISABLED 1
+**Clone the repository from GitLab :**
 
-   RUN addgroup --system --gid 1001 nodejs
-   RUN adduser --system --uid 1001 nextjs
+`git clone git@gitserver.abccompanygit.com:root/rocket.git`
 
-   # You only need to copy next.config.js if you are NOT using the default configuration
-   # COPY --from=builder /app/next.config.js ./
-   COPY --from=builder /app/public ./public
-   COPY --from=builder /app/package.json ./package.json
+**Change current working directory to Project directory**
 
-   # Automatically leverage output traces to reduce image size
-   # https://nextjs.org/docs/advanced-features/output-file-tracing
-   COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
-   COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+`cd Rocket`
 
-   USER nextjs
+( This is the cordova as well as the angular root folder. )
 
-   EXPOSE 3000
+**Checking out the latest development branch**
 
-   ENV PORT 3000
+As of writing this guide the main branch used for development is : develop  
+To switch to this branch run :
 
-   CMD ["node", "server.js"]
-   ```
+`git checkout develop`
 
-  </details>
+**Installing dependencies**  
+This project requires cordova for running,
+You can install it by referring to the official cordova page : [[https://cordova.apache.org/](https://cordova.apache.org/)]
 
-4. You can now build an image to deploy yourself, or use a PaaS such as [Railway's](https://railway.app) automated [Dockerfile deployments](https://docs.railway.app/deploy/dockerfiles) to deploy your app.
+The cordova version used at the time of writing this file is : `8.1.2`
+You can check the installed version using `cordova -v`
 
-## Useful resources
+The config.xml file contains the list of all cordova plugins and platforms used for this project.
+Please ensure this file is updated incase any plugin is added / removed.
 
-Here are some resources that we commonly refer to:
+Please follow below steps for installation :
 
-- [Protecting routes with Next-Auth.js](https://next-auth.js.org/configuration/nextjs#unstable_getserversession)
+Install Angular and Cordova NPM Dependencies
+
+`npm i`
+
+Next install cordova platforms and plugins
+
+`cordova prepare`
+
+Incase you get errors as : `Current working directory is not a Cordova-based project.`
+
+The www folder used by cordova cli to detect a cordova project might be missing
+Simply make an empty www folder via file manager or via commandline as :
+
+`mkdir www`
+
+Install cordova android platform
+
+`cordova platform add android`
+
+---
+
+**Start the http and mysql xampp server :**  
+xampp http start  
+xampp mysql start  
+sudo service kurento-media-server-6.0 start
+
+---
+
+**Note for future developers**
+
+Home is an addon module which adds search by name functionality to the core code
+The files in the above directory when included in the index file overwrites methods, variables, css in the core code
+and manipulates the DOM at runtime by adding / removing elements.
+Thus the entire search logic is separated and can be included on demand,
+This is the first attempt of adding additional features as modules
+Future features if any should also be done in the same way,
+The core code should only be modified for bug fixes or core updates
+Any new feature either core or customer specific should be implemented as a pluggable module in the `/project_directory/src/main/resources/static/addons/` directCourier

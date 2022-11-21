@@ -60,7 +60,7 @@ export const stripeApi = createProtectedRouter()
       redirectUrl: z.string(),
     }),
     async resolve({ ctx, input }) {
-      // same function as cartapi.getCartSession, maybe consolidate
+      // get customer cart session to add to stripe checkout
       const cartSession = await ctx.prisma.cart.findUnique({
         where: {
           creatingUserId_customerId: {
@@ -69,9 +69,9 @@ export const stripeApi = createProtectedRouter()
           },
         },
         select: {
-          cartId: true,
-          customerId: true,
-          creatingUserId: true,
+          // cartId: true,
+          // customerId: true,
+          // creatingUserId: true,
           items: {
             select: {
               quantity: true,
@@ -85,22 +85,22 @@ export const stripeApi = createProtectedRouter()
               },
             },
           },
-          addresses: {
-            select: {
-              firstName: true,
-              lastName: true,
-              address: true,
-              address2: true,
-              address3: true,
-              city: true,
-              state: true,
-              postalCode: true,
-              country: true,
-              cellphone: true,
-              telephone: true,
-              recipient: true,
-            },
-          },
+          // addresses: {
+          //   select: {
+          //     firstName: true,
+          //     lastName: true,
+          //     address: true,
+          //     address2: true,
+          //     address3: true,
+          //     city: true,
+          //     state: true,
+          //     postalCode: true,
+          //     country: true,
+          //     cellphone: true,
+          //     telephone: true,
+          //     recipient: true,
+          //   },
+          // },
         },
       })
       console.log(
@@ -108,7 +108,7 @@ export const stripeApi = createProtectedRouter()
         cartSession
       )
 
-      // TODO: format prisma items array to stripe format
+      // format prisma items array to stripe checkout format
       let lineItems: Stripe.Checkout.SessionCreateParams.LineItem[] = []
       cartSession?.items.forEach((item) => {
         lineItems.push({
@@ -118,21 +118,19 @@ export const stripeApi = createProtectedRouter()
         })
       })
 
-      // console.log(
-      //   'Line 121::🔥',
-      //   'success url',
-      //   `${process.env.NEXTAUTH_URL}$/createOrder/orderComplete?result=success`,
-      //   'cancel url',
-      //   `${process.env.NEXTAUTH_URL}${input.redirectUrl}?stripe=cancelled`
-      // )
-
-      // ! Line Items : For payment mode, there is a maximum of 100 line items, however it is recommended to consolidate line items if there are more than a few dozen. For subscription mode, there is a maximum of 20 line items with recurring Prices and 20 line items with one-time Prices. Line items with one-time Prices will be on the initial invoice only.
+      // * Line Items : For payment mode, there is a maximum of 100 line items, however it is recommended to consolidate line items if there are more than a few dozen. For subscription mode, there is a maximum of 20 line items with recurring Prices and 20 line items with one-time Prices. Line items with one-time Prices will be on the initial invoice only.
       const stripeCheckoutSession = await stripe.checkout.sessions
         .create({
-          success_url: `${process.env.NEXTAUTH_URL}/createOrder/orderCompleted?customerId=${input.customerId}&result=success`,
+          success_url: `${process.env.NEXTAUTH_URL}/createOrder/orderCompleted?customerId=${input.customerId}&checkout=success`,
           cancel_url: `${process.env.NEXTAUTH_URL}${input.redirectUrl}?stripe=cancelled`,
           mode: 'payment',
           line_items: lineItems,
+          metadata: {
+            test: 'meta Test',
+            customerId: input.customerId,
+            orderCreatorUserId: input.userId,
+            cart: JSON.stringify(cartSession),
+          },
         })
         .catch((error) => {
           console.log(
@@ -150,84 +148,3 @@ export const stripeApi = createProtectedRouter()
       return stripeCheckoutSession
     },
   })
-// not needed atm checkout session accomplish current needs
-// .mutation('createOrderInvoice', {
-//   input: z.object({
-//     userId: z.string(),
-//     customerId: z.string(),
-//     redirectUrl: z.string(),
-//   }),
-//   async resolve({ ctx, input }) {
-//     // same function as cartapi.getCartSession, maybe consolidate
-//     const cartSession = await ctx.prisma.cart.findUnique({
-//       where: {
-//         creatingUserId_customerId: {
-//           creatingUserId: input.userId,
-//           customerId: input.customerId,
-//         },
-//       },
-//       select: {
-//         cartId: true,
-//         customerId: true,
-//         creatingUserId: true,
-//         items: {
-//           select: {
-//             quantity: true,
-//             product: {
-//               select: {
-//                 // name: true,
-//                 stripePriceId: true,
-//                 // stripeProductId: true,
-//                 // price: true,
-//               },
-//             },
-//           },
-//         },
-//         addresses: {
-//           select: {
-//             firstName: true,
-//             lastName: true,
-//             address: true,
-//             address2: true,
-//             address3: true,
-//             city: true,
-//             state: true,
-//             postalCode: true,
-//             country: true,
-//             cellphone: true,
-//             telephone: true,
-//             recipient: true,
-//           },
-//         },
-//       },
-//     })
-//     console.log(
-//       '🚀 ~ file: cartApi.ts ~ line 79 ~ resolve ~ cartSession',
-//       cartSession
-//     )
-
-//     // TODO: format prisma items array to stripe format
-//     let lineItems: Stripe.Checkout.SessionCreateParams.LineItem[] = []
-//     cartSession?.items.forEach((item) => {
-//       lineItems.push({
-//         price: item.product.stripePriceId!, // change prisma type string | null not string | undefined
-//         quantity: item.quantity,
-//         adjustable_quantity: { enabled: false },
-//       })
-//     })
-
-//     // ! Line Items : For payment mode, there is a maximum of 100 line items, however it is recommended to consolidate line items if there are more than a few dozen. For subscription mode, there is a maximum of 20 line items with recurring Prices and 20 line items with one-time Prices. Line items with one-time Prices will be on the initial invoice only.
-//     const stripeCheckoutSession = await stripe.checkout.sessions.create({
-//       success_url: `${process.env.NEXTAUTH_URL}$/createOrder/orderComplete?result=success`,
-//       cancel_url: `${process.env.NEXTAUTH_URL}${input.redirectUrl}?stripe=cancelled`,
-//       mode: 'payment',
-//       line_items: lineItems,
-//     })
-//     console.log(
-//       '🚀 ~ file: stripeApi.ts ~ line 127 ~ resolve ~ stripeCheckoutSession',
-//       stripeCheckoutSession
-//     )
-
-//     return stripeCheckoutSession
-//   },
-// })

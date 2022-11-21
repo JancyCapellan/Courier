@@ -1,5 +1,10 @@
 import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient()
+import Stripe from 'stripe'
+
+let stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+  apiVersion: '2022-08-01',
+})
 
 async function main() {
   const testUsers = await prisma.user.createMany({
@@ -23,22 +28,37 @@ async function main() {
   })
   console.log('✅ ~ file: seed.ts ~ line 24 ~ main ~ testUsers', testUsers)
 
-  // const testProducts = await prisma.product.createMany({
-  //   data: [
-  //     {
-  //       name: 'Box of used clothes',
-  //       price: 10000, //10000 cents == $100
-  //       type: 'BOX',
-  //     },
-  //     {
-  //       name: 'Box of New clothes',
-  //       price: 15000,
-  //       type: 'BOX',
-  //     },
-  //   ],
-  // })
+  let testItems = {
+    box_of_food: 'prod_Mk1cllh17mhqES',
+    couch: 'prod_MlnaiO29x1pqpk',
+  }
 
-  // add products from stripe is available to DB, hopefully sync issues dont happen if for some reason a product has a different stripe productID/priceID in DB than stripe db
+  async function addStripeProductToDBbyStripeProductId(itemId: string) {
+    const product = await stripe.products.retrieve(itemId, {
+      expand: ['default_price'],
+    })
+
+    const createdProduct = await prisma.product.create({
+      data: {
+        name: product.name,
+        //@ts-ignore
+        price: product.default_price.unit_amount,
+        stripeProductId: product.id,
+
+        //! these types are erroring but they exist under type Stripe.Price, the data is returned correctly from stripe
+        //@ts-ignore
+        stripePriceId: product?.default_price?.id,
+      },
+    })
+    console.log(
+      '🚀 ~ file: testingFile.mjs ~ line 35 ~ addStripeProductToDBbyStripeProductId ~ createdProduct',
+      createdProduct
+    )
+  }
+  for (const [key, value] of Object.entries(testItems)) {
+    console.log(`${key}: ${value}`)
+    await addStripeProductToDBbyStripeProductId(value)
+  }
 }
 
 main()

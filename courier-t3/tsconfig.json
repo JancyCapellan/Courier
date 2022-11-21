@@ -30,7 +30,9 @@
     "**/*.js",
     "**/*.jsx",
     "src/components/test2.mjs",
-    "src/server/test.jts"
+    "src/server/test.jts",
+    "src/server/testingFile.mjs",
+    "prisma/seed.ts"
   ],
   "exclude": ["node_modules"]
 }

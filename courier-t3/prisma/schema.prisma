@@ -9,6 +9,7 @@ generator client {
 //   provider = "prisma-erd-generator"
 //   includeRelationFromFields = true
 // }
+//TODO: change database schema to non public, there may be issues with it as public.
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
@@ -45,6 +46,7 @@ model User {
   licenseId Int? @unique
   addresses address[]
   orders Order[] @relation("CUSTOMER")
+  orderCreators Order[] @relation("creatorUser")
   pickups Order[] @relation("DRIVER")
   currentCart cart[] @relation("cartCreator")
   cartCustomer cart[] @relation("customer")
@@ -77,9 +79,14 @@ enum OrderLocation {
 }
 // TODO: finsihing order route chooser
 model Order {
-  id Int @id @default(autoincrement())
-  userId String // thecustomer who sent the package, so client/shipper
-  customer User @relation("CUSTOMER",fields: [userId], references:[id] )
+  id Int @unique @default(autoincrement())
+  customerUserId String // thecustomer who sent the package, so client/shipper
+  customer User @relation("CUSTOMER",fields: [customerUserId], references:[id] )
+  
+  creatorUserId String
+  creatorUser User @relation("creatorUser",fields: [creatorUserId], references:[id] )
+
+
   timePlaced DateTime @default(now())
   // recieverFirstName String
   // recieverLastName String
@@ -105,7 +112,14 @@ model Order {
   containerId Int?
   container containers? @relation(fields:[containerId], references: [id])
   
-  stripeCheckoutId String? //need stripe informmation to connect order to relevent stripe checkout session, with this id i can query specific orders when updating with information from stripe checkout
+  stripeCheckoutId String //need stripe informmation to connect order to relevent stripe checkout session, with this id i can query specific orders when updating with information from stripe checkout
+
+  // instead of just ids, going to add the entire items of stripepayments to the database to backup the data
+
+  stripeCheckout Json? @db.JsonB // stripe checkout.session.completed event object that includes the paymentintent id and stripe checkout Id need to query stripe for the line items, that i add locally from the app to the database because stripe is also getting the line items from the app. 
+  // stripePaymentIntent Json? @db.JsonB // not needed since checkout object has necessary information
+  
+  @@id([customerUserId, stripeCheckoutId, creatorUserId], map:"orderPK")
 }
 // model Route {
 //   id Int @id @default(autoincrement())
