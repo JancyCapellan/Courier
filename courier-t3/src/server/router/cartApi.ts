@@ -497,3 +497,116 @@ export const cartApi = createProtectedRouter()
       // })
     },
   })
+  .mutation('createPendingOrderBeforeCheckoutCompletes', {
+    input: z.object({
+      userId: z.string(),
+      customerId: z.string(),
+      stripeCheckoutId: z.string(),
+    }),
+    async resolve({ ctx, input }) {
+      let pendingOrder
+      try {
+        const cartSession = await ctx.prisma.cart.findUnique({
+          where: {
+            creatingUserId_customerId: {
+              creatingUserId: input.userId,
+              customerId: input.customerId,
+            },
+          },
+          select: {
+            cartId: true,
+            customerId: true,
+            creatingUserId: true,
+            items: {
+              select: {
+                quantity: true,
+                productId: true,
+              },
+            },
+            addresses: {
+              select: {
+                firstName: true,
+                lastName: true,
+                address: true,
+                address2: true,
+                address3: true,
+                city: true,
+                state: true,
+                postalCode: true,
+                country: true,
+                cellphone: true,
+                telephone: true,
+                recipient: true,
+              },
+            },
+          },
+        })
+        console.log(
+          '🚀 ~ file: cartApi.ts ~ line 542 ~ resolve ~ cartSession',
+          cartSession
+        )
+        pendingOrder = await ctx.prisma.order.create({
+          data: {
+            customer: {
+              connect: {
+                id: input.customerId,
+              },
+            },
+            creatorUser: {
+              connect: {
+                id: input.userId,
+              },
+            },
+            paymentType: 'STRIPE',
+            status: {
+              connectOrCreate: {
+                where: {
+                  message: 'PENDING PAYMENT',
+                },
+                create: {
+                  message: 'PENDING PAYMENT',
+                },
+              },
+            },
+            items: {
+              createMany: {
+                //@ts-ignore
+                data: cartSession?.items,
+              },
+            },
+            addresses: {
+              createMany: {
+                //@ts-ignore
+                data: cartSession?.addresses,
+              },
+            },
+            stripeCheckoutId: input.stripeCheckoutId,
+          },
+          include: {
+            items: true,
+          },
+        })
+        console.log(
+          '🚀 ~ file: cartApi.ts ~ line 585 ~ resolve ~ pendingOrder',
+          pendingOrder
+        )
+      } catch (error) {
+        console.log('🚀 ~ file: cartApi.ts ~ line 548 ~ resolve ~ error', error)
+        return pendingOrder
+      }
+
+      const deleteCartSession = await ctx.prisma.cart.delete({
+        where: {
+          creatingUserId_customerId: {
+            creatingUserId: input.userId,
+            customerId: input.customerId,
+          },
+        },
+      })
+      console.log(
+        '🚀 ~ file: cartApi.ts ~ line 596 ~ resolve ~ deleteCartSession',
+        deleteCartSession
+      )
+      return pendingOrder
+    },
+  })

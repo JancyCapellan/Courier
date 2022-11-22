@@ -9,6 +9,7 @@ import { customerRouter } from './customers'
 import { staffApi } from './staffApi'
 import { cartApi } from './cartApi'
 import { stripeApi } from './stripeApi'
+import { invoiceApi } from './invoiceApi'
 
 export const appRouter = createRouter()
   .transformer(superjson)
@@ -19,5 +20,6 @@ export const appRouter = createRouter()
   .merge('staff.', staffApi)
   .merge('cart.', cartApi)
   .merge('stripe.', stripeApi)
+  .merge('invoice.', invoiceApi)
 // export type definition of API
 export type AppRouter = typeof appRouter

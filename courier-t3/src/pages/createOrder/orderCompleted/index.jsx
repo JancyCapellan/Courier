@@ -13,31 +13,31 @@ const index = () => {
   const { data: session, status: sessionStatus } = useSession()
   const createOrder = trpc.useMutation(['cart.createOrderAfterCheckout'])
 
-  useEffect(() => {
-    if (
-      customerId &&
-      checkout === 'success' &&
-      sessionStatus === 'authenticated'
-    ) {
-      createOrder.mutate(
-        { customerId: customerId, userId: session?.user?.id },
-        {
-          // onSettled: () => console.log('tried createOrder'),
-          onSuccess: () => console.log('succedded creating'),
-          onError: (err) => {
-            console.log('🚀 ~ file: index.jsx ~ line 29 ~ useEffect ~ err', err)
-          },
-        }
-      )
-    }
+  // useEffect(() => {
+  //   if (
+  //     customerId &&
+  //     checkout === 'success' &&
+  //     sessionStatus === 'authenticated'
+  //   ) {
+  //     createOrder.mutate(
+  //       { customerId: customerId, userId: session?.user?.id },
+  //       {
+  //         // onSettled: () => console.log('tried createOrder'),
+  //         onSuccess: () => console.log('succedded creating'),
+  //         onError: (err) => {
+  //           console.log('🚀 ~ file: index.jsx ~ line 29 ~ useEffect ~ err', err)
+  //         },
+  //       }
+  //     )
+  //   }
 
-    if (!customerId) console.log('NO CUSTOMER ID IN QUERY PARAMETERS')
-    //? should i redirect after order is made or wait for the timer
+  //   if (!customerId) console.log('NO CUSTOMER ID IN QUERY PARAMETERS')
+  //   //? should i redirect after order is made or wait for the timer
 
-    // return () => {
-    //   second`
-    // }
-  }, [checkout, customerId, sessionStatus])
+  //   // return () => {
+  //   //   second`
+  //   // }
+  // }, [checkout, customerId, sessionStatus])
 
   useEffect(() => {
     if (checkout) {

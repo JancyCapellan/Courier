@@ -1,8 +1,10 @@
+//@ts-nocheck
 import Layout from '@/components/Layout'
 import { trpc } from '@/utils/trpc'
 import { useSession } from 'next-auth/react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
+import createOrder from '..'
 
 // review cart order, addresses, and items, and proceed to stripe checkout and creating an invoice for the order
 const Checkout = () => {
@@ -31,6 +33,10 @@ const Checkout = () => {
     }
   )
 
+  const createPendingOrder = trpc.useMutation([
+    'cart.createPendingOrderBeforeCheckoutCompletes',
+  ])
+
   const createCheckoutSession = trpc.useMutation(
     ['stripe.createCheckoutSession'],
     {
@@ -40,6 +46,12 @@ const Checkout = () => {
           stripeCheckoutSession
         )
         // create status pending order with checkoutSession, but what if checkout session isnt completed? left with an order that is pending and i could remove with a webhook after expiratio. or i could
+
+        createPendingOrder.mutate({
+          userId: session?.user?.id,
+          customerId: router.query.customerId,
+          stripeCheckoutId: stripeCheckoutSession.id,
+        })
 
         if (stripeCheckoutSession.url) router.push(stripeCheckoutSession.url)
       },
@@ -136,23 +148,6 @@ const Checkout = () => {
 
         {/* TODO: after click, cart is add to orderTable and paymentType is updated to cash */}
         <button className="btn btn-blue">pay in cash</button>
-        {/* <button
-          onClick={() => {
-            // Using the asPath field may lead to a mismatch between client and server if the page is rendered using server-side rendering or automatic static optimization. Avoid using asPath until the isReady field is true.
-            if (router.isReady) {
-              createOrderInvoice.mutate({
-                userId: session?.user?.id,
-                customerId: router.query.customerId,
-                redirectUrl: router.asPath,
-              })
-            } else {
-              // TODO: change to modal, maybe crossplatorm issue
-              alert('try again, router wasnt ready')
-            }
-          }}
-        >
-          Create Invoice to be paid later
-        </button> */}
       </div>
     </section>
   )

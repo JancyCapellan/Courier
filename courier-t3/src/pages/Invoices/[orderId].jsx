@@ -1,9 +1,7 @@
-import Sidebar from '../../components/Sidebar'
-import axios from 'axios'
 import Layout from '../../components/Layout'
 import { useRouter } from 'next/router'
-import { useQuery } from 'react-query'
-import { backendClient } from '../../components/axiosClient.mjs'
+// import { useQuery } from 'react-query'
+import { trpc } from '@/utils/trpc'
 
 const getOrderDetails = async (orderId) => {
   try {
@@ -38,15 +36,17 @@ const InvoicePage = () => {
       {getOrderDetails === 'error' && <div>error</div>}
       {getOrderDetails === 'loading' && <div>loading</div>}
       {getOrderDetailsStatus === 'success' && (
-        <section className='invoice-details-container'>
+        <section className="invoice-details-container">
           <h1>Invoice #{order.id}</h1>
           <pre>
-            Customer: {order.user.firstName} {order.user.middleName} {order.user.lastName}
+            Customer: {order.user.firstName} {order.user.middleName}{' '}
+            {order.user.lastName}
             {'\n'}
             {'\t'}
             Address: {order.addresses[0].address}
             {'\n'}
-            shipping to: {order.recieverFirstName} {''} {order.recieverLastName} {'\n'}
+            shipping to: {order.recieverFirstName} {''} {order.recieverLastName}{' '}
+            {'\n'}
             {'\t'}
             Address: {order.addresses[1].address}
             {'\n'}
@@ -60,7 +60,8 @@ const InvoicePage = () => {
             {order.routeId} {'\n'}
             {order.pickupdriver ? (
               <b>
-                pickup Driver: {order.pickupdriver.firstName} {order.pickupdriver.lastName}
+                pickup Driver: {order.pickupdriver.firstName}{' '}
+                {order.pickupdriver.lastName}
               </b>
             ) : (
               <p>

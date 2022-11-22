@@ -1,6 +1,5 @@
 // just for development testing
 
-import namor from 'namor'
 import { faker } from '@faker-js/faker'
 
 const range = (len) => {
@@ -14,8 +13,8 @@ const range = (len) => {
 const newPerson = () => {
   const statusChance = Math.random()
   return {
-    firstName: namor.generate({ words: 1, numbers: 0 }),
-    lastName: namor.generate({ words: 1, numbers: 0 }),
+    firstName: faker.name.firstName(),
+    lastName: faker.name.lastName(),
     age: Math.floor(Math.random() * 30),
     visits: Math.floor(Math.random() * 100),
     progress: Math.floor(Math.random() * 100),

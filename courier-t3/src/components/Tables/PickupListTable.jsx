@@ -8,10 +8,11 @@ import {
   useAsyncDebounce,
   useRowSelect,
 } from 'react-table'
-import { useQuery, useMutation, useQueryClient } from 'react-query'
+// import { useQuery, useMutation, useQueryClient } from 'react-query'
 import { GlobalFilter } from './tableFilters'
 import { useRouter } from 'next/router'
-import { makeOrder } from './makeData.mjs'
+import { trpc } from '@/utils/trpc'
+// import { makeOrder } from './makeData.mjs'
 
 const IndeterminateCheckbox = React.forwardRef(function ICheckbox(
   { indeterminate, ...rest },
@@ -87,158 +88,104 @@ const EditableCell = ({
 
 let defaultPageSize = 30
 const PickupListTable = () => {
-  const [multiSelectPickupDriver, setMultiSelectPickupDriver] = React.useState()
+  const [multiSelectPickupDriver, setMultiSelectPickupDriver] =
+    React.useState('')
   const [queryPageIndex, setQueryPageIndex] = React.useState(0)
   const [queryPageSize, setQueryPageSize] = React.useState(defaultPageSize)
   const router = useRouter()
 
-  const queryClient = useQueryClient()
+  // const queryClient = useQueryClient()
 
-  const postAddManyOrders = async () => {
-    try {
-      const res = await backendClient.post(
-        '/order/submitOrder',
-        makeOrder(1)[0]
-      )
-      console.log(' added orders', res)
-      return res.data
-    } catch (error) {
-      console.log('error adding orders', error)
-    }
-  }
+  // const postAddManyOrders = async () => {
+  //   try {
+  //     const res = await backendClient.post(
+  //       '/order/submitOrder',
+  //       makeOrder(1)[0]
+  //     )
+  //     console.log(' added orders', res)
+  //     return res.data
+  //   } catch (error) {
+  //     console.log('error adding orders', error)
+  //   }
+  // }
 
-  // useful to see new add order without refreshing or gettting all orders again.
-  const mutationNewOrder = useMutation(postAddManyOrders, {
-    onSuccess: (data) => {
-      queryClient.setQueryData(
-        ['getAllOrders', queryPageIndex, queryPageSize],
-        (oldData) => {
-          console.log('new Order:', oldData, queryPageIndex, queryPageSize)
-          return {
-            orderCount: oldData.orderCount + 1,
-            orders: [...oldData.orders, data],
-          }
-        }
-      )
-    },
-  })
+  // // useful to see new add order without refreshing or gettting all orders again.
+  // const mutationNewOrder = useMutation(postAddManyOrders, {
+  //   onSuccess: (data) => {
+  //     queryClient.setQueryData(
+  //       ['getAllOrders', queryPageIndex, queryPageSize],
+  //       (oldData) => {
+  //         console.log('new Order:', oldData, queryPageIndex, queryPageSize)
+  //         return {
+  //           orderCount: oldData.orderCount + 1,
+  //           orders: [...oldData.orders, data],
+  //         }
+  //       }
+  //     )
+  //   },
+  // })
 
-  const getOrderOptions = async () => {
-    try {
-      const { data } = await backendClient.get('order/options/all')
-      return data
-    } catch (error) {
-      throw new Error(`API error:${error?.message}`)
-    }
-  }
   const {
     data: orderOptions,
     isSuccess: orderOptionsIsSuccess,
     isLoading: orderOptionIsLoading,
     error: orderOptionsError,
-  } = useQuery('getOrderOptions', () => getOrderOptions(), {
+  } = trpc.useQuery(['invoice.getPickupDriversAndZones'], {
     keepPreviousData: true,
-    staleTime: Infinity,
+    // staleTime: Infinity,
+    refetchOnWindowFocus: true,
+    refetchOnMount: true,
   })
 
-  const getAllOrders = async (page, pageSize) => {
-    const offset = page * pageSize
-
-    try {
-      const { data } = await backendClient.get(
-        `order/allOrders?offset=${offset}&limit=${pageSize}`
-      )
-      return data
-    } catch (error) {
-      throw new Error(`API error:${error?.message}`)
-    }
-  }
   const {
     data: allOrders,
-    isSuccess,
-    isLoading,
+    isSuccess: allOrdersIsSuccess,
+    isLoading: allOrdersIsLoading,
     error,
-  } = useQuery(
-    ['getAllOrders', queryPageIndex, queryPageSize],
-    () => getAllOrders(queryPageIndex, queryPageSize),
+  } = trpc.useQuery(
+    [
+      'invoice.getAllOrders',
+      { queryPageIndex: queryPageIndex, queryPageSize: queryPageSize },
+    ],
     {
       keepPreviousData: true,
-      staleTime: Infinity,
+      // staleTime: Infinity,
+      refetchOnWindowFocus: true, // onyl works when data is stale
+      refetchOnMount: 'always',
     }
   )
 
   // to use data have to make status check for each call, consolidating calls into one route will remvoe those multiple calls but i will have to make a new router and return a new shape for the entire page. currently trying to
 
-  const mutationPickupDriver = useMutation(
-    async ({ orderId, newPickUpDriverId }) => {
-      // change pickup order for order after single selection
-
-      console.log('newpickupdriverid', newPickUpDriverId, orderId)
-      const { data } = await backendClient.put(
-        `order/update/${orderId}/pickupDriver`,
-        {
-          driverId: newPickUpDriverId,
-        }
-      )
-      console.log('updated pickup', data)
-      return data
-    },
-    {
-      onSuccess: (data) => {
-        // queryClient.setQueryData(['getAllOrders', currentCustomer.id], (oldData) => {
-        //   return [...oldData, data]
-        // })
-        // alert('user info edit completed')
-      },
-    }
+  const changeOrderPickupDriver = trpc.useMutation(
+    'invoice.changeOrderPickupDriver'
   )
-  const mutationManyPickupDriver = useMutation(
-    async ({ orderIds, newPickUpDriverId }) => {
-      // change pickup order for order after single selection
 
-      const { data } = await backendClient.put(
-        `order/update/pickupDriver/many`,
-        {
-          ids: orderIds,
-          driverId: newPickUpDriverId,
-        }
-      )
-      // console.log('updated pickup', data)
-      return data
-    },
-    {
-      onSuccess: (data) => {
-        console.log('newpickupdriverid', newPickUpDriverId, orderIds)
-
-        // queryClient.setQueryData(['getAllOrders', currentCustomer.id], (oldData) => {
-        //   return [...oldData, data]
-        // })
-        // alert('user info edit completed')
-      },
-    }
+  const mutationManyPickupDriver = trpc.useMutation(
+    'invoice.changeManyOrdersPickupDriver'
   )
-  const mutationPickupZone = useMutation(
-    async ({ orderId, pickupZoneId }) => {
-      // change pickup order for order after single selection
+  // const mutationPickupZone = useMutation(
+  //   async ({ orderId, pickupZoneId }) => {
+  //     // change pickup order for order after single selection
 
-      const { data } = await backendClient.put(
-        `order/update/${orderId}/pickupZone`,
-        {
-          pickupZoneId: pickupZoneId,
-        }
-      )
-      return data
-    },
-    {
-      onSuccess: (data) => {
-        // queryClient.setQueryData(['getAllOrders', queryPageIndex, queryPageSize], (oldData) => {
-        //   return [...oldData, data]
-        // })
-        console.log('updated pickupZone', data)
-        // alert('user info edit completed')
-      },
-    }
-  )
+  //     const { data } = await backendClient.put(
+  //       `order/update/${orderId}/pickupZone`,
+  //       {
+  //         pickupZoneId: pickupZoneId,
+  //       }
+  //     )
+  //     return data
+  //   },
+  //   {
+  //     onSuccess: (data) => {
+  //       // queryClient.setQueryData(['getAllOrders', queryPageIndex, queryPageSize], (oldData) => {
+  //       //   return [...oldData, data]
+  //       // })
+  //       console.log('updated pickupZone', data)
+  //       // alert('user info edit completed')
+  //     },
+  //   }
+  // )
 
   // * dynamic cells for pickupzone and drivers that updates the memoization whenever orderOptions are fetched successfully
   const columns = React.useMemo(
@@ -256,10 +203,10 @@ const PickupListTable = () => {
               <select
                 onChange={(e) => {
                   console.log('pickupZoneId:', e.target.value)
-                  mutationPickupZone.mutate({
-                    orderId: original.id,
-                    pickupZoneId: e.target.value,
-                  })
+                  // mutationPickupZone.mutate({
+                  //   orderId: original.id,
+                  //   pickupZoneId: e.target.value,
+                  // })
                 }}
               >
                 <option value={original.pickupZoneId}>
@@ -267,7 +214,7 @@ const PickupListTable = () => {
                 </option>
                 {orderOptions.pickupZones.map((zone) => (
                   <option key={`${zone.code}${zone.id}`} value={zone.id}>
-                    {zone.Name}
+                    {zone.name}
                   </option>
                 ))}
 
@@ -294,15 +241,15 @@ const PickupListTable = () => {
               <select
                 onChange={(e) => {
                   console.log('pickup driver id', e.target.value)
-                  mutationPickupDriver.mutate({
+                  changeOrderPickupDriver.mutate({
                     orderId: original.id,
                     newPickUpDriverId: e.target.value,
                   })
                 }}
               >
                 <option value={original.pickupDriverId}>
-                  {original.pickupdriver?.firstName}{' '}
-                  {original.pickupdriver?.lastName}
+                  {original.pickupDriver?.firstName}{' '}
+                  {original.pickupDriver?.lastName}
                 </option>
                 {orderOptions.drivers.map((driver) => (
                   <option key={driver.id} value={driver.id}>
@@ -321,23 +268,25 @@ const PickupListTable = () => {
         ),
       },
       {
-        Header: 'Customer',
-        accessor: ({ user }) => `${user.firstName} ${user.lastName}`,
+        Header: 'customer',
+        // accessor: 'customer.firstName' + 'customer.lastName',
+        accessor: ({ customer }) =>
+          `${customer?.firstName} ${customer?.lastName}`,
       },
-      {
-        Header: 'Shipped To',
-        accessor: (data) =>
-          `${data.recieverFirstName} ${data.recieverLastName}`,
-      },
+      // {
+      //   Header: 'Shipped To',
+      //   accessor: (data) =>
+      //     `${data.recieverFirstName} ${data.recieverLastName}`,
+      // },
       {
         Header: 'Time placed',
         accessor: 'timePlaced',
       },
-      { Header: 'Total Items', accessor: 'totalItems' },
-      {
-        Header: 'Total Price',
-        accessor: 'totalPrice',
-      },
+      // { Header: 'Total Items', accessor: 'totalItems' },
+      // {
+      //   Header: 'Total Price',
+      //   accessor: 'totalPrice',
+      // },
       {
         Header: 'Status',
         accessor: 'status.message',
@@ -363,7 +312,7 @@ const PickupListTable = () => {
         ),
       },
     ],
-    [orderOptionsIsSuccess]
+    [orderOptionsIsSuccess, allOrdersIsSuccess]
   )
   const filterTypes = React.useMemo(
     () => ({
@@ -395,6 +344,7 @@ const PickupListTable = () => {
   const tableTotalCount = allOrders?.orderCount
 
   // console.log('invoices', pickupListTable)
+
   const {
     getTableProps,
     getTableBodyProps,
@@ -427,7 +377,9 @@ const PickupListTable = () => {
         pageSize: queryPageSize,
       },
       manualPagination: true,
-      pageCount: isSuccess ? Math.ceil(tableTotalCount / queryPageSize) : null,
+      pageCount: allOrdersIsSuccess
+        ? Math.ceil(tableTotalCount / queryPageSize)
+        : null,
       // autoResetSortBy: false,
       // autoResetExpanded: false,
       autoResetPage: false,
@@ -475,23 +427,23 @@ const PickupListTable = () => {
     return <p>Error</p>
   }
 
-  if (isLoading) {
+  if (allOrdersIsLoading) {
     return <p>Loading...</p>
   }
 
   //  add to filter by order branch location, date to date, orders shown by drivers
   return (
     <>
-      {isSuccess ? (
+      {allOrdersIsSuccess ? (
         <>
           <h1>test</h1>
-          <button
+          {/* <button
             onClick={() => {
               mutationNewOrder.mutate()
             }}
           >
             create mock order
-          </button>
+          </button> */}
           <GlobalFilter
             globalFilter={state.globalFilter}
             setGlobalFilter={setGlobalFilter}

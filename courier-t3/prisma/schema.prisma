@@ -77,7 +77,6 @@ enum OrderLocation {
   MIAMIwarehouse
   withReciever
 }
-// TODO: finsihing order route chooser
 model Order {
   id Int @unique @default(autoincrement())
   customerUserId String // thecustomer who sent the package, so client/shipper
@@ -93,7 +92,7 @@ model Order {
   //totalItems Int? // technically have this in the orderItems tables if query all the items
   //totalPrice BigInt? // $1 == 100cents, $100 box = 10000 or 10000 cents this is for compatibility with finance apps and keep track of money accurately using 64bits instead of a float or numeric or deicmal (psql)
   
-  paymentType String // cash, card, etc //webhook from stripe or cash confirmation page updates
+  paymentType String // stripe, cash //stripe webhooks can change this as necessary
   statusMessage String // id of status, can make into the status string itself if message is unique
   status orderStatus @relation(fields: [statusMessage], references: [message])
   
@@ -112,7 +111,7 @@ model Order {
   containerId Int?
   container containers? @relation(fields:[containerId], references: [id])
   
-  stripeCheckoutId String //need stripe informmation to connect order to relevent stripe checkout session, with this id i can query specific orders when updating with information from stripe checkout
+  stripeCheckoutId String @unique //need stripe informmation to connect order to relevent stripe checkout session, with this id i can query specific orders when updating with information from stripe checkout
 
   // instead of just ids, going to add the entire items of stripepayments to the database to backup the data
 
@@ -128,15 +127,15 @@ model Order {
 // }
 model pickupZone {
   id Int @id @default(autoincrement())
-  Name String
-  Code String
+  name String
+  code String
   order Order[]
 }
 
 model OrderAddressDuo{
   id Int @id @default(autoincrement())
   orderId Int
-  order Order @relation(fields: [orderId],references:[id] )
+  order Order @relation(fields: [orderId],references:[id], onDelete: Cascade)
   firstName String
   lastName String
   address String
@@ -154,10 +153,10 @@ model OrderAddressDuo{
 model OrderItem {
   id Int @id @default(autoincrement())
   orderId Int
-  order Order @relation(fields: [orderId],references:[id] )
+  order Order @relation(fields: [orderId],references:[id], onDelete: Cascade )
   quantity Int
-  productsId Int
-  product product @relation(fields: [productsId], references:[id])
+  productId Int
+  product product @relation(fields: [productId], references:[id])
 
 }
 model orderStatus {
