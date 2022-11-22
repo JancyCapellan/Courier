@@ -2,66 +2,55 @@ import Layout from '../../components/Layout'
 import { useRouter } from 'next/router'
 // import { useQuery } from 'react-query'
 import { trpc } from '@/utils/trpc'
-
-const getOrderDetails = async (orderId) => {
-  try {
-    const { data } = await backendClient.get(`order/${orderId}`)
-    console.log('order:', data)
-    return data
-  } catch (error) {
-    res.statusCode = 500
-  }
-}
+import { QRCodeSVG } from 'qrcode.react'
 
 const InvoicePage = () => {
   const router = useRouter()
   const { orderId } = router.query
-  const { data: order, status: getOrderDetailsStatus } = useQuery(
-    ['getOrderDetails', orderId],
-    () => getOrderDetails(orderId)
-  )
-  // const initialValues = {
-  // id: number
-  // recieverFirstName: string
-  // recieverLastName: string
-  // totalPrice: number
-  // totalItems: number
-  // status: string
-  // location: string
-  // timePlaced: string
-  // routeId: number
-  // }
+  const { data: order, status: getOrderDetailsStatus } = trpc.useQuery([
+    'invoice.getOrderById',
+    { orderId: parseInt(orderId) },
+  ])
+
+  if (getOrderDetailsStatus === 'error') return <div>error</div>
+
+  if (getOrderDetailsStatus === 'loading') return <div>loading</div>
   return (
     <>
-      {getOrderDetails === 'error' && <div>error</div>}
-      {getOrderDetails === 'loading' && <div>loading</div>}
       {getOrderDetailsStatus === 'success' && (
         <section className="invoice-details-container">
           <h1>Invoice #{order.id}</h1>
           <pre>
-            Customer: {order.user.firstName} {order.user.middleName}{' '}
-            {order.user.lastName}
+            OrderID: {order?.id}
+            {'\n'}Sender:{order?.customer.firstName} {order?.customer.lastName}
+            {'\n'} Country: {order?.addresses[0]?.country}
+            {'\n'} Address: {order?.addresses[0].address}
+            {'\n'} Address2: {order?.addresses[0].address2 || 'N/A'}
+            {'\n'} Address3: {order?.addresses[0].address3 || ' N/A'}
+            {'\n'} City: {order?.addresses[0].city}
+            {'\n'} PostalCode: {order?.addresses[0]?.postalCode}
+            {'\n'} Cellphone: {order?.addresses[0]?.cellphone || 'N/A'}
+            {'\n'} Telephone: {order?.addresses[0].telephone || 'N/A'}
+            {'\n'}Reciever: {order?.addresses[1]?.firstName}
+            {'\n'} Country: {order?.addresses[1]?.country}
+            {'\n'} Address: {order?.addresses[1].address}
+            {'\n'} Address2: {order?.addresses[1].address2 || 'N/A'}
+            {'\n'} Address3: {order?.addresses[1].address3 || ' N/A'}
+            {'\n'} City: {order?.addresses[1].city}
+            {'\n'} PostalCode: {order?.addresses[1]?.postalCode}
+            {'\n'} Cellphone: {order?.addresses[1]?.cellphone || 'N/A'}
+            {'\n'} Telephone: {order?.addresses[1].telephone || 'N/A'}
             {'\n'}
-            {'\t'}
-            Address: {order.addresses[0].address}
             {'\n'}
-            shipping to: {order.recieverFirstName} {''} {order.recieverLastName}{' '}
+            {'\n'}time ordered: {`${order.timePlaced}`}
             {'\n'}
-            {'\t'}
-            Address: {order.addresses[1].address}
+            <b>status: {order.status.message}</b>
             {'\n'}
-            total price: {order.totalPrice}
-            {'\n'}
-            total items: {order.totalItems}
-            {'\n'}
-            status: {order.status.message}
-            {'\n'}
-            time ordered: {`${order.timePlaced}`} {'\n'}
-            {order.routeId} {'\n'}
-            {order.pickupdriver ? (
+            {/* route: {order.routeId} {'\n'} */}
+            {order.pickupDriver ? (
               <b>
-                pickup Driver: {order.pickupdriver.firstName}{' '}
-                {order.pickupdriver.lastName}
+                pickup Driver: {order.pickupDriver.firstName}{' '}
+                {order.pickupDriver.lastName}
               </b>
             ) : (
               <p>
@@ -77,21 +66,18 @@ const InvoicePage = () => {
               <tr>
                 <th>Item</th>
                 <th>Amount</th>
-                <th>type</th>
                 <th>Per Item Price</th>
                 <th>grouped price</th>
               </tr>
             </thead>
-
             <tbody>
               {order.items.map((item) => {
                 return (
-                  <tr key={item.id}>
+                  <tr key={item.product.stripeProductId}>
                     <td>{item.product.name}</td>
-                    <td>{item.amount}</td>
-                    <td>{item.product.productType.type}</td>
-                    <td>{item.product.price}</td>
-                    <td> {item.product.price * item.amount}</td>
+                    <td>{item.quantity}</td>
+                    <td>${item.product.price / 100}</td>
+                    <td> ${(item.product.price * item.quantity) / 100}</td>
                   </tr>
                 )
               })}
@@ -100,14 +86,68 @@ const InvoicePage = () => {
                 <td></td>
                 <td></td>
                 <td>total:</td>
-                <td>{order.totalPrice}</td>
+                {/* TODO: calculate total amount due for all items in the order */}
+                {/* <td>{order.totalPrice}</td> */}
               </tr>
             </tbody>
           </table>
+
+          <QRCodeSVG
+            value={`OrderID:${order?.id}\nSender:${order?.customer.firstName} ${
+              order?.customer.lastName
+            }\n  Country: ${order?.addresses[0]?.country}\n  Address: ${
+              order?.addresses[0].address
+            }\n  Address2: ${
+              order?.addresses[0].address2 || 'N/A'
+            }\n  Address3: ${order?.addresses[0].address3 || ' N/A'}\n  City: ${
+              order?.addresses[0].city
+            }\n  PostalCode: ${order?.addresses[0]?.postalCode}\n  Cellphone: ${
+              order?.addresses[0]?.cellphone || 'N/A'
+            }\n  Telephone: ${
+              order?.addresses[0].telephone || 'N/A'
+            }\nReciever: ${order?.addresses[1]?.firstName}\n  Country: ${
+              order?.addresses[1]?.country
+            }\n  Address: ${order?.addresses[1].address}\n  Address2: ${
+              order?.addresses[1].address2 || 'N/A'
+            }\n  Address3: ${order?.addresses[1].address3 || ' N/A'}\n  City: ${
+              order?.addresses[1].city
+            }\n  PostalCode: ${order?.addresses[1]?.postalCode}\n  Cellphone: ${
+              order?.addresses[1]?.cellphone || 'N/A'
+            }\n  Telephone: ${order?.addresses[1].telephone || 'N/A'}`}
+            includeMargin={false}
+            level={'M'}
+            size={220}
+          />
         </section>
       )}
     </>
   )
+}
+
+function AddressFormat(addresses) {
+  {
+    console.log(
+      `OrderID:${order?.id}\nSender:${order?.customer.firstName} ${
+        order.customer.lastName
+      }\n  Country: ${order.addresses[0]?.country}\n  Address: ${
+        order.addresses[0].address
+      }\n  Address2: ${order.addresses[0].address2 || 'N/A'}\n  Address3: ${
+        order.addresses[0].address3 || ' N/A'
+      }\n  City: ${order.addresses[0].city}\n  PostalCode: ${
+        order.addresses[0]?.postalCode
+      }\n  Cellphone: ${order.addresses[0]?.cellphone || 'N/A'}\n  Telephone: ${
+        order?.addresses[0].telephone || 'N/A'
+      }\nReciever: ${order?.addresses[1]?.firstName}\n  Country: ${
+        order.addresses[1]?.country
+      }\n  Address: ${order.addresses[1].address}\n  Address2: ${
+        order.addresses[1].address2 || 'N/A'
+      }\n  Address3: ${order.addresses[1].address3 || ' N/A'}\n  City: ${
+        order.addresses[1].city
+      }\n  PostalCode: ${order.addresses[1]?.postalCode}\n  Cellphone: ${
+        order.addresses[1]?.cellphone || 'N/A'
+      }\n  Telephone: ${order?.addresses[1].telephone || 'N/A'}`
+    )
+  }
 }
 
 export default InvoicePage

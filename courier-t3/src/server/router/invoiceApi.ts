@@ -141,3 +141,73 @@ export const invoiceApi = createProtectedRouter()
       return changedManyOrdersPickupDriver
     },
   })
+  .query('getOrderById', {
+    input: z.object({
+      orderId: z.number(),
+    }),
+    async resolve({ ctx, input }) {
+      const order = await ctx.prisma.order.findUnique({
+        where: {
+          id: input.orderId,
+        },
+        select: {
+          id: true,
+          customer: {
+            select: {
+              firstName: true,
+              middleName: true,
+              lastName: true,
+            },
+          },
+          pickupDriver: {
+            select: {
+              firstName: true,
+              middleName: true,
+              lastName: true,
+            },
+          },
+          addresses: {
+            select: {
+              firstName: true,
+              lastName: true,
+              address: true,
+              address2: true,
+              address3: true,
+              city: true,
+              postalCode: true,
+              cellphone: true,
+              telephone: true,
+              country: true,
+            },
+          },
+          items: {
+            select: {
+              quantity: true,
+              product: {
+                select: {
+                  price: true,
+                  name: true,
+                  stripeProductId: true,
+                },
+              },
+            },
+          },
+          status: {
+            select: {
+              message: true,
+            },
+          },
+          timePlaced: true,
+        },
+      })
+      if (order) {
+        // changing timePlaced for orders into readable local values
+        for (const key in order)
+          if (key === 'timePlaced') {
+            order[key] = order[key].toLocaleString()
+          }
+
+        return order
+      }
+    },
+  })
