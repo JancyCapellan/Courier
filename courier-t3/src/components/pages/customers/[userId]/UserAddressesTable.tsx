@@ -42,7 +42,7 @@ const UserAddressesTable = ({
             {getCustomerAddressesStatus == 'success' &&
               customerAddresses.map((address) => {
                 return (
-                  <tr className='customer-table-row' key={address.id}>
+                  <tr className="customer-table-row" key={address.id}>
                     {/* <td>{address.address_id}</td> */}
                     <td>{address.address}</td>
                     <td>{address.address2}</td>
@@ -80,6 +80,7 @@ const UserAddressesTable = ({
                       >
                         Edit
                       </button>
+                      {/* //TODO: DELETE ADDRESSES MUTATION */}
                       <button>Delete</button>
                     </td>
                   </tr>
@@ -123,36 +124,25 @@ const EditAddressModal = ({ showEditModal, handleClose, address, userId }) => {
     { key: 'DOMINICAN REPUBLIC', value: 'DR' },
   ]
 
-  const updateCustomerAddress = async (updatedAddressFormValues) => {
-    try {
-      const { data } = await backendClient.put(
-        `user/addresses/update/${address.id}`,
-        updatedAddressFormValues
-      )
-
-      return data
-    } catch (err) {
-      console.error('update erorr', err)
-      // alert('error')
-    }
-  }
-
   // need address id
-  const editAddressMutation = useMutation(updateCustomerAddress, {
+  const editAddressMutation = trpc.useMutation(['user.changeUserAddress'], {
     onSuccess: (data) => {
       console.log('edit address', data)
-      queryClient.setQueryData(['getCustomerAddresses', userId], (oldData) => {
-        const filteredData = oldData.filter(
-          (oldAddr) => oldAddr.id !== address.id
-        )
-        return [...filteredData, data]
-      })
-      alert('user info edit completed')
+      queryClient.setQueryData(
+        ['user.getAddresses', { userId: userId }],
+        (oldData) => {
+          const filteredData = oldData.filter(
+            (oldAddr) => oldAddr.id !== address.id
+          )
+          return [...filteredData, data]
+        }
+      )
+      // alert('user info edit completed')
     },
   })
 
   const onSubmit = (values) => {
-    editAddressMutation.mutate(values)
+    editAddressMutation.mutate({ addressId: address.id, form: values })
     handleClose()
   }
 
@@ -160,7 +150,7 @@ const EditAddressModal = ({ showEditModal, handleClose, address, userId }) => {
     <ModalContainer show={showEditModal} handleClose={handleClose}>
       <h2>Edit Address</h2>
       <Formik
-        className='customer-editor-form'
+        className="customer-editor-form"
         initialValues={initialValues}
         validationSchema={validationSchema}
         onSubmit={onSubmit}
@@ -184,69 +174,69 @@ const EditAddressModal = ({ showEditModal, handleClose, address, userId }) => {
                 disabled
               /> */}
               <FormikControl
-                control='select'
-                label='Country'
-                name='country'
+                control="select"
+                label="Country"
+                name="country"
                 options={selectOptions}
                 // value={address.country}
               />
               <FormikControl
-                control='input'
-                type='text'
-                label='Address line 1'
-                name='address'
+                control="input"
+                type="text"
+                label="Address line 1"
+                name="address"
                 // value={address.address}
               />
               <FormikControl
-                control='input'
-                type='text'
-                label='Address line 2'
-                name='address2'
+                control="input"
+                type="text"
+                label="Address line 2"
+                name="address2"
                 // value={address.address2}
               />
               <FormikControl
-                control='input'
-                type='text'
-                label='Address line 3'
-                name='address3'
+                control="input"
+                type="text"
+                label="Address line 3"
+                name="address3"
                 // value={address.address3}
               />
               <FormikControl
-                control='input'
-                type='text'
-                label='city'
-                name='city'
+                control="input"
+                type="text"
+                label="city"
+                name="city"
                 // value={address.city}
               />
               <FormikControl
-                control='input'
-                type='text'
-                label='state'
-                name='state'
+                control="input"
+                type="text"
+                label="state"
+                name="state"
                 // value={address.state}
               />
               <FormikControl
-                control='input'
-                type='text'
-                label='postal code'
-                name='postalCode'
+                control="input"
+                type="number"
+                label="postal code"
+                name="postalCode"
                 // value={address.postal_code}
               />
               <FormikControl
-                control='input'
-                type='text'
-                label='cellphone'
-                name='cellphone'
+                control="input"
+                type="text"
+                label="cellphone"
+                name="cellphone"
                 // value={address.cellphone}
               />
               <FormikControl
-                control='input'
-                type='text'
-                label='telephone'
-                name='telephone'
+                control="input"
+                type="text"
+                label="telephone"
+                name="telephone"
                 // value={address.telephone}
               />
-              <button type='submit' disabled={!formik.isValid}>
+              <button type="submit" disabled={!formik.isValid}>
                 Submit
               </button>
             </Form>

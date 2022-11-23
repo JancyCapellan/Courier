@@ -12,6 +12,7 @@ import {
 import { GlobalFilter } from './tableFilters'
 import { useRouter } from 'next/router'
 import { trpc } from '@/utils/trpc'
+import { useQueryClient } from 'react-query'
 // import { makeOrder } from './makeData.mjs'
 
 const IndeterminateCheckbox = React.forwardRef(function ICheckbox(
@@ -94,6 +95,8 @@ const PickupListTable = () => {
   const [queryPageSize, setQueryPageSize] = React.useState(defaultPageSize)
   const router = useRouter()
 
+  const queryClient = useQueryClient()
+
   // const queryClient = useQueryClient()
 
   // const postAddManyOrders = async () => {
@@ -159,6 +162,19 @@ const PickupListTable = () => {
 
   const changeOrderPickupDriver = trpc.useMutation(
     'invoice.changeOrderPickupDriver'
+    // {
+    // TODO: create optimistic updates to reduce refetches
+    //   onSuccess: (data) => {
+    //     // console.log('edit address', data)
+    //     queryClient.setQueryData(
+    //       ['invoice.getOrderById', { orderId: data.id }],
+    //       (oldData) => {
+    //         return [data.pickupDriver, ...oldData]
+    //       }
+    //     )
+    //     // alert('user info edit completed')
+    //   },
+    // }
   )
 
   const mutationManyPickupDriver = trpc.useMutation(

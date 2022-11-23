@@ -5,26 +5,30 @@ import * as Yup from 'yup'
 import ModalContainer from '@/components/HOC/ModalContainer'
 import { useQueryClient } from 'react-query'
 import { trpc } from '@/utils/trpc'
+import { useRouter } from 'next/router'
 
 export const CustomerEditorForm = ({ currentUser }) => {
   // not all of these values are in the form inputs to hide them from being edited.
   const queryClient = useQueryClient()
   const [showEditForm, setShowEditForm] = useState(false)
 
+  const router = useRouter()
+  const currentUserID = router.query
+
   console.log('editor current user', currentUser)
 
   const initialValues = {
-    id: currentUser.id,
-    firstName: currentUser.firstName,
-    middleName: currentUser.middleName,
-    lastName: currentUser.lastName,
-    password: currentUser.password,
-    email: currentUser.email,
-    role: currentUser.role,
+    // id: currentUser?.id,
+    firstName: currentUser?.firstName,
+    middleName: currentUser?.middleName,
+    lastName: currentUser?.lastName,
+    // password: currentUser?.password,
+    email: currentUser?.email,
+    role: currentUser?.role,
     // company: currentUser.company,
     // branchName: currentUser.branchName,
     // licenseId: currentUser.licenseId,
-    preferredLanguage: currentUser.preferredLanguage,
+    preferredLanguage: currentUser?.preferredLanguage,
   }
 
   const validationSchema = Yup.object({
@@ -136,6 +140,7 @@ export const CustomerEditorForm = ({ currentUser }) => {
         >
           {(formik) => {
             return (
+              // TODO FIXME:  Warning: `value` prop on `input` should not be null. Consider using an empty string to clear the component or `undefined` for uncontrolled components.
               <Form>
                 {/* <FormikControl
                   control='input'

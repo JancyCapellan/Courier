@@ -19,10 +19,12 @@ const stripePromise = getStripe()
 
 const createOrder = () => {
   const { data: session, status: sessionStatus } = useSession()
+  sessionStatus === 'authenticated' &&
+    console.log('🚀 ~ file: index.jsx ~ line 22 ~ createOrder ~ data', session)
   const clearCart = trpc.useMutation(['cart.clearCart'], {
     onSuccess: () => {
       //refetch form and items
-      trpc.useContext
+      // trpc.useContext
     },
   })
 
@@ -65,9 +67,15 @@ const createOrder = () => {
         <Items />
         <h1>review order</h1>
         <Cart />
-        <Link href={`/createOrder/checkout/${router.query.customerId}`}>
-          <button className="btn btn-blue">Review Order before checkout</button>
-        </Link>
+        {session?.user?.role === 'CUSTOMER' ? (
+          <></>
+        ) : (
+          <Link href={`/createOrder/checkout/${router.query.customerId}`}>
+            <button className="btn btn-blue">
+              Review Order before checkout
+            </button>
+          </Link>
+        )}
 
         {/* <PreCheckout /> */}
       </section>

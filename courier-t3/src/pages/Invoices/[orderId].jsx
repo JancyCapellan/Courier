@@ -8,10 +8,12 @@ import { GOOGLE_FONT_PROVIDER } from 'next/dist/shared/lib/constants'
 const InvoicePage = () => {
   const router = useRouter()
   const { orderId } = router.query
-  const { data: order, status: getOrderDetailsStatus } = trpc.useQuery([
-    'invoice.getOrderById',
-    { orderId: parseInt(orderId) },
-  ])
+  const { data: order, status: getOrderDetailsStatus } = trpc.useQuery(
+    ['invoice.getOrderById', { orderId: parseInt(orderId) }],
+    {
+      refetchOnMount: 'always',
+    }
+  )
 
   if (getOrderDetailsStatus === 'error') return <div>error</div>
 

@@ -101,7 +101,7 @@ export const userRouter = createProtectedRouter()
       try {
         const userOrders = await ctx.prisma.order.findMany({
           where: {
-            userId: input.userId,
+            customerUserId: input.userId,
           },
           include: {
             status: true,
@@ -111,11 +111,6 @@ export const userRouter = createProtectedRouter()
                   select: {
                     price: true,
                     name: true,
-                    productType: {
-                      select: {
-                        type: true,
-                      },
-                    },
                   },
                 },
               },
@@ -140,5 +135,25 @@ export const userRouter = createProtectedRouter()
           return userOrders
         }
       } catch (error) {}
+    },
+  })
+  .mutation('changeUserAddress', {
+    input: z.object({
+      addressId: z.number(),
+      form: z.any(),
+    }),
+    async resolve({ ctx, input }) {
+      try {
+        const updatedAddressResult = await ctx.prisma.address.update({
+          where: {
+            id: input.addressId,
+          },
+          data: input.form,
+        })
+
+        return updatedAddressResult
+      } catch (e) {
+        throw e
+      }
     },
   })

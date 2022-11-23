@@ -111,11 +111,15 @@ export const invoiceApi = createProtectedRouter()
             },
           },
         },
+        select: {
+          id: true,
+          pickupDriver: true,
+        },
       })
-      console.log(
-        '🚀 ~ file: invoiceApi.ts ~ line 115 ~ resolve ~ chagedPickupDriver',
-        changedPickupDriver
-      )
+      // console.log(
+      //   '🚀 ~ file: invoiceApi.ts ~ line 115 ~ resolve ~ chagedPickupDriver',
+      //   changedPickupDriver
+      // )
 
       return changedPickupDriver
     },

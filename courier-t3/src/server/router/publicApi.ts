@@ -17,7 +17,7 @@ export const publicApiRouter = createRouter()
         const registrationSuccessful = await ctx.prisma.user.create({
           data: input,
         })
-        console.log('Registartion Successful:', registrationSuccessful)
+        // console.log('Registartion Successful:', registrationSuccessful)
         return { message: 'Registartion Successful:', registrationSuccessful }
       } catch (error) {
         throw error

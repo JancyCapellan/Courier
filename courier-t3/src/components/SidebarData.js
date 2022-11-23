@@ -4,9 +4,26 @@ import { FiSettings } from 'react-icons/fi'
 import { GrGroup } from 'react-icons/gr'
 import { FaFileInvoiceDollar, FaWarehouse } from 'react-icons/fa'
 import { MdAdminPanelSettings } from 'react-icons/md'
-
+import { useSession } from 'next-auth/react'
+import { TbFileInvoice } from 'react-icons/tb'
 // cname is className
 // { staff:[], cust: [], admin:[]}
+
+// async function CustomerLinks() {
+//   const { data: session, status: sessionStatus } = useSession()
+
+//   if (sessionStatus === 'authenticated') {
+//     let links = {
+//       createOrder: {
+//         title: 'create Order',
+//         path: '/createOrder',
+//         icon: <TbFileInvoice />,
+//       },
+//     }
+//     return links
+//   }
+// }
+
 export const routes = {
   administration: {
     title: 'Business Administration',
@@ -34,9 +51,9 @@ export const routes = {
     icon: '',
   },
   createOrder: {
-    title: 'Order',
-    path: '/order',
-    icon: '',
+    title: 'create Order',
+    path: '/createOrder',
+    icon: <TbFileInvoice />,
   },
   cart: {
     title: 'Cart',
@@ -82,7 +99,7 @@ export const sidebarTypes = {
   //TODO: ICONS AND DOUBLE CHECK ROUTES
   SECT: [routes.account, routes.customers, routes.invoices],
   DRIVER: [routes.account, routes.pickups, routes.driverPage],
-  CUSTOMER: [routes.account, routes.createOrder, routes.cart, routes.support],
+  CUSTOMER: [routes.account, routes.createOrder],
   ADMIN: [
     routes.administration,
     routes.account,

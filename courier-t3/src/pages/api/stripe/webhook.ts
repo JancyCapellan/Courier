@@ -54,7 +54,16 @@ const webhook = async (req: NextApiRequest, res: NextApiResponse) => {
         },
         data: {
           stripeCheckout: checkoutSession,
-          statusMessage: 'CHECKOUT SUCCESSFUL',
+          status: {
+            connectOrCreate: {
+              where: {
+                message: 'CHECKOUT SUCCESSFUL',
+              },
+              create: {
+                message: 'CHECKOUT SUCCESSFUL',
+              },
+            },
+          },
         },
       })
       console.log(

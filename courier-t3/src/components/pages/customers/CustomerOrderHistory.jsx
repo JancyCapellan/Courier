@@ -21,8 +21,6 @@ export const CustomerOrderHistory = ({ currentUser }) => {
               <th>Order Id</th>
               <th>time placed</th>
               <th>Sending to:</th>
-              <th>total cost</th>
-              <th>total items</th>
               <th>status</th>
               {/* <th>location</th> */}
               <th>utilities</th>
@@ -33,12 +31,13 @@ export const CustomerOrderHistory = ({ currentUser }) => {
               return (
                 <tr key={order.id}>
                   <td>{order.id}</td>
-                  <td>{order.timePlaced}</td>
+                  <td>{order?.timePlaced}</td>
                   <td>
-                    {order.recieverFirstName} {order.recieverLastName}
+                    {order?.addresses[1]?.firstName}{' '}
+                    {order?.addresses[1]?.lastName}
                   </td>
-                  <td>{order.totalPrice}</td>
-                  <td>{order.totalItems}</td>
+                  {/* <td>{order.totalPrice}</td>
+                  <td>{order.totalItems}</td> */}
                   <td>{order.status.message} </td>
                   {/* <td>{order.location}</td> */}
                   <td>

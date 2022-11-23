@@ -17,19 +17,19 @@ import { CustomerEditorForm } from '@/components/pages/customers/CustomerEditorF
 
 const CustomerAccountPage = () => {
   const router = useRouter()
-  const { userId } = router.query
+  const userId = router.query.userId
   const [currentPage, setCurrentPage] = useState(1)
 
   //all components based on this customer object
-  const currentCustomer = usePersistedLocallyStore(
-    (state) => state.currentCustomer
-  )
+  // const currentCustomer = usePersistedLocallyStore(
+  //   (state) => state.currentCustomer
+  // )
 
-  console.log(currentCustomer)
+  // console.log(currentCustomer)
 
   const { data: user, status: getUserAccountInfoStatus } = trpc.useQuery([
     'user.getUserAccountInfo',
-    { userId: currentCustomer.id },
+    { userId: userId },
   ])
 
   //    try {

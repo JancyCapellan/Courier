@@ -4,12 +4,15 @@ import { sidebarTypes } from './SidebarData'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 import { IconContext } from 'react-icons'
-
+import { TbFileInvoice } from 'react-icons/tb'
+import { FiSettings } from 'react-icons/fi'
 // ! CURRENT MAIN SIDEBAR
 const Sidebar = () => {
   const { data: session, status } = useSession()
 
   const [closeSidebar, setCloseSidebar] = useState()
+
+  const [sidebarData, setSidebarData] = useState([])
 
   const router = useRouter()
 
@@ -53,9 +56,27 @@ const Sidebar = () => {
   //   }
   // }, [status])
 
-  let sidebarData
-  if (status === 'authenticated')
-    sidebarData = sidebarTypes[session?.user?.role]
+  // let sidebarData
+  useEffect(() => {
+    if (status === 'authenticated') {
+      if (session.user?.role === 'CUSTOMER') {
+        setSidebarData([
+          {
+            title: 'User Account',
+            path: '/account',
+            icon: <FiSettings />,
+          },
+          {
+            title: 'create Order',
+            path: `/createOrder?customerId=${session?.user?.id}`,
+            icon: <TbFileInvoice />,
+          },
+        ])
+      } else {
+        setSidebarData(sidebarTypes[session?.user?.role])
+      }
+    }
+  }, [session])
 
   return (
     <>
