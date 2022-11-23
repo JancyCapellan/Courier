@@ -168,7 +168,9 @@ the orders table in courier_app Database should include: cartDetails, stripe che
 
 * Todays Todos
 - [X] Checkout webhook to update customer order based on stripeCheckoutID
-- [ ] refactor page for customers and driver user types
+- [-] refactor page for customers and driver user types
+  - [X] customer completed
+  - [ ] driver pickup/invoice page needed
 - [ ] create capacitor app  to test app flow
 - [ ] change css to be mobile friendly
 - [ ] add print functionality for invoices to app
