@@ -126,6 +126,7 @@ export const stripeApi = createProtectedRouter()
           mode: 'payment',
           line_items: lineItems,
           metadata: {
+            //TODO: more descriptivve of the order, like the invoice receiept that is going to be printable
             test: 'meta Test',
             customerId: input.customerId,
             orderCreatorUserId: input.userId,

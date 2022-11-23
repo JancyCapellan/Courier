@@ -166,7 +166,12 @@ then events occur as such,  if payment is attempted, payment_intent.created, if 
 ** ORDERS
 the orders table in courier_app Database should include: cartDetails, stripe checkout information, etc
 
-
+* Todays Todos
+- [X] Checkout webhook to update customer order based on stripeCheckoutID
+- [ ] refactor page for customers and driver user types
+- [ ] create capacitor app  to test app flow
+- [ ] change css to be mobile friendly
+- [ ] add print functionality for invoices to app
 * TODO TODOs [0%]
 :PROPERTIES:
 :COOKIE_DATA: TODOs recursive

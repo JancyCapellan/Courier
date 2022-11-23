@@ -1,7 +1,7 @@
 import Stripe from 'stripe'
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { buffer } from 'micro'
-
+import { prisma } from '../../../server/db/client'
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: '2022-08-01',
 })
@@ -39,7 +39,6 @@ const webhook = async (req: NextApiRequest, res: NextApiResponse) => {
   // console.log('🚀 ~ file: webhook.ts ~ line 24 ~ webhook ~ event', event)
   // Handle the event
   switch (event.type) {
-    //TODO: createOrder either here or iin orderCompleted page, there is a question of whether an error in either might cuase a dersync of data, so maybe running
     case 'checkout.session.completed':
       const checkoutSession = event.data.object
       console.log(
@@ -48,6 +47,20 @@ const webhook = async (req: NextApiRequest, res: NextApiResponse) => {
       )
 
       //TODO: add stripe object and cart session for the correct customer Order
+
+      const updatedOrderWithStripeCheckout = await prisma.order.update({
+        where: {
+          stripeCheckoutId: checkoutSession.id,
+        },
+        data: {
+          stripeCheckout: checkoutSession,
+          statusMessage: 'CHECKOUT SUCCESSFUL',
+        },
+      })
+      console.log(
+        '🚀 ~ file: webhook.ts ~ line 59 ~ webhook ~ updatedOrderWithStripeCheckout',
+        updatedOrderWithStripeCheckout
+      )
 
       // steps: create orders, proceed to checkout (stripe create checkout object returned here),
       // then proceed to completedOrder after checkout completes on stripe side (i dont think anything is return from stripe expect the query params send to success url when the checkout is completed, thus we neeed the webhook to provide the information),  using the metadata with customerid, stripe checkout and creatinUserId, i should be able to create the right order with the correct cart Details

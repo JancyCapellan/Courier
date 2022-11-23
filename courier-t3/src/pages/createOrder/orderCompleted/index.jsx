@@ -43,7 +43,7 @@ const index = () => {
     if (checkout) {
       if (redirectSeconds == 0) {
         // TODO: user role determines where they get redirected
-        // router.push('/account')
+        router.push('/account')
         return
       }
 

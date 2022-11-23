@@ -3,6 +3,7 @@ import { useRouter } from 'next/router'
 // import { useQuery } from 'react-query'
 import { trpc } from '@/utils/trpc'
 import { QRCodeSVG } from 'qrcode.react'
+import { GOOGLE_FONT_PROVIDER } from 'next/dist/shared/lib/constants'
 
 const InvoicePage = () => {
   const router = useRouter()
@@ -19,38 +20,38 @@ const InvoicePage = () => {
     <>
       {getOrderDetailsStatus === 'success' && (
         <section className="invoice-details-container">
-          <h1>Invoice #{order.id}</h1>
+          <h1>Invoice #{order?.id}</h1>
           <pre>
             OrderID: {order?.id}
             {'\n'}Sender:{order?.customer.firstName} {order?.customer.lastName}
             {'\n'} Country: {order?.addresses[0]?.country}
-            {'\n'} Address: {order?.addresses[0].address}
-            {'\n'} Address2: {order?.addresses[0].address2 || 'N/A'}
-            {'\n'} Address3: {order?.addresses[0].address3 || ' N/A'}
-            {'\n'} City: {order?.addresses[0].city}
+            {'\n'} Address: {order?.addresses[0]?.address}
+            {'\n'} Address2: {order?.addresses[0]?.address2 || 'N/A'}
+            {'\n'} Address3: {order?.addresses[0]?.address3 || ' N/A'}
+            {'\n'} City: {order?.addresses[0]?.city}
             {'\n'} PostalCode: {order?.addresses[0]?.postalCode}
             {'\n'} Cellphone: {order?.addresses[0]?.cellphone || 'N/A'}
-            {'\n'} Telephone: {order?.addresses[0].telephone || 'N/A'}
+            {'\n'} Telephone: {order?.addresses[0]?.telephone || 'N/A'}
             {'\n'}Reciever: {order?.addresses[1]?.firstName}
             {'\n'} Country: {order?.addresses[1]?.country}
-            {'\n'} Address: {order?.addresses[1].address}
-            {'\n'} Address2: {order?.addresses[1].address2 || 'N/A'}
-            {'\n'} Address3: {order?.addresses[1].address3 || ' N/A'}
-            {'\n'} City: {order?.addresses[1].city}
+            {'\n'} Address: {order?.addresses[1]?.address}
+            {'\n'} Address2: {order?.addresses[1]?.address2 || 'N/A'}
+            {'\n'} Address3: {order?.addresses[1]?.address3 || ' N/A'}
+            {'\n'} City: {order?.addresses[1]?.city}
             {'\n'} PostalCode: {order?.addresses[1]?.postalCode}
             {'\n'} Cellphone: {order?.addresses[1]?.cellphone || 'N/A'}
-            {'\n'} Telephone: {order?.addresses[1].telephone || 'N/A'}
+            {'\n'} Telephone: {order?.addresses[1]?.telephone || 'N/A'}
             {'\n'}
             {'\n'}
-            {'\n'}time ordered: {`${order.timePlaced}`}
+            {'\n'}time ordered: {`${order?.timePlaced}`}
             {'\n'}
-            <b>status: {order.status.message}</b>
+            <b>status: {order?.status?.message}</b>
             {'\n'}
             {/* route: {order.routeId} {'\n'} */}
-            {order.pickupDriver ? (
+            {order?.pickupDriver ? (
               <b>
-                pickup Driver: {order.pickupDriver.firstName}{' '}
-                {order.pickupDriver.lastName}
+                pickup Driver: {order?.pickupDriver.firstName}{' '}
+                {order?.pickupDriver.lastName}
               </b>
             ) : (
               <p>
@@ -58,9 +59,11 @@ const InvoicePage = () => {
               </p>
             )}
           </pre>
+          {/* <code>STRIPE CHECKOUT:{JSON.stringify(order?.stripeCheckout)}</code> */}
+
           <table>
             <caption>
-              <b>Items For Invoice#{order.id}</b>
+              <b>Items For Invoice#{order?.id}</b>
             </caption>
             <thead>
               <tr>
@@ -96,58 +99,38 @@ const InvoicePage = () => {
             value={`OrderID:${order?.id}\nSender:${order?.customer.firstName} ${
               order?.customer.lastName
             }\n  Country: ${order?.addresses[0]?.country}\n  Address: ${
-              order?.addresses[0].address
+              order?.addresses[0]?.address
             }\n  Address2: ${
-              order?.addresses[0].address2 || 'N/A'
-            }\n  Address3: ${order?.addresses[0].address3 || ' N/A'}\n  City: ${
-              order?.addresses[0].city
-            }\n  PostalCode: ${order?.addresses[0]?.postalCode}\n  Cellphone: ${
+              order?.addresses[0]?.address2 || 'N/A'
+            }\n  Address3: ${
+              order?.addresses[0]?.address3 || ' N/A'
+            }\n  City: ${order?.addresses[0]?.city}\n  PostalCode: ${
+              order?.addresses[0]?.postalCode
+            }\n  Cellphone: ${
               order?.addresses[0]?.cellphone || 'N/A'
             }\n  Telephone: ${
-              order?.addresses[0].telephone || 'N/A'
+              order?.addresses[0]?.telephone || 'N/A'
             }\nReciever: ${order?.addresses[1]?.firstName}\n  Country: ${
               order?.addresses[1]?.country
-            }\n  Address: ${order?.addresses[1].address}\n  Address2: ${
-              order?.addresses[1].address2 || 'N/A'
-            }\n  Address3: ${order?.addresses[1].address3 || ' N/A'}\n  City: ${
-              order?.addresses[1].city
-            }\n  PostalCode: ${order?.addresses[1]?.postalCode}\n  Cellphone: ${
+            }\n  Address: ${order?.addresses[1]?.address}\n  Address2: ${
+              order?.addresses[1]?.address2 || 'N/A'
+            }\n  Address3: ${
+              order?.addresses[1]?.address3 || ' N/A'
+            }\n  City: ${order?.addresses[1]?.city}\n  PostalCode: ${
+              order?.addresses[1]?.postalCode
+            }\n  Cellphone: ${
               order?.addresses[1]?.cellphone || 'N/A'
-            }\n  Telephone: ${order?.addresses[1].telephone || 'N/A'}`}
+            }\n  Telephone: ${order?.addresses[1]?.telephone || 'N/A'}`}
             includeMargin={false}
-            level={'M'}
+            level={'Q'}
             size={220}
           />
+
+          {/* <QRCodeSVG value={'google.com'} /> */}
         </section>
       )}
     </>
   )
-}
-
-function AddressFormat(addresses) {
-  {
-    console.log(
-      `OrderID:${order?.id}\nSender:${order?.customer.firstName} ${
-        order.customer.lastName
-      }\n  Country: ${order.addresses[0]?.country}\n  Address: ${
-        order.addresses[0].address
-      }\n  Address2: ${order.addresses[0].address2 || 'N/A'}\n  Address3: ${
-        order.addresses[0].address3 || ' N/A'
-      }\n  City: ${order.addresses[0].city}\n  PostalCode: ${
-        order.addresses[0]?.postalCode
-      }\n  Cellphone: ${order.addresses[0]?.cellphone || 'N/A'}\n  Telephone: ${
-        order?.addresses[0].telephone || 'N/A'
-      }\nReciever: ${order?.addresses[1]?.firstName}\n  Country: ${
-        order.addresses[1]?.country
-      }\n  Address: ${order.addresses[1].address}\n  Address2: ${
-        order.addresses[1].address2 || 'N/A'
-      }\n  Address3: ${order.addresses[1].address3 || ' N/A'}\n  City: ${
-        order.addresses[1].city
-      }\n  PostalCode: ${order.addresses[1]?.postalCode}\n  Cellphone: ${
-        order.addresses[1]?.cellphone || 'N/A'
-      }\n  Telephone: ${order?.addresses[1].telephone || 'N/A'}`
-    )
-  }
 }
 
 export default InvoicePage
