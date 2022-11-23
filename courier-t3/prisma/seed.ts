@@ -24,6 +24,13 @@ async function main() {
         role: 'CUSTOMER',
         password: '123',
       },
+      {
+        email: 'driverTester@email.com',
+        firstName: 'driver',
+        lastName: 'Tester',
+        role: 'DRIVER',
+        password: '123',
+      },
     ],
   })
   console.log('✅ ~ file: seed.ts ~ line 24 ~ main ~ testUsers', testUsers)

@@ -98,7 +98,7 @@ export const routes = {
 export const sidebarTypes = {
   //TODO: ICONS AND DOUBLE CHECK ROUTES
   SECT: [routes.account, routes.customers, routes.invoices],
-  DRIVER: [routes.account, routes.pickups, routes.driverPage],
+  DRIVER: [routes.account, routes.pickups],
   CUSTOMER: [routes.account, routes.createOrder],
   ADMIN: [
     routes.administration,
