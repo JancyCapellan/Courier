@@ -17,7 +17,7 @@ import getStripe from '@/utils/get-stripejs'
 
 const stripePromise = getStripe()
 
-const createOrder = () => {
+const CreateOrder = () => {
   const { data: session, status: sessionStatus } = useSession()
   sessionStatus === 'authenticated' &&
     console.log('🚀 ~ file: index.jsx ~ line 22 ~ createOrder ~ data', session)
@@ -77,8 +77,8 @@ const createOrder = () => {
   )
 }
 
-export default createOrder
+export default CreateOrder
 
-createOrder.getLayout = function getLayout(page) {
+CreateOrder.getLayout = function getLayout(page) {
   return <Layout>{page}</Layout>
 }

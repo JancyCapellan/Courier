@@ -3,7 +3,7 @@ import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/router'
 import React, { useState, useEffect } from 'react'
 
-const index = () => {
+const Index = () => {
   // after checkout returns successful, delete cart for customer, so customerId is needed, but i want to make sure that the cart session/checkout session is saved onto the courier_app database then it should show up in invoice page.
   const [redirectSeconds, setRedirectSeconds] = useState(10)
 
@@ -70,4 +70,4 @@ const index = () => {
   )
 }
 
-export default index
+export default Index

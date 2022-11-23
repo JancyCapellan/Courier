@@ -22,7 +22,7 @@ const Home: NextPage = () => {
   return (
     <div className="flex flex-col h-screen">
       <Head>
-        <title>Courier's Dashboard</title>
+        <title>Couriers Dashboard</title>
         <meta
           name="description"
           content="webapp for shippers and courier services"
@@ -121,7 +121,7 @@ const Home: NextPage = () => {
                       </button>
                       <Link href="/register" passHref>
                         <button className="btn btn-blue m-2 w-1/2">
-                          Don't have an account?{' '}
+                          Don{`&apos`}t have an account?{' '}
                           <span className="text-red-400">Register here.</span>
                         </button>
                       </Link>

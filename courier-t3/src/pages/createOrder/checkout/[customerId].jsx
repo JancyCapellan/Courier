@@ -4,7 +4,7 @@ import { trpc } from '@/utils/trpc'
 import { useSession } from 'next-auth/react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import createOrder from '..'
+import CreateOrder from '..'
 
 // review cart order, addresses, and items, and proceed to stripe checkout and creating an invoice for the order
 const Checkout = () => {

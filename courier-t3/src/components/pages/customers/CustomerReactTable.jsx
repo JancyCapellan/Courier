@@ -246,9 +246,10 @@ const Table = ({ columns }) => {
           <table {...getTableProps()}>
             <thead>
               {headerGroups.map((headerGroup) => (
-                <tr {...headerGroup.getHeaderGroupProps()}>
+                <tr key={headerGroup.id} {...headerGroup.getHeaderGroupProps()}>
                   {headerGroup.headers.map((column) => (
                     <th
+                      key={column.id}
                       {...column.getHeaderProps(column.getSortByToggleProps())}
                     >
                       {column.render('Header')}
@@ -268,10 +269,12 @@ const Table = ({ columns }) => {
               {page.map((row, i) => {
                 prepareRow(row)
                 return (
-                  <tr {...row.getRowProps()}>
+                  <tr key={i} {...row.getRowProps()}>
                     {row.cells.map((cell) => {
                       return (
-                        <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
+                        <td key={cell} {...cell.getCellProps()}>
+                          {cell.render('Cell')}
+                        </td>
                       )
                     })}
                   </tr>
