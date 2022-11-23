@@ -28,11 +28,7 @@
     "**/*.ts",
     "**/*.tsx",
     "**/*.js",
-    "**/*.jsx",
-    "src/components/test2.mjs",
-    "src/server/test.jts",
-    "src/server/testingFile.mjs",
-    "prisma/seed.ts"
+    "**/*.jsx"
   ],
   "exclude": ["node_modules"]
 }
