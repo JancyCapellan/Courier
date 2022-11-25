@@ -89,7 +89,8 @@ export const authOptions: NextAuthOptions = {
           }
         } else {
           console.log('nextauth signin error')
-          return null
+          // return process.env.NEXTAUTH_URL + '/?signInError=true'
+          return false
         }
       },
     }),

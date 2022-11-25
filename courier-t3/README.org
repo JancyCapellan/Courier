@@ -167,6 +167,7 @@ then events occur as such,  if payment is attempted, payment_intent.created, if 
 the orders table in courier_app Database should include: cartDetails, stripe checkout information, etc
 
 * Todays Todos
+- [ ] make admin psql account on prod database to test prod database connetion to development frontend and demo apps
 - [X] Checkout webhook to update customer order based on stripeCheckoutID
 - [-] refactor page for customers and driver user types
   - [X] customer completed
