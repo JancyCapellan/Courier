@@ -16,6 +16,7 @@ export default defineNextConfig({
   reactStrictMode: true,
   swcMinify: true,
   typescript: {
-	ignoreBuildErrors: true,
+    ignoreBuildErrors: true,
   },
+  productionBrowserSourceMaps: true,
 });

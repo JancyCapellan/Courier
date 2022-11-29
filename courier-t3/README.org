@@ -168,40 +168,19 @@ the orders table in courier_app Database should include: cartDetails, stripe che
 
 * Todays Todos
 - [ ] make admin psql account on prod database to test prod database connetion to development frontend and demo apps
+  - [ ] testing prod setup on local server
+    - [ ] nginx web config
+
 - [X] Checkout webhook to update customer order based on stripeCheckoutID
-- [-] refactor page for customers and driver user types
-  - [X] customer completed
-  - [ ] driver pickup/invoice page needed
+- [ ] refactor page for customers and driver user types
+  - [ ] customer app view
+    - [ ] ability to see pages
+  - [ ] driver app view
+    - [ ] ability to see necessary pages
+
 - [ ] create capacitor app  to test app flow
-- [ ] change css to be mobile friendly
-- [ ] add print functionality for invoices to app
-* TODO TODOs [0%]
-:PROPERTIES:
-:COOKIE_DATA: TODOs recursive
-:END:
-
-
-# - [ ] invoice (NOT needed as checkout in stripe has the essense of an invoice when completed, then the payment intent id is used to charge the customer)
-  # - [ ] create stripe invoice, for more control of order and to allow app DB to more easily incorport the old invoice system to allow flexbility when working with invoicing work flow
-    # - [ ] create invoice first
-    # - [ ] create invoice items and connect to invoice
-
-- [ ] sync database with stripe information (when seeding, important,  if after the first time the app was made and items and invoices were added to stripe then the database is reset for whatever reason, the seed does not currently re-add the missing invoices and items from stripe
-  want to keep the courier_app database as the main source of truth as much as possible)
-  - [ ] sync items between stripe and Database
-  - [ ] sync invoices
-  - [ ]  replace api calls with trpc
-  - [ ] invoice table date filtering
-- [ ] finishing checkout page
-  - [ ] stripe checkout test work
-  - [ ] add checkout json from webhookk into order table in local db
-  - [ ]
-- [ ] warehouse page creation
-- [ ] capicator app testing
-  - [ ] simple scalable css/tailwind with app focus
-- [ ] running test production server with app
-  - [ ] nginx plus pm2 running node on linux server with psql db
-- [ ] ci/cd, dockerized app for faster updates
+  - [ ] change css to be mobile friendly
+  - [ ] add print functionality for invoices to app
 
 * LongTerm Todos by page
 ** PageTodos [0%]
@@ -229,6 +208,9 @@ the orders table in courier_app Database should include: cartDetails, stripe che
   After I am able to keep track of orders then we can update orders, create order receipts, deal with QR codes and anything else. I still have to work on styling the website so it's more responsive on the mobile side but currently 85% of back end and basic front end functionality is connected and ready to production testing
 
 - Mobile Version of the app for only staff? payments are my biggest issue on mobile for customers rn, but drivers specifically dont need to pay only manage the orders on their route. the website is still available on the mobile web browsers with full normal funtionality.
+
+  <2022-11-29 Tue 10:17>
+- Today I'm going to check the whole flow for admin driver and customers when I want to also move on to the app having the apps connected to the production database and also having apps with most of the functionality of the website which may need a lot of CSS changes
 
 ** current Notes
 nginx pm2 wokrs with running nextjs in dev mode.
@@ -262,3 +244,10 @@ nginx pm2 wokrs with running nextjs in dev mode.
   - npx prisma db seed to add the needed base data if none already, wont work if the database has not recieved the latest migration.
 ** summary
 - this is a nextjs app built ontop of the idea of becoming a mobile app, current using capacitor to create webview apps, since this applicatio does not need that much perfomance for its function.
+
+
+* NOTES ON LOACAL HOME server
+    nginx, pm2 are set up but i cant get the reverse proxy to pass the nextjs project to the web server. althought it is working on the prod server.
+
+    import commands:
+    pm2 start npm -- start
