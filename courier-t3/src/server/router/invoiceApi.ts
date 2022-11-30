@@ -203,9 +203,10 @@ export const invoiceApi = createProtectedRouter()
             },
           },
           timePlaced: true,
-          stripeCheckout: true,
+          stripeCheckoutId: true,
         },
       })
+      // console.log('🚀 ~ file: invoiceApi.ts:209 ~ resolve ~ order', order)
       if (order) {
         // changing timePlaced for orders into readable local values
         for (const key in order)
@@ -213,33 +214,12 @@ export const invoiceApi = createProtectedRouter()
             order[key] = order[key].toLocaleString()
           }
 
-        // const QRStringEncrypted = `OrderID:${order?.id}\nSender:${
-        //   order?.customer.firstName
-        // } ${order?.customer.lastName}\n  Country: ${
-        //   order?.addresses[0]?.country
-        // }\n  Address: ${order?.addresses[0]?.address}\n  Address2: ${
-        //   order?.addresses[0]?.address2 || 'N/A'
-        // }\n  Address3: ${order?.addresses[0]?.address3 || ' N/A'}\n  City: ${
-        //   order?.addresses[0]?.city
-        // }\n  PostalCode: ${order?.addresses[0]?.postalCode}\n  Cellphone: ${
-        //   order?.addresses[0]?.cellphone || 'N/A'
-        // }\n  Telephone: ${order?.addresses[0]?.telephone || 'N/A'}\nReciever: ${
-        //   order?.addresses[1]?.firstName
-        // }\n  Country: ${order?.addresses[1]?.country}\n  Address: ${
-        //   order?.addresses[1]?.address
-        // }\n  Address2: ${order?.addresses[1]?.address2 || 'N/A'}\n  Address3: ${
-        //   order?.addresses[1]?.address3 || ' N/A'
-        // }\n  City: ${order?.addresses[1]?.city}\n  PostalCode: ${
-        //   order?.addresses[1]?.postalCode
-        // }\n  Cellphone: ${
-        //   order?.addresses[1]?.cellphone || 'N/A'
-        // }\n  Telephone: ${order?.addresses[1]?.telephone || 'N/A'}`
-
-        const orderCheckout = order.stripeCheckout as Prisma.JsonObject
-        console.log(
-          '🚀 ~ file: invoiceApi.ts ~ line 235 ~ resolve ~ orderCheckout',
-          orderCheckout.id
-        )
+        // console.log('DEBUGGGINGGG')
+        // const orderCheckout = order.stripeCheckout as Prisma.JsonObject
+        // console.log(
+        //   '🚀 ~ file: invoiceApi.ts ~ line 235 ~ resolve ~ orderCheckout',
+        //   orderCheckout.id
+        // )
 
         return order
       }

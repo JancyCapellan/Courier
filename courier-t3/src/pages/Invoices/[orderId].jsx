@@ -8,21 +8,42 @@ import { GOOGLE_FONT_PROVIDER } from 'next/dist/shared/lib/constants'
 const InvoicePage = () => {
   const router = useRouter()
   const { orderId } = router.query
-  const { data: order, status: getOrderDetailsStatus } = trpc.useQuery(
-    ['invoice.getOrderById', { orderId: parseInt(orderId) }],
+  const {
+    data: order,
+    status: getOrderDetailsStatus,
+    refetch: refetchOrder,
+  } = trpc.useQuery(['invoice.getOrderById', { orderId: parseInt(orderId) }], {
+    refetchOnMount: 'always',
+  })
+  const syncCheckout = trpc.useMutation(
+    ['stripe.getStripeCheckoutDetailsFromStripe'],
     {
-      refetchOnMount: 'always',
+      onSuccess: () => refetchOrder(),
     }
   )
 
   if (getOrderDetailsStatus === 'error') return <div>error</div>
 
   if (getOrderDetailsStatus === 'loading') return <div>loading</div>
+
+  // button that checks stripeCheckout by id to sync checkout if needed
+
   return (
     <>
       {getOrderDetailsStatus === 'success' && (
         <section className="invoice-details-container">
           <h1>Invoice #{order?.id}</h1>
+          <button
+            className="btn btn-blue"
+            onClick={() => {
+              syncCheckout.mutate({
+                status: order?.status?.message,
+                stripeCheckoutId: order?.stripeCheckoutId,
+              })
+            }}
+          >
+            sync with stripe checkout
+          </button>
           <pre>
             OrderID: {order?.id}
             {'\n'}Sender:{order?.customer.firstName} {order?.customer.lastName}
@@ -76,7 +97,7 @@ const InvoicePage = () => {
               </tr>
             </thead>
             <tbody>
-              {order.items.map((item) => {
+              {order?.items.map((item) => {
                 return (
                   <tr key={item.product.stripeProductId}>
                     <td>{item.product.name}</td>

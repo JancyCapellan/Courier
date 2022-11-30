@@ -166,8 +166,8 @@ then events occur as such,  if payment is attempted, payment_intent.created, if 
 ** ORDERS
 the orders table in courier_app Database should include: cartDetails, stripe checkout information, etc
 
-* Todays Todos
-- [ ] make admin psql account on prod database to test prod database connetion to development frontend and demo apps
+* Today's Todos
+- [ ] make admin psql account on prod database to test prod database connection to development frontend and demo apps
   - [ ] testing prod setup on local server
     - [ ] nginx web config
 
@@ -246,7 +246,7 @@ nginx pm2 wokrs with running nextjs in dev mode.
 - this is a nextjs app built ontop of the idea of becoming a mobile app, current using capacitor to create webview apps, since this applicatio does not need that much perfomance for its function.
 
 
-* NOTES ON LOACAL HOME server
+* NOTES ON LOCAL HOME server
     nginx, pm2 are set up but i cant get the reverse proxy to pass the nextjs project to the web server. althought it is working on the prod server.
 
     import commands:

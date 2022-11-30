@@ -5,13 +5,17 @@ import React, { useState, useEffect } from 'react'
 
 const Index = () => {
   // after checkout returns successful, delete cart for customer, so customerId is needed, but i want to make sure that the cart session/checkout session is saved onto the courier_app database then it should show up in invoice page.
-  const [redirectSeconds, setRedirectSeconds] = useState(10)
+  const [redirectSeconds, setRedirectSeconds] = useState(5)
 
   const router = useRouter()
   const { customerId, checkout } = router.query
 
   const { data: session, status: sessionStatus } = useSession()
   const createOrder = trpc.useMutation(['cart.createOrderAfterCheckout'])
+
+  // delete cart here
+
+  const deleteCartAfterCheckout = trpc.useMutation(['cart.clearCart'])
 
   // useEffect(() => {
   //   if (
@@ -40,7 +44,7 @@ const Index = () => {
   // }, [checkout, customerId, sessionStatus])
 
   useEffect(() => {
-    if (checkout) {
+    if (checkout && !!customerId) {
       if (redirectSeconds == 0) {
         // TODO: user role determines where they get redirected
         router.push('/account')
@@ -53,6 +57,15 @@ const Index = () => {
       }, 1000)
     }
   }, [redirectSeconds, checkout])
+
+  useEffect(() => {
+    if (checkout && !!customerId) {
+      deleteCartAfterCheckout.mutate({
+        userId: session?.user?.id,
+        customerId: customerId,
+      })
+    }
+  }, [checkout, customerId])
 
   if (checkout !== 'success') {
     return (

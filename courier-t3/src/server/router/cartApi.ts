@@ -393,23 +393,28 @@ export const cartApi = createProtectedRouter()
   .mutation('clearCart', {
     input: z.object({
       userId: z.string(),
+      customerId: z.string(),
     }),
     async resolve({ ctx, input }) {
       try {
-        const clearedCart = await ctx.prisma.cart.delete({
+        const deleteCartSession = await ctx.prisma.cart.delete({
           where: {
-            userId: input.userId,
+            creatingUserId_customerId: {
+              creatingUserId: input.userId,
+              customerId: input.customerId,
+            },
           },
         })
         console.log(
-          '🚀 ~ file: cartApi.ts ~ line 309 ~ resolve ~ clearedCart',
-          clearedCart
+          '🚀 ~ file: cartApi.ts ~ line 596 ~ resolve ~ deleteCartSession',
+          deleteCartSession
         )
-        return clearedCart
+        return deleteCartSession
       } catch (error) {
         throw new TRPCError({
           code: 'NOT_FOUND',
-          message: 'Could not find a cart to delete',
+          message:
+            'Could not find a cart to delete, order was successful so cart may have been previously deleted',
           cause: error,
         })
       }
@@ -595,18 +600,6 @@ export const cartApi = createProtectedRouter()
         return pendingOrder
       }
 
-      const deleteCartSession = await ctx.prisma.cart.delete({
-        where: {
-          creatingUserId_customerId: {
-            creatingUserId: input.userId,
-            customerId: input.customerId,
-          },
-        },
-      })
-      console.log(
-        '🚀 ~ file: cartApi.ts ~ line 596 ~ resolve ~ deleteCartSession',
-        deleteCartSession
-      )
       return pendingOrder
     },
   })

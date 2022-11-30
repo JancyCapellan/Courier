@@ -69,7 +69,9 @@ const CreateOrder = () => {
         <Cart />
 
         <Link href={`/createOrder/checkout/${router.query.customerId}`}>
-          <button className="btn btn-blue">Review Order before checkout</button>
+          <button className={`btn btn-blue w-min`}>
+            Review Order before checkout
+          </button>
         </Link>
         {/* <PreCheckout /> */}
       </section>

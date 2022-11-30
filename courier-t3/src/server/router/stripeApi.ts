@@ -1,6 +1,7 @@
 import { z } from 'zod'
 import { createProtectedRouter } from './protected-routers'
 import Stripe from 'stripe'
+import { Prisma } from '@prisma/client'
 
 let stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: '2022-08-01',
@@ -147,5 +148,37 @@ export const stripeApi = createProtectedRouter()
       // checkoutSession values, after this only webhooks events will give me information on what is happening on stripes side,
 
       return stripeCheckoutSession
+    },
+  })
+  .mutation('getStripeCheckoutDetailsFromStripe', {
+    input: z.object({
+      stripeCheckoutId: z.string(),
+      status: z.string(),
+    }),
+    async resolve({ ctx, input }) {
+      const checkout = await stripe.checkout.sessions.retrieve(
+        input.stripeCheckoutId
+      )
+      console.log('🚀 ~ file: stripeApi.ts:158 ~ resolve ~ checkout', checkout)
+
+      if (
+        checkout.payment_status === 'paid' &&
+        checkout.status === 'complete'
+      ) {
+        if (input.status === 'CHECKOUT SUCCESSFUL') return "Already Sync'd"
+
+        const updatedInvoice = await ctx.prisma.order.update({
+          where: {
+            stripeCheckoutId: input.stripeCheckoutId,
+          },
+          data: {
+            statusMessage: 'CHECKOUT SUCCESSFUL',
+            stripeCheckout: checkout as unknown as Prisma.JsonObject,
+          },
+        })
+
+        return updatedInvoice
+      }
+      // change pending status and update stripeCheckoutJson
     },
   })

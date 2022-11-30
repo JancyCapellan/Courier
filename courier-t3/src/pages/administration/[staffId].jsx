@@ -37,16 +37,16 @@ const DriverAccountPage = () => {
       {getStaffStatus === 'success' && (
         <section className='driverAccountPage'>
           <h1>
-            {`${staff.role}`}: {staff.firstName} {staff.lastName}
+            {`${staff?.role}`}: {staff?.firstName} {staff?.lastName}
           </h1>
           <button
             onClick={() =>
               router.push({
-                pathname: `/customers/${staff.id}`,
+                pathname: `/customers/${staff?.id}`,
               })
             }
           >
-            Edit {`${staff.role}`} Account information
+            Edit {`${staff?.role}`} Account information
           </button>
 
           <h2>pickups</h2>
@@ -60,13 +60,13 @@ const DriverAccountPage = () => {
               </tr>
             </thead>
             <tbody>
-              {staff.pickups.map((order) => {
+              {staff?.pickups.map((order) => {
                 return (
                   <tr key={order.id}>
                     <td>{order.id}</td>
                     <td>
-                      {order.user.firstName}
-                      {order.user.lastName}
+                      {order?.customer?.firstName}
+                      {order?.customer?.lastName}
                     </td>
 
                     <td>
