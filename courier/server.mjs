@@ -18,9 +18,10 @@ import warehouseRouter from './backend/routes/warehouse.route.mjs'
 //   origin: '*',
 //   optionsSuccessStatus: 200,
 // }
+const hostname = 'localhost'
 const dev = process.env.NODE_ENV !== 'production'
 const port = process.env.port || 3000
-const app = next({ dev })
+const app = next({ dev, hostname, port })
 const handle = app.getRequestHandler()
 const server = express()
 app

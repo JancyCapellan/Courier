@@ -1,0 +1,335 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  // previewFeatures = ["interactiveTransactions"]
+}
+// generator erd {
+//   provider = "prisma-erd-generator"
+//   includeRelationFromFields = true
+// }
+//TODO: change database schema to non public, there may be issues with it as public.
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// enum Role {
+//   USER
+//   ADMIN
+//   CUSTOMER
+//   DRIVER
+//   STAFF
+// }
+//location vs status?
+
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  emailVerified DateTime?
+  image         String?
+  accounts      Account[]
+  sessions      Session[]
+  firstName String
+  lastName String
+  middleName String?
+  password String
+  email String @unique
+  role String
+  company String?
+  branchName String?
+  lastSaleDate DateTime?
+  lastLogin DateTime?
+  preferredLanguage String @default("English")
+  licenseId Int? @unique
+  addresses address[]
+  orders Order[] @relation("CUSTOMER")
+  orderCreators Order[] @relation("creatorUser")
+  pickups Order[] @relation("DRIVER")
+  currentCart cart[] @relation("cartCreator")
+  cartCustomer cart[] @relation("customer")
+
+}
+
+model address {
+  id Int @id @default(autoincrement())
+  userId String
+  address String
+  address2 String?
+  address3 String?
+  city String
+  state String
+  postalCode Int
+  country String
+  cellphone String?
+  telephone String?
+  default Boolean @default(false)
+  recipient Boolean @default(false)
+  user User @relation(fields: [userId], references:[id] )
+}
+enum OrderLocation {
+  withShipper
+  BRONXwarehouse
+  CotainerBoat
+  DRwarehouse
+  MIAMIwarehouse
+  withReciever
+}
+model Order {
+  id Int @unique @default(autoincrement())
+  customerUserId String // thecustomer who sent the package, so client/shipper
+  customer User @relation("CUSTOMER",fields: [customerUserId], references:[id] )
+  
+  creatorUserId String
+  creatorUser User @relation("creatorUser",fields: [creatorUserId], references:[id] )
+
+
+  timePlaced DateTime @default(now())
+  // recieverFirstName String
+  // recieverLastName String
+  //totalItems Int? // technically have this in the orderItems tables if query all the items
+  //totalPrice BigInt? // $1 == 100cents, $100 box = 10000 or 10000 cents this is for compatibility with finance apps and keep track of money accurately using 64bits instead of a float or numeric or deicmal (psql)
+  
+  paymentType String // stripe, cash //stripe webhooks can change this as necessary
+  statusMessage String // id of status, can make into the status string itself if message is unique
+  status orderStatus @relation(fields: [statusMessage], references: [message])
+  
+  // location OrderLocation @default(withShipper) // location is one of a list of locations that it is possible for a order to go through during the life time of its journey in the buisness, there will be some overlapping with the location names and the warehouse names. when warehouse location name changes the location list should change to refelect that.
+  // location String @default("Shipping Address/owner")
+  
+  pickupDriverId String?
+  pickupDriver User? @relation(name: "DRIVER", fields: [pickupDriverId], references:[id])
+  pickupDatetime DateTime?
+  // pickupRouteCode Int?
+  // pickupRoute Route? @relation(fields: [pickupRouteCode], references: [id])
+  items OrderItem[]
+  addresses OrderAddressDuo[]
+  pickupZoneId Int?
+  pickupZone pickupZone? @relation(fields:[pickupZoneId], references: [id])
+  containerId Int?
+  container containers? @relation(fields:[containerId], references: [id])
+  
+  stripeCheckoutId String @unique //need stripe informmation to connect order to relevent stripe checkout session, with this id i can query specific orders when updating with information from stripe checkout
+
+  // instead of just ids, going to add the entire items of stripepayments to the database to backup the data
+
+  stripeCheckout Json? @db.JsonB // stripe checkout.session.completed event object that includes the paymentintent id and stripe checkout Id need to query stripe for the line items, that i add locally from the app to the database because stripe is also getting the line items from the app. 
+  // stripePaymentIntent Json? @db.JsonB // not needed since checkout object has necessary information
+  
+  @@id([customerUserId, stripeCheckoutId, creatorUserId], map:"orderPK")
+}
+// model Route {
+//   id Int @id @default(autoincrement())
+//   areaCode String
+//   orders Order[]
+// }
+model pickupZone {
+  id Int @id @default(autoincrement())
+  name String
+  code String
+  order Order[]
+}
+
+model OrderAddressDuo{
+  id Int @id @default(autoincrement())
+  orderId Int
+  order Order @relation(fields: [orderId],references:[id], onDelete: Cascade)
+  firstName String
+  lastName String
+  address String
+  address2 String?
+  address3 String?
+  city String
+  state String
+  postalCode Int
+  country String
+  cellphone String?
+  telephone String?
+  recipient Boolean @default(false)
+}
+
+model OrderItem {
+  id Int @id @default(autoincrement())
+  orderId Int
+  order Order @relation(fields: [orderId],references:[id], onDelete: Cascade )
+  quantity Int
+  productId Int
+  product product @relation(fields: [productId], references:[id])
+
+}
+model orderStatus {
+  id Int @id @default(autoincrement())
+  message String @unique
+  order Order[]
+}
+
+
+model product {
+  id Int @id @default(autoincrement())
+  name  String
+  price Int // in USD cents, $50.25 = 5025
+  stripePriceId String? @unique
+  stripeProductId String? @unique
+  orderItem OrderItem[]
+  // type String
+  // productType productType? @relation(fields: [type], references:[type])
+  cartItem cartItem[]
+
+}
+// model productType {
+//   id Int @id @default(autoincrement())
+//   type String @unique
+//   product product[]
+// }
+
+// shipping container that are sent on  the boat
+model containers {
+  id Int @id @default(autoincrement())
+  statusId Int
+  status containerStatus @relation(fields: [statusId], references: [id])
+  orders Order[]
+  warehouseId Int
+  warehouseDetails warehouseDetails @relation(fields: [warehouseId], references: [id])
+  // location String
+  // deliveredDate
+  // pickupDate
+  // paidFor
+  // reachDestination
+}
+
+model warehouseSupplies {
+  id Int @id @default(autoincrement())
+  supplyName String // tape
+  inventoryCount Int // 10
+  warehouseId Int // warehouse that supply is located in
+  warehouse warehouseDetails @relation(fields: [warehouseId], references: [id])
+  // location String
+}
+
+model warehouseDetails {
+  id Int @id @default(autoincrement())
+  warehouseCode String // BX, DR
+  warehouseName String //bronx, Dominican Republic
+  supplies warehouseSupplies[]
+  containers containers[]
+}
+
+
+
+model containerStatus {
+  id Int @id @default(autoincrement())
+  message String
+  container containers[]
+}
+
+// change this to cart, thinking about future saving of carts in a different table
+// these tables should just focus on a singular user's order session, even when staff make orders for other users 
+// they should still have one cart, so a customer can have two different orders being made by two different users,
+// maybe make a way to save orders so another admin/staff may takeover the order??
+model cart {
+  id Int @default(autoincrement()) // change to uuID
+  cartId String @unique @default(uuid())
+  customerId String
+  customer User @relation(fields: [customerId], references: [id], name: "customer")
+  creatingUserId String
+  cartCreator User @relation(fields: [creatingUserId], references:[id], name:"cartCreator")
+  items cartItem[]
+  addresses CartOrderAddresses[]
+  // order addresses saved in cart table before being added to order table
+  // current orderForm with addresses
+
+  @@id([creatingUserId, customerId])
+  
+}
+model CartOrderAddresses{
+  id Int @default(autoincrement())
+  cartId String
+  // .query("getAddressesFromCart")
+  firstName String?
+  lastName String?
+  cart cart @relation(fields: [cartId], references:[cartId] ,onDelete: Cascade)
+  address String?
+  address2 String?
+  address3 String?
+  city String?
+  state String?
+  postalCode Int?
+  country String?
+  cellphone String?
+  telephone String?
+  // default Boolean @default(false)
+  recipient Boolean @default(false)
+
+  @@id([cartId, recipient]) //reciever: recipient==true, shipper:recipient==false; address, one form for both addresses caused me to use another varibale mot hadnle the difference between addresses.
+}
+model cartItem {
+  id Int @default(autoincrement())
+  cartId String @map("shoppingSessionId")
+  cart cart @relation(fields: [cartId], references: [cartId] ,onDelete: Cascade, onUpdate: Cascade)
+  quantity Int
+  productId Int
+  product product @relation(fields: [productId], references: [id])
+
+  @@id([cartId, productId], name: "CartItemId")
+}
+
+
+//  Next-Auth models used in everytyhingn
+model Account {
+  id                 String  @id @default(cuid())
+  userId             String
+  type               String
+  provider           String
+  providerAccountId  String
+  refresh_token      String?  @db.Text
+  access_token       String?  @db.Text
+  expires_at         Int?
+  token_type         String?
+  scope              String?
+  id_token           String?  @db.Text
+  session_state      String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// model User {
+//   id            String    @id @default(cuid())
+//   name          String?
+//   email         String?   @unique
+//   emailVerified DateTime?
+//   image         String?
+//   accounts      Account[]
+//   sessions      Session[]
+// }
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+
+// Next-Auth models End //
+
+// model DriverRoutes {
+//   id Int @id @default(autoincrement())
+//   driverId Int
+//   driver User @relation(fields: [driverId], references:[id] )
+//   orders Order[]
+// }
+
+

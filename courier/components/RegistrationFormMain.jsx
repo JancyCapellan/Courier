@@ -57,7 +57,7 @@ const RegistrationFormMain = () => {
     postRegisterUser.mutate(values)
     // if mutate succesful else
     Router.push({
-      pathname: '/signin',
+      pathname: '/',
       query: { didRegister: true },
     })
   }
@@ -85,7 +85,7 @@ const RegistrationFormMain = () => {
                 Submit
               </button>
               <div>
-                Have an Account Already? <Link href='/signin'> Login </Link>
+                Have an Account Already? <Link href='/'> Login </Link>
               </div>
             </Form>
           )

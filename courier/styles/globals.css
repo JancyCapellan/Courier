@@ -50,8 +50,8 @@ body {
   height: 100vh;
 }
 body {
-  font-family: 'Noto sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
-    Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-family: 'Noto sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu,
+    Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
   /* background: var(--clr-grey-10); */
   /* color: var(--clr-grey-1); */
   line-height: 1.5;
@@ -254,20 +254,27 @@ Sidebar (handles layout with children as main content on page)
 }
 .header {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  flex-direction: column;
+  justify-content: center;
   /* position: sticky; */
-  top: 0;
+  /* top: 0; */
   background-color: black;
   box-shadow: 0 1px 10px 0 rgba(0, 0, 0, 0.4);
   padding: 0 0.5rem;
   height: var(--header-height);
-  /* width: 100%; */
+  width: 100%;
   grid-area: header;
 }
 
 .header-user-info {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
   color: white;
+}
+
+.header-user-info b {
+  color: red;
 }
 
 /* .header-user-info > button {
@@ -372,9 +379,13 @@ Account info
   display: flex;
   flex-direction: column;
 }
-.accountPage {
+.account-page {
   display: flex;
   flex-direction: column;
+  align-items: center;
+}
+
+.account-page h1 {
 }
 .accInfotable {
   /* width: 100vw; */
@@ -471,11 +482,31 @@ Home page
 */
 .home-container {
   height: 100vh;
-  background-color: hsl(34, 75%, 45%);
+  background-color: white;
   display: flex;
   flex-direction: column;
-  gap: 1em;
+  align-items: center;
+  /* justify-content: center; */
+  /* gap: 16em; */
 }
+.home-container h1 {
+  text-align: center;
+  height: 10vh;
+  width: 25ch;
+  margin: 0;
+  /* background-color: rgb(159, 19, 19); */
+  color: black;
+  text-decoration-line: underline;
+}
+
+.signin-form {
+  display: flex;
+  flex-direction: column;
+  background: white;
+  justify-content: center;
+  align-items: center;
+}
+
 .home-header {
   display: flex;
   /* align-content: center; */
@@ -491,11 +522,7 @@ Home page
 .home-header span {
   color: white;
 }
-.home-h1 {
-  text-align: center;
-  height: 10vh;
-  margin: 0;
-}
+
 .home-no-session {
   display: flex;
   align-content: center;
@@ -568,11 +595,6 @@ input[type='password'] {
   align-items: center;
   justify-content: center;
   flex-direction: column;
-}
-.signin-form {
-  display: flex;
-  flex-direction: column;
-  background-color: white;
 }
 
 .test {

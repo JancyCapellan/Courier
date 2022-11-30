@@ -39,6 +39,7 @@ const nextAuthOptions = (req, res) => {
             // console.log('auth user', user)
             // userAccount = user
             return {
+              // used by JWT callback
               user: {
                 id: user.id,
                 name: `${user.firstName} ${user.lastName}`,
@@ -57,17 +58,16 @@ const nextAuthOptions = (req, res) => {
     ],
 
     // adapter: PrismaAdapter(prisma), NOT NEEDED BECAUSE CREDENTIALS DOES NOT PRESIST IN DATABASE
-    secret: process.env.ACCESS_TOKEN_SECRET,
     session: {
       // strategy: 'database',
       jwt: true,
       maxAge: 7 * 24 * 60 * 60,
     },
     pages: {
-      signIn: '/signin',
+      signIn: '/',
     },
     jwt: {
-      secret: process.env.JWT_TOKEN_SECRET,
+      secret: process.env.NEXTAUTH_SECRET,
       encryption: true,
     },
     callbacks: {
@@ -108,7 +108,9 @@ const nextAuthOptions = (req, res) => {
         // let test = { ...session.user, ...token.user }
         if (token) {
           session.id = token.user.id
-          session.user = token.user ? token.user : { ...token.user, ...session.user }
+          session.user = token.user
+            ? token.user
+            : { ...token.user, ...session.user }
           // session.user = test
         }
         // console.log('nextauth-session', session)

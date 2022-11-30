@@ -1,4 +1,4 @@
-// ! credit to https://github.com/nextauthjs/react-query
+// credit to https://github.com/nextauthjs/react-query
 // ! makes next-auth sessions to be managed by react-query sessions
 
 import { useQuery } from 'react-query'
@@ -16,10 +16,15 @@ export async function fetchSession() {
 export function useSession({
   required,
   redirectTo = '/api/auth/signin?error=SessionExpired',
-  queryConfig = {},
+  queryConfig = {
+    // staleTime: 60 * 1000 * 60 * 3, // 3 hours
+    // refetchInterval: 60 * 1000 * 5, // 5 minutes
+    cacheTime: Infinity,
+    staleTime: Infinity,
+  },
 } = {}) {
   const router = useRouter()
-  const query = useQuery(['session'], fetchSession, {
+  const query = useQuery('session', fetchSession, {
     ...queryConfig,
     onSettled(data, error) {
       if (queryConfig.onSettled) queryConfig.onSettled(data, error)
