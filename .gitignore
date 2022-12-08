@@ -36,6 +36,7 @@ yarn-error.log*
 # vercel
 .vercel
 
+/courierMobile
 /courierMobile/t3TestApp/
 *.sql
 runAfterCloning.sh

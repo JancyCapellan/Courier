@@ -7,32 +7,32 @@ import PickupListTable from '@/components/Tables/PickupListTable'
 import { makeOrder } from '../../components/Tables/makeData.mjs'
 import { useQueryClient, useMutation } from 'react-query'
 
-type NextPageWithLayout = NextPage & {
-  getLayout?: (page: ReactElement) => ReactNode
-}
-interface OrderData {
-  id: number
-  recieverFirstName: string
-  recieverLastName: string
-  totalPrice: number
-  totalItems: number
-  status: string
-  location: string
-  timePlaced: string
-  pickupDriverId: number
-  pickupdriver: user
-  pickupDatetime: string
-  user: user
-}
+// type NextPageWithLayout = NextPage & {
+//   getLayout?: (page: ReactElement) => ReactNode
+// }
+// interface OrderData {
+//   id: number
+//   recieverFirstName: string
+//   recieverLastName: string
+//   totalPrice: number
+//   totalItems: number
+//   status: string
+//   location: string
+//   timePlaced: string
+//   pickupDriverId: number
+//   pickupdriver: user
+//   pickupDatetime: string
+//   user: user
+// }
 
-interface user {
-  firstName: string
-  lastName: string
-}
+// interface user {
+//   firstName: string
+//   lastName: string
+// }
 
 export const Invoices: NextPage<{}> = () => {
-  const queryClient = useQueryClient()
-  const router = useRouter()
+  // const queryClient = useQueryClient()
+  // const router = useRouter()
   // const [currentBranch, setCurrentBranch] = useState<string>('NYC')
 
   // const orderHistory = props.listOfInvoices

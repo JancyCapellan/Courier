@@ -506,7 +506,8 @@ export const cartApi = createProtectedRouter()
     input: z.object({
       userId: z.string(),
       customerId: z.string(),
-      stripeCheckoutId: z.string(),
+      stripeCheckoutId: z.string().optional(),
+      paymentType: z.enum(['CARD', 'CASH', 'CHECK', 'QUICKPAY']),
     }),
     async resolve({ ctx, input }) {
       let pendingOrder
@@ -547,7 +548,7 @@ export const cartApi = createProtectedRouter()
           },
         })
         console.log(
-          '🚀 ~ file: cartApi.ts ~ line 542 ~ resolve ~ cartSession',
+          '🚀 ~ file: cartApi.ts ~ line 551 ~ resolve ~ cartSession',
           cartSession
         )
         pendingOrder = await ctx.prisma.order.create({
@@ -562,7 +563,7 @@ export const cartApi = createProtectedRouter()
                 id: input.userId,
               },
             },
-            paymentType: 'STRIPE',
+            paymentType: input.paymentType,
             status: {
               connectOrCreate: {
                 where: {
@@ -585,18 +586,24 @@ export const cartApi = createProtectedRouter()
                 data: cartSession?.addresses,
               },
             },
-            stripeCheckoutId: input.stripeCheckoutId,
+            stripeCheckoutId:
+              input.stripeCheckoutId === null
+                ? input.stripeCheckoutId
+                : undefined,
           },
           include: {
             items: true,
           },
         })
         console.log(
-          '🚀 ~ file: cartApi.ts ~ line 585 ~ resolve ~ pendingOrder',
+          '🚀 ~ file: cartApi.ts ~ line 596 ~ resolve ~ pendingOrder',
           pendingOrder
         )
       } catch (error) {
-        console.log('🚀 ~ file: cartApi.ts ~ line 548 ~ resolve ~ error', error)
+        console.error(
+          '🚀 ~ file: cartApi.ts ~ line 601 ~ resolve ~ error',
+          error
+        )
         return pendingOrder
       }
 

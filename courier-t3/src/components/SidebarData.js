@@ -105,6 +105,7 @@ export const sidebarTypes = {
     routes.account,
     routes.customers,
     routes.invoices,
+    routes.warehouse,
     // routes.crm,
     // routes.reports,
   ],

@@ -111,14 +111,14 @@ model Order {
   containerId Int?
   container containers? @relation(fields:[containerId], references: [id])
   
-  stripeCheckoutId String @unique //need stripe informmation to connect order to relevent stripe checkout session, with this id i can query specific orders when updating with information from stripe checkout
+  stripeCheckoutId String? @unique //need stripe informmation to connect order to relevent stripe checkout session, with this id i can query specific orders when updating with information from stripe checkout
 
   // instead of just ids, going to add the entire items of stripepayments to the database to backup the data
 
   stripeCheckout Json? @db.JsonB // stripe checkout.session.completed event object that includes the paymentintent id and stripe checkout Id need to query stripe for the line items, that i add locally from the app to the database because stripe is also getting the line items from the app. 
   // stripePaymentIntent Json? @db.JsonB // not needed since checkout object has necessary information
   
-  @@id([customerUserId, stripeCheckoutId, creatorUserId], map:"orderPK")
+  @@id([id,customerUserId, creatorUserId], map:"orderPK")
 }
 // model Route {
 //   id Int @id @default(autoincrement())

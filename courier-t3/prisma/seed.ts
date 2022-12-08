@@ -5,7 +5,7 @@ import Stripe from 'stripe'
 let stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: '2022-08-01',
 })
-
+// TODO: add user roles,
 async function main() {
   const testUsers = await prisma.user.createMany({
     data: [
@@ -30,6 +30,30 @@ async function main() {
         lastName: 'Tester',
         role: 'DRIVER',
         password: '123',
+      },
+    ],
+  })
+
+  const invoiceStatuses = await prisma.orderStatus.createMany({
+    data: [
+      { message: 'pending payment' },
+      {
+        message: 'With Pickup Driver',
+      },
+      {
+        message: 'At NYC warehouse',
+      },
+      {
+        message: 'In Container',
+      },
+      {
+        message: 'At DR warehouse',
+      },
+      {
+        message: 'Out for delivery',
+      },
+      {
+        message: 'delivered to reciever',
       },
     ],
   })

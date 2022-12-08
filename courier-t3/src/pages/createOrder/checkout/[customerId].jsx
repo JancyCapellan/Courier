@@ -32,10 +32,35 @@ const Checkout = () => {
       cacheTime: 60 * 1000,
     }
   )
+  const clearCart = trpc.useMutation(['cart.clearCart'])
 
-  const createPendingOrder = trpc.useMutation([
-    'cart.createPendingOrderBeforeCheckoutCompletes',
-  ])
+  const createPendingOrder = trpc.useMutation(
+    ['cart.createPendingOrderBeforeCheckoutCompletes'],
+    {
+      onSucess: async () => {
+        clearCart.mutateAsync({
+          userId: session?.user?.id,
+          customerId: router.query.customerId,
+        })
+      },
+    }
+  )
+
+  async function createPendingOrderWrapper(paymentType) {
+    await createPendingOrder.mutateAsync({
+      userId: session?.user?.id,
+      customerId: router.query.customerId,
+      paymentType: paymentType,
+    })
+
+    //router.reload()
+    if (session.user.role === 'CUSTOMER') {
+      //TODO: SEPERATE account components page by routes
+      router.push('/account')
+    } else {
+      router.push('/Invoices')
+    }
+  }
 
   const createCheckoutSession = trpc.useMutation(
     ['stripe.createCheckoutSession'],
@@ -51,6 +76,7 @@ const Checkout = () => {
           userId: session?.user?.id,
           customerId: router.query.customerId,
           stripeCheckoutId: stripeCheckoutSession.id,
+          paymentType: 'CARD',
         })
 
         if (stripeCheckoutSession.url) router.push(stripeCheckoutSession.url)
@@ -143,15 +169,40 @@ const Checkout = () => {
             }
           }}
         >
-          pay online
+          pay online with credit
         </button>
 
-        {/* TODO: after click, cart is add to orderTable and paymentType is updated to cash */}
-        <button className="btn btn-blue">pay in cash</button>
+        <p>partial payments? click here and enter amount to be paid now: </p>
+        <button
+          className="btn btn-blue"
+          onClick={() => {
+            createPendingOrderWrapper('CASH')
+          }}
+        >
+          cash
+        </button>
+        <button
+          className="btn btn-blue"
+          onClick={() => {
+            createPendingOrderWrapper('CHECK')
+          }}
+        >
+          check
+        </button>
+
+        <button
+          className="btn btn-blue"
+          onClick={() => {
+            createPendingOrderWrapper('QUICKPAY')
+          }}
+        >
+          quickpay
+        </button>
       </div>
     </section>
   )
 }
+
 export default Checkout
 
 Checkout.getLayout = function getLayout(page) {

@@ -308,6 +308,10 @@ const PickupListTable = () => {
         accessor: 'status.message',
       },
       {
+        Header: 'Payment Type',
+        accessor: 'paymentType',
+      },
+      {
         Header: 'Batch Container',
         accessor: 'containerId',
       },

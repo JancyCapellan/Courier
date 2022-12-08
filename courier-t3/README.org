@@ -171,6 +171,10 @@ the orders table in courier_app Database should include: cartDetails, stripe che
   - [ ] testing prod setup on local server
     - [ ] nginx web config
 
+- [ ] checkout review page
+  - [ ] pay in cash option in checkout review page needs work
+
+
 - [X] Checkout webhook to update customer order based on stripeCheckoutID
 - [ ] refactor page for customers and driver user types
   - [ ] customer app view
@@ -251,3 +255,59 @@ nginx pm2 wokrs with running nextjs in dev mode.
 
     import commands:
     pm2 start npm -- start
+
+
+
+
+
+
+* MEETING NOTES
+- <2022-11-30 Wed 16:15>
+- pickup zones and assign multiple orders to drivers
+    - order driver select needs none option
+    - set pickup time
+    - pickup type (package, supplies)
+    - if pickup in list by driver is skipepd or done make sure the previous order status is changed to make sure driver is on the right ordre from the days list
+    - pictures for invoice items
+    - branch selector
+    - fuzzy search by driver, time, branch, user, status, container
+    - invoice reports for week,month, stripe has finance reports in dashboard
+
+- payment by cash
+    - editing payments and customer balance incase of invoicing payment error
+    - add balance to user by the amount of unpaid invoices in their account
+    - stripe partial card payments?
+
+- have to make visuals more mobile friendly
+- pickup table invoiced status similar to current status
+- QR code scanner in app to see contents of order
+
+- printing invoce and receipt at customers location
+- finsihing workflow for driver
+- mobile payment
+
+- shiptodir.com
+ - order maker, shows item and dimensions, and price
+    - add custom dimensions
+
+- phone number login
+- pickup routes by zone first, multiple drivers per zone
+- warehouse package tracking indiviually, tracked first when labels are printeted at the customers huse
+- scanned when it get to warehouse, picutres of package at customers pickup location
+- add role for warehouse staff, office staff, driver, and maybe container filler but thye just move packages into the container
+
+- order handling and mobile view
+
+
+* reports on business operations
+- daily balance of all users
+- daily sales report
+- end of day report: by branch, by user role, total invoiced, total pay, A/r accounts recieveable, total supplies, total service, 
+- driver invoice and payments reports
+- driver efficency reports, package assigned vs completed stops, incomplete stops 
+- driver reporte de venta por chofer, sales made a day, percent driver made out of the total
+
+
+
+
+

@@ -15,7 +15,7 @@ import StaffTable from '@/components/pages/administration/StaffTable'
 import Link from 'next/link'
 import getStripe from '@/utils/get-stripejs'
 
-const stripePromise = getStripe()
+//const stripePromise = getStripe()
 
 const CreateOrder = () => {
   const { data: session, status: sessionStatus } = useSession()
@@ -51,9 +51,12 @@ const CreateOrder = () => {
         {sessionStatus === 'authenticated' && (
           <button
             onClick={() => {
-              clearCart.mutate({ userId: session?.user?.id })
-              refetchCart()
-              refetchCartAddresses()
+              clearCart.mutate({
+                userId: session?.user?.id,
+                customerId: router?.query?.customerId,
+              })
+              // refetchCart()
+              // refetchCartAddresses()
               router.reload()
             }}
           >
