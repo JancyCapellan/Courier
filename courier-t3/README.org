@@ -263,6 +263,7 @@ nginx pm2 wokrs with running nextjs in dev mode.
 
 * MEETING NOTES
 - <2022-11-30 Wed 16:15>
+- filter by date to date, driver all, order by zipcode, then go by zone code, and single or multi select the unassigned packages
 - pickup zones and assign multiple orders to drivers
     - order driver select needs none option
     - set pickup time
@@ -302,12 +303,23 @@ nginx pm2 wokrs with running nextjs in dev mode.
 * reports on business operations
 - daily balance of all users
 - daily sales report
-- end of day report: by branch, by user role, total invoiced, total pay, A/r accounts recieveable, total supplies, total service, 
+- end of day report: by branch, by user role, total invoiced, total pay, A/r accounts recieveable, total supplies, total service
 - driver invoice and payments reports
-- driver efficency reports, package assigned vs completed stops, incomplete stops 
+- driver efficency reports, package assigned vs completed stops, incomplete stops
 - driver reporte de venta por chofer, sales made a day, percent driver made out of the total
 
 
+- 8/12/2022
+- add place to save reciever addresses
+- add misc items
+- add warehouse seepration for orders
+- report daily invoices aggregation
+- claims for dispute, comments on invoice, internal commetns
+- invoice full receipt
 
+- containers, add container number to individual package in order
+- agent Inv
+- container number 
+- customer ids verification, pictures needed
 
 

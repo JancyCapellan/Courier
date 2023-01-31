@@ -2,18 +2,18 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import { useSession } from 'next-auth/react'
 
-// import { userService } from 'services'
-
 function RouteGuard({ children }) {
   const router = useRouter()
   const [authorized, setAuthorized] = useState(false)
 
   const { data: session, status: sessionStatus } = useSession()
 
+  // page loads, useSession loads nextauth session data, authcheck
   useEffect(
     () => {
       // on initial load - run auth check
       if (sessionStatus !== 'loading') {
+        console.log("authcheck inital load, SessionStatus: ", sessionStatus)
         authCheck(router.asPath)
 
         router.events.on('routeChangeComplete', authCheck)
@@ -44,15 +44,18 @@ function RouteGuard({ children }) {
     const publicPaths = ['/login', '/', '/register']
     const path = url.split('?')[0]
 
+    // if page is public, allow any user role
     if (publicPaths.includes(path)) {
       setAuthorized(true)
+      console.log("AUTHCHECK: ALLOWED INTO PUBLIC PAGE")
       return authorized && children
     }
 
+    console.log(sessionStatus,)
+
     if (
-      sessionStatus !== 'authenticated' &&
-      !session?.user.id &&
-      !publicPaths.includes(path)
+      sessionStatus === 'unauthenticated' ||
+      session?.user.role !== // get allowed roles from the  page props from nextjs router if possible
     ) {
       console.log('NOT AUTHORIZED')
       setAuthorized(false)

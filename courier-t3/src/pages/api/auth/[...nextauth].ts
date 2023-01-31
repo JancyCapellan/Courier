@@ -9,12 +9,15 @@ export const authOptions: NextAuthOptions = {
   // Include user.id on session
   debug: true,
   callbacks: {
-    // session({ session, user }) {
-    //   if (session.user) {
-    //     session.user.id = user.id
-    //   }
-    //   return session
-    // },
+    redirect: async ({ url, baseUrl }) => {
+      console.log("redirect url:", url)
+      // Allows relative callback URLs
+      if (url.startsWith("/")) return `${baseUrl}${url}`
+      // Allows callback URLs on the same origin
+      else if (new URL(url).origin === baseUrl) return url
+      return baseUrl
+    },
+
     jwt: async ({ token, user, account, profile, isNewUser }) => {
       // first time jwt callback is run, user object is available
       // console.log('jwt', { token, user })
@@ -64,6 +67,7 @@ export const authOptions: NextAuthOptions = {
         password: { label: 'Password', type: 'password' },
       },
       // TODO: dont know how to type this correctly
+      // TODO create database look up so username/Email is case insensitive, customer123@email.com === CUSTOMER123@email.com === CUStoMEr123@email.com
       authorize: async (credentials: any) => {
         const user = await prisma.user.findFirst({
           where: {

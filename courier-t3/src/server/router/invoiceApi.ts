@@ -126,9 +126,7 @@ export const invoiceApi = createProtectedRouter()
   })
   .mutation('changeManyOrdersPickupDriver', {
     input: z.object({
-      orderIds: z.object({
-        // id: z.string()
-      }),
+      orderIds: z.number().array(),
       newPickUpDriverId: z.string(),
     }),
     async resolve({ ctx, input }) {

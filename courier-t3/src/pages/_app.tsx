@@ -40,10 +40,8 @@ const MyApp: AppType = ({ Component, pageProps }: AppPropsWithLayout) => {
 
   return (
     <SessionProvider session={pageProps.session}>
-      <RouteGuard>
-        {layout}
-        <ReactQueryDevtools initialIsOpen={false} />
-      </RouteGuard>
+      {layout}
+      <ReactQueryDevtools initialIsOpen={false} />
     </SessionProvider>
   )
 }

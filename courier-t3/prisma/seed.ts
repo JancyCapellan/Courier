@@ -34,6 +34,7 @@ async function main() {
     ],
   })
 
+  // const orderPickupZones = await prisma.
   const invoiceStatuses = await prisma.orderStatus.createMany({
     data: [
       { message: 'pending payment' },

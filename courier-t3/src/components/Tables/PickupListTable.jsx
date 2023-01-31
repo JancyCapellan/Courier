@@ -81,13 +81,8 @@ const EditableCell = ({
 
   return <input value={value} onChange={onChange} onBlur={onBlur} />
 }
-// const driverSelectOptions = [
-//   { key: 'Admin', value: 'ADMIN' },
-//   { key: 'Staff', value: 'STAFF' },
-//   { key: 'Driver', value: 'DRIVER' },
-// ]
 
-let defaultPageSize = 30
+let defaultPageSize = 20
 const PickupListTable = () => {
   const [multiSelectPickupDriver, setMultiSelectPickupDriver] =
     React.useState('')
@@ -97,53 +92,23 @@ const PickupListTable = () => {
 
   const queryClient = useQueryClient()
 
-  // const queryClient = useQueryClient()
-
-  // const postAddManyOrders = async () => {
-  //   try {
-  //     const res = await backendClient.post(
-  //       '/order/submitOrder',
-  //       makeOrder(1)[0]
-  //     )
-  //     console.log(' added orders', res)
-  //     return res.data
-  //   } catch (error) {
-  //     console.log('error adding orders', error)
-  //   }
-  // }
-
-  // // useful to see new add order without refreshing or gettting all orders again.
-  // const mutationNewOrder = useMutation(postAddManyOrders, {
-  //   onSuccess: (data) => {
-  //     queryClient.setQueryData(
-  //       ['getAllOrders', queryPageIndex, queryPageSize],
-  //       (oldData) => {
-  //         console.log('new Order:', oldData, queryPageIndex, queryPageSize)
-  //         return {
-  //           orderCount: oldData.orderCount + 1,
-  //           orders: [...oldData.orders, data],
-  //         }
-  //       }
-  //     )
-  //   },
-  // })
-
   const {
     data: orderOptions,
     isSuccess: orderOptionsIsSuccess,
     isLoading: orderOptionIsLoading,
     error: orderOptionsError,
   } = trpc.useQuery(['invoice.getPickupDriversAndZones'], {
-    keepPreviousData: true,
+    // keepPreviousData: true,
     // staleTime: Infinity,
-    refetchOnWindowFocus: true,
-    refetchOnMount: true,
+    refetchOnWindowFocus: 'always',
+    refetchOnMount: 'always',
   })
 
   const {
     data: allOrders,
     isSuccess: allOrdersIsSuccess,
     isLoading: allOrdersIsLoading,
+    refetch: refetchAllOrders,
     error,
   } = trpc.useQuery(
     [
@@ -178,7 +143,12 @@ const PickupListTable = () => {
   )
 
   const mutationManyPickupDriver = trpc.useMutation(
-    'invoice.changeManyOrdersPickupDriver'
+    ['invoice.changeManyOrdersPickupDriver'],
+    {
+      onSuccess: () => {
+        refetchAllOrders()
+      },
+    }
   )
   // const mutationPickupZone = useMutation(
   //   async ({ orderId, pickupZoneId }) => {
@@ -256,7 +226,7 @@ const PickupListTable = () => {
             {orderOptionsIsSuccess ? (
               <select
                 onChange={(e) => {
-                  console.log('pickup driver id', e.target.value)
+                  // console.log('pickup driver id', e.target.value)
                   changeOrderPickupDriver.mutate({
                     orderId: original.id,
                     newPickUpDriverId: e.target.value,
@@ -332,7 +302,7 @@ const PickupListTable = () => {
         ),
       },
     ],
-    [orderOptionsIsSuccess, allOrdersIsSuccess]
+    [orderOptionsIsSuccess, allOrdersIsSuccess, orderOptions?.drivers]
   )
   const filterTypes = React.useMemo(
     () => ({
@@ -415,11 +385,11 @@ const PickupListTable = () => {
           id: 'selection',
           // The header can use the table's getToggleAllRowsSelectedProps method
           // to render a checkbox
-          // Header: ({ getToggleAllRowsSelectedProps }) => (
-          //   <div>
-          //     <IndeterminateCheckbox {...getToggleAllRowsSelectedProps()} />
-          //   </div>
-          // ),
+          Header: ({ getToggleAllRowsSelectedProps }) => (
+            <div>
+              <IndeterminateCheckbox {...getToggleAllRowsSelectedProps()} />
+            </div>
+          ),
           // The cell can use the individual row's getToggleRowSelectedProps method
           // to the render a checkbox
           Cell: ({ row }) => (
@@ -456,14 +426,6 @@ const PickupListTable = () => {
     <>
       {allOrdersIsSuccess ? (
         <>
-          <h1>test</h1>
-          {/* <button
-            onClick={() => {
-              mutationNewOrder.mutate()
-            }}
-          >
-            create mock order
-          </button> */}
           <GlobalFilter
             globalFilter={state.globalFilter}
             setGlobalFilter={setGlobalFilter}
@@ -473,11 +435,15 @@ const PickupListTable = () => {
           {orderOptionsIsSuccess ? (
             <select
               onChange={(e) => {
-                console.log('pickup driver id', e.target.value)
-                setMultiSelectPickupDriver(e.target.value)
+                // console.log('pickup driver id', e.target.value)
+                // setMultiSelectPickupDriver(e.target.value)
+                mutationManyPickupDriver.mutate({
+                  orderIds: selectedFlatRows.map((row) => row.original.id),
+                  newPickUpDriverId: e.target.value,
+                })
               }}
             >
-              <option value={''}> select driver</option>
+              <option value={''}> multi-driver select </option>
               {orderOptions.drivers.map((driver) => (
                 <option key={driver.id} value={driver.id}>
                   {driver.firstName} {driver.lastName}
@@ -487,23 +453,19 @@ const PickupListTable = () => {
           ) : (
             <></>
           )}
-          <button
+          {/* <button
             onClick={() => {
               // set order id from selectedFlatRows and update with driver from the global driver multi select above
               // console.log('selected driver', multiSelectPickupDriver)
+              // console.log('IDS', selectedFlatRows)
               mutationManyPickupDriver.mutate({
                 orderIds: selectedFlatRows.map((row) => row.original.id),
                 newPickUpDriverId: multiSelectPickupDriver,
               })
             }}
           >
-            set pickup driver
-          </button>
-          {JSON.stringify(
-            selectedFlatRows.map((row) => row.original.id),
-            undefined,
-            2
-          )}
+            Assign Driver
+          </button> */}
 
           <div className="pagination">
             <button onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
@@ -545,7 +507,7 @@ const PickupListTable = () => {
                 setPageSize(Number(e.target.value))
               }}
             >
-              {[defaultPageSize, 20, 50, 100].map((pageSize) => (
+              {[defaultPageSize, 1, 2, 3, 40, 60, 100].map((pageSize) => (
                 <option key={pageSize} value={pageSize}>
                   Show {pageSize}
                 </option>
