@@ -32,3 +32,5 @@ storybook is a frontend workshop for building UI components and pages in isolati
 
 **Tests** folder is for jest unit test
 e2e folder is for playwright tests, may move this structure around.
+
+playwright intergration trpc test: https://github.com/trpc/examples-next-prisma-starter/blob/main/src/server/routers/post.test.ts

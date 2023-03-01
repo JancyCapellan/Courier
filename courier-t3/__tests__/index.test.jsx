@@ -1,18 +1,15 @@
-// __tests__/index.test.jsx
+import { expect, test } from 'vitest'
+import { render, screen, within } from '@testing-library/react'
+import Home from '../src/pages'
 
-import { render, screen } from '@testing-library/react'
-import Home from '../src/pages/index'
-import '@testing-library/jest-dom'
-import RegistrationFormMain from '@/components/RegistrationFormMain'
+test('home', () => {
+  render(<Home />)
+  const main = within(screen.getByRole('main'))
+  expect(
+    main.getByRole('heading', { level: 1, name: /welcome to next\.js!/i })
+  ).toBeDefined()
 
-describe('Home', () => {
-  it('renders a heading', () => {
-    render(<RegistrationFormMain />)
-
-    const heading = screen.getByRole('heading', {
-      name: /welcome to next\.js!/i,
-    })
-
-    expect(heading).toBeInTheDocument()
-  })
+  const footer = within(screen.getByRole('contentinfo'))
+  const link = within(footer.getByRole('link'))
+  expect(link.getByRole('img', { name: /vercel logo/i })).toBeDefined()
 })
