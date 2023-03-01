@@ -40,3 +40,4 @@ yarn-error.log*
 *.sql
 runAfterCloning.sh
 
+/courierMobile/
