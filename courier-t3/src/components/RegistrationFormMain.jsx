@@ -51,6 +51,8 @@ const RegistrationFormMain = () => {
       alert('passwords do not match')
       return
     }
+
+    // remove password form values object to match api register input. typescript has solutions for this.
     delete values.password2
 
     postRegisterUser.mutate(values, {

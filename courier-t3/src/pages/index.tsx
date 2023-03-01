@@ -16,15 +16,11 @@ const Home: NextPage = () => {
 
   const router = useRouter()
   // console.log('Registered?:', router.query?.didRegister)
-
   // const signinRedirect = process.env.NEXT_PUBLIC_API_URL + 'account'
   //
 
-
-  if (status === "loading") {
-    return (
-      <div>LOADING SKELETON OF PAGE</div>
-    )
+  if (status === 'loading') {
+    return <div>LOADING SKELETON OF PAGE</div>
   }
 
   return (
@@ -37,13 +33,13 @@ const Home: NextPage = () => {
         />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-
+      {/* 
       <div className="flex flex-row w-full h-16 bg-gray-400 items-center mx-auto">
-        Courier's Dashboard
+        Courier{`'`}s Dashboard
       </div>
+      <div className="div"></div> */}
 
       <div className="w-screen flex flex-col items-center grow bg-cyan-600">
-
         {router.query?.didRegister}
 
         {router.query?.error ? <p>{router.query.error}</p> : <></>}
@@ -73,82 +69,84 @@ const Home: NextPage = () => {
             </Link>
           </div>
         ) : (
-          <Formik
-            // initialValues={{ email: '', password: '', tenantKey: '' }}
-            initialValues={{ email: '', password: '' }}
-            validationSchema={Yup.object({
-              email: Yup.string()
-                .max(30, 'Must be 30 characters or less')
-                .email('Invalid email address')
-                .required('Please enter your email'),
-              password: Yup.string()
-                .required('Please enter your password')
-                .min(3, 'password is too short'),
-              // tenantKey: Yup.string()
-              //   .max(20, 'Must be 20 characters or less')
-              //   .required('Please enter your organization name'),
-            })}
-            onSubmit={async (values, { setSubmitting }) => {
-              const res = await signIn('login', {
-                redirect: true,
-                email: values.email,
-                password: values.password,
-                // tenantKey: values.tenantKey, 
-                // callbackUrl: process.env.NEXT_PUBLIC_API_URL + '/SigninLoadingPage',
-                callbackUrl: '/account',
+          <div className="border border-red-100">
+            <Formik
+              // initialValues={{ email: '', password: '', tenantKey: '' }}
+              initialValues={{ email: '', password: '' }}
+              validationSchema={Yup.object({
+                email: Yup.string()
+                  .max(30, 'Must be 30 characters or less')
+                  .email('Invalid email address')
+                  .required('Please enter your email'),
+                password: Yup.string()
+                  .required('Please enter your password')
+                  .min(3, 'password is too short'),
+                // tenantKey: Yup.string()
+                //   .max(20, 'Must be 20 characters or less')
+                //   .required('Please enter your organization name'),
+              })}
+              onSubmit={async (values, { setSubmitting }) => {
+                const res = await signIn('login', {
+                  redirect: true,
+                  email: values.email,
+                  password: values.password,
+                  // tenantKey: values.tenantKey,
+                  // callbackUrl: process.env.NEXT_PUBLIC_API_URL + '/SigninLoadingPage',
+                  callbackUrl: '/account',
+                })
 
-              })
+                console.log('Signin Response', res)
 
-              console.log('Signin Response', res)
+                if (res?.error) {
+                  setError(true)
+                }
 
-              if (res?.error) {
-                setError(true)
-              }
+                // this is where the signin happens after nextauth signin function redirects to the same page, index, instead
 
-              // this is where the signin happens after nextauth signin function redirects to the same page, index, instead 
-
-              setSubmitting(false)
-            }}
-          >
-            {(formik) => {
-              return (
-                <>
-                  <Form className="flex flex-col md:w-1/2 my-24 max-w-sm">
-                    <h2 className="block w-full text-center text-grey-darkest mb-6 bold underline text-xl">
-                      Sign In
-                    </h2>
-                    <FormikControl
-                      control="input"
-                      type="email"
-                      label="Email"
-                      name="email"
-                    />
-                    <FormikControl
-                      control="input"
-                      type="password"
-                      label="Password"
-                      name="password"
-                    />
-                    <div className="flex flex-col items-center">
-                      <button
-                        type="submit"
-                        disabled={!formik.isValid}
-                        className="btn btn-blue m-2 w-1/2 align-center"
-                      >
-                        Login
-                      </button>
-                      <Link href="/register" passHref>
-                        <button className="btn btn-blue m-2 w-1/2">
-                          Don't have an account?{' '}
-                          <span className="text-red-400">Register here.</span>
+                setSubmitting(false)
+              }}
+            >
+              {(formik) => {
+                return (
+                  <>
+                    <Form className="flex flex-col">
+                      <h2 className="block w-full text-center text-grey-darkest mb-6 bold underline text-xl">
+                        Sign In
+                      </h2>
+                      <FormikControl
+                        control="input"
+                        type="email"
+                        label="Email"
+                        name="email"
+                      />
+                      <FormikControl
+                        control="input"
+                        type="password"
+                        label="Password"
+                        name="password"
+                      />
+                      <div className="flex flex-col items-center">
+                        <button
+                          type="submit"
+                          disabled={!formik.isValid}
+                          className="btn btn-blue m-2 w-1/2 align-center"
+                        >
+                          Login
                         </button>
-                      </Link>
-                    </div>
-                  </Form>
-                </>
-              )
-            }}
-          </Formik>
+
+                        <Link href="/register" passHref>
+                          <a className="btn btn-blue m-2 w-1/2">
+                            Don't have an account?{' '}
+                            <span className="text-red-400">Register here.</span>
+                          </a>
+                        </Link>
+                      </div>
+                    </Form>
+                  </>
+                )
+              }}
+            </Formik>
+          </div>
         )}
       </div>
     </div>

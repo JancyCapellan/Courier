@@ -1,5 +1,5 @@
-{
-  "extends": ["next/core-web-vitals", "next", "prettier"]
+export default {
+  extends: ['next/core-web-vitals', 'next', 'prettier'],
   // "env": {
   //     "browser": true,
   //     "es2021": true

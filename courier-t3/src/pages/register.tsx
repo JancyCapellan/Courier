@@ -3,7 +3,7 @@ import RegistrationFormMain from '../components/RegistrationFormMain.jsx'
 
 const Register: NextPage = () => {
   return (
-    <div className=' register-page-container'>
+    <div className=" register-page-container">
       <RegistrationFormMain />
     </div>
   )
