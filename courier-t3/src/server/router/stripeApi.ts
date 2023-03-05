@@ -3,6 +3,8 @@ import { createProtectedRouter } from './protected-routers'
 import Stripe from 'stripe'
 import { Prisma } from '@prisma/client'
 
+// STRIPE KEY TO CONNECT TO STRIPE BUISNESS ACCOUNT,
+// TODO: NEEDS TO BE DIFFERENT FOR EACH TENANT/CLIENT
 let stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: '2022-08-01',
 })

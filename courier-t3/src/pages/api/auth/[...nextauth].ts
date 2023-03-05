@@ -1,9 +1,12 @@
-import NextAuth, { type NextAuthOptions } from 'next-auth'
+import NextAuth, { User, type NextAuthOptions } from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
 
 // Prisma adapter for NextAuth, optional and can be removed
 import { PrismaAdapter } from '@next-auth/prisma-adapter'
 import { prisma } from '../../../server/db/client'
+import { JWT } from 'next-auth/jwt'
+
+//credentials procider signs in and sends its object with some defaults to jwt callback, the return token is sent to session callback to be used in the app with useSession. JWT callback gives us a chance to customize what is being sent to the client side
 
 export const authOptions: NextAuthOptions = {
   // Include user.id on session
@@ -20,29 +23,42 @@ export const authOptions: NextAuthOptions = {
 
     jwt: async ({ token, user, account, profile, isNewUser }) => {
       // first time jwt callback is run, user object is available
-      // console.log('jwt', { token, user })
+      console.log('first pass jwt', token)
 
       if (account) {
         token.accessToken = account.access_token
       }
       if (user) {
         token.user = user
+        token.role = user.role
+        token.id = user.id
         // token.id = user.id
         console.log('JWT', token)
         return token
       }
 
+      console.log("FINAL TOKEN:", token)
+
       return token
     },
     session: async ({ session, token }) => {
       // let test = { ...session.user, ...token.user }
-      if (token) {
-        session.user = token.user
+      console.log("SESSION ", session, "TOKEN", token);
+      
+      if (token && session.user) {
+        session.user.id = token.id
+        session.user.role = token.role
+        // session.user = token
+        // session.user = token.user
+        // session.user.role = token.role
         // session.jwt = token.jwt
         // session.user = token.user ? token.user : session.user
         // session.user = test
       }
-      // console.log('nextauth session:', session)
+      
+      
+      console.log('nextauth session:', session)
+
       return session
     },
   },
@@ -66,9 +82,12 @@ export const authOptions: NextAuthOptions = {
         email: { label: 'Email', type: 'text', placeholder: 'Name' },
         password: { label: 'Password', type: 'password' },
       },
-      // TODO: dont know how to type this correctly
       // TODO create database look up so username/Email is case insensitive, customer123@email.com === CUSTOMER123@email.com === CUStoMEr123@email.com
-      authorize: async (credentials: any) => {
+      authorize: async (credentials) => {
+
+        if( credentials === undefined || credentials.email === undefined || credentials.password === undefined)
+        return null
+
         const user = await prisma.user.findFirst({
           where: {
             email: credentials.email,
@@ -83,6 +102,7 @@ export const authOptions: NextAuthOptions = {
         if (user !== null) {
           // console.log('auth user', user)
           // userAccount = user
+
           return {
             id: user.id,
             name: `${user.firstName} ${user.lastName}`,
@@ -90,12 +110,13 @@ export const authOptions: NextAuthOptions = {
             firstName: user.firstName,
             lastName: user.lastName,
             role: user.role,
-          }
+          } as JWT
         } else {
           console.log('nextauth signin error')
           // return process.env.NEXTAUTH_URL + '/?signInError=true'
-          return false
+          return null
         }
+
       },
     }),
   ],

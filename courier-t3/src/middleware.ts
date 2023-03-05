@@ -12,7 +12,7 @@ export default withAuth(
         // `/admin` requires admin role
         if (req.nextUrl.pathname === '/administration') {
           //console.log('auth token:', token?.role, !token) //?  is token missing role becuase of its typing?
-          return token?.user?.role === 'ADMIN'
+          return token?.role === 'ADMIN'
         } else return false // this way i can do more than just rely on the matcher to match the url.
       },
     },

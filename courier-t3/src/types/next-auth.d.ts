@@ -1,40 +1,19 @@
-import { DefaultSession } from 'next-auth'
+import { DefaultSession, DefaultUser } from 'next-auth'
 import { JWT } from 'next-auth/jwt'
 
-// TODO: correctly type jwt for app needs
-//  interface DefaultJWT extends Record<string, unknown> {
-//     name?: string | null;
-//     email?: string | null;
-//     picture?: string | null;
-//     sub?: string;
-// }
-// export interface JWT extends Record<string, unknown>, DefaultJWT {}
-
+export type userRole = 'ADMIN' | 'STAFF' | 'CUSTOMER'
+interface appUser extends DefaultUser {
+  role?: userRole
+}
 declare module 'next-auth/jwt' {
-  /** Returned by the `jwt` callback and `getToken`, when using JWT sessions */
-  interface JWT {
-    /** OpenID ID Token */
-    idToken?: string
-    user?: {
-      // id: string
-      role: 'ADMIN' | 'STAFF' | 'CUSTOMER'
-    }
-  }
+  interface JWT extends appUser {}
 }
 
 declare module 'next-auth' {
-  enum userRoles {
-    ADMIN = 'ADMIN',
-    STAFF = 'STAFF',
-    CUSTOMER = 'CUSTOMER',
-  }
-  /**
-   * Returned by `useSession`, `getSession` and received as a prop on the `SessionProvider` React Context
-   */
-  interface Session {
-    user?: {
-      // id: string
-      role: 'ADMIN' | 'STAFF' | 'CUSTOMER'
-    } & DefaultSession['user']
+  interface User extends appUser {}
+  interface Session extends DefaultSession {
+    user?: User
   }
 }
+
+//helped in fixing typing error: https://reacthustle.com/blog/nextjs-setup-role-based-authentication, my mistake was not chagning the User type by extending it with my new type

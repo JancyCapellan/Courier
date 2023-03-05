@@ -103,18 +103,18 @@ const AccountInfo = () => {
   }
 
   return (
-    <section className='flex flex-col items-center h-full'>
+    <section className="flex flex-col items-center h-full">
       <h1>Account Information</h1>
 
       {/* create  tab menu  */}
-      <nav className='flex flex-row gap-4'>
-        <button className='btn btn-blue' onClick={() => setCurrentPage(1)}>
+      <nav className="flex flex-row gap-4">
+        <button className="btn btn-blue" onClick={() => setCurrentPage(1)}>
           Account Information
         </button>
-        <button className='btn btn-blue' onClick={() => setCurrentPage(2)}>
+        <button className="btn btn-blue" onClick={() => setCurrentPage(2)}>
           Addresses
         </button>
-        <button className='btn btn-blue' onClick={() => setCurrentPage(3)}>
+        <button className="btn btn-blue" onClick={() => setCurrentPage(3)}>
           Order History
         </button>
       </nav>

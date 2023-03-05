@@ -74,8 +74,7 @@ const RegistrationFormMain = () => {
   }
 
   return (
-    <>
-      <h1> Registration</h1>
+    <div className="flex flex-col items-center justify-center shadow-md w-fit p-12">
       <Formik
         initialValues={initialValues}
         validationSchema={validationSchema}
@@ -139,7 +138,7 @@ const RegistrationFormMain = () => {
           )
         }}
       </Formik>
-    </>
+    </div>
   )
 }
 

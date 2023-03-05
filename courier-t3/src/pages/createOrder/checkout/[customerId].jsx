@@ -70,7 +70,7 @@ const Checkout = () => {
           '#### ~ file: checkout.jsx ~ line 38 ~ Checkout ~ stripCheckoutSession',
           stripeCheckoutSession
         )
-        // create status pending order with checkoutSession, but what if checkout session isnt completed? left with an order that is pending and i could remove with a webhook after expiratio. or i could
+        // create status pending order with checkoutSession, but what if checkout session isnt completed? left with an order that is pending in stripe and i could remove with a stripe webhook after expiration. or i could
 
         createPendingOrder.mutate({
           userId: session?.user?.id,
