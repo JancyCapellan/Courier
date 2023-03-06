@@ -23,27 +23,26 @@ export const authOptions: NextAuthOptions = {
 
     jwt: async ({ token, user, account, profile, isNewUser }) => {
       // first time jwt callback is run, user object is available
-      console.log('first pass jwt', token)
+      // console.log('first pass jwt', token, "USER", user)
 
       if (account) {
         token.accessToken = account.access_token
       }
       if (user) {
-        token.user = user
+        // token.user = user
         token.role = user.role
         token.id = user.id
         // token.id = user.id
-        console.log('JWT', token)
+        console.log("FINAL TOKEN:", token)
         return token
       }
 
-      console.log("FINAL TOKEN:", token)
 
       return token
     },
     session: async ({ session, token }) => {
       // let test = { ...session.user, ...token.user }
-      console.log("SESSION ", session, "TOKEN", token);
+      // console.log("SESSION ", session, "TOKEN", token);
       
       if (token && session.user) {
         session.user.id = token.id
@@ -63,7 +62,8 @@ export const authOptions: NextAuthOptions = {
     },
   },
   // Configure one or more authentication providers
-  adapter: PrismaAdapter(prisma),
+  // for Oauth tables 
+  // adapter: PrismaAdapter(prisma),
   providers: [
     // DiscordProvider({
     //   clientId: env.DISCORD_CLIENT_ID,
