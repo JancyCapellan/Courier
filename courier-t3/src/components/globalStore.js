@@ -1,6 +1,6 @@
 //@ts-nocheck
 import { useState, useEffect } from 'react'
-import create from 'zustand'
+import { create } from 'zustand'
 import { devtools, persist } from 'zustand/middleware'
 
 export const useGlobalStore = create(
