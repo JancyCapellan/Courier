@@ -187,6 +187,7 @@ the orders table in courier_app Database should include: cartDetails, stripe che
   - [ ] add print functionality for invoices to app
 
 * LongTerm Todos by page
+moved to kanban board in obsidian
 ** PageTodos [0%]
 :PROPERTIES:
 :COOKIE_DATA: PageTodos recursive
@@ -237,8 +238,8 @@ nginx pm2 wokrs with running nextjs in dev mode.
     DATABASE_URL=postgresql://jancycapellan:findtheblow1!@localhost:5432/courier_app
     NEXT_PUBLIC_API_URL=http://localhost:3000/
     NEXTAUTH_URL=http://localhost:3000
-    NEXTAUTH_SECRET=somesuperseceretencryptionkey    NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_51LzM1PAVJ8VmRrvGMfJYfnV9dE48TNihwO5NRrHOb8qWiRttQVsZUPPBbC2kYMijzO4LmXU1RWC4dTDs5GK2PcU300e8ev53xN
-    STRIPE_SECRET_KEY=sk_test_asdnsaksndskdefamnfceimfmikenfaoinfoiekf2if34583efu2fn39812FAKEKEY
+    NEXTAUTH_SECRET=somesyptionkey    NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_
+    STRIPE_SECRET_KEY=sk_test_
 #+END_SRC
 
 - with DATABASE and user created, NPM INSTALL
