@@ -88,6 +88,12 @@ export const routes = {
     icon: '',
     cName: 'nav-listitem',
   },
+  employees: {
+    title: 'employees',
+    path: '/administration/employees',
+    icon: <HiOutlineUserGroup />,
+    cName: 'nav-listitem',
+  },
   reports: {
     cName: 'nav-listitem',
     title: 'Reports',
@@ -102,6 +108,7 @@ export const sidebarTypes = {
   CUSTOMER: [routes.account, routes.createOrder],
   ADMIN: [
     routes.administration,
+    routes.employees,
     routes.account,
     routes.customers,
     routes.invoices,

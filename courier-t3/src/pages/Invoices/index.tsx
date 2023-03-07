@@ -1,5 +1,4 @@
 import React, { useState, useEffect, ReactElement, ReactNode } from 'react'
-import Sidebar from '../../components/Sidebar'
 import { NextPage } from 'next'
 import { useRouter } from 'next/router'
 import Layout from '@/components/Layout'

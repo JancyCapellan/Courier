@@ -1,7 +1,7 @@
 import { DefaultSession, DefaultUser } from 'next-auth'
 import { JWT } from 'next-auth/jwt'
 
-export type userRole = 'ADMIN' | 'STAFF' | 'CUSTOMER'
+export type userRole = 'ADMIN' | 'STAFF' | 'CUSTOMER' | 'DRIVER'
 interface appUser extends DefaultUser {
   role?: userRole
 }

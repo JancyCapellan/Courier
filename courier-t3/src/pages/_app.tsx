@@ -15,7 +15,7 @@ import '../styles/globals.css'
 import { ReactQueryDevtools } from 'react-query/devtools'
 import '@stripe/stripe-js' // https://github.com/stripe/stripe-js#ensuring-stripejs-is-available-everywhere
 import getStripe from '@/utils/get-stripejs'
-import RouteGuard from '@/utils/RouteGuard'
+import { getLogger } from '../../logging/log-utils'
 
 // type NextPageWithLayout<P = {}> = NextPage<P> & {
 //   getLayout?: (page: ReactNode) => ReactNode
@@ -32,11 +32,18 @@ type AppPropsWithLayout = AppProps & {
 }
 
 const stripePromise = getStripe()
+
 //typing is better this time but according to: https://dev.to/ofilipowicz/next-js-per-page-layouts-and-typescript-lh5,
 //there is more generics that can be used advance these types.
 const MyApp: AppType = ({ Component, pageProps }: AppPropsWithLayout) => {
   const getLayout = Component.getLayout ?? ((page: ReactNode) => page)
   const layout = getLayout(<Component {...pageProps} />)
+
+  // const logger = getLogger('app') // set to silent in ~/log-level.js
+
+  // logger.error('a error message from _app')
+  // logger.debug('a debug message from _app')
+  // logger.info('a info message from _app')
 
   return (
     <SessionProvider session={pageProps.session}>

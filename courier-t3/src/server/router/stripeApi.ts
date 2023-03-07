@@ -4,7 +4,7 @@ import Stripe from 'stripe'
 import { Prisma } from '@prisma/client'
 
 // STRIPE KEY TO CONNECT TO STRIPE BUISNESS ACCOUNT,
-// TODO: NEEDS TO BE DIFFERENT FOR EACH TENANT/CLIENT
+// TODO: (explore this idea more) NEEDS TO BE DIFFERENT FOR EACH TENANT/CLIENT
 let stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: '2022-08-01',
 })
@@ -63,7 +63,6 @@ export const stripeApi = createProtectedRouter()
       redirectUrl: z.string(),
     }),
     async resolve({ ctx, input }) {
-      // get customer cart session to add to stripe checkout
       const cartSession = await ctx.prisma.cart.findUnique({
         where: {
           creatingUserId_customerId: {
@@ -72,18 +71,14 @@ export const stripeApi = createProtectedRouter()
           },
         },
         select: {
-          // cartId: true,
-          // customerId: true,
-          // creatingUserId: true,
           items: {
             select: {
               quantity: true,
               product: {
                 select: {
-                  // name: true,
-                  stripePriceId: true,
-                  // stripeProductId: true,
-                  // price: true,
+                  name: true,
+
+                  price: true,
                 },
               },
             },
@@ -115,7 +110,13 @@ export const stripeApi = createProtectedRouter()
       let lineItems: Stripe.Checkout.SessionCreateParams.LineItem[] = []
       cartSession?.items.forEach((item) => {
         lineItems.push({
-          price: item.product.stripePriceId!, // change prisma type string | null not string | undefined
+          price_data: {
+            currency: 'usd', // TODO: change depending on currency, might not be needed if USD is used for all transactions
+            product_data: {
+              name: item.product.name,
+            },
+            unit_amount: item.product.price,
+          },
           quantity: item.quantity,
           adjustable_quantity: { enabled: false },
         })
@@ -143,11 +144,11 @@ export const stripeApi = createProtectedRouter()
           )
         })
       console.log(
-        '🚀 ~ file: stripeApi.ts ~ line 127 ~ resolve ~ stripeCheckoutSession',
+        '🚀 ~ file: stripeApi.ts ~ line 147 ~ resolve ~ stripeCheckoutSession',
         stripeCheckoutSession
       )
 
-      // checkoutSession values, after this only webhooks events will give me information on what is happening on stripes side,
+      // * note: checkoutSession values, after this only webhooks events will give me information on what is happening on stripes side,
 
       return stripeCheckoutSession
     },

@@ -9,7 +9,7 @@ export default function Layout({ children }) {
       <div className="flex-1 flex flex-col overflow-hidden">
         <Header />
         <div className="flex h-full">
-          <Sidebar />
+          <Sidebar test="5" />
           <main className="flex flex-col w-full bg-white overflow-x-auto overflow-y-auto p-6 mb-6">
             {children}
           </main>

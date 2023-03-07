@@ -81,8 +81,6 @@ export const cartApi = createProtectedRouter()
               product: {
                 select: {
                   name: true,
-                  stripePriceId: true,
-                  stripeProductId: true,
                   price: true,
                 },
               },
@@ -106,10 +104,10 @@ export const cartApi = createProtectedRouter()
           },
         },
       })
-      console.log(
-        '🚀 ~ file: cartApi.ts ~ line 110 ~ resolve ~ cartSession',
-        cartSession
-      )
+      // console.log(
+      //   '🚀 ~ file: cartApi.ts ~ line 110 ~ resolve ~ cartSession',
+      //   cartSession
+      // )
       return cartSession
     },
   })
@@ -136,7 +134,7 @@ export const cartApi = createProtectedRouter()
                   select: {
                     name: true,
                     price: true,
-                    stripePriceId: true,
+                    // stripePriceId: true,
                     // stripeProductId: true,
                     // productType: true,
                   },
@@ -149,7 +147,7 @@ export const cartApi = createProtectedRouter()
             cartId: true,
           },
         })
-        console.log('cartSession:', cartSession)
+        // console.log('cartSession:', cartSession)
         return cartSession
       } catch (error) {
         console.error('error findign cart', error)
@@ -302,7 +300,7 @@ export const cartApi = createProtectedRouter()
         input.customerId
       )
 
-      console.log('addeding addresses to form:', JSON.stringify(input))
+      // console.log('addeding addresses to form:', JSON.stringify(input))
       const addedShipper = await ctx.prisma.cartOrderAddresses.upsert({
         where: {
           cartId_recipient: {
@@ -317,10 +315,7 @@ export const cartApi = createProtectedRouter()
         },
         update: input.shipper,
       })
-      console.log(
-        '🚀 ~ file: cartApi.ts ~ line 245 ~ resolve ~ addedShipper',
-        addedShipper
-      )
+      console.log('Saved Shipper Address:', addedShipper)
 
       const addedReciever = await ctx.prisma.cartOrderAddresses.upsert({
         where: {
@@ -336,10 +331,7 @@ export const cartApi = createProtectedRouter()
         },
         update: input.reciever,
       })
-      console.log(
-        '🚀 ~ file: cartApi.ts ~ line 260 ~ resolve ~ addedReciever',
-        addedReciever
-      )
+      console.log('Saved Reciever address:', addedReciever)
 
       // console.log({ addedShipper, addedReciever })
 
@@ -378,10 +370,10 @@ export const cartApi = createProtectedRouter()
           recipient: true,
         },
       })
-      console.log(
-        '🚀 ~ file: cartApi.ts ~ line 274 ~ resolve ~ formAddresses',
-        formAddresses
-      )
+      // console.log(
+      //   '🚀 ~ file: cartApi.ts ~ line 274 ~ resolve ~ formAddresses',
+      //   formAddresses
+      // )
 
       if (formAddresses === undefined || formAddresses.length == 0) {
         // array does not exist or is empty
@@ -405,10 +397,7 @@ export const cartApi = createProtectedRouter()
             },
           },
         })
-        console.log(
-          '🚀 ~ file: cartApi.ts ~ line 596 ~ resolve ~ deleteCartSession',
-          deleteCartSession
-        )
+        console.log('deleteCartSession', deleteCartSession)
         return deleteCartSession
       } catch (error) {
         throw new TRPCError({
@@ -445,8 +434,8 @@ export const cartApi = createProtectedRouter()
               product: {
                 select: {
                   name: true,
-                  stripePriceId: true,
-                  stripeProductId: true,
+                  // stripePriceId: true,
+                  // stripeProductId: true,
                   price: true,
                 },
               },
@@ -510,6 +499,7 @@ export const cartApi = createProtectedRouter()
       paymentType: z.enum(['CARD', 'CASH', 'CHECK', 'QUICKPAY']),
     }),
     async resolve({ ctx, input }) {
+      console.log('🚀 ~ file: cartApi.ts:510 ~ resolve ~ input:', input)
       let pendingOrder
       try {
         const cartSession = await ctx.prisma.cart.findUnique({
@@ -547,10 +537,10 @@ export const cartApi = createProtectedRouter()
             },
           },
         })
-        console.log(
-          '🚀 ~ file: cartApi.ts ~ line 551 ~ resolve ~ cartSession',
-          cartSession
-        )
+        // console.log(
+        //   '🚀 ~ file: cartApi.ts ~ line 551 ~ resolve ~ cartSession',
+        //   cartSession
+        // )
         pendingOrder = await ctx.prisma.order.create({
           data: {
             customer: {
@@ -587,7 +577,8 @@ export const cartApi = createProtectedRouter()
               },
             },
             stripeCheckoutId:
-              input.stripeCheckoutId === null
+              // made this way becuase not all orders go through stripe so some may need an empty column, i dont remember why null doesnt work because i could avoid this if input.stripeCheckoutId is null from not exisint already from creating the checkout order
+              input.stripeCheckoutId !== null // this was the problem stopping the webhook from updating pending order
                 ? input.stripeCheckoutId
                 : undefined,
           },

@@ -59,7 +59,7 @@ export const userRouter = createProtectedRouter()
         const addedAddress = await ctx.prisma.address.create({
           data: input.addressForm,
         })
-        console.log(addedAddress)
+        console.log('ADDED address:', addedAddress)
         return addedAddress
       } catch (error) {
         console.error(error)

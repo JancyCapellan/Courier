@@ -125,6 +125,10 @@ export const CustomerEditorForm = ({ currentUser }) => {
               <th>License ID</th>
               <td>{currentUser.licenseId}</td>
             </tr>
+            {/* <tr>
+              <th>Time of Account Creation</th>
+              <td>{new Date(currentUser.creationDateTime)}</td>
+            </tr> */}
           </tbody>
         </table>
       </div>

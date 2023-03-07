@@ -19,6 +19,7 @@ export function createProtectedRouter() {
   })
 }
 
+//TODO: Make router for admin and office staff only routes
 export function createProtectedStaffRouter() {
   return createRouter().middleware(({ ctx, next }) => {
     if (

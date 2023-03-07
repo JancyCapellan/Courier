@@ -60,6 +60,7 @@ const Index = () => {
 
   useEffect(() => {
     if (checkout && !!customerId) {
+      console.log('CART DELETED AFTER CHECKOUT SUCCESS')
       deleteCartAfterCheckout.mutate({
         userId: session?.user?.id,
         customerId: customerId,

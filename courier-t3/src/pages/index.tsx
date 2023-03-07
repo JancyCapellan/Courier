@@ -8,11 +8,20 @@ import { Formik, Form } from 'formik'
 import * as Yup from 'yup'
 import FormikControl from '../components/Formik/FormikControl'
 import { useRouter } from 'next/router'
+import { getLogger } from '../../logging/log-utils'
 
 const Home: NextPage = () => {
   // const [session, loadingUser] = useSession()
   const { data: session, status } = useSession()
   const [error, setError] = useState(false)
+
+  // const logger = getLogger('Home')
+
+  // fileLogger.info('HELLO EXTERNAL LOGS')
+
+  // logger.error('a error message from Home')
+  // logger.debug('a debug message from Home')
+  // logger.info('a info message from Home')
 
   const router = useRouter()
   // console.log('Registered?:', router.query?.didRegister)

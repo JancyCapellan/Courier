@@ -60,10 +60,10 @@ export const invoiceApi = createProtectedRouter()
           // res.status(500).send({ error: 'Something failed!' })
           throw e
         })
-      console.log(
-        '🚀 ~ file: invoiceApi.ts ~ line 62 ~ resolve ~ orders',
-        orders
-      )
+      // console.log(
+      //   '🚀 ~ file: invoiceApi.ts ~ line 62 ~ resolve ~ orders',
+      //   orders
+      // )
 
       const orderCount = await ctx.prisma.order.count()
       if (orders) {
@@ -190,7 +190,7 @@ export const invoiceApi = createProtectedRouter()
                 select: {
                   price: true,
                   name: true,
-                  stripeProductId: true,
+                  // stripeProductId: true,
                 },
               },
             },
@@ -204,7 +204,7 @@ export const invoiceApi = createProtectedRouter()
           stripeCheckoutId: true,
         },
       })
-      // console.log('🚀 ~ file: invoiceApi.ts:209 ~ resolve ~ order', order)
+      console.log('🚀 ~ file: invoiceApi.ts:209 ~ resolve ~ order', order)
       if (order) {
         // changing timePlaced for orders into readable local values
         for (const key in order)

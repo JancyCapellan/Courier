@@ -115,7 +115,7 @@ const InfoEditor = ({ currentUser }) => {
           </tbody>
         </table>
       </div>
-      <button onClick={() => setShowEditForm(true)}>
+      <button className="btn btn-blue" onClick={() => setShowEditForm(true)}>
         Edit Account Information
       </button>
 

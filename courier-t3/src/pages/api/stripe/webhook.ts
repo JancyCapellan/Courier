@@ -1,96 +1,87 @@
-import Stripe from 'stripe'
+import { stripe } from '../../../server/stripe/client'
+import type Stripe from 'stripe'
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { buffer } from 'micro'
 import { prisma } from '../../../server/db/client'
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2022-08-01',
-})
+import { handleCheckoutSessionCompleted } from 'server/stripe/stripe-webhook-handlers'
 
-const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET!
 // needed for raw request body
 export const config = {
   api: {
     bodyParser: false,
   },
 }
+const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET!
+
+//helped with typing: https://blog.nickramkissoon.com/posts/integrate-stripe-t3#setting-up-a-webhook-endpoint-to-listen-to-stripe-events
 const webhook = async (req: NextApiRequest, res: NextApiResponse) => {
   // console.log('🚀 ~ file: webhook.ts ~ line 10 ~ webhook ~ req', req)
 
-  let event: Stripe.Event
+  if (req.method === 'POST') {
+    const buf = await buffer(req)
+    let sig = req.headers['stripe-signature']
 
-  const buf = await buffer(req)
+    let event: Stripe.Event
+    try {
+      event = stripe.webhooks.constructEvent(
+        buf.toString(),
+        sig as string,
+        webhookSecret
+      )
 
-  // if (process.env.STRIPE_WEBHOOK_SECRET) {
-  let sig = req.headers['stripe-signature']
-  // console.log('🚀 ~ file: webhook.ts ~ line 16 ~ webhook ~ sig', sig)
-  try {
-    event = stripe.webhooks.constructEvent(
-      buf,
-      sig!, //! TODO: not sure if this is buggy
-      webhookSecret
-    )
-    // event = Stripe.Webhooks.
-  } catch (err: any) {
-    console.log(`⚠️  Webhook signature verification failed.`, err.message)
-    res.status(400).send(`Webhook Error: ${err.message}`)
-    return
+      switch (event.type) {
+        case 'checkout.session.completed':
+          handleCheckoutSessionCompleted(event)
+
+          break
+        case 'payment_intent.succeeded':
+          const paymentIntent = event.data.object
+          // Then define and call a function to handle the event payment_intent.succeeded
+          console.log('🚀 PaymentIntent', paymentIntent)
+
+          break
+        // ... handle other event types
+        default:
+          //TODO: PINO LOGGER THIS
+          console.log(`Unhandled event type ${event.type}`)
+      }
+
+      // stripe also have a very extensivve loggins system
+      // record the event in the database
+      // await prisma.stripeEvent.create({
+      //   data: {
+      //     id: event.id,
+      //     type: event.type,
+      //     object: event.object,
+      //     api_version: event.api_version,
+      //     account: event.account,
+      //     created: new Date(event.created * 1000), // convert to milliseconds
+      //     data: {
+      //       object: event.data.object,
+      //       previous_attributes: event.data.previous_attributes,
+      //     },
+      //     livemode: event.livemode,
+      //     pending_webhooks: event.pending_webhooks,
+      //     request: {
+      //       id: event.request?.id,
+      //       idempotency_key: event.request?.idempotency_key,
+      //     },
+      //   },
+      // })
+
+      // res.json({ received: true })
+    } catch (err: any) {
+      console.log(`⚠️  Webhook signature verification failed.`, err.message)
+      res.status(400).send(`Webhook Error: ${err.message}`)
+      return
+    }
+
+    // Return a 200 response to acknowledge receipt of the event
+    res.status(200).send('acknowledged')
+  } else {
+    res.setHeader('Allow', 'POST')
+    res.status(405).end('Method Not Allowed')
   }
-
-  // console.log('🚀 ~ file: webhook.ts ~ line 24 ~ webhook ~ event', event)
-  // Handle the event
-  switch (event.type) {
-    case 'checkout.session.completed':
-      const checkoutSession = event.data.object
-      console.log(
-        '🚀 ~ file: webhook.ts ~ line 25 ~ webhook ~ checkoutSession',
-        checkoutSession
-      )
-
-      //TODO: add stripe object and cart session for the correct customer Order
-
-      const updatedOrderWithStripeCheckout = await prisma.order.update({
-        where: {
-          stripeCheckoutId: checkoutSession.id,
-        },
-        data: {
-          stripeCheckout: checkoutSession,
-          status: {
-            connectOrCreate: {
-              where: {
-                message: 'CHECKOUT SUCCESSFUL',
-              },
-              create: {
-                message: 'CHECKOUT SUCCESSFUL',
-              },
-            },
-          },
-        },
-      })
-      console.log(
-        '🚀 ~ file: webhook.ts ~ line 59 ~ webhook ~ updatedOrderWithStripeCheckout',
-        updatedOrderWithStripeCheckout
-      )
-
-      // steps: create orders, proceed to checkout (stripe create checkout object returned here),
-      // then proceed to completedOrder after checkout completes on stripe side (i dont think anything is return from stripe expect the query params send to success url when the checkout is completed, thus we neeed the webhook to provide the information),  using the metadata with customerid, stripe checkout and creatinUserId, i should be able to create the right order with the correct cart Details
-
-      break
-    case 'payment_intent.succeeded':
-      const paymentIntent = event.data.object
-      // Then define and call a function to handle the event payment_intent.succeeded
-      console.log(
-        '🚀 ~ file: webhook.ts ~ line 41 ~ webhook ~ paymentIntent',
-        paymentIntent
-      )
-
-      break
-    // ... handle other event types
-    default:
-      console.log(`Unhandled event type ${event.type}`)
-  }
-
-  // Return a 200 response to acknowledge receipt of the event
-  res.status(200).send('acknowledged')
 }
 
 export default webhook

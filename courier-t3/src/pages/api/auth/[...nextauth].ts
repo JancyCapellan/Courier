@@ -12,14 +12,15 @@ export const authOptions: NextAuthOptions = {
   // Include user.id on session
   debug: true,
   callbacks: {
-    redirect: async ({ url, baseUrl }) => {
-      console.log("redirect url:", url)
-      // Allows relative callback URLs
-      if (url.startsWith("/")) return `${baseUrl}${url}`
-      // Allows callback URLs on the same origin
-      else if (new URL(url).origin === baseUrl) return url
-      return baseUrl
-    },
+    // redirect: async ({ url, baseUrl }) => {
+    //   // console.log("redirect url:", url)
+    //   // Allows relative callback URLs
+    //   // default redirect
+    //   if (url.startsWith("/")) return `${baseUrl}${url}`
+    //   // Allows callback URLs on the same origin
+    //   else if (new URL(url).origin === baseUrl) return url
+    //   return baseUrl
+    // },
 
     jwt: async ({ token, user, account, profile, isNewUser }) => {
       // first time jwt callback is run, user object is available
@@ -33,7 +34,7 @@ export const authOptions: NextAuthOptions = {
         token.role = user.role
         token.id = user.id
         // token.id = user.id
-        console.log("FINAL TOKEN:", token)
+        // console.log("FINAL TOKEN:", token)
         return token
       }
 
@@ -56,7 +57,7 @@ export const authOptions: NextAuthOptions = {
       }
       
       
-      console.log('nextauth session:', session)
+      // console.log('nextauth session:', session)
 
       return session
     },

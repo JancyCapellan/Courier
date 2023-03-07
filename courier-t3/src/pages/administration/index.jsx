@@ -6,29 +6,13 @@ import Layout from '@/components/Layout'
 import ProductEditorTable from '@/components/pages/administration/ProductEditorTable.jsx'
 import StaffTable from '@/components/pages/administration/StaffTable.jsx'
 
+// TODO: status and data of ongoing business operations
 const Administration = () => {
-  const [showModal, setShowModal] = useState(false)
-
-  const handleModalClose = () => setShowModal(false)
-
   return (
     <>
-      <section className='administration-container'>
-        <h1>Staff Manager</h1>
-        <button className='btn btn-blue' onClick={() => setShowModal(true)}>
-          Create Staff
-        </button>
-        <ModalContainer show={showModal} handleClose={handleModalClose}>
-          <RegistrationFormModal
-            isRegisteringStaff={true}
-            closeModal={handleModalClose}
-          />
-        </ModalContainer>
-
-        <StaffTable />
-
+      <section className="administration-container">
         <h1>Product manager</h1>
-        <section className='flex flex-row justify-center bg-slate-400 '>
+        <section className="flex flex-row justify-center bg-slate-400 ">
           <ProductEditorTable />
         </section>
       </section>

@@ -31,8 +31,8 @@ export const publicApiRouter = createRouter()
           id: true,
           name: true,
           price: true,
-          stripePriceId: true,
-          stripeProductId: true,
+          // stripePriceId: true,
+          // stripeProductId: true,
           // productType: {
           //   select: {
           //     type: true,

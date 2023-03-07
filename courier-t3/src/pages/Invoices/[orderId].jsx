@@ -3,9 +3,10 @@ import { useRouter } from 'next/router'
 // import { useQuery } from 'react-query'
 import { trpc } from '@/utils/trpc'
 import { QRCodeSVG } from 'qrcode.react'
-import { GOOGLE_FONT_PROVIDER } from 'next/dist/shared/lib/constants'
+import { useState } from 'react'
 
 const InvoicePage = () => {
+  const [totalOrderPriceSum, setTotalOrderPriceSum] = useState(0)
   const router = useRouter()
   const { orderId } = router.query
   const {
@@ -14,7 +15,10 @@ const InvoicePage = () => {
     refetch: refetchOrder,
   } = trpc.useQuery(['invoice.getOrderById', { orderId: parseInt(orderId) }], {
     refetchOnMount: 'always',
+    enabled: orderId !== null,
   })
+
+  // note: checks stripe database for order, sync the order to app database, then retefches the order. mostly a for development
   const syncCheckout = trpc.useMutation(
     ['stripe.getStripeCheckoutDetailsFromStripe'],
     {
@@ -42,7 +46,7 @@ const InvoicePage = () => {
               })
             }}
           >
-            sync with stripe checkout
+            get/sync with stripe checkout
           </button>
           <pre>
             OrderID: {order?.id}
@@ -99,7 +103,7 @@ const InvoicePage = () => {
             <tbody>
               {order?.items.map((item) => {
                 return (
-                  <tr key={item.product.stripeProductId}>
+                  <tr key={item.product.name}>
                     <td>{item.product.name}</td>
                     <td>{item.quantity}</td>
                     <td>${item.product.price / 100}</td>
@@ -111,7 +115,7 @@ const InvoicePage = () => {
                 <td></td>
                 <td></td>
                 <td></td>
-                <td>total:</td>
+                <td>total: ${totalOrderPriceSum}</td>
                 {/* TODO: calculate total amount due for all items in the order */}
                 {/* <td>{order.totalPrice}</td> */}
               </tr>

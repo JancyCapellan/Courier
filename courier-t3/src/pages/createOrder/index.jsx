@@ -19,8 +19,8 @@ import getStripe from '@/utils/get-stripejs'
 
 const CreateOrder = () => {
   const { data: session, status: sessionStatus } = useSession()
-  sessionStatus === 'authenticated' &&
-    console.log('🚀 ~ file: index.jsx ~ line 22 ~ createOrder ~ data', session)
+  // sessionStatus === 'authenticated' &&
+  //   console.log('🚀 ~ file: index.jsx ~ line 22 ~ createOrder ~ data', session)
   const clearCart = trpc.useMutation(['cart.clearCart'], {
     onSuccess: () => {
       //refetch form and items
@@ -72,7 +72,7 @@ const CreateOrder = () => {
         <Cart />
 
         <Link href={`/createOrder/checkout/${router.query.customerId}`}>
-          <button className={`btn btn-blue w-min`}>
+          <button className={`btn bg-red-600 w-auto`}>
             Review Order before checkout
           </button>
         </Link>

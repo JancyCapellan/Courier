@@ -22,7 +22,7 @@ const Customers = () => {
 
   return (
     <>
-      <div className='customer-page-container'>
+      <div className="customer-page-container">
         {/* <button
           onClick={() => {
             postAddManyCustomer()
