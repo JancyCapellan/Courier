@@ -112,7 +112,8 @@ model Order {
   containerId    Int?
   container      containers?       @relation(fields: [containerId], references: [id])
 
-  stripeCheckoutId String? @unique //need stripe informmation to connect order to relevent stripe checkout session, with this id i can query specific orders when updating with information from stripe checkout
+  stripeCheckoutUrl String?
+  stripeCheckoutId  String? @unique //need stripe informmation to connect order to relevent stripe checkout session, with this id i can query specific orders when updating with information from stripe checkout
 
   // instead of just ids, going to add the entire items of stripepayments to the database to backup the data
 

@@ -3,7 +3,10 @@ import type Stripe from 'stripe'
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { buffer } from 'micro'
 import { prisma } from '../../../server/db/client'
-import { handleCheckoutSessionCompleted } from 'server/stripe/stripe-webhook-handlers'
+import {
+  handleCheckoutSessionCompleted,
+  handleCheckoutSessionExpired,
+} from 'server/stripe/stripe-webhook-handlers'
 
 // needed for raw request body
 export const config = {
@@ -40,7 +43,12 @@ const webhook = async (req: NextApiRequest, res: NextApiResponse) => {
           console.log('🚀 PaymentIntent', paymentIntent)
 
           break
-        // ... handle other event types
+
+        case 'checkout.session.expired':
+          handleCheckoutSessionExpired(event)
+
+          break
+
         default:
           //TODO: PINO LOGGER THIS
           console.log(`Unhandled event type ${event.type}`)

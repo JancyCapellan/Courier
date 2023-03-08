@@ -9,6 +9,7 @@ const InvoicePage = () => {
   const [totalOrderPriceSum, setTotalOrderPriceSum] = useState(0)
   const router = useRouter()
   const { orderId } = router.query
+
   const {
     data: order,
     status: getOrderDetailsStatus,
@@ -37,7 +38,7 @@ const InvoicePage = () => {
       {getOrderDetailsStatus === 'success' && (
         <section className="invoice-details-container">
           <h1>Invoice #{order?.id}</h1>
-          <button
+          {/* <button
             className="btn btn-blue"
             onClick={() => {
               syncCheckout.mutate({
@@ -47,9 +48,38 @@ const InvoicePage = () => {
             }}
           >
             get/sync with stripe checkout
-          </button>
+          </button> */}
+          {order?.status?.message === 'PENDING PAYMENT' &&
+            order?.stripeCheckoutId && (
+              <button
+                className="btn btn-blue"
+                onClick={() => {
+                  router.push(order?.stripeCheckoutUrl)
+                }}
+              >
+                finish stripe checkout:
+              </button>
+            )}
+
+          {order?.stripeCheckoutId && (
+            <div>Stripe CheckoutId: {order?.stripeCheckoutId}</div>
+          )}
           <pre>
             OrderID: {order?.id}
+            {'\n'}time ordered: {`${order?.timePlaced}`}
+            {'\n'}
+            <b>status: {order?.status?.message}</b>
+            {'\n'}
+            {order?.pickupDriver ? (
+              <b>
+                pickup Driver: {order?.pickupDriver.firstName}{' '}
+                {order?.pickupDriver.lastName}
+              </b>
+            ) : (
+              <p>
+                <b>pickup Driver: none</b>
+              </p>
+            )}
             {'\n'}Sender:{order?.customer.firstName} {order?.customer.lastName}
             {'\n'} Country: {order?.addresses[0]?.country}
             {'\n'} Address: {order?.addresses[0]?.address}
@@ -70,21 +100,7 @@ const InvoicePage = () => {
             {'\n'} Telephone: {order?.addresses[1]?.telephone || 'N/A'}
             {'\n'}
             {'\n'}
-            {'\n'}time ordered: {`${order?.timePlaced}`}
-            {'\n'}
-            <b>status: {order?.status?.message}</b>
-            {'\n'}
             {/* route: {order.routeId} {'\n'} */}
-            {order?.pickupDriver ? (
-              <b>
-                pickup Driver: {order?.pickupDriver.firstName}{' '}
-                {order?.pickupDriver.lastName}
-              </b>
-            ) : (
-              <p>
-                <b>pickup Driver: none</b>
-              </p>
-            )}
           </pre>
           {/* <code>STRIPE CHECKOUT:{JSON.stringify(order?.stripeCheckout)}</code> */}
 
