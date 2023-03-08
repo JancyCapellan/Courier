@@ -10,23 +10,11 @@ import CreateOrder from '..'
 // review cart order, addresses, and items, and proceed to stripe checkout and creating an invoice for the order
 const Checkout = () => {
   const router = useRouter()
-  // console.log('🚀 ~ file: checkout.jsx ~ line 10 ~ Checkout ~ router', router)
-
-  useEffect(() => {
-    if (router.query.stripe === 'cancelled') {
-      // remove pending order that was just attempted?
-      console.log('pending orders remvoved')
-    }
-  }, [router])
 
   const { data: session, status: sessionStatus } = useSession()
 
   // TODO: (see forms below) change returned object of data: cart to have explicit addresses, rn it is just explected that index 0 is shipper customer and index 1 is recieving person
-
   // * NOTE: the cart is based on user and customer id, if the user logged in is the customer making the order it is the same and their cart should show. if its a staff member making an order for someone even if they go to the checkout page for that customer it will be a different cart showing since its the staff making the order. if i want to see the customers current cart, i will need to adda seperate section. therortically, i could make it so /createOrder/checkout/[customerId] means that the checkout for that customer, but that might restrict to having one checkouot per customer, right now a customer can be making a order and an admin can also make them an order, the customer may be saving their order for later
-
-  // TODO: add save current order for later)
-
   const { data: cart, status: cartStatus } = trpc.useQuery(
     [
       'cart.getCartSession',
@@ -50,25 +38,34 @@ const Checkout = () => {
   const createPendingOrder = trpc.useMutation(
     ['cart.createPendingOrderBeforeCheckoutCompletes'],
     {
-      onSucess: async () => {
-        clearCart.mutateAsync({
+      onSuccess: (data) => {
+        console.log('HERREEEE', data)
+        console.log(
+          'pending order created, clearing cart',
+          session?.user?.id,
+          router.query.customerId
+        )
+        clearCart.mutate({
           userId: session?.user?.id,
-          customerId: router.query.customerId,
+          customerId: router?.query?.customerId,
         })
+      },
+      onError: (err) => {
+        console.error(err)
       },
     }
   )
 
-  async function createPendingOrderWrapper(paymentType) {
-    await createPendingOrder.mutateAsync({
+  // TODO: change pending status to include the type of payment waiting, stripe/cash/check/quickpay. and partial pending, (partial payments not yet implemented)
+  function createPendingOrderWrapper(paymentType) {
+    createPendingOrder.mutate({
       userId: session?.user?.id,
       customerId: router.query.customerId,
       paymentType: paymentType,
     })
 
-    //router.reload()
+    //TODO: SEPERATE account components page by routes
     if (session.user.role === 'CUSTOMER') {
-      //TODO: SEPERATE account components page by routes
       router.push('/account')
     } else {
       router.push('/Invoices')
@@ -81,20 +78,41 @@ const Checkout = () => {
       onSuccess: (stripeCheckoutSession) => {
         console.log('Stripe Checkout Session', stripeCheckoutSession)
         // create status pending order with checkoutSession, but what if checkout session isnt completed? left with an order that is pending in stripe and i could remove with a stripe webhook after expiration.
+        // going to expire the session and remove from local database on cancel
 
-        // creates pending status for newly created order while it waits to be paid.
-        // TODO: change pending status to include the type of payment waiting, stripe/cash/check/quickpay. and partial pending, (partial payments not yet implemented)
         createPendingOrder.mutate({
           userId: session?.user?.id,
           customerId: router.query.customerId,
           stripeCheckoutId: stripeCheckoutSession.id,
-          paymentType: 'CARD',
+          paymentType: 'STRIPE',
+          stripeCheckoutUrl: stripeCheckoutSession.url,
         })
 
-        if (stripeCheckoutSession.url) router.push(stripeCheckoutSession.url)
+        console.log('PAST PENDING')
+
+        // clear cart, once a payment is chosen
+
+        // if (stripeCheckoutSession.url) router.push(stripeCheckoutSession.url)
+      },
+      onError: (err) => {
+        console.error(err)
       },
     }
   )
+
+  // changing for webhook that will let me checkk fo rehckout.session.expired in where i will delete from the data, this way i can set a configurable amount of time for the session to expire, maybe part of the base configs for projects that i have been thinking of that would set basic settings based on the prefernces of the tenant/client
+  // useEffect(() => {
+  //   if (router.query.stripe === 'cancelled') {
+
+  // i cant not get the checkoutsessionID in the cancelURl because it is created
+  // TODO: remove pending order that was just attempted?
+  // const session = await stripe.checkout.sessions.expire(
+  //   'cs_test_a1RtHP00RsUvDWVdtnLG0xshpb5hMsTy8gB6vYlHLIU4CGHOtwo54Z1RTp'
+  // )
+  // then remove same order from local database
+  //     console.log('pending orders remvoved')
+  //   }
+  // }, [router])
 
   if (sessionStatus === 'loading' || cartStatus === 'loading')
     return <div>Loading...</div>
@@ -110,9 +128,9 @@ const Checkout = () => {
         // TODO: make into a modal or alert that can be remove from the page
         <div>
           <p>
-            checkhout payment cancelled, order still incomplete, you have not
-            been charged, head back to cart to make changes, if this wasnt an
-            accident
+            order incomplete, you have not been charged, you have 30 minutes to
+            finish the checkout payment or the order wil be deleted and you will
+            need to recreate it.
           </p>
         </div>
       ) : (
