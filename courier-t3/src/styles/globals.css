@@ -104,5 +104,5 @@ MODAL HOC
 }
 
 .sidebar-link {
-  @apply flex items-center p-2;
+  @apply flex items-center p-2 cursor-pointer;
 }
