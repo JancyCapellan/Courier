@@ -1,4 +1,4 @@
-import { Prisma } from '@prisma/client'
+// import { Prisma } from '@prisma/client'
 import { z } from 'zod'
 import { createProtectedRouter } from './protected-routers'
 
@@ -202,6 +202,7 @@ export const invoiceApi = createProtectedRouter()
           },
           timePlaced: true,
           stripeCheckoutId: true,
+          stripeCheckoutUrl: true,
         },
       })
       console.log('🚀 ~ file: invoiceApi.ts:209 ~ resolve ~ order', order)

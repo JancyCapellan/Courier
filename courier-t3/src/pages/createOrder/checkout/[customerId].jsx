@@ -92,7 +92,7 @@ const Checkout = () => {
 
         // clear cart, once a payment is chosen
 
-        // if (stripeCheckoutSession.url) router.push(stripeCheckoutSession.url)
+        if (stripeCheckoutSession.url) router.push(stripeCheckoutSession.url)
       },
       onError: (err) => {
         console.error(err)
@@ -119,7 +119,7 @@ const Checkout = () => {
 
   const stripeReturnStatus = router.query?.stripe
 
-  let backlink = `/createOrder?customerId=${router.query?.customerId}`
+  const backlink = `/createOrder?customerId=${router.query?.customerId}`
   return (
     <section>
       <Link href={backlink}>back to cart</Link>
@@ -192,7 +192,7 @@ const Checkout = () => {
                 redirectUrl: router.asPath,
               })
             } else {
-              // TODO: change to modal, maybe crossplatorm issue
+              // TODO: change to modal/toast, maybe crossplatorm issue
               alert('try again, router wasnt ready')
             }
           }}

@@ -496,10 +496,11 @@ export const cartApi = createProtectedRouter()
       userId: z.string(),
       customerId: z.string(),
       stripeCheckoutId: z.string().optional(),
-      paymentType: z.enum(['CARD', 'CASH', 'CHECK', 'QUICKPAY']),
+      paymentType: z.enum(['CARD', 'CASH', 'CHECK', 'QUICKPAY', 'STRIPE']),
+      stripeCheckoutUrl: z.string().optional(),
     }),
     async resolve({ ctx, input }) {
-      console.log('🚀 ~ file: cartApi.ts:510 ~ resolve ~ input:', input)
+      // console.log('🚀 ~ file: cartApi.ts:510 ~ resolve ~ input:', input)
       let pendingOrder
       try {
         const cartSession = await ctx.prisma.cart.findUnique({
@@ -581,23 +582,20 @@ export const cartApi = createProtectedRouter()
               input.stripeCheckoutId !== null // this was the problem stopping the webhook from updating pending order
                 ? input.stripeCheckoutId
                 : undefined,
+            stripeCheckoutUrl: input.stripeCheckoutUrl,
           },
           include: {
             items: true,
           },
         })
-        console.log(
-          '🚀 ~ file: cartApi.ts ~ line 596 ~ resolve ~ pendingOrder',
-          pendingOrder
-        )
+        console.log(' cartApi.ts ~ pendingOrder', pendingOrder)
+
+        return pendingOrder
       } catch (error) {
         console.error(
           '🚀 ~ file: cartApi.ts ~ line 601 ~ resolve ~ error',
           error
         )
-        return pendingOrder
       }
-
-      return pendingOrder
     },
   })

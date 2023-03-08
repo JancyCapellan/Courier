@@ -1,61 +1,59 @@
 import { z } from 'zod'
 import { createProtectedRouter } from './protected-routers'
-import Stripe from 'stripe'
 import { Prisma } from '@prisma/client'
-
+import { stripe } from 'server/stripe/client'
+import type Stripe from 'stripe'
 // STRIPE KEY TO CONNECT TO STRIPE BUISNESS ACCOUNT,
-// TODO: (explore this idea more) NEEDS TO BE DIFFERENT FOR EACH TENANT/CLIENT
-let stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2022-08-01',
-})
+
 //only admin and allowed staff shouuld be able to use this one
 export const stripeApi = createProtectedRouter()
-  .mutation('addProduct', {
-    input: z.object({
-      item_name: z.string(),
-      item_price: z.number(),
-      // item_type: z.string(),
-    }),
-    async resolve({ ctx, input }) {
-      let createdStripeProduct
-      try {
-        createdStripeProduct = await stripe.products.create({
-          name: input.item_name,
-          default_price_data: {
-            unit_amount: input.item_price,
-            currency: 'usd',
-          },
-        })
-        console.log(
-          '🚀 ~ file: staffApi.ts ~ line 81 ~ resolve ~ createdStripeProduct',
-          createdStripeProduct
-        )
-      } catch (error) {
-        throw error
-        // i could return or still add to database and add a column for i striped?
-      }
+  // deprecated part of project stripe item sync
+  // .mutation('addProduct', {
+  //   input: z.object({
+  //     item_name: z.string(),
+  //     item_price: z.number(),
+  //     // item_type: z.string(),
+  //   }),
+  //   async resolve({ ctx, input }) {
+  //     let createdStripeProduct
+  //     try {
+  //       createdStripeProduct = await stripe.products.create({
+  //         name: input.item_name,
+  //         default_price_data: {
+  //           unit_amount: input.item_price,
+  //           currency: 'usd',
+  //         },
+  //       })
+  //       console.log(
+  //         '🚀 ~ file: staffApi.ts ~ line 81 ~ resolve ~ createdStripeProduct',
+  //         createdStripeProduct
+  //       )
+  //     } catch (error) {
+  //       throw error
+  //       // i could return or still add to database and add a column for i striped?
+  //     }
 
-      try {
-        const newItem = await ctx.prisma.product.create({
-          data: {
-            name: input.item_name,
-            price: input.item_price,
-            // type: input.item_type,
-            stripePriceId: createdStripeProduct.default_price?.toString(),
-            stripeProductId: createdStripeProduct.id,
-          },
-        })
-        console.log(
-          '🚀 ~ file: staffApi.ts ~ line 100 ~ resolve ~ newItem',
-          newItem
-        )
+  //     try {
+  //       const newItem = await ctx.prisma.product.create({
+  //         data: {
+  //           name: input.item_name,
+  //           price: input.item_price,
+  //           // type: input.item_type,
+  //           stripePriceId: createdStripeProduct.default_price?.toString(),
+  //           stripeProductId: createdStripeProduct.id,
+  //         },
+  //       })
+  //       console.log(
+  //         '🚀 ~ file: staffApi.ts ~ line 100 ~ resolve ~ newItem',
+  //         newItem
+  //       )
 
-        return newItem
-      } catch (error) {
-        console.error('delete product error', error)
-      }
-    },
-  })
+  //       return newItem
+  //     } catch (error) {
+  //       console.error('delete product error', error)
+  //     }
+  //   },
+  // })
   .mutation('createCheckoutSession', {
     input: z.object({
       userId: z.string(),
@@ -83,28 +81,8 @@ export const stripeApi = createProtectedRouter()
               },
             },
           },
-          // addresses: {
-          //   select: {
-          //     firstName: true,
-          //     lastName: true,
-          //     address: true,
-          //     address2: true,
-          //     address3: true,
-          //     city: true,
-          //     state: true,
-          //     postalCode: true,
-          //     country: true,
-          //     cellphone: true,
-          //     telephone: true,
-          //     recipient: true,
-          //   },
-          // },
         },
       })
-      console.log(
-        '🚀 ~ file: cartApi.ts ~ line 79 ~ resolve ~ cartSession',
-        cartSession
-      )
 
       // format prisma items array to stripe checkout format
       let lineItems: Stripe.Checkout.SessionCreateParams.LineItem[] = []
@@ -122,6 +100,8 @@ export const stripeApi = createProtectedRouter()
         })
       })
 
+      // TODO: get  customer email to avoid rewritign
+
       // * Line Items : For payment mode, there is a maximum of 100 line items, however it is recommended to consolidate line items if there are more than a few dozen. For subscription mode, there is a maximum of 20 line items with recurring Prices and 20 line items with one-time Prices. Line items with one-time Prices will be on the initial invoice only.
       const stripeCheckoutSession = await stripe.checkout.sessions
         .create({
@@ -129,12 +109,16 @@ export const stripeApi = createProtectedRouter()
           cancel_url: `${process.env.NEXTAUTH_URL}${input.redirectUrl}?stripe=cancelled`,
           mode: 'payment',
           line_items: lineItems,
+          // automatic_tax: {
+          //   enabled: true,
+          // },
+          expires_at: Math.floor(Date.now() / 1000) + 1800, //expires after 30mins,  defaults to 24 hours after session creation
           metadata: {
             //TODO: more descriptivve of the order, like the invoice receiept that is going to be printable
             test: 'meta Test',
             customerId: input.customerId,
             orderCreatorUserId: input.userId,
-            cart: JSON.stringify(cartSession),
+            // cart: JSON.stringify(cartSession),
           },
         })
         .catch((error) => {
@@ -143,10 +127,10 @@ export const stripeApi = createProtectedRouter()
             error
           )
         })
-      console.log(
-        '🚀 ~ file: stripeApi.ts ~ line 147 ~ resolve ~ stripeCheckoutSession',
-        stripeCheckoutSession
-      )
+      // console.log(
+      //   '🚀 ~ file: stripeApi.ts ~ line 147 ~ resolve ~ stripeCheckoutSession',
+      //   stripeCheckoutSession
+      // )
 
       // * note: checkoutSession values, after this only webhooks events will give me information on what is happening on stripes side,
 
@@ -176,9 +160,13 @@ export const stripeApi = createProtectedRouter()
           },
           data: {
             statusMessage: 'CHECKOUT SUCCESSFUL',
-            stripeCheckout: checkout as unknown as Prisma.JsonObject,
+            // stripeCheckout: checkout as unknown as Prisma.JsonObject,
           },
         })
+        console.log(
+          '🚀 ~ file: stripeApi.ts:180 ~ resolve ~ updatedInvoice:',
+          updatedInvoice
+        )
 
         return updatedInvoice
       }
