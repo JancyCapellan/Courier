@@ -6,15 +6,138 @@
 /*   outline: 1px solid #f00 !important; */
 /* } */
 
-table,
+* {
+  @apply subpixel-antialiased;
+}
+
+/* table {
+  @apply flex w-full border-collapse flex-row  flex-nowrap sm:inline-table;
+}
+
+thead {
+  @apply sm:table-header-group sm:align-middle;
+}
+
+tbody {
+  @apply flex-none sm:flex-1;
+}
+*/
+/* th {
+  @apply bg-gray-400 font-bold text-black;
+}
+
 th,
 td {
-  border: 1px solid black;
+  @apply border border-solid border-black;
+} */
+
+/* tr {
+  @apply mb-2 flex w-full flex-col flex-nowrap rounded-l-lg bg-gray-200 sm:mb-0 sm:table-row sm:rounded-none;
+} */
+/* tr {
+  @apply bg-gray-100;
+}
+tr:nth-of-type(odd) {
+  @apply bg-slate-300;
+} */
+
+/* thead tr:not(:first-child) {
+  display: none;
+} */
+
+/* table {
+  @apply table-auto;
+} */
+/* 
+Generic Styling, for Desktops/Laptops 
+*/
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+/* Zebra striping */
+tr {
+  background: #888;
+}
+tr:nth-of-type(odd) {
+  background: #eee;
+}
+th {
+  background: #333;
+  color: white;
+  font-weight: bold;
+}
+td,
+th {
+  padding: 6px;
+  border: 1px solid #ccc;
+  text-align: left;
+}
+
+.responsiveTable {
+  width: 100%;
   border-collapse: collapse;
 }
 
+.responsiveTable td .tdBefore {
+  display: none;
+}
+
+@media only screen and (max-width: 768px),
+  (min-device-width: 768px) and (max-device-width: 1024px) {
+  /*
+    Force table elements to not behave like tables anymore
+    Hide table headers (but not display: none;, for accessibility)
+  */
+
+  .responsiveTable table,
+  .responsiveTable thead,
+  .responsiveTable tbody,
+  .responsiveTable th,
+  .responsiveTable td,
+  .responsiveTable tr {
+    display: block;
+  }
+
+  .responsiveTable thead tr {
+    position: absolute;
+    top: -9999px;
+    left: -9999px;
+    border-bottom: 2px solid #333;
+  }
+
+  .responsiveTable tbody tr {
+    border: 1px solid #000;
+    padding: 0.25em;
+  }
+
+  .responsiveTable td.pivoted {
+    /* Behave like a "row" */
+    border: none !important;
+    position: relative;
+    padding-left: calc(50% + 10px) !important;
+    text-align: left !important;
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
+  }
+
+  .responsiveTable td .tdBefore {
+    /* Now like a table header */
+    position: absolute;
+    display: block;
+
+    /* Top/left values mimic padding */
+    left: 1rem;
+    width: calc(50% - 20px);
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
+    text-align: left !important;
+    font-weight: 600;
+  }
+}
+
 h1 {
-  @apply mb-4 mt-4 text-4xl font-extrabold tracking-tight leading-none text-gray-900 md:text-5xl lg:text-6xl text-center;
+  @apply mb-4 mt-4 text-center text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl;
 }
 
 /* h2 { */
@@ -86,7 +209,7 @@ MODAL HOC
 }
 
 .formik-input-container input {
-  @apply border border-black py-2 px-2 w-full;
+  @apply w-full border border-black py-2 px-2;
 }
 
 .form-error {
@@ -94,7 +217,7 @@ MODAL HOC
 }
 
 .btn {
-  @apply font-bold py-2 px-2 rounded;
+  @apply rounded py-2 px-2 font-bold;
 }
 .btn-blue {
   @apply bg-blue-500 text-white active:bg-blue-700;
@@ -103,6 +226,11 @@ MODAL HOC
   @apply bg-blue-700;
 }
 
+button {
+  @apply btn btn-blue;
+}
+
+/* SIDEBAR */
 .sidebar-link {
-  @apply flex items-center p-2 cursor-pointer;
+  @apply flex cursor-pointer items-center p-2;
 }

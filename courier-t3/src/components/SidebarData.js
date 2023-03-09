@@ -26,7 +26,7 @@ import { TbFileInvoice } from 'react-icons/tb'
 
 export const routes = {
   administration: {
-    title: 'Business Administration',
+    title: 'Administration',
     path: '/administration',
     icon: <MdAdminPanelSettings />,
   },

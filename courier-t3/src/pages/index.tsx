@@ -29,11 +29,21 @@ const Home: NextPage = () => {
   ///home/jancy/Documents/Courier/courier-t3/src
 
   if (status === 'loading') {
-    return <div>LOADING SKELETON OF PAGE</div>
+    return (
+      <div className="dark:bg-dark dark:text-light flex h-screen bg-gray-100 text-gray-900 subpixel-antialiased">
+        {/* <!-- Loading screen --> */}
+        <div
+          // x-ref="loading"
+          className="bg-primary-darker fixed inset-0 z-50 flex items-center justify-center text-2xl  font-semibold"
+        >
+          Loading App.....
+        </div>
+      </div>
+    )
   }
 
   return (
-    <div className="flex flex-col h-screen justify-center items-center">
+    <div className="flex h-screen flex-col items-center justify-center">
       <Head>
         <title>Couriers Dashboard</title>
         <meta
@@ -58,7 +68,7 @@ const Home: NextPage = () => {
       )}
 
       {!!session ? (
-        <div className=" flex flex-col w-fit mt-16">
+        <div className=" mt-16 flex w-fit flex-col">
           <p> Logged in as {session?.user?.name} </p>
           <button
             className="btn btn-blue"
@@ -73,7 +83,7 @@ const Home: NextPage = () => {
           </Link>
         </div>
       ) : (
-        <div className="border border-gray-300 rounded-2xl shadow-md text-black p-2 w-fit">
+        <div className="w-fit rounded-2xl border border-gray-300 p-2 text-black shadow-md">
           <Formik
             // initialValues={{ email: '', password: '', tenantKey: '' }}
             initialValues={{ email: '', password: '' }}
@@ -114,7 +124,7 @@ const Home: NextPage = () => {
               return (
                 <>
                   <Form className="flex flex-col">
-                    <h2 className="block w-full text-center text-grey-darkest mb-6 bold underline text-xl">
+                    <h2 className="text-grey-darkest bold mb-6 block w-full text-center text-xl underline">
                       Login
                     </h2>
                     <FormikControl
@@ -133,7 +143,7 @@ const Home: NextPage = () => {
                       <button
                         type="submit"
                         disabled={!formik.isValid}
-                        className="btn btn-blue m-2 w-1/2 align-center"
+                        className="btn btn-blue align-center m-2 w-1/2"
                       >
                         Sign In
                       </button>

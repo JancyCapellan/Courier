@@ -1,4 +1,3 @@
-/* eslint-disable react/jsx-key */
 import React from 'react'
 import {
   useTable,
@@ -174,7 +173,7 @@ const PickupListTable = () => {
   // )
 
   // * dynamic cells for pickupzone and drivers that updates the memoization whenever orderOptions are fetched successfully
-  const columns = React.useMemo(
+  const invoicesColumns = React.useMemo(
     () => [
       {
         Header: 'OrderId',
@@ -304,6 +303,7 @@ const PickupListTable = () => {
     ],
     [orderOptionsIsSuccess, allOrdersIsSuccess, orderOptions?.drivers]
   )
+
   const filterTypes = React.useMemo(
     () => ({
       // Add a new fuzzyTextFilterFn filter type.
@@ -333,8 +333,7 @@ const PickupListTable = () => {
 
   const tableTotalCount = allOrders?.orderCount
 
-  // console.log('invoices', pickupListTable)
-
+  // USETABLE HERE
   const {
     getTableProps,
     getTableBodyProps,
@@ -359,7 +358,7 @@ const PickupListTable = () => {
     preGlobalFilteredRows,
   } = useTable(
     {
-      columns,
+      columns: invoicesColumns,
       data: tableData,
       // filterTypes,
       initialState: {
@@ -378,6 +377,7 @@ const PickupListTable = () => {
     useSortBy,
     usePagination,
     useRowSelect,
+    // hook to add multiselect column checkboxes
     (hooks) => {
       hooks.visibleColumns.push((columns) => [
         // Let's make a column for selection
@@ -385,11 +385,12 @@ const PickupListTable = () => {
           id: 'selection',
           // The header can use the table's getToggleAllRowsSelectedProps method
           // to render a checkbox
-          Header: ({ getToggleAllRowsSelectedProps }) => (
-            <div>
-              <IndeterminateCheckbox {...getToggleAllRowsSelectedProps()} />
-            </div>
-          ),
+          Header: 'Select',
+          // Header: ({ getToggleAllRowsSelectedProps }) => (
+          //   <div>
+          //     <IndeterminateCheckbox {...getToggleAllRowsSelectedProps()} />
+          //   </div>
+          // ),
           // The cell can use the individual row's getToggleRowSelectedProps method
           // to the render a checkbox
           Cell: ({ row }) => (
@@ -413,7 +414,7 @@ const PickupListTable = () => {
     gotoPage(0)
   }, [pageSize, gotoPage])
 
-  if (error) {
+  if (error || !allOrdersIsSuccess) {
     return <p>Error</p>
   }
 
@@ -424,36 +425,35 @@ const PickupListTable = () => {
   //  add to filter by order branch location, date to date, orders shown by drivers
   return (
     <>
-      {allOrdersIsSuccess ? (
-        <>
-          <GlobalFilter
-            globalFilter={state.globalFilter}
-            setGlobalFilter={setGlobalFilter}
-            preGlobalFilteredRows={preGlobalFilteredRows}
-          />
+      <GlobalFilter
+        globalFilter={state.globalFilter}
+        setGlobalFilter={setGlobalFilter}
+        preGlobalFilteredRows={preGlobalFilteredRows}
+      />
 
-          {orderOptionsIsSuccess ? (
-            <select
-              onChange={(e) => {
-                // console.log('pickup driver id', e.target.value)
-                // setMultiSelectPickupDriver(e.target.value)
-                mutationManyPickupDriver.mutate({
-                  orderIds: selectedFlatRows.map((row) => row.original.id),
-                  newPickUpDriverId: e.target.value,
-                })
-              }}
-            >
-              <option value={''}> multi-driver select </option>
-              {orderOptions.drivers.map((driver) => (
-                <option key={driver.id} value={driver.id}>
-                  {driver.firstName} {driver.lastName}
-                </option>
-              ))}
-            </select>
-          ) : (
-            <></>
-          )}
-          {/* <button
+      {/* driver select */}
+      {orderOptionsIsSuccess ? (
+        <select
+          onChange={(e) => {
+            // console.log('pickup driver id', e.target.value)
+            // setMultiSelectPickupDriver(e.target.value)
+            mutationManyPickupDriver.mutate({
+              orderIds: selectedFlatRows.map((row) => row.original.id),
+              newPickUpDriverId: e.target.value,
+            })
+          }}
+        >
+          <option value={''}> multi-driver select </option>
+          {orderOptions.drivers.map((driver) => (
+            <option key={driver.id} value={driver.id}>
+              {driver.firstName} {driver.lastName}
+            </option>
+          ))}
+        </select>
+      ) : (
+        <></>
+      )}
+      {/* <button
             onClick={() => {
               // set order id from selectedFlatRows and update with driver from the global driver multi select above
               // console.log('selected driver', multiSelectPickupDriver)
@@ -467,98 +467,115 @@ const PickupListTable = () => {
             Assign Driver
           </button> */}
 
-          <div className="pagination">
-            <button onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
-              {'<<'}
-            </button>{' '}
-            <button onClick={() => previousPage()} disabled={!canPreviousPage}>
-              {'<'}
-            </button>{' '}
-            <button onClick={() => nextPage()} disabled={!canNextPage}>
-              {'>'}
-            </button>{' '}
-            <button
-              onClick={() => gotoPage(pageCount - 1)}
-              disabled={!canNextPage}
-            >
-              {'>>'}
-            </button>{' '}
-            <span>
-              Page{' '}
-              <strong>
-                {pageIndex + 1} of {pageOptions.length}
-              </strong>{' '}
-            </span>
-            <span>
-              | Go to page:{' '}
-              <input
-                type="number"
-                defaultValue={pageIndex + 1}
-                onChange={(e) => {
-                  const page = e.target.value ? Number(e.target.value) - 1 : 0
-                  gotoPage(page)
-                }}
-                style={{ width: '100px' }}
-              />
-            </span>{' '}
-            <select
-              value={pageSize}
-              onChange={(e) => {
-                setPageSize(Number(e.target.value))
-              }}
-            >
-              {[defaultPageSize, 1, 2, 3, 40, 60, 100].map((pageSize) => (
-                <option key={pageSize} value={pageSize}>
-                  Show {pageSize}
-                </option>
-              ))}
-            </select>
-          </div>
+      {/* pagination */}
+      <div className="pagination">
+        <button onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
+          {'<<'}
+        </button>{' '}
+        <button onClick={() => previousPage()} disabled={!canPreviousPage}>
+          {'<'}
+        </button>{' '}
+        <button onClick={() => nextPage()} disabled={!canNextPage}>
+          {'>'}
+        </button>{' '}
+        <button onClick={() => gotoPage(pageCount - 1)} disabled={!canNextPage}>
+          {'>>'}
+        </button>{' '}
+        <span>
+          Page{' '}
+          <strong>
+            {pageIndex + 1} of {pageOptions.length}
+          </strong>{' '}
+        </span>
+        <span>
+          | Go to page:{' '}
+          <input
+            type="number"
+            defaultValue={pageIndex + 1}
+            onChange={(e) => {
+              const page = e.target.value ? Number(e.target.value) - 1 : 0
+              gotoPage(page)
+            }}
+            style={{ width: '100px' }}
+          />
+        </span>{' '}
+        <select
+          value={pageSize}
+          onChange={(e) => {
+            setPageSize(Number(e.target.value))
+          }}
+        >
+          {[defaultPageSize, 1, 2, 3, 40, 60, 100].map((pageSize) => (
+            <option key={pageSize} value={pageSize}>
+              Show {pageSize}
+            </option>
+          ))}
+        </select>
+      </div>
 
-          <table {...getTableProps()}>
-            <thead>
-              {headerGroups.map((headerGroup) => (
-                <tr {...headerGroup.getHeaderGroupProps()}>
-                  {headerGroup.headers.map((column) => (
-                    <th
-                      {...column.getHeaderProps(column.getSortByToggleProps())}
-                    >
-                      {column.render('Header')}
-                      <span>
-                        {column.isSorted
-                          ? column.isSortedDesc
-                            ? ' 🔽'
-                            : ' 🔼'
-                          : ' ↕'}
-                      </span>
-                    </th>
-                  ))}
-                </tr>
+      <table className="responsiveTable " {...getTableProps()}>
+        <thead>
+          {headerGroups.map((headerGroup) => (
+            <tr key={headerGroup.id} {...headerGroup.getHeaderGroupProps()}>
+              {headerGroup.headers.map((column) => (
+                <th
+                  key={column.id}
+                  {...column.getHeaderProps(column.getSortByToggleProps())}
+                >
+                  {column.render('Header')}
+                  <span>
+                    {column.isSorted
+                      ? column.isSortedDesc
+                        ? ' 🔽'
+                        : ' 🔼'
+                      : ' ↕'}
+                  </span>
+                </th>
               ))}
-            </thead>
-            <tbody {...getTableBodyProps()}>
-              {rows.map((row, i) => {
-                prepareRow(row)
-                return (
-                  <tr
-                    // onClick={() =>
-                    //   router.push({
-                    //     pathname: `/Invoices/${row.original.id}`,
-                    //     // query: { orderId: id },
-                    //   })
-                    // }
-                    {...row.getRowProps()}
-                  >
-                    {row.cells.map((cell) => {
-                      return (
-                        <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
-                      )
-                    })}
-                  </tr>
-                )
-              })}
-            </tbody>
-            {/* <tfoot>
+            </tr>
+          ))}
+        </thead>
+        <tbody {...getTableBodyProps()}>
+          {rows.map((row, i) => {
+            prepareRow(row)
+
+            return (
+              <tr key={i} {...row.getRowProps()}>
+                {row.cells.map((cell) => {
+                  return (
+                    // <Td
+                    //   {...cell.getCellProps()}
+                    //   headers={invoiceHeaders}
+                    //   render={cell.render('Cell')}
+                    // />
+
+                    <td
+                      key={cell.column.Header}
+                      className="pivoted"
+                      {...cell.getCellProps()}
+                    >
+                      <div data-testid="td-before" className="tdBefore">
+                        {cell.column.Header}
+                      </div>
+                      {/* {children ?? <div>&nbsp;</div>} */}
+                      {cell.render('Cell')}
+                    </td>
+
+                    // <td
+                    //   key={cell.column.Header}
+                    //   data-header={cell.column.Header}
+                    //   {...cell.getCellProps()}
+                    // >
+                    //   {cell.render('Cell')}
+                    // </td>
+                  )
+                })}
+              </tr>
+            )
+          })}
+        </tbody>
+
+        {/* <tfoot>
           {footerGroups.map((footerGroup) => (
             <tr {...footerGroup.getFooterGroupProps()}>
               {footerGroup.headers.map((column) => (
@@ -567,9 +584,7 @@ const PickupListTable = () => {
             </tr>
           ))}
         </tfoot> */}
-          </table>
-        </>
-      ) : null}
+      </table>
     </>
   )
 }
