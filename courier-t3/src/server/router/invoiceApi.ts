@@ -203,9 +203,10 @@ export const invoiceApi = createProtectedRouter()
           timePlaced: true,
           stripeCheckoutId: true,
           stripeCheckoutUrl: true,
+          stripeReceiptUrl: true,
+          stripePaymentIntent: true,
         },
       })
-      console.log('🚀 ~ file: invoiceApi.ts:209 ~ resolve ~ order', order)
       if (order) {
         // changing timePlaced for orders into readable local values
         for (const key in order)

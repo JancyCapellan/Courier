@@ -10,6 +10,7 @@ const InvoicePage = () => {
   const router = useRouter()
   const { orderId } = router.query
 
+  // note: finds invoice in local database
   const {
     data: order,
     status: getOrderDetailsStatus,
@@ -27,11 +28,21 @@ const InvoicePage = () => {
     }
   )
 
+  // {/* checkout session has payment intent, find charge with payment intent after order is completed, add stripeReceiptUrl to local order */}
+
+  const { data: stripeReceipt } = trpc.useQuery(
+    [
+      'stripe.getReceiptUrl',
+      { stripePaymentIntent: order?.stripePaymentIntent },
+    ],
+    {
+      enabled: order?.stripePaymentIntent !== undefined,
+    }
+  )
+
   if (getOrderDetailsStatus === 'error') return <div>error</div>
 
   if (getOrderDetailsStatus === 'loading') return <div>loading</div>
-
-  // button that checks stripeCheckout by id to sync checkout if needed
 
   return (
     <>
@@ -61,8 +72,26 @@ const InvoicePage = () => {
               </button>
             )}
 
-          {order?.stripeCheckoutId && (
+          {!!stripeReceipt && (
+            <button
+              className="btn btn-blue"
+              onClick={() => {
+                // console.log(stripeReceipt)
+                // router.push(stripeReceipt)
+                window.open(stripeReceipt)
+              }}
+            >
+              View Stripe Reciept
+            </button>
+          )}
+
+          {/* <iframe id="stripeReceipt" src="google.com"></iframe> */}
+
+          {!!order?.stripeCheckoutId && (
             <div>Stripe CheckoutId: {order?.stripeCheckoutId}</div>
+          )}
+          {!!order?.stripePaymentIntent && (
+            <div>Stripe PaymentIntentId: {order?.stripePaymentIntent}</div>
           )}
           <pre>
             OrderID: {order?.id}

@@ -59,6 +59,7 @@ export const stripeApi = createProtectedRouter()
       userId: z.string(),
       customerId: z.string(),
       redirectUrl: z.string(),
+      customerEmail: z.string(),
     }),
     async resolve({ ctx, input }) {
       const cartSession = await ctx.prisma.cart.findUnique({
@@ -109,6 +110,7 @@ export const stripeApi = createProtectedRouter()
           cancel_url: `${process.env.NEXTAUTH_URL}${input.redirectUrl}?stripe=cancelled`,
           mode: 'payment',
           line_items: lineItems,
+          customer_email: input.customerEmail,
           // automatic_tax: {
           //   enabled: true,
           // },
@@ -171,5 +173,29 @@ export const stripeApi = createProtectedRouter()
         return updatedInvoice
       }
       // change pending status and update stripeCheckoutJson
+    },
+  })
+
+  // retrievve receipt using payment intent, currently receieving payment itent for invoices from checkout.session.completed
+  .query('getReceiptUrl', {
+    input: z.object({
+      stripePaymentIntent: z.string(),
+    }),
+    async resolve({ ctx, input }) {
+      const paymentIntent = await stripe.paymentIntents.retrieve(
+        input.stripePaymentIntent
+      )
+      // console.log(
+      //   '🚀 ~ file: stripeApi.ts:186 ~ resolve ~ paymentIntent:',
+      //   paymentIntent
+      // )
+
+      const charge = await stripe.charges.retrieve(
+        String(paymentIntent.latest_charge)
+      )
+
+      // console.log('receipt charge', charge)
+      // // console.log({charge})
+      return charge.receipt_url
     },
   })

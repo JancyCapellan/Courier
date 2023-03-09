@@ -20,6 +20,28 @@ export const userRouter = createProtectedRouter()
       }
     },
   })
+  .query('getUserEmail', {
+    input: z.object({
+      userId: z.string(),
+    }),
+    async resolve({ ctx, input }) {
+      try {
+        // console.log('userId for user account info:', input)
+        const userEmail = await ctx.prisma.user.findUnique({
+          where: { id: input.userId },
+          select: {
+            email: true,
+            emailVerified: true,
+          },
+        })
+        console.log({ userEmail })
+        return userEmail
+      } catch (error) {
+        // throw error
+        console.error(error)
+      }
+    },
+  })
   .query('getAddresses', {
     input: z.object({
       userId: z.string(),
