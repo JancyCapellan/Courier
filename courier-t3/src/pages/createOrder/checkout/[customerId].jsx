@@ -39,16 +39,17 @@ const Checkout = () => {
     ['cart.createPendingOrderBeforeCheckoutCompletes'],
     {
       onSuccess: (data) => {
-        console.log('HERREEEE', data)
-        console.log(
-          'pending order created, clearing cart',
-          session?.user?.id,
-          router.query.customerId
-        )
-        clearCart.mutate({
-          userId: session?.user?.id,
-          customerId: router?.query?.customerId,
-        })
+        // console.log('HERREEEE', data)
+        // console.log(
+        //   'pending order created, clearing cart',
+        //   session?.user?.id,
+        //   router.query.customerId
+        // )
+        // ? idk maybe return to place of review
+        // clearCart.mutate({
+        //   userId: session?.user?.id,
+        //   customerId: router?.query?.customerId,
+        // })
       },
       onError: (err) => {
         console.error(err)
@@ -76,19 +77,21 @@ const Checkout = () => {
     ['stripe.createCheckoutSession'],
     {
       onSuccess: (stripeCheckoutSession) => {
-        console.log('Stripe Checkout Session', stripeCheckoutSession)
+        // console.log('Stripe Checkout Session', stripeCheckoutSession)
         // create status pending order with checkoutSession, but what if checkout session isnt completed? left with an order that is pending in stripe and i could remove with a stripe webhook after expiration.
         // going to expire the session and remove from local database on cancel
 
+        // *NOTE: checkout out created locally, no paymentIntent yet, order not complete and will expire
         createPendingOrder.mutate({
           userId: session?.user?.id,
           customerId: router.query.customerId,
           stripeCheckoutId: stripeCheckoutSession.id,
           paymentType: 'STRIPE',
           stripeCheckoutUrl: stripeCheckoutSession.url,
+          // stripePaymentIntent: stripeCheckoutSession.payment_intent,
         })
 
-        console.log('PAST PENDING')
+        // console.log('PENDING Checkout Created')
 
         // clear cart, once a payment is chosen
 
@@ -96,6 +99,17 @@ const Checkout = () => {
       },
       onError: (err) => {
         console.error(err)
+      },
+    }
+  )
+
+  //if admin get customerEmail, if customer used currentEmail
+  const { data: customerEmail } = trpc.useQuery(
+    ['user.getUserEmail', { userId: router?.query?.customerId }],
+    {
+      // enabled: sessionStatus === 'authenticated' && !!router.query.customerId,
+      onSuccess: (d) => {
+        console.log(d)
       },
     }
   )
@@ -138,9 +152,11 @@ const Checkout = () => {
       )}
       <h1>Review Order Before Checkout</h1>
 
+      {/* <p>EMAIL: {customerEmail} </p> */}
+
       <div>
         <h2>addresses</h2>
-        <div className="flex flex-col md: border-solid rounded border-2 border-black">
+        <div className="md: flex flex-col rounded border-2 border-solid border-black">
           <h3>shipper</h3>
           <p>name: {cart?.addresses[0]?.firstName}</p>
           <p>ID Number:</p>
@@ -151,7 +167,7 @@ const Checkout = () => {
           <p>cellphone: {cart?.addresses[0]?.cellphone}</p>
           <p>telephone: {cart?.addresses[0]?.telephone}</p>
         </div>
-        <div className="flex flex-col md: border-solid rounded border-2 border-black">
+        <div className="md: flex flex-col rounded border-2 border-solid border-black">
           <h3>reciever</h3>
           <p>name: {cart?.addresses[1]?.firstName}</p>
           <p>ID Number:</p>
@@ -169,7 +185,7 @@ const Checkout = () => {
         {cart?.items.map((item) => {
           // console.log('item,', item)
           return (
-            <div key={item.product.name} className="border- border-2 rounded ">
+            <div key={item.product.name} className="border- rounded border-2 ">
               <p>item: {item.product.name}</p>
               <p> qty: {item.quantity}</p>
             </div>
@@ -186,10 +202,12 @@ const Checkout = () => {
           onClick={() => {
             // note: Using the asPath field may lead to a mismatch between client and server if the page is rendered using server-side rendering or automatic static optimization. Avoid using asPath until the isReady field is true.
             if (router.isReady) {
+              console.log('WTF')
               createCheckoutSession.mutate({
                 userId: session?.user?.id,
                 customerId: router.query.customerId,
                 redirectUrl: router.asPath,
+                customerEmail: customerEmail.email,
               })
             } else {
               // TODO: change to modal/toast, maybe crossplatorm issue

@@ -49,7 +49,7 @@ export const GlobalFilter = ({
 }
 
 let defaultPageSize = 20
-const Table = ({ columns }) => {
+const FancyTable = ({ columns }) => {
   const router = useRouter()
   const [queryPageIndex, setQueryPageIndex] = React.useState(0)
   const [queryPageSize, setQueryPageSize] = React.useState(defaultPageSize) // same as the first value in the select show option at the bottom of the parition div
@@ -147,8 +147,8 @@ const Table = ({ columns }) => {
     },
     useGlobalFilter,
     useSortBy,
-    usePagination,
-    useBlockLayout
+    usePagination
+    // useBlockLayout // breaks responiveTable css
   )
 
   React.useEffect(() => {
@@ -160,7 +160,7 @@ const Table = ({ columns }) => {
     gotoPage(0)
   }, [pageSize, gotoPage])
 
-  if (error) {
+  if (error || !isSuccess) {
     return <p>Error</p>
   }
 
@@ -170,129 +170,125 @@ const Table = ({ columns }) => {
 
   return (
     <>
-      {isSuccess ? (
-        <>
-          <div className="pagination">
-            <button onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
-              {'<<'}
-            </button>{' '}
-            <button onClick={() => previousPage()} disabled={!canPreviousPage}>
-              {'<'}
-            </button>{' '}
-            <button onClick={() => nextPage()} disabled={!canNextPage}>
-              {'>'}
-            </button>{' '}
-            <button
-              onClick={() => gotoPage(pageCount - 1)}
-              disabled={!canNextPage}
-            >
-              {'>>'}
-            </button>{' '}
-            <span>
-              Page{' '}
-              <strong>
-                {pageIndex + 1} of {pageOptions.length}
-              </strong>{' '}
-            </span>
-            <span>
-              | Go to page:{' '}
-              <input
-                type="number"
-                defaultValue={pageIndex + 1}
-                onChange={(e) => {
-                  const page = e.target.value ? Number(e.target.value) - 1 : 0
-                  gotoPage(page)
-                }}
-                style={{ width: '100px' }}
-              />
-            </span>{' '}
-            <select
-              value={pageSize}
-              onChange={(e) => {
-                setPageSize(Number(e.target.value))
-              }}
-            >
-              {[defaultPageSize, 5, 10, 30, 50, 100].map((pageSize) => (
-                <option key={pageSize} value={pageSize}>
-                  Show {pageSize}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div className="btn btn-blue " onClick={() => toggleModal()}>
-            Create Customer
-          </div>
-          <ModalContainer show={showModal} handleClose={toggleModal}>
-            <RegistrationFormModal
-              isRegisteringStaff={false}
-              closeModal={toggleModal}
-              query={[
-                'customers.getCustomerList',
-                {
-                  queryPageIndex: queryPageIndex,
-                  queryPageSize: queryPageSize,
-                },
-              ]}
-            />
-          </ModalContainer>
-
-          <GlobalFilter
-            globalFilter={globalFilter}
-            setGlobalFilter={setGlobalFilter}
-            preGlobalFilteredRows={preGlobalFilteredRows}
+      <div className="pagination">
+        <button onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
+          {'<<'}
+        </button>{' '}
+        <button onClick={() => previousPage()} disabled={!canPreviousPage}>
+          {'<'}
+        </button>{' '}
+        <button onClick={() => nextPage()} disabled={!canNextPage}>
+          {'>'}
+        </button>{' '}
+        <button onClick={() => gotoPage(pageCount - 1)} disabled={!canNextPage}>
+          {'>>'}
+        </button>{' '}
+        <span>
+          Page{' '}
+          <strong>
+            {pageIndex + 1} of {pageOptions.length}
+          </strong>{' '}
+        </span>
+        <span>
+          | Go to page:{' '}
+          <input
+            type="number"
+            defaultValue={pageIndex + 1}
+            onChange={(e) => {
+              const page = e.target.value ? Number(e.target.value) - 1 : 0
+              gotoPage(page)
+            }}
+            style={{ width: '100px' }}
           />
-          {/* {console.log(globalFilter)} */}
-          <table {...getTableProps()}>
-            <thead>
-              {headerGroups.map((headerGroup) => (
-                <tr key={headerGroup.id} {...headerGroup.getHeaderGroupProps()}>
-                  {headerGroup.headers.map((column) => (
-                    <th
-                      key={column.id}
-                      {...column.getHeaderProps(column.getSortByToggleProps())}
-                    >
-                      {column.render('Header')}
-                      <span>
-                        {column.isSorted
-                          ? column.isSortedDesc
-                            ? ' 🔽'
-                            : ' 🔼'
-                          : ' ↕'}
-                      </span>
-                    </th>
-                  ))}
-                </tr>
-              ))}
-            </thead>
-            <tbody {...getTableBodyProps()}>
-              {page.map((row, i) => {
-                prepareRow(row)
-                return (
-                  <tr key={i} {...row.getRowProps()}>
-                    {row.cells.map((cell) => {
-                      return (
-                        <td key={cell} {...cell.getCellProps()}>
-                          {cell.render('Cell')}
-                        </td>
-                      )
-                    })}
-                  </tr>
-                )
-              })}
-            </tbody>
-            {/* <tfoot>
-          {footerGroups.map((footerGroup) => (
-            <tr {...footerGroup.getFooterGroupProps()}>
-              {footerGroup.headers.map((column) => (
-                <td {...column.getFooterProps()}>{column.render('Footer')}</td>
+        </span>{' '}
+        <select
+          value={pageSize}
+          onChange={(e) => {
+            setPageSize(Number(e.target.value))
+          }}
+        >
+          {[defaultPageSize, 5, 10, 30, 50, 100].map((pageSize) => (
+            <option key={pageSize} value={pageSize}>
+              Show {pageSize}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      <div className="btn btn-blue " onClick={() => toggleModal()}>
+        Create Customer
+      </div>
+      <ModalContainer show={showModal} handleClose={toggleModal}>
+        <RegistrationFormModal
+          isRegisteringStaff={false}
+          closeModal={toggleModal}
+          query={[
+            'customers.getCustomerList',
+            {
+              queryPageIndex: queryPageIndex,
+              queryPageSize: queryPageSize,
+            },
+          ]}
+        />
+      </ModalContainer>
+
+      <GlobalFilter
+        globalFilter={globalFilter}
+        setGlobalFilter={setGlobalFilter}
+        preGlobalFilteredRows={preGlobalFilteredRows}
+      />
+      {/* {console.log(globalFilter)} */}
+      <table className="responsiveTable" {...getTableProps()}>
+        <thead>
+          {headerGroups.map((headerGroup) => (
+            <tr key={headerGroup.id} {...headerGroup.getHeaderGroupProps()}>
+              {headerGroup.headers.map((column) => (
+                <th
+                  key={column.id}
+                  {...column.getHeaderProps(column.getSortByToggleProps())}
+                >
+                  {column.render('Header')}
+                  <span>
+                    {column.isSorted
+                      ? column.isSortedDesc
+                        ? ' 🔽'
+                        : ' 🔼'
+                      : ' ↕'}
+                  </span>
+                </th>
               ))}
             </tr>
           ))}
-        </tfoot> */}
-          </table>
-        </>
-      ) : null}
+        </thead>
+        <tbody {...getTableBodyProps()}>
+          {page.map((row, i) => {
+            prepareRow(row)
+            return (
+              <tr key={i} {...row.getRowProps()}>
+                {row.cells.map((cell) => {
+                  return (
+                    // <td key={cell} {...cell.getCellProps()}>
+                    //   {cell.render('Cell')}
+                    // </td>
+
+                    <td
+                      key={cell.column.Header}
+                      className="pivoted"
+                      {...cell.getCellProps()}
+                    >
+                      <div data-testid="td-before" className="tdBefore">
+                        {cell.column.Header}
+                      </div>
+                      {/* {children ?? <div>&nbsp;</div>} */}
+                      {cell.render('Cell')}
+                    </td>
+                  )
+                })}
+              </tr>
+            )
+          })}
+        </tbody>
+      </table>
     </>
   )
 }
@@ -360,11 +356,12 @@ const CustomerReactTable = () => {
     ],
     [router, setCurrentCustomer]
   )
+
   return (
-    <div>
+    <>
       <h1>Customer&apos;s Table</h1>
-      <Table columns={columns} />
-    </div>
+      <FancyTable columns={columns} />
+    </>
   )
 }
 

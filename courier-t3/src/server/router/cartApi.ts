@@ -491,6 +491,8 @@ export const cartApi = createProtectedRouter()
       // })
     },
   })
+
+  //createPendingOrder
   .mutation('createPendingOrderBeforeCheckoutCompletes', {
     input: z.object({
       userId: z.string(),
@@ -498,6 +500,7 @@ export const cartApi = createProtectedRouter()
       stripeCheckoutId: z.string().optional(),
       paymentType: z.enum(['CARD', 'CASH', 'CHECK', 'QUICKPAY', 'STRIPE']),
       stripeCheckoutUrl: z.string().optional(),
+      // stripePaymentIntent: z.string().optional(),
     }),
     async resolve({ ctx, input }) {
       // console.log('🚀 ~ file: cartApi.ts:510 ~ resolve ~ input:', input)
@@ -583,12 +586,13 @@ export const cartApi = createProtectedRouter()
                 ? input.stripeCheckoutId
                 : undefined,
             stripeCheckoutUrl: input.stripeCheckoutUrl,
+            // stripePaymentIntent: input?.stripePaymentIntent,
           },
           include: {
             items: true,
           },
         })
-        console.log(' cartApi.ts ~ pendingOrder', pendingOrder)
+        console.log('cartApi.ts 595 ~ pendingOrder', pendingOrder)
 
         return pendingOrder
       } catch (error) {

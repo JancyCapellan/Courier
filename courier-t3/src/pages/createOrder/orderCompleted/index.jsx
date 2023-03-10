@@ -58,15 +58,15 @@ const Index = () => {
     }
   }, [redirectSeconds, checkout])
 
-  useEffect(() => {
-    if (checkout && !!customerId) {
-      console.log('CART DELETED AFTER CHECKOUT SUCCESS')
-      deleteCartAfterCheckout.mutate({
-        userId: session?.user?.id,
-        customerId: customerId,
-      })
-    }
-  }, [checkout, customerId])
+  // useEffect(() => {
+  //   if (checkout && !!customerId) {
+  //     console.log('CART DELETED AFTER CHECKOUT SUCCESS')
+  //     deleteCartAfterCheckout.mutate({
+  //       userId: session?.user?.id,
+  //       customerId: customerId,
+  //     })
+  //   }
+  // }, [checkout, customerId])
 
   if (checkout !== 'success') {
     return (

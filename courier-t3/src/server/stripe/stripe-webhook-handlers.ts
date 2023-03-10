@@ -18,13 +18,14 @@ export const handleCheckoutSessionCompleted = async (event: Stripe.Event) => {
     },
     data: {
       // stripeCheckout: checkoutSession,
+      stripePaymentIntent: String(checkoutSession.payment_intent),
       status: {
         connectOrCreate: {
           where: {
-            message: 'CHECKOUT SUCCESSFUL',
+            message: checkoutSession.payment_status,
           },
           create: {
-            message: 'CHECKOUT SUCCESSFUL',
+            message: checkoutSession.payment_status,
           },
         },
       },
@@ -34,6 +35,42 @@ export const handleCheckoutSessionCompleted = async (event: Stripe.Event) => {
     '🚀 ~ file: webhook.ts ~ line 59 ~ webhook ~ updatedOrderWithStripeCheckout',
     updatedOrderWithStripeCheckout
   )
+}
+
+export const handleChargeSucceded = async (event: Stripe.Event) => {
+  try {
+    const chargeSucceded = event.data.object as Stripe.Charge
+
+    if (!chargeSucceded.payment_intent)
+      return console.log(
+        'CHARGE succeeded but local order does not have paymentIntentId'
+      )
+
+    const updateOrderWithRecieptInfo = await prisma.order.update({
+      where: {
+        // stripeCheckoutId: checkoutSession.id,
+        // stripePaymentIntent: String(chargeSucceded.payment_intent),
+      },
+      data: {
+        // stripeCheckout: checkoutSession,
+        stripeReceiptUrl: chargeSucceded.receipt_url,
+        status: {
+          connectOrCreate: {
+            where: {
+              message: 'Stripe Checkout succeeded',
+            },
+            create: {
+              message: 'Stripe Checkout succeeded',
+            },
+          },
+        },
+      },
+    })
+
+    return updateOrderWithRecieptInfo
+  } catch (error) {
+    console.error(error)
+  }
 }
 
 export const handleCheckoutSessionExpired = async (event: Stripe.Event) => {
@@ -46,8 +83,16 @@ export const handleCheckoutSessionExpired = async (event: Stripe.Event) => {
       },
     })
 
+    return removedCheckoutSession
     // logger.info(removedCheckoutSession)
   } catch (err) {
-    logger.error(err)
+    // logger.error(err)
+    console.error(err)
   }
+}
+
+export const handlePaymentIntentSucceeded = async (event: Stripe.Event) => {
+  const paymentIntent = event.data.object as Stripe.PaymentIntent
+
+  // const updatedPendingCheckout = await prisma.order.update({})
 }

@@ -50,9 +50,16 @@ const Sidebar = ({ closeSidebar, setCloseSidebar }) => {
   //Floating sidebar when on sm screens
   if (width < 768) {
     return (
-      <>
+      <div
+        onClick={() => {
+          setCloseSidebar(!closeSidebar)
+        }}
+        className={`absolute left-0 top-0  z-10 h-screen w-full ${
+          closeSidebar ? 'hidden' : ''
+        }`}
+      >
         <div
-          className={`dark:border-primary-darker dark:bg-darker absolute top-0  left-0  flex h-full flex-col items-center bg-black text-white ease-in-out ${
+          className={`dark:border-primary-darker dark:bg-darker flex h-full w-min flex-col items-center bg-black text-white ease-in-out ${
             closeSidebar ? 'hidden' : ' '
           }`}
         >
@@ -111,7 +118,7 @@ const Sidebar = ({ closeSidebar, setCloseSidebar }) => {
             </ul>
           </nav>
         </div>
-      </>
+      </div>
     )
   }
 

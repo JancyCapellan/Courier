@@ -505,7 +505,7 @@ const PickupListTable = () => {
             setPageSize(Number(e.target.value))
           }}
         >
-          {[defaultPageSize, 1, 2, 3, 40, 60, 100].map((pageSize) => (
+          {[defaultPageSize, 5, 10, 40, 60, 100].map((pageSize) => (
             <option key={pageSize} value={pageSize}>
               Show {pageSize}
             </option>

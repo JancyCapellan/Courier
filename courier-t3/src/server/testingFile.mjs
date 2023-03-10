@@ -1,19 +1,24 @@
 import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient()
+import { env } from '../env/server.mjs'
 import Stripe from 'stripe'
 
-import { env } from '../env/server.mjs'
-
-// let stripe = new Stripe(
-//   'pk_test_51LzM1PAVJ8VmRrvGMfJYfnV9dE48TNihwO5NRrHOb8qWiRttQVsZUPPBbC2kYMijzO4LmXU1RWC4dTDs5GK2PcU300e8ev53xN',
-//   {
-//     apiVersion: '2022-08-01',
-//   }
-// )
-
-let stripeS = new Stripe(env.STRIPE_SECRET_KEY, {
-  apiVersion: '2022-08-01',
+export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+  apiVersion: '2022-11-15',
 })
+
+const getCheckoutSession = await stripe.checkout.sessions.retrieve(
+  'cs_test_b1sMwShM6rnz0VUfO7LeHqTxNdkDKL8U9EppAljCNniKOzmZnuL3RCbE6c'
+)
+console.log(
+  '🚀 ~ file: testingFile.mjs:10 ~ getCheckoutSession:',
+  getCheckoutSession
+)
+
+// const expiredSession = await stripe.checkout.sessions.expire(
+//   'cs_test_b1RHe1dcl3M0ZtxabCirZeXuGXoVKmX1W4BF2Baddg5Tp3w51uJFj0DtyP'
+// )
+// console.log('🚀 ~ file: testingFile.mjs:21 ~ expiredSession:', expiredSession)
 
 // async function addStripeProductToDBbyStripeProductId(itemId) {
 //   const product = await stripe.products.retrieve(itemId, {
@@ -148,26 +153,26 @@ let stripeS = new Stripe(env.STRIPE_SECRET_KEY, {
 //   )
 // }
 
-async function checkoutNoPriceId() {
-  const session = await stripeS.checkout.sessions.create({
-    line_items: [
-      {
-        price_data: {
-          currency: 'usd',
-          product_data: {
-            name: 'T-shirt',
-          },
-          unit_amount: 2000,
-        },
-        quantity: 1,
-      },
-    ],
-    mode: 'payment',
-    success_url: `http://localhost:3000/Invoices`,
-    cancel_url: `http://localhost:3000/account`,
-  })
+// async function checkoutNoPriceId() {
+//   const session = await stripeS.checkout.sessions.create({
+//     line_items: [
+//       {
+//         price_data: {
+//           currency: 'usd',
+//           product_data: {
+//             name: 'T-shirt',
+//           },
+//           unit_amount: 2000,
+//         },
+//         quantity: 1,
+//       },
+//     ],
+//     mode: 'payment',
+//     success_url: `http://localhost:3000/Invoices`,
+//     cancel_url: `http://localhost:3000/account`,
+//   })
 
-  console.log('session', session)
-}
+//   console.log('session', session)
+// }
 
-checkoutNoPriceId()
+// checkoutNoPriceId()

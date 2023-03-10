@@ -15,7 +15,6 @@ import StaffTable from '@/components/pages/administration/StaffTable'
 import Link from 'next/link'
 import getStripe from '@/utils/get-stripejs'
 
-//const stripePromise = getStripe()
 
 const CreateOrder = () => {
   const { data: session, status: sessionStatus } = useSession()

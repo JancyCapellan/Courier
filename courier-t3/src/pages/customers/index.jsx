@@ -22,8 +22,7 @@ const Customers = () => {
 
   return (
     <>
-      <div className="customer-page-container">
-        {/* <button
+      {/* <button
           onClick={() => {
             postAddManyCustomer()
             queryClient.invalidateQueries('getCustomerList')
@@ -31,8 +30,7 @@ const Customers = () => {
         >
           create 5 customers
         </button> */}
-        <CustomerReactTable />
-      </div>
+      <CustomerReactTable />
     </>
   )
 }

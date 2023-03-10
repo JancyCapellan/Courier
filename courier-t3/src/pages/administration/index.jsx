@@ -11,10 +11,14 @@ const Administration = () => {
   return (
     <>
       <section className="administration-container">
-        <h1>Product manager</h1>
+        <h1>Product Administration</h1>
         <section className="flex flex-row justify-center bg-slate-400 ">
           <ProductEditorTable />
         </section>
+
+        <h1>Warehose Administration</h1>
+        {/* select current warehouse  dropdown  */}
+        {/* TODO: create, delete, list, edit warehouse information */}
       </section>
     </>
   )

@@ -61,7 +61,7 @@ const StaffTable = () => {
         accessor: 'role',
       },
       {
-        Header: 'Affliated Branch',
+        Header: 'Office/Branch',
         accessor: 'branchName',
       },
       {
@@ -155,7 +155,7 @@ const StaffTable = () => {
       {status === 'idle' && <div>loading</div>}
       {status === 'success' && (
         <>
-          <div className='pagination'>
+          <div className="pagination">
             <button onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
               {'<<'}
             </button>{' '}
@@ -180,7 +180,7 @@ const StaffTable = () => {
             <span>
               | Go to page:{' '}
               <input
-                type='number'
+                type="number"
                 defaultValue={pageIndex + 1}
                 onChange={(e) => {
                   const page = e.target.value ? Number(e.target.value) - 1 : 0
@@ -209,7 +209,7 @@ const StaffTable = () => {
             preGlobalFilteredRows={preGlobalFilteredRows}
           />
 
-          <table {...getTableProps()}>
+          <table className="responsiveTable " {...getTableProps()}>
             <thead>
               {headerGroups.map((headerGroup) => (
                 <tr {...headerGroup.getHeaderGroupProps()}>
@@ -237,7 +237,18 @@ const StaffTable = () => {
                   <tr {...row.getRowProps()}>
                     {row.cells.map((cell) => {
                       return (
-                        <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
+                        // <td {...cell.getCellProps()}>{cell.render('Cell')}</td>
+                        <td
+                          key={cell.column.Header}
+                          className="pivoted"
+                          {...cell.getCellProps()}
+                        >
+                          <div data-testid="td-before" className="tdBefore">
+                            {cell.column.Header}
+                          </div>
+                          {/* {children ?? <div>&nbsp;</div>} */}
+                          {cell.render('Cell')}
+                        </td>
                       )
                     })}
                   </tr>
