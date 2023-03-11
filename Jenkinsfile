@@ -3,7 +3,7 @@ pipeline {
   stages {
     stage('Checkout Code') {
       steps {
-        git(url: 'git@github.com:JancyCapellan/Courier.gitgit@github.com:JancyCapellan/Courier.git', branch: 'main')
+        git(url: 'https://github.com/JancyCapellan/Courier.githttps://github.com/JancyCapellan/Courier.git', branch: 'main')
       }
     }
 
