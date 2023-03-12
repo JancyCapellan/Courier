@@ -21,13 +21,18 @@
 # echo "And then we do something with $1 $2"
 
 
-#  get ssh key
-file=~/.ssh/id_ed25519
-key=$(<"$file")
-# echo $key
+# #  get ssh key
+# file=~/.ssh/id_ed25519
+# key=$(<"$file")
+# # echo $key
 
-# create pull-repo pipeline
-if fly -t tutorial set-pipeline -p build-prod -c ./tasks/buildProd.yml -v private_key="$key" ; then
+# key1=~/.ssh/CourierServer
+# prodFile=$(<"$key1")
+# # echo $prodFile
+
+
+# # # create pull-repo pipeline
+if fly -t tutorial set-pipeline -p build-prod -c ./tasks/buildProd.yml -l ./tasks/credentials.yml ; then
   fly -t tutorial trigger-job --job build-prod/build-prod --watch
 else
   echo "ERROR"

@@ -45,3 +45,4 @@ test.mts
 /test-results/
 /playwright-report/
 /playwright/.cache/
+/ci/tasks/credentials.yml

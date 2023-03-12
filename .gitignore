@@ -42,3 +42,4 @@ yarn-error.log*
 runAfterCloning.sh
 
 /courierMobile/
+courier-t3/dockerStart.sh

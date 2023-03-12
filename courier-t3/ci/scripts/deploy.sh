@@ -1,6 +1,14 @@
 #!/bin/bash
 
-ssh CourierServer "source ~/.nvm/nvm.sh; cd Courier/courier-t3; git checkout development;npm run build; pm2 start --name=APP npm -- start;"
+if [ $# -eq 0 ];
+then
+  echo "$0: Missing arguments"
+  exit 1
+
+
+echo $1
+
+# ssh -i $1 CourierServer "source ~/.nvm/nvm.sh; cd Courier/courier-t3; git checkout development; git pull; npm run build; "
 
 # 'pm2 stop APP
 
