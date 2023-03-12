@@ -27,7 +27,8 @@ key=$(<"$file")
 # echo $key
 
 # create pull-repo pipeline
-fly -t tutorial set-pipeline -p pull-repo -c ./tasks/buildProd.yml -v private_key="$key"
-
-fly -t tutorial trigger-job --job pull-repo/pull-repo --watch
-
+if fly -t tutorial set-pipeline -p build-prod -c ./tasks/buildProd.yml -v private_key="$key" ; then
+  fly -t tutorial trigger-job --job build-prod/build-prod --watch
+else
+  echo "ERROR"
+fi
