@@ -14,7 +14,7 @@ services:
     command: quickstart
     privileged: true
     depends_on: [concourse-db]
-    ports: ["8080:8080"]
+    ports: ['8080:8080']
     environment:
       CONCOURSE_POSTGRES_HOST: concourse-db
       CONCOURSE_POSTGRES_USER: concourse_user
@@ -28,7 +28,16 @@ services:
       CONCOURSE_CLIENT_SECRET: Y29uY291cnNlLXdlYgo=
       CONCOURSE_TSA_CLIENT_SECRET: Y29uY291cnNlLXdvcmtlcgo=
       CONCOURSE_X_FRAME_OPTIONS: allow
-      CONCOURSE_CONTENT_SECURITY_POLICY: "*"
+      CONCOURSE_CONTENT_SECURITY_POLICY: '*'
       CONCOURSE_CLUSTER_NAME: tutorial
-      CONCOURSE_WORKER_CONTAINERD_DNS_SERVER: "8.8.8.8"
-      CONCOURSE_WORKER_RUNTIME: "containerd"
+      CONCOURSE_WORKER_CONTAINERD_DNS_SERVER: '8.8.8.8'
+      CONCOURSE_WORKER_RUNTIME: 'containerd'
+      CONCOURSE_RUNTIME: containerd
+      # CONCOURSE_GARDEN_DNS_PROXY_ENABLE: 'true'
+
+  # registry:
+  #   image: registry:2
+  #   command: quickstart
+  #   privileged: true
+  #   restart: always
+  #   ports: ['5000:5000']
