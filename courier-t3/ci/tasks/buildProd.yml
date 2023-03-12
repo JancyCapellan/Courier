@@ -1,0 +1,31 @@
+resources:
+  - name: source-code
+    type: git
+    source:
+      uri: git@github.com:JancyCapellan/Courier.git
+      branch: development
+      private_key: ((private_key))
+
+# watch git repo for push to main,
+jobs:
+  - name: pull-repo
+    plan:
+      - get: source-code
+        trigger: true # tell Concourse to trigger this job when new versions are emitted
+      - task: pull-on-upstream-push
+        config:
+          inputs:
+            - name: source-code
+              path: Courier/
+          platform: linux
+          image_resource:
+            name: linux-container
+            type: registry-image
+            source:
+              repository: busybox
+          run:
+            path: sh
+            args:
+              - -cx
+              - |
+                cat Courier/courier-t3/README.md
