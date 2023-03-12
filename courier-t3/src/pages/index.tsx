@@ -53,7 +53,8 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <h1 className="mb-10">Courier Login</h1>
+      <h1 className="mb-10">Shipping Test</h1>
+
       {router.query?.didRegister}
 
       {router.query?.error ? <p>{router.query.error}</p> : <></>}

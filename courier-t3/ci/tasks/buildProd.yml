@@ -6,26 +6,86 @@ resources:
       branch: development
       private_key: ((private_key))
 
+  - name: node-image
+    type: registry-image
+    source:
+      repository: node
+      tag: 16
+
+  - name: courier-app-image
+    type: registry-image
+    icon: docker
+    source:
+      repository: jancy97/shipping-app
+      tag: latest
+      username: jancy97
+      password: ((dockerpass))
+
 # watch git repo for push to main,
 jobs:
-  - name: pull-repo
+  - name: build-prod
     plan:
+      - get: node-image
       - get: source-code
         trigger: true # tell Concourse to trigger this job when new versions are emitted
-      - task: pull-on-upstream-push
+      # - push: courier-app-image
+      #   params:
+      #     build: Courier/courier-t3/Dockerfile
+      - task: pull-install-on-push
+        image: node-image
         config:
           inputs:
             - name: source-code
               path: Courier/
+          outputs:
+            - name: dependencies
+              path: Courier/courier-t3/node_modules
+          caches:
+            - path: Courier/courier-t3/node_modules # probably needs a local cache to concourse docker server
+          platform: linux
+          run:
+            path: npm
+            args: ['install']
+            dir: Courier/courier-t3
+      - task: test
+        image: node-image
+        config:
+          inputs:
+            - name: source-code
+              path: Courier/
+            - name: dependencies
+              path: Courier/courier-t3/node_modules
+          platform: linux
+          run:
+            path: npm
+            args: ['run', 'test:ci']
+            dir: Courier/courier-t3
+      - task: build-image
+        privileged: true # oci-build-task must run in a privileged container
+        config:
           platform: linux
           image_resource:
-            name: linux-container
             type: registry-image
             source:
-              repository: busybox
-          run:
-            path: sh
-            args:
-              - -cx
-              - |
-                cat Courier/courier-t3/README.md
+              repository: concourse/oci-build-task
+          inputs:
+            - name: source-code
+              path: Courier/
+          outputs:
+            - name: image
+          # output_mapping: { image: image }
+          params:
+            CONTEXT: Courier/courier-t3/
+            DOCKERFILE: Courier/courier-t3/Dockerfile
+            UNPACK_ROOTFS: true
+            BUILD_ARG_NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: ((NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY))
+            BUILD_ARG_NEXT_PUBLIC_API_URL: ((NEXT_PUBLIC_API_URL))
+            # PORT: ((PORT))
+            # DATABASE_URL: ((DATABASE_URL))
+            # NEXTAUTH_URL: ((NEXTAUTH_URL))
+            # STRIPE_SECRET_KEY: ((STRIPE_SECRET_KEY))
+            # STRIPE_WEBHOOK_SECRET: ((STRIPE_WEBHOOK_SECRET))
+          run: { path: build }
+      - put: courier-app-image
+        params:
+          image: image/image.tar
