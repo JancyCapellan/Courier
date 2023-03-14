@@ -44,16 +44,7 @@ const Home: NextPage = () => {
 
   return (
     <div className="flex h-screen flex-col items-center justify-center">
-      <Head>
-        <title>Couriers Dashboard</title>
-        <meta
-          name="description"
-          content="webapp for shippers and courier services"
-        />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-
-      <h1 className="mb-10">Shipping App</h1>
+      <h1 className="mb-10">Courier Shipping</h1>
 
       {router.query?.didRegister}
 

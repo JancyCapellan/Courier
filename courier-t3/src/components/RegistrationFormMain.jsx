@@ -74,7 +74,7 @@ const RegistrationFormMain = () => {
   }
 
   return (
-    <div className="flex flex-col items-center justify-center shadow-md w-fit p-12">
+    <div className="flex w-fit flex-col items-center justify-center p-12 shadow-md">
       <Formik
         initialValues={initialValues}
         validationSchema={validationSchema}
@@ -128,11 +128,18 @@ const RegistrationFormMain = () => {
                 name="password2"
               />
 
-              <button type="submit" disabled={!formik.isValid}>
+              <button
+                className="form-button"
+                type="submit"
+                disabled={!formik.isValid}
+              >
                 Submit
               </button>
               <div>
-                Have an Account Already? <Link href="/"> Login </Link>
+                Have an Account Already?
+                <Link href="/">
+                  <button className="form-button">Login </button>
+                </Link>
               </div>
             </Form>
           )
