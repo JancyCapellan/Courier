@@ -41,6 +41,7 @@ model User {
   branchName        String?
   lastSaleDate      DateTime?
   lastLogin         DateTime?
+  currentBalance    Int?
   preferredLanguage String    @default("English")
   licenseId         Int?      @unique
   addresses         address[]
@@ -69,14 +70,14 @@ model address {
   user       User    @relation(fields: [userId], references: [id])
 }
 
-enum OrderLocation {
-  withShipper
-  BRONXwarehouse
-  CotainerBoat
-  DRwarehouse
-  MIAMIwarehouse
-  withReciever
-}
+// enum OrderLocation {
+//   withShipper
+//   BRONXwarehouse
+//   CotainerBoat
+//   DRwarehouse
+//   MIAMIwarehouse
+//   withReciever
+// }
 
 model Order {
   id             Int               @unique @default(autoincrement())
@@ -85,11 +86,11 @@ model Order {
   creatorUserId  String
   creatorUser    User              @relation("creatorUser", fields: [creatorUserId], references: [id])
   timePlaced     DateTime          @default(now())
-  paymentType    String // stripe, cash //stripe webhooks can change this as necessary
+  paymentType    String // set at checkout //stripe webhooks can change this as necessary
   statusMessage  String // id of status, can make into the status string itself if message is unique
   status         orderStatus       @relation(fields: [statusMessage], references: [message])
   // location OrderLocation @default(withShipper) // location is one of a list of locations that it is possible for a order to go through during the life time of its journey in the buisness, there will be some overlapping with the location names and the warehouse names. when warehouse location name changes the location list should change to refelect that.
-  // location String @default("Shipping Address/owner")
+  location       String?
   pickupDriverId String?
   pickupDriver   User?             @relation(name: "DRIVER", fields: [pickupDriverId], references: [id])
   pickupDatetime DateTime?
