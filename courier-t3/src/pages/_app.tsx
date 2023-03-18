@@ -32,7 +32,7 @@ type AppPropsWithLayout = AppProps & {
   Component: NextPageWithLayout
 }
 
-const stripePromise = getStripe()
+// const stripePromise = getStripe()
 
 //typing is better this time but according to: https://dev.to/ofilipowicz/next-js-per-page-layouts-and-typescript-lh5,
 //there is more generics that can be used advance these types.
