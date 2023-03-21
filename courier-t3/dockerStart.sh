@@ -51,3 +51,9 @@ sudo docker run --detach \
   --volume $GITLAB_HOME/data:/var/opt/gitlab \
   --shm-size 256m \
   gitlab/gitlab-ce:latest
+
+
+# Concourse Ci
+
+
+# Git Hub Actions

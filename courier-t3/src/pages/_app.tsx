@@ -55,11 +55,11 @@ const MyApp: AppType = ({ Component, pageProps }: AppPropsWithLayout) => {
           content="webapp for shippers and courier services"
         />
         <link rel="icon" href="/favicon.ico" />
-        <meta name="application-name" content="PWA App" />
+        <meta name="application-name" content="Courier Shipping" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
         <meta name="apple-mobile-web-app-title" content="PWA App" />
-        <meta name="description" content="Best PWA App in the world" />
+        <meta name="description" content="couries/shippers management app" />
         <meta name="format-detection" content="telephone=no" />
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="msapplication-config" content="/icons/browserconfig.xml" />
@@ -67,7 +67,7 @@ const MyApp: AppType = ({ Component, pageProps }: AppPropsWithLayout) => {
         <meta name="msapplication-tap-highlight" content="no" />
         <meta name="theme-color" content="#000000" />
 
-        <link rel="apple-touch-icon" href="/icons/touch-icon-iphone.png" />
+        {/* <link rel="apple-touch-icon" href="/icons/touch-icon-iphone.png" />
         <link
           rel="apple-touch-icon"
           sizes="152x152"
@@ -101,17 +101,17 @@ const MyApp: AppType = ({ Component, pageProps }: AppPropsWithLayout) => {
           rel="mask-icon"
           href="/icons/safari-pinned-tab.svg"
           color="#5bbad5"
-        />
+        /> */}
         <link rel="shortcut icon" href="/favicon.ico" />
-        <link
+        {/* <link
           rel="stylesheet"
           href="https://fonts.googleapis.com/css?family=Roboto:300,400,500"
-        />
+        /> */}
 
-        <meta name="twitter:card" content="summary" />
-        <meta name="twitter:url" content="https://yourdomain.com" />
-        <meta name="twitter:title" content="PWA App" />
-        <meta name="twitter:description" content="Best PWA App in the world" />
+        {/* <meta name="twitter:card" content="summary" />
+        <meta name="twitter:url" content="https://" />
+        <meta name="twitter:title" content="Courier Shipping" />
+        <meta name="twitter:description" content=" " />
         <meta
           name="twitter:image"
           content="https://yourdomain.com/icons/android-chrome-192x192.png"
@@ -125,9 +125,9 @@ const MyApp: AppType = ({ Component, pageProps }: AppPropsWithLayout) => {
         <meta
           property="og:image"
           content="https://yourdomain.com/icons/apple-touch-icon.png"
-        />
+        /> */}
 
-        <link
+        {/* <link
           rel="apple-touch-startup-image"
           href="/images/apple_splash_2048.png"
           sizes="2048x2732"
@@ -161,7 +161,7 @@ const MyApp: AppType = ({ Component, pageProps }: AppPropsWithLayout) => {
           rel="apple-touch-startup-image"
           href="/images/apple_splash_640.png"
           sizes="640x1136"
-        />
+        /> */}
       </Head>
       {layout}
       <ReactQueryDevtools initialIsOpen={false} />

@@ -11,9 +11,11 @@ import {
   useAsyncDebounce,
   useSortBy,
 } from 'react-table'
-import { GlobalFilter } from '../customers/CustomerReactTable.jsx'
+// import { GlobalFilter } from '../customers/CustomerReactTable.jsx'
 import { trpc } from '@/utils/trpc'
 import { useGlobalStore } from '@/components/globalStore.js'
+
+import { GlobalFilter } from '@/components/Tables/tableFilters'
 
 let defaultPageSize = 20
 

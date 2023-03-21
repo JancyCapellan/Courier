@@ -1,26 +1,68 @@
 import Layout from '@/components/Layout'
+import FancyTable from '@/components/Tables/FancyTable'
 import { trpc } from '@/utils/trpc'
 import { useRouter } from 'next/router'
+import { useState, useMemo } from 'react'
 
 const Warehouse = () => {
   //function to scan qrcode/add container id number to open a container for filling
-  const createNewContainer = trpc.useMutation([''])
+  const createNewBatchNumber = trpc.useMutation([''])
 
   const router = useRouter()
+
+  const [selectedWarehouse, setSelectedWarehouse] = useState('')
+
+  const columns = useMemo(
+    () => [
+      {
+        Header: 'Warehouse',
+        accessor: 'warehouse',
+      },
+      {
+        Header: 'Total Packages',
+        accessor: 'totalPackages',
+      },
+      {
+        Header: 'Batch Containers',
+        accessor: '',
+      },
+    ],
+    []
+  )
 
   return (
     // tables showing the orders seperated by warehouse and make reports on those orders by warehouse daily
     <section>
       <h1>Warehouse</h1>
-      <div className="flex flex-col gap-2 bg-gray-200 w-max items-center">
-        <button
+      <label htmlFor="warehouse-select">
+        Select Warehouse:
+        <select
+          value={selectedWarehouse}
+          onChange={(e) => {
+            setSelectedWarehouse(e.target.value)
+          }}
+          id="warehouse-select"
+        >
+          {['bronx', 'miami', 'santiago'].map((warehouse) => (
+            <option key={warehouse} value={warehouse}>
+              {warehouse}
+            </option>
+          ))}
+        </select>
+      </label>
+      <hr className="mx-2 my-2"></hr>
+      <div className="flex w-max flex-col items-center gap-2 bg-gray-200">
+        <button className="btn btn-blue w-max hover:bg-red-300">
+          create New Batch Number
+        </button>
+        {/* <button
           className="btn btn-blue w-max hover:bg-red-300"
           onClick={() => {
             router.push({ pathname: 'warehouse/containers' })
           }}
         >
           checkin new batch container
-        </button>
+        </button> */}
         {/* <button className="btn btn-blue w-max hover:bg-red-300">
           create new container
         </button> */}
@@ -28,8 +70,17 @@ const Warehouse = () => {
           scan a package
         </button>
       </div>
-
       <div>Containers</div>
+      per warehouse seelected, show a list of the pacakges at that warehouse,
+      and the batch container they are in,
+      <FancyTable
+        columns={columns}
+        data={[
+          { warehouse: 'bronx', totalPackages: '3' },
+          { warehouse: 'bronx' },
+          { warehouse: 'bronx' },
+        ]}
+      />
     </section>
   )
 }

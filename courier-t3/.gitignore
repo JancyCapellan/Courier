@@ -46,3 +46,6 @@ test.mts
 /playwright-report/
 /playwright/.cache/
 /ci/tasks/credentials.yml
+
+/public/workbox*
+/public/sw.*

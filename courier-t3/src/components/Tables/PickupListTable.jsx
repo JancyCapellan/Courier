@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import {
   useTable,
   usePagination,
@@ -6,9 +6,16 @@ import {
   useGlobalFilter,
   useAsyncDebounce,
   useRowSelect,
+  useFilters,
 } from 'react-table'
 // import { useQuery, useMutation, useQueryClient } from 'react-query'
-import { GlobalFilter } from './tableFilters'
+import {
+  dateBetweenFilterFn,
+  DateRangeColumnFilter,
+  DateTimeColumnFilter,
+  Filter,
+  GlobalFilter,
+} from './tableFilters'
 import { useRouter } from 'next/router'
 import { trpc } from '@/utils/trpc'
 import { useQueryClient } from 'react-query'
@@ -81,12 +88,16 @@ const EditableCell = ({
   return <input value={value} onChange={onChange} onBlur={onBlur} />
 }
 
+// PICKUP LIST / INVOICE table
 let defaultPageSize = 20
 const PickupListTable = () => {
   const [multiSelectPickupDriver, setMultiSelectPickupDriver] =
     React.useState('')
   const [queryPageIndex, setQueryPageIndex] = React.useState(0)
   const [queryPageSize, setQueryPageSize] = React.useState(defaultPageSize)
+
+  const [dateFilterValue, setDateFilterValue] = useState()
+
   const router = useRouter()
 
   const queryClient = useQueryClient()
@@ -172,7 +183,6 @@ const PickupListTable = () => {
   //   }
   // )
 
-  // * dynamic cells for pickupzone and drivers that updates the memoization whenever orderOptions are fetched successfully
   const invoicesColumns = React.useMemo(
     () => [
       {
@@ -264,8 +274,9 @@ const PickupListTable = () => {
       //     `${data.recieverFirstName} ${data.recieverLastName}`,
       // },
       {
-        Header: 'Time placed',
+        Header: 'Date/time Placed',
         accessor: 'timePlaced',
+        filter: dateBetweenFilterFn,
       },
       // { Header: 'Total Items', accessor: 'totalItems' },
       // {
@@ -356,6 +367,7 @@ const PickupListTable = () => {
     state,
     selectedFlatRows,
     preGlobalFilteredRows,
+    setFilter,
   } = useTable(
     {
       columns: invoicesColumns,
@@ -373,6 +385,7 @@ const PickupListTable = () => {
       // autoResetExpanded: false,
       autoResetPage: false,
     },
+    useFilters,
     useGlobalFilter,
     useSortBy,
     usePagination,
@@ -425,50 +438,63 @@ const PickupListTable = () => {
   //  add to filter by order branch location, date to date, orders shown by drivers
   return (
     <>
-      <GlobalFilter
-        globalFilter={state.globalFilter}
-        setGlobalFilter={setGlobalFilter}
-        preGlobalFilteredRows={preGlobalFilteredRows}
-      />
+      <div className="tableFilters">
+        <GlobalFilter
+          globalFilter={state.globalFilter}
+          setGlobalFilter={setGlobalFilter}
+          preGlobalFilteredRows={preGlobalFilteredRows}
+        />
 
-      {/* driver select */}
-      {orderOptionsIsSuccess ? (
-        <select
-          onChange={(e) => {
-            // console.log('pickup driver id', e.target.value)
-            // setMultiSelectPickupDriver(e.target.value)
-            mutationManyPickupDriver.mutate({
-              orderIds: selectedFlatRows.map((row) => row.original.id),
-              newPickUpDriverId: e.target.value,
-            })
-          }}
-        >
-          <option value={''}> multi-driver select </option>
-          {orderOptions.drivers.map((driver) => (
-            <option key={driver.id} value={driver.id}>
-              {driver.firstName} {driver.lastName}
-            </option>
-          ))}
-        </select>
-      ) : (
-        <></>
-      )}
-      {/* <button
-            onClick={() => {
-              // set order id from selectedFlatRows and update with driver from the global driver multi select above
-              // console.log('selected driver', multiSelectPickupDriver)
-              // console.log('IDS', selectedFlatRows)
+        <DateTimeColumnFilter
+          setFilter={setFilter}
+          filterState={state.filters}
+        />
+      </div>
+
+      {/* // TODO */}
+      {/* multidriver select */}
+      {!orderOptionsIsSuccess ? (
+        <div className="">
+          <label for="multiDriverSelect">Select Multiple Drivers: </label>
+          <select
+            id="multiDriverSelect"
+            className="w-min"
+            onChange={(e) => {
+              // console.log('pickup driver id', e.target.value)
+              // setMultiSelectPickupDriver(e.target.value)
               mutationManyPickupDriver.mutate({
                 orderIds: selectedFlatRows.map((row) => row.original.id),
-                newPickUpDriverId: multiSelectPickupDriver,
+                newPickUpDriverId: e.target.value,
               })
             }}
           >
-            Assign Driver
-          </button> */}
+            <option value={null}> multi-driver select </option>
+            {orderOptions.drivers.map((driver) => (
+              <option key={driver.id} value={driver.id}>
+                {driver.firstName} {driver.lastName}
+              </option>
+            ))}
+          </select>
+        </div>
+      ) : (
+        <></>
+      )}
 
-      {/* pagination */}
       <div className="pagination">
+        {/* show per page */}
+        <select
+          value={pageSize}
+          onChange={(e) => {
+            setPageSize(Number(e.target.value))
+          }}
+        >
+          {[defaultPageSize, 5, 10, 40, 60, 100].map((pageSize) => (
+            <option key={pageSize} value={pageSize}>
+              show per page: {pageSize}
+            </option>
+          ))}
+        </select>
+        {/* pagination buttons */}
         <button onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
           {'<<'}
         </button>{' '}
@@ -498,21 +524,10 @@ const PickupListTable = () => {
             }}
             style={{ width: '100px' }}
           />
-        </span>{' '}
-        <select
-          value={pageSize}
-          onChange={(e) => {
-            setPageSize(Number(e.target.value))
-          }}
-        >
-          {[defaultPageSize, 5, 10, 40, 60, 100].map((pageSize) => (
-            <option key={pageSize} value={pageSize}>
-              Show {pageSize}
-            </option>
-          ))}
-        </select>
+        </span>
       </div>
 
+      {/* table */}
       <table className="responsiveTable " {...getTableProps()}>
         <thead>
           {headerGroups.map((headerGroup) => (
@@ -522,14 +537,16 @@ const PickupListTable = () => {
                   key={column.id}
                   {...column.getHeaderProps(column.getSortByToggleProps())}
                 >
-                  {column.render('Header')}
                   <span>
+                    {column.render('Header')}
                     {column.isSorted
                       ? column.isSortedDesc
                         ? ' 🔽'
                         : ' 🔼'
                       : ' ↕'}
                   </span>
+                  <p>{column.filterValue}</p>
+                  {/* <Filter column={column} /> */}
                 </th>
               ))}
             </tr>

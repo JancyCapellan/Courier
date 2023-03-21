@@ -18,35 +18,7 @@ import {
 import ModalContainer from '../../HOC/ModalContainer'
 import RegistrationFormModal from '../../RegistrationFormModal'
 import { trpc } from '@/utils/trpc'
-
-export const GlobalFilter = ({
-  preGlobalFilteredRows,
-  globalFilter,
-  setGlobalFilter,
-}) => {
-  const count = preGlobalFilteredRows.length
-  const [value, setValue] = React.useState(globalFilter)
-  const change = useAsyncDebounce((value) => {
-    setGlobalFilter(value || undefined)
-  }, 200)
-
-  return (
-    <span>
-      Search:{' '}
-      <input
-        value={value || ''}
-        onChange={(e) => {
-          setValue(e.target.value)
-          change(e.target.value)
-        }}
-        // placeholder={`${count} records...`}
-        // style={{
-        //   fontSize: '1.1rem',
-        // }}
-      />
-    </span>
-  )
-}
+import { GlobalFilter } from '@/components/Tables/tableFilters'
 
 let defaultPageSize = 20
 const FancyTable = ({ columns }) => {
@@ -170,7 +142,35 @@ const FancyTable = ({ columns }) => {
 
   return (
     <>
+      <ModalContainer show={showModal} handleClose={toggleModal}>
+        <RegistrationFormModal
+          isRegisteringStaff={false}
+          closeModal={toggleModal}
+          query={[
+            'customers.getCustomerList',
+            {
+              queryPageIndex: queryPageIndex,
+              queryPageSize: queryPageSize,
+            },
+          ]}
+        />
+      </ModalContainer>
+
       <div className="pagination">
+        {/* show per page */}
+        <select
+          value={pageSize}
+          onChange={(e) => {
+            setPageSize(Number(e.target.value))
+          }}
+        >
+          {[defaultPageSize, 5, 10, 40, 60, 100].map((pageSize) => (
+            <option key={pageSize} value={pageSize}>
+              show per page: {pageSize}
+            </option>
+          ))}
+        </select>
+        {/* pagination buttons */}
         <button onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
           {'<<'}
         </button>{' '}
@@ -200,43 +200,20 @@ const FancyTable = ({ columns }) => {
             }}
             style={{ width: '100px' }}
           />
-        </span>{' '}
-        <select
-          value={pageSize}
-          onChange={(e) => {
-            setPageSize(Number(e.target.value))
-          }}
-        >
-          {[defaultPageSize, 5, 10, 30, 50, 100].map((pageSize) => (
-            <option key={pageSize} value={pageSize}>
-              Show {pageSize}
-            </option>
-          ))}
-        </select>
+        </span>
       </div>
 
-      <div className="btn btn-blue " onClick={() => toggleModal()}>
-        Create Customer
-      </div>
-      <ModalContainer show={showModal} handleClose={toggleModal}>
-        <RegistrationFormModal
-          isRegisteringStaff={false}
-          closeModal={toggleModal}
-          query={[
-            'customers.getCustomerList',
-            {
-              queryPageIndex: queryPageIndex,
-              queryPageSize: queryPageSize,
-            },
-          ]}
+      <div className="my-3 flex flex-row items-center gap-1">
+        <div className="btn btn-blue w-auto " onClick={() => toggleModal()}>
+          Create Customer
+        </div>
+        <GlobalFilter
+          globalFilter={globalFilter}
+          setGlobalFilter={setGlobalFilter}
+          preGlobalFilteredRows={preGlobalFilteredRows}
         />
-      </ModalContainer>
+      </div>
 
-      <GlobalFilter
-        globalFilter={globalFilter}
-        setGlobalFilter={setGlobalFilter}
-        preGlobalFilteredRows={preGlobalFilteredRows}
-      />
       {/* {console.log(globalFilter)} */}
       <table className="responsiveTable" {...getTableProps()}>
         <thead>

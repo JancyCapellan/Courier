@@ -13,8 +13,6 @@ import { useSession } from 'next-auth/react'
 import StaffTable from '@/components/pages/administration/StaffTable'
 // import Checkout from './checkout'
 import Link from 'next/link'
-import getStripe from '@/utils/get-stripejs'
-
 
 const CreateOrder = () => {
   const { data: session, status: sessionStatus } = useSession()
@@ -71,7 +69,7 @@ const CreateOrder = () => {
         <Cart />
 
         <Link href={`/createOrder/checkout/${router.query.customerId}`}>
-          <button className={`btn bg-red-600 w-auto`}>
+          <button className={`btn w-auto bg-red-600`}>
             Review Order before checkout
           </button>
         </Link>

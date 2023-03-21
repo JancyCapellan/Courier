@@ -27,7 +27,7 @@ export default function Layout({ children }) {
   }
 
   return (
-    <div className="flex  h-screen flex-col">
+    <div className="over  flex h-screen flex-col overflow-y-hidden">
       <Header
         closeSidebar={toggleSidebar}
         setCloseSidebar={(t) => setToggleSidebar(t)}

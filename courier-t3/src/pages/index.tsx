@@ -9,6 +9,7 @@ import * as Yup from 'yup'
 import FormikControl from '../components/Formik/FormikControl'
 import { useRouter } from 'next/router'
 import { getLogger } from '../../logging/log-utils'
+import AddToHomeButton from '@/components/AddToHomeButton'
 
 const Home: NextPage = () => {
   // const [session, loadingUser] = useSession()
@@ -44,6 +45,7 @@ const Home: NextPage = () => {
 
   return (
     <div className="flex h-screen flex-col items-center justify-center">
+      {/* <AddToHomeButton /> */}
       <h1 className="mb-10">Courier Shipping</h1>
 
       {router.query?.didRegister}

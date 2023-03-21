@@ -282,8 +282,8 @@ nginx pm2 wokrs with running nextjs in dev mode.
 
 - have to make visuals more mobile friendly
 - pickup table invoiced status similar to current status
-- QR code scanner in app to see contents of order
 
+- QR code scanner in app to see contents of order
 - printing invoce and receipt at customers location
 - finsihing workflow for driver
 - mobile payment

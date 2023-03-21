@@ -102,6 +102,29 @@ h1 {
   @apply mb-4 mt-4 text-center text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl;
 }
 
+select {
+  @apply block w-full rounded-lg border border-gray-600 bg-gray-700  p-2.5 text-sm text-white placeholder-gray-400 ring-blue-500;
+}
+
+.pagination {
+  @apply flex flex-row gap-1;
+}
+
+.pagination button {
+  @apply btn btn-blue;
+}
+.pagination select {
+  @apply w-min bg-blue-500;
+}
+
+input[type='text'],
+input[type='number'] {
+  @apply rounded-md bg-gray-300 text-black;
+}
+
+input[type='date'] {
+  @apply border-black;
+}
 /* h2 { */
 /*   @apply */
 /* } */
