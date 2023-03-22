@@ -21,23 +21,61 @@ import { trpc } from '@/utils/trpc'
 import { useQueryClient } from 'react-query'
 // import { makeOrder } from './makeData.mjs'
 
-const IndeterminateCheckbox = React.forwardRef(function ICheckbox(
-  { indeterminate, ...rest },
-  ref
-) {
-  const defaultRef = React.useRef()
-  const resolvedRef = ref || defaultRef
+// ! next-dev.js?3515:20 Warning: Functions are not valid as a React child. This may happen if you return a Component instead of <Component /> from render. Or maybe you meant to call this function rather than return it.next-dev.js?3515:20 Warning: Functions are not valid as a React child. This may happen if you return a Component instead of <Component /> from render. Or maybe you meant to call this function rather than return it.
+// const IndeterminateCheckbox = React.forwardRef(function ICheckbox(
+//   { indeterminate, ...rest },
+//   ref
+// ) {
+//   const defaultRef = React.useRef()
+//   const resolvedRef = ref || defaultRef
+
+//   React.useEffect(() => {
+//     resolvedRef.current.indeterminate = indeterminate
+//   }, [resolvedRef, indeterminate])
+
+//   return (
+//     <>
+//       <input type="checkbox" ref={resolvedRef} {...rest} />
+//     </>
+//   )
+// })
+
+const IndeterminateCheckbox = ({ indeterminate, className = '', ...rest }) => {
+  const ref = React.useRef(null)
 
   React.useEffect(() => {
-    resolvedRef.current.indeterminate = indeterminate
-  }, [resolvedRef, indeterminate])
+    if (typeof indeterminate === 'boolean') {
+      ref.current.indeterminate = !rest.checked && indeterminate
+    }
+  }, [ref, indeterminate])
 
   return (
-    <>
-      <input type="checkbox" ref={resolvedRef} {...rest} />
-    </>
+    <input
+      type="checkbox"
+      ref={ref}
+      className={className + ' cursor-pointer'}
+      {...rest}
+    />
   )
-})
+}
+
+// const IndeterminateCheckbox = React.forwardRef(
+//   ({ indeterminate, ...rest }, ref) => {
+//     const defaultRef = React.useRef()
+//     const resolvedRef = ref || defaultRef
+
+//     React.useEffect(() => {
+//       resolvedRef.current.indeterminate = indeterminate
+//     }, [resolvedRef, indeterminate])
+
+//     return (
+//       <>
+//         <input type="checkbox" ref={resolvedRef} {...rest} />
+//       </>
+//     )
+//   }
+// )
+// IndeterminateCheckbox.displayName = 'IndeterminateCheckbox'
 
 // Define a default UI for filtering
 function DefaultColumnFilter({
@@ -110,8 +148,8 @@ const PickupListTable = () => {
   } = trpc.useQuery(['invoice.getPickupDriversAndZones'], {
     // keepPreviousData: true,
     // staleTime: Infinity,
-    refetchOnWindowFocus: 'always',
-    refetchOnMount: 'always',
+    // refetchOnWindowFocus: 'always',
+    // refetchOnMount: 'always',
   })
 
   const {
@@ -119,6 +157,7 @@ const PickupListTable = () => {
     isSuccess: allOrdersIsSuccess,
     isLoading: allOrdersIsLoading,
     refetch: refetchAllOrders,
+    isRefetching: isRefetchingAllOrders,
     error,
   } = trpc.useQuery(
     [
@@ -127,9 +166,11 @@ const PickupListTable = () => {
     ],
     {
       keepPreviousData: true,
-      // staleTime: Infinity,
-      refetchOnWindowFocus: true, // onyl works when data is stale
-      refetchOnMount: 'always',
+      // staleTime: 100,
+      // staleTime: 100,
+
+      refetchOnWindowFocus: 'always', // onyl works when data is stale
+      // refetchOnMount: 'always',
     }
   )
 
@@ -146,8 +187,8 @@ const PickupListTable = () => {
             { queryPageIndex: queryPageIndex, queryPageSize: queryPageSize },
           ],
           (oldData) => {
-            console.log({ data })
-            console.log({ oldData })
+            // console.log({ data })
+            // console.log({ oldData })
 
             let changedOrder = oldData.orders.filter(
               (order) => order.id === data.id
@@ -157,7 +198,7 @@ const PickupListTable = () => {
               (order) => order.id === data.id
             )
 
-            console.log({ changedOrderIndex })
+            // console.log({ changedOrderIndex })
 
             let unchangedOrders = oldData.orders.filter(
               (order) => order.id !== data.id
@@ -180,7 +221,7 @@ const PickupListTable = () => {
             }
 
             // return [data.pickupDriver, ...oldData]
-            console.log({ updatedOrder })
+            // console.log({ updatedOrder })
 
             // console.log({
             //   orderCount: oldData.orderCount,
@@ -192,7 +233,7 @@ const PickupListTable = () => {
             //   orders: [...oldData.orders, changedOrder[0]],
             // }
             let newData = (oldData.orders[changedOrderIndex] = updatedOrder)
-            console.log({ newData })
+            // console.log({ newData })
 
             return {
               orderCount: oldData.orderCount,
@@ -208,9 +249,42 @@ const PickupListTable = () => {
   const changeDriverForMultipleOrders = trpc.useMutation(
     ['invoice.changeManyOrdersPickupDriver'],
     {
-      onSuccess: async (data) => {
-        console.log({ data })
+      // onSuccess: (data) => {
+      //   // console.log('ids', data)
+
+      //   let orderIds = data.orderIds
+
+      //   console.log({ orderIds })
+
+      //   queryClient.setQueryData(
+      //     [
+      //       'invoice.getAllOrders',
+      //       { queryPageIndex: queryPageIndex, queryPageSize: queryPageSize },
+      //     ],
+      //     (oldData) => {
+      //       if (orderIds.length === 0) {
+      //         console.log('no orders selected')
+      //         return oldData
+      //       }
+      //       console.log({ oldData })
+
+      //       let changedOrders = oldData.orders.filter((order) => {
+      //         return orderIds.includes(order.id)
+      //       })
+
+      //       console.log({ changedOrders })
+
+      //       return oldData
+      //     }
+      //   )
+      // },
+
+      onSuccess: async () => {
+        console.log('fetching Orders after mutation success')
         await refetchAllOrders()
+      },
+      onError: () => {
+        console.error('WTF multiple Driver select failed')
       },
     }
   )
@@ -455,22 +529,21 @@ const PickupListTable = () => {
     useSortBy,
     usePagination,
     useRowSelect,
-    // hook to add multiselect column checkboxes
     (hooks) => {
       hooks.visibleColumns.push((columns) => [
-        // Let's make a column for selection
         {
           id: 'selection',
-          // The header can use the table's getToggleAllRowsSelectedProps method
-          // to render a checkbox
+          // Header: 'Select',
+          // groupByBoundary: true,
+
           Header: 'Select',
+          // TODO: this should wrok becuase its from the offical example but errors
+          // ! REACT KEEPS THINKING THIS A FUNCTION AND NONT COMPO
           // Header: ({ getToggleAllRowsSelectedProps }) => (
           //   <div>
           //     <IndeterminateCheckbox {...getToggleAllRowsSelectedProps()} />
           //   </div>
           // ),
-          // The cell can use the individual row's getToggleRowSelectedProps method
-          // to the render a checkbox
           Cell: ({ row }) => (
             <div>
               <IndeterminateCheckbox {...row.getToggleRowSelectedProps()} />
@@ -524,7 +597,7 @@ const PickupListTable = () => {
             id="multiDriverSelect"
             className="w-min"
             onChange={(e) => {
-              console.log('pickup driver id', e.target.value)
+              // console.log('pickup driver id', e.target.value)
               // setMultiSelectPickupDriver(e.target.value)
               if (e.target.value !== 'no') {
                 changeDriverForMultipleOrders.mutate({
@@ -549,6 +622,7 @@ const PickupListTable = () => {
         <></>
       )}
 
+      {/* pagination */}
       <div className="pagination">
         {/* show per page */}
         <select
@@ -612,7 +686,7 @@ const PickupListTable = () => {
                       ? column.isSortedDesc
                         ? ' 🔽'
                         : ' 🔼'
-                      : ' ↕'}
+                      : ' '}
                   </span>
                 </th>
               ))}

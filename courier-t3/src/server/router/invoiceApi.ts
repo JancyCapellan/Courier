@@ -169,6 +169,8 @@ export const invoiceApi = createProtectedRouter()
 
         return removedPickupDriver
       }
+
+      // note: returns the numbner of orders changed
       const changedManyOrdersPickupDriver = await ctx.prisma.order.updateMany({
         where: {
           id: {
@@ -179,7 +181,9 @@ export const invoiceApi = createProtectedRouter()
           pickupDriverId: input.newPickUpDriverId,
         },
       })
-      return changedManyOrdersPickupDriver
+      return {
+        orderIds: input.orderIds,
+      }
     },
   })
   .query('getOrderById', {

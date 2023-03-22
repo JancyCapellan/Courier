@@ -28,8 +28,7 @@ export function createProtectedStaffRouter() {
     if (
       !ctx.session ||
       !ctx.session.user ||
-      ctx.session.user.role !== 'ADMIN' ||
-      'STAFF'
+      ctx.session.user.role !== 'ADMIN'
     ) {
       throw new trpc.TRPCError({ code: 'UNAUTHORIZED' })
     }
