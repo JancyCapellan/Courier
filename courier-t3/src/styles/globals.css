@@ -39,6 +39,7 @@ th {
 .responsiveTable {
   width: 100%;
   border-collapse: collapse;
+  margin-bottom: 4em;
 }
 
 .responsiveTable td .tdBefore {
@@ -99,7 +100,7 @@ th {
 }
 
 h1 {
-  @apply mb-4 mt-4 text-center text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl;
+  @apply mb-3 mt-1 text-center text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl;
 }
 
 select {
