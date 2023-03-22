@@ -136,23 +136,77 @@ const PickupListTable = () => {
   // to use data have to make status check for each call, consolidating calls into one route will remvoe those multiple calls but i will have to make a new router and return a new shape for the entire page. currently trying to
 
   const changeOrderPickupDriver = trpc.useMutation(
-    'invoice.changeOrderPickupDriver'
-    // {
-    // TODO: create optimistic updates to reduce refetches
-    //   onSuccess: (data) => {
-    //     // console.log('edit address', data)
-    //     queryClient.setQueryData(
-    //       ['invoice.getOrderById', { orderId: data.id }],
-    //       (oldData) => {
-    //         return [data.pickupDriver, ...oldData]
-    //       }
-    //     )
-    //     // alert('user info edit completed')
-    //   },
-    // }
+    ['invoice.changeOrderPickupDriver'],
+    {
+      // TODO: create optimistic updates to reduce refetches
+      onSuccess: (data) => {
+        // console.log('edit address', data)
+        queryClient.setQueryData(
+          [
+            'invoice.getAllOrders',
+            { queryPageIndex: queryPageIndex, queryPageSize: queryPageSize },
+          ],
+          (oldData) => {
+            console.log({ data })
+            console.log({ oldData })
+
+            let changedOrder = oldData.orders.filter(
+              (order) => order.id === data.id
+            )
+
+            let changedOrderIndex = oldData.orders.findIndex(
+              (order) => order.id === data.id
+            )
+
+            console.log({ changedOrderIndex })
+
+            let unchangedOrders = oldData.orders.filter(
+              (order) => order.id !== data.id
+            )
+
+            // console.log({ unchangedOrders })
+
+            // console.log('id', data?.pickupDriver?.id)
+
+            let updatedOrder = {
+              ...changedOrder[0],
+              pickupDriverId:
+                data?.pickupDriver?.id !== undefined
+                  ? data?.pickupDriver?.id
+                  : null,
+              pickupDriver: {
+                firstName: data?.pickupDriver?.firstName,
+                lastName: data?.pickupDriver?.lastName,
+              },
+            }
+
+            // return [data.pickupDriver, ...oldData]
+            console.log({ updatedOrder })
+
+            // console.log({
+            //   orderCount: oldData.orderCount,
+            //   orders: [...unchangedOrders, updatedOrder],
+            // })
+
+            // return {
+            //   orderCount: oldData.orderCount,
+            //   orders: [...oldData.orders, changedOrder[0]],
+            // }
+            let newData = (oldData.orders[changedOrderIndex] = updatedOrder)
+            console.log({ newData })
+
+            return {
+              orderCount: oldData.orderCount,
+              orders: oldData.orders,
+            }
+          }
+        )
+        // alert('user info edit completed')
+      },
+    }
   )
 
-  const mutationManyPickupDriver = trpc.useMutation(
+  const changeDriverForMultipleOrders = trpc.useMutation(
     ['invoice.changeManyOrdersPickupDriver'],
     {
       onSuccess: () => {
@@ -473,7 +527,7 @@ const PickupListTable = () => {
               console.log('pickup driver id', e.target.value)
               // setMultiSelectPickupDriver(e.target.value)
               if (e.target.value !== 'no') {
-                mutationManyPickupDriver.mutate({
+                changeDriverForMultipleOrders.mutate({
                   orderIds: selectedFlatRows.map((row) => row.original.id),
                   newPickUpDriverId: e.target.value,
                 })

@@ -130,7 +130,13 @@ export const invoiceApi = createProtectedRouter()
         },
         select: {
           id: true,
-          pickupDriver: true,
+          pickupDriver: {
+            select: {
+              id: true,
+              firstName: true,
+              lastName: true,
+            },
+          },
         },
       })
       // console.log(
