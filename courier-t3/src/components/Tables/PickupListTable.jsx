@@ -138,7 +138,6 @@ const PickupListTable = () => {
   const changeOrderPickupDriver = trpc.useMutation(
     ['invoice.changeOrderPickupDriver'],
     {
-      // TODO: create optimistic updates to reduce refetches
       onSuccess: (data) => {
         // console.log('edit address', data)
         queryClient.setQueryData(
@@ -209,8 +208,9 @@ const PickupListTable = () => {
   const changeDriverForMultipleOrders = trpc.useMutation(
     ['invoice.changeManyOrdersPickupDriver'],
     {
-      onSuccess: () => {
-        refetchAllOrders()
+      onSuccess: async (data) => {
+        console.log({ data })
+        await refetchAllOrders()
       },
     }
   )
