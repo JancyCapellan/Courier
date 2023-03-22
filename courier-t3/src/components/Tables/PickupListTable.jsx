@@ -462,24 +462,28 @@ const PickupListTable = () => {
         />
       </div>
 
-      {/* // TODO */}
       {/* multidriver select */}
       {orderOptionsIsSuccess ? (
-        <div className="">
+        <div className="w-max bg-gray-200">
           <label htmlFor="multiDriverSelect">Select Multiple Drivers: </label>
           <select
             id="multiDriverSelect"
             className="w-min"
             onChange={(e) => {
-              // console.log('pickup driver id', e.target.value)
+              console.log('pickup driver id', e.target.value)
               // setMultiSelectPickupDriver(e.target.value)
-              mutationManyPickupDriver.mutate({
-                orderIds: selectedFlatRows.map((row) => row.original.id),
-                newPickUpDriverId: e.target.value,
-              })
+              if (e.target.value !== 'no') {
+                mutationManyPickupDriver.mutate({
+                  orderIds: selectedFlatRows.map((row) => row.original.id),
+                  newPickUpDriverId: e.target.value,
+                })
+              } else {
+                console.log('no choice selected')
+              }
             }}
           >
-            <option value={null}> multi-driver select </option>
+            <option value={'no'}>Select Driver for Multiple orders</option>
+            <option value={null}>none</option>
             {orderOptions.drivers.map((driver) => (
               <option key={driver.id} value={driver.id}>
                 {driver.firstName} {driver.lastName}

@@ -148,6 +148,21 @@ export const invoiceApi = createProtectedRouter()
     }),
     async resolve({ ctx, input }) {
       console.log('OrderIds:', input.orderIds)
+
+      if (input.newPickUpDriverId === 'none') {
+        const removedPickupDriver = await ctx.prisma.order.updateMany({
+          where: {
+            id: {
+              in: input.orderIds,
+            },
+          },
+          data: {
+            pickupDriverId: null,
+          },
+        })
+
+        return removedPickupDriver
+      }
       const changedManyOrdersPickupDriver = await ctx.prisma.order.updateMany({
         where: {
           id: {
