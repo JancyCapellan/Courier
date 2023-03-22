@@ -63,9 +63,7 @@ const CreateOrder = () => {
 
         <h1>Shipping Details</h1>
         <SenderFormAdmin />
-        <h1>Choose Services</h1>
         <Items />
-        <h1>review order</h1>
         <Cart />
 
         <Link href={`/createOrder/checkout/${router.query.customerId}`}>

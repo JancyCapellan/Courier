@@ -14,7 +14,9 @@ const Employees = () => {
         <button className="btn btn-blue" onClick={() => setShowModal(true)}>
           Create Staff
         </button>
-        <h1>Staff Manager</h1>
+        <h1>ADMINS</h1>
+        <h1>drivers</h1>
+        <h1>warehouse </h1>
 
         <ModalContainer show={showModal} handleClose={handleModalClose}>
           <RegistrationFormModal

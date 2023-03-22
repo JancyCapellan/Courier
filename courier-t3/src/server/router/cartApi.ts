@@ -57,6 +57,24 @@ async function findOrCreateCart(prisma, userId, customerId) {
   return cart
 }
 
+async function getCartTotalCost(prisma, cartId) {
+  try {
+    const total = await prisma.cart.findFirst({
+      where: {
+        cartId: cartId,
+      },
+      select: {
+        totalCost: true,
+      },
+    })
+    if (!total.totalCost) return 0
+
+    return total.totalCost
+  } catch (error) {
+    console.log({ error })
+  }
+}
+
 export const cartApi = createProtectedRouter()
   .query('getCartSession', {
     input: z.object({
@@ -126,6 +144,7 @@ export const cartApi = createProtectedRouter()
             },
           },
           select: {
+            totalCost: true,
             items: {
               select: {
                 quantity: true,
@@ -148,6 +167,7 @@ export const cartApi = createProtectedRouter()
           },
         })
         // console.log('cartSession:', cartSession)
+
         return cartSession
       } catch (error) {
         console.error('error findign cart', error)
@@ -160,7 +180,7 @@ export const cartApi = createProtectedRouter()
       customerId: z.string(),
       item: z.object({
         name: z.string(),
-        price: z.number(), // not needed since items are connected to the itemTable in which the order would have recieved its details
+        // price: z.number(), // not needed since items are connected to the itemTable in which the order would have recieved its details
         amount: z.number(),
         productId: z.number(),
       }),
@@ -201,8 +221,31 @@ export const cartApi = createProtectedRouter()
         update: {
           quantity: input.item.amount + prevQty,
         },
+        include: {
+          product: {
+            select: {
+              price: true,
+            },
+          },
+        },
       })
-      console.log('item added to cart:', addedItem)
+
+      let totalCost = await getCartTotalCost(ctx.prisma, cartId)
+      console.log(
+        'item added to cart:',
+        addedItem,
+        totalCost,
+        addedItem.product.price,
+        addedItem.quantity
+      )
+      const updatedCartTotal = await ctx.prisma.cart.update({
+        where: {
+          cartId: cartId,
+        },
+        data: {
+          totalCost: totalCost + addedItem.product.price * input.item.amount,
+        },
+      })
       return addedItem
     },
   })
@@ -211,12 +254,25 @@ export const cartApi = createProtectedRouter()
       cartId: z.string(),
     }),
     async resolve({ ctx, input }) {
-      const clearedCartSession = await ctx.prisma.cartItem.deleteMany({
-        where: {
-          cartId: input.cartId,
-        },
-      })
-      return clearedCartSession
+      try {
+        const clearedCartSession = await ctx.prisma.cartItem.deleteMany({
+          where: {
+            cartId: input.cartId,
+          },
+        })
+
+        const clearedTotalCost = await ctx.prisma.cart.update({
+          where: {
+            cartId: input.cartId,
+          },
+          data: {
+            totalCost: 0,
+          },
+        })
+        return true
+      } catch (error) {
+        throw error
+      }
     },
   })
   .mutation('removeItemFromCart', {
@@ -225,15 +281,42 @@ export const cartApi = createProtectedRouter()
       cartId: z.string(),
     }),
     async resolve({ ctx, input }) {
-      const removedItem = await ctx.prisma.cartItem.delete({
-        where: {
-          CartItemId: {
-            productId: input.productId,
+      try {
+        const removedItem = await ctx.prisma.cartItem.delete({
+          where: {
+            CartItemId: {
+              productId: input.productId,
+              cartId: input.cartId,
+            },
+          },
+          select: {
+            quantity: true,
+            product: {
+              select: {
+                price: true,
+              },
+            },
+          },
+        })
+
+        let totalCost = await getCartTotalCost(ctx.prisma, input.cartId)
+        const totalCostAfterRemove = await ctx.prisma.cart.update({
+          where: {
             cartId: input.cartId,
           },
-        },
-      })
-      return removedItem
+          data: {
+            totalCost:
+              totalCost - removedItem.product.price * removedItem.quantity,
+          },
+          select: {
+            totalCost: true,
+          },
+        })
+
+        return totalCostAfterRemove.totalCost
+      } catch (error) {
+        throw error
+      }
     },
   })
   .mutation('toggleCartItemAmount', {
@@ -244,20 +327,46 @@ export const cartApi = createProtectedRouter()
       currentQuantity: z.number(),
     }),
     async resolve({ ctx, input }) {
-      let quantityChange = input.toggleType === 'inc' ? 1 : -1
-      console.log(quantityChange)
-      const removedItem = await ctx.prisma.cartItem.update({
-        where: {
-          CartItemId: {
-            productId: input.productId,
+      try {
+        let quantityChange = input.toggleType === 'inc' ? 1 : -1
+        console.log(quantityChange)
+        const removedItem = await ctx.prisma.cartItem.update({
+          where: {
+            CartItemId: {
+              productId: input.productId,
+              cartId: input.cartId,
+            },
+          },
+          data: {
+            quantity: input.currentQuantity + quantityChange,
+          },
+          select: {
+            product: {
+              select: {
+                price: true,
+              },
+            },
+          },
+        })
+
+        let totalCost = await getCartTotalCost(ctx.prisma, input.cartId)
+
+        const totalCostAfterToggle = await ctx.prisma.cart.update({
+          where: {
             cartId: input.cartId,
           },
-        },
-        data: {
-          quantity: input.currentQuantity + quantityChange,
-        },
-      })
-      return removedItem
+          data: {
+            totalCost: totalCost + removedItem.product.price * quantityChange,
+          },
+          select: {
+            totalCost: true,
+          },
+        })
+      } catch (error) {
+        throw error
+      }
+
+      return true
     },
   })
   .mutation('saveAddressesFormToCart', {

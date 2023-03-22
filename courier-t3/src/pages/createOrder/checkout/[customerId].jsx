@@ -1,5 +1,6 @@
 //@ts-nocheck
 import Layout from '@/components/Layout'
+import Cart from '@/components/pages/order/CreateOrder/Cart'
 import { trpc } from '@/utils/trpc'
 import { useSession } from 'next-auth/react'
 import Link from 'next/link'
@@ -155,9 +156,9 @@ const Checkout = () => {
       {/* <p>EMAIL: {customerEmail} </p> */}
 
       <div>
-        <h2>addresses</h2>
+        <h2 className="font-bold"> Cart Addresses</h2>
         <div className="md: flex flex-col rounded border-2 border-solid border-black">
-          <h3>shipper</h3>
+          <h3 className="font-bold">shipper</h3>
           <p>name: {cart?.addresses[0]?.firstName}</p>
           <p>ID Number:</p>
           <p>Address: {cart?.addresses[0]?.address}</p>
@@ -168,7 +169,7 @@ const Checkout = () => {
           <p>telephone: {cart?.addresses[0]?.telephone}</p>
         </div>
         <div className="md: flex flex-col rounded border-2 border-solid border-black">
-          <h3>reciever</h3>
+          <h3 className="font-bold">reciever</h3>
           <p>name: {cart?.addresses[1]?.firstName}</p>
           <p>ID Number:</p>
           <p>Address: {cart?.addresses[1]?.address}</p>
@@ -181,16 +182,8 @@ const Checkout = () => {
       </div>
 
       <section>
-        <h2>Item list</h2>
-        {cart?.items.map((item) => {
-          // console.log('item,', item)
-          return (
-            <div key={item.product.name} className="border- rounded border-2 ">
-              <p>item: {item.product.name}</p>
-              <p> qty: {item.quantity}</p>
-            </div>
-          )
-        })}
+        <h2 className="font-bold">Cart Item List</h2>
+        <Cart />
       </section>
 
       {/* // TODO: change payment flow for admins/staff for customer orders with stripe. might have to do with partial payments  */}
@@ -201,17 +194,19 @@ const Checkout = () => {
           className="btn btn-blue"
           onClick={() => {
             // note: Using the asPath field may lead to a mismatch between client and server if the page is rendered using server-side rendering or automatic static optimization. Avoid using asPath until the isReady field is true.
-            if (router.isReady) {
-              console.log('WTF')
-              createCheckoutSession.mutate({
-                userId: session?.user?.id,
-                customerId: router.query.customerId,
-                redirectUrl: router.asPath,
-                customerEmail: customerEmail.email,
-              })
-            } else {
-              // TODO: change to modal/toast, maybe crossplatorm issue
-              alert('try again, router wasnt ready')
+            if (confirm('Press OK if order is ready ')) {
+              if (router.isReady) {
+                console.log('WTF')
+                createCheckoutSession.mutate({
+                  userId: session?.user?.id,
+                  customerId: router.query.customerId,
+                  redirectUrl: router.asPath,
+                  customerEmail: customerEmail.email,
+                })
+              } else {
+                // TODO: change to modal/toast, maybe crossplatorm issue
+                alert('try again, router wasnt ready')
+              }
             }
           }}
         >
@@ -222,7 +217,8 @@ const Checkout = () => {
         <button
           className="btn btn-blue"
           onClick={() => {
-            createPendingOrderWrapper('CASH')
+            if (confirm('Press OK if order is ready '))
+              createPendingOrderWrapper('CASH')
           }}
         >
           cash
@@ -230,7 +226,8 @@ const Checkout = () => {
         <button
           className="btn btn-blue"
           onClick={() => {
-            createPendingOrderWrapper('CHECK')
+            if (confirm('Press OK if order is ready '))
+              createPendingOrderWrapper('CHECK')
           }}
         >
           check
@@ -239,7 +236,8 @@ const Checkout = () => {
         <button
           className="btn btn-blue"
           onClick={() => {
-            createPendingOrderWrapper('QUICKPAY')
+            if (confirm('Press OK if order is ready '))
+              createPendingOrderWrapper('QUICKPAY')
           }}
         >
           quickpay

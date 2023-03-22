@@ -12,10 +12,10 @@ const Items = () => {
   return (
     <>
       <section>
-        <h1> Items</h1>
+        <h1> Products</h1>
 
-        <section className='items-section'>
-          <div className='itemsList'>
+        <section className="items-section">
+          <div className="itemsList">
             {allProductsStatus === 'success' ? (
               allProducts.map((item) => {
                 return <Item key={item.id} {...item} />

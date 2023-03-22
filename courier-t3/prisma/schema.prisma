@@ -71,29 +71,28 @@ model address {
 }
 
 model Order {
-  id              Int               @unique @default(autoincrement())
-  customerUserId  String // thecustomer who sent the package, so client/shipper
-  customer        User              @relation("CUSTOMER", fields: [customerUserId], references: [id])
-  creatorUserId   String
-  creatorUser     User              @relation("creatorUser", fields: [creatorUserId], references: [id])
-  timePlaced      DateTime          @default(now())
-  paymentType     String // set at checkout //stripe webhooks can change this as necessary
-  statusMessage   String
-  status          orderStatus       @relation(fields: [statusMessage], references: [message])
-  paymentStatus   String
-  paymentStatuses paymentStatus     @relation(fields: [paymentStatus], references: [status])
-  pickupDriverId  String?
-  pickupDriver    User?             @relation(name: "DRIVER", fields: [pickupDriverId], references: [id])
-  pickupDatetime  DateTime?
-  items           OrderItem[]
-  addresses       OrderAddressDuo[]
-  pickupZoneId    Int?
-  pickupZone      pickupZone?       @relation(fields: [pickupZoneId], references: [id])
-  containerId     Int?
-  container       containers?       @relation(fields: [containerId], references: [id])
-
+  id                Int               @unique @default(autoincrement())
+  customerUserId    String // thecustomer who sent the package, so client/shipper
+  customer          User              @relation("CUSTOMER", fields: [customerUserId], references: [id])
+  creatorUserId     String
+  creatorUser       User              @relation("creatorUser", fields: [creatorUserId], references: [id])
+  timePlaced        DateTime          @default(now())
+  paymentType       String // set at checkout //stripe webhooks can change this as necessary
+  statusMessage     String
+  status            orderStatus       @relation(fields: [statusMessage], references: [message])
+  paymentStatus     String
+  paymentStatuses   paymentStatus     @relation(fields: [paymentStatus], references: [status])
+  pickupDriverId    String?
+  pickupDriver      User?             @relation(name: "DRIVER", fields: [pickupDriverId], references: [id])
+  pickupDatetime    DateTime?
+  items             OrderItem[]
+  addresses         OrderAddressDuo[]
+  pickupZoneId      Int?
+  pickupZone        pickupZone?       @relation(fields: [pickupZoneId], references: [id])
+  containerId       Int?
+  container         containers?       @relation(fields: [containerId], references: [id])
   stripeCheckoutUrl String?
-  stripeCheckoutId  String? @unique //need stripe informmation to connect order to relevent stripe checkout session, with this id i can query specific orders when updating with information from stripe checkout
+  stripeCheckoutId  String?           @unique //need stripe informmation to connect order to relevent stripe checkout session, with this id i can query specific orders when updating with information from stripe checkout
 
   stripePaymentIntent String? @unique
   stripeReceiptUrl    String?
@@ -230,6 +229,7 @@ model cart {
   cartCreator    User                 @relation(fields: [creatingUserId], references: [id], name: "cartCreator")
   items          cartItem[]
   addresses      CartOrderAddresses[]
+  totalCost      Int?
   // order addresses saved in cart table before being added to order table
   // current orderForm with addresses
 

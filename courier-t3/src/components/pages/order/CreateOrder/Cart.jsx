@@ -9,6 +9,8 @@ const Cart = () => {
   const router = useRouter()
   const setRefetchCart = useGlobalStore((state) => state.setRefetchCart)
 
+  const [total, setTotal] = useState(0)
+
   const { data: session, status: sessionStatus } = useSession()
   const {
     data: cartSession,
@@ -45,7 +47,8 @@ const Cart = () => {
   return (
     <section className="flex flex-col items-center">
       <h1>Current Cart</h1>
-      <p>CartId: {cartSession?.cartId}</p>
+      <p>Total Cost: ${(cartSession?.totalCost / 100).toLocaleString('en')}</p>
+      {/* <p>CartId: {cartSession?.cartId}</p> */}
 
       {cartSession?.items.map((item) => {
         return (
