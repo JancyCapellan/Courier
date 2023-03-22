@@ -170,7 +170,7 @@ const PickupListTable = () => {
       // staleTime: 100,
 
       refetchOnWindowFocus: 'always', // onyl works when data is stale
-      // refetchOnMount: 'always',
+      refetchOnMount: 'always',
     }
   )
 

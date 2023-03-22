@@ -195,9 +195,8 @@ export default withTRPC<AppRouter>({
       queryClientConfig: {
         defaultOptions: {
           queries: {
-            // data is always fresh and never garabage collected after last observer is dismounted
             cacheTime: 1000 * 60 * 10,
-            staleTime: 1000 * 60 * 5,
+            staleTime: 1000 * 60,
           },
         },
       },

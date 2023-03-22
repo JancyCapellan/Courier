@@ -91,6 +91,28 @@ export const invoiceApi = createProtectedRouter()
       }
     },
   })
+
+  .query('getAllDriverOrders', {
+    input: z.object({
+      driverId: z.string(),
+    }),
+    async resolve({ ctx, input }) {
+      try {
+        const allDriverOrders = await ctx.prisma.order.findMany({
+          where: {
+            pickupDriverId: input.driverId,
+          },
+          // TODO: select order information needed to view orders
+        })
+
+        console.log({ allDriverOrders })
+        return allDriverOrders
+      } catch (error) {
+        throw error
+      }
+    },
+  })
+
   .mutation('changeOrderPickupDriver', {
     input: z.object({
       orderId: z.number(),

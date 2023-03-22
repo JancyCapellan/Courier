@@ -6,6 +6,7 @@ import { FaFileInvoiceDollar, FaWarehouse } from 'react-icons/fa'
 import { MdAdminPanelSettings } from 'react-icons/md'
 import { useSession } from 'next-auth/react'
 import { TbFileInvoice } from 'react-icons/tb'
+import { BsTruck } from 'react-icons/bs'
 // cname is className
 // { staff:[], cust: [], admin:[]}
 
@@ -41,9 +42,9 @@ export const routes = {
     icon: <FaFileInvoiceDollar />,
   },
   pickups: {
-    title: 'Pickup Manager',
-    path: '/pickup',
-    icon: '',
+    title: 'Pickups',
+    path: '/drivers',
+    icon: <BsTruck />,
   },
   driverPage: {
     title: 'Driver Page',
