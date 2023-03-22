@@ -70,15 +70,6 @@ model address {
   user       User    @relation(fields: [userId], references: [id])
 }
 
-// enum OrderLocation {
-//   withShipper
-//   BRONXwarehouse
-//   CotainerBoat
-//   DRwarehouse
-//   MIAMIwarehouse
-//   withReciever
-// }
-
 model Order {
   id              Int               @unique @default(autoincrement())
   customerUserId  String // thecustomer who sent the package, so client/shipper
@@ -216,6 +207,7 @@ model warehouse {
   name       String //bronx, Dominican Republic
   supplies   warehouseSupplies[]
   containers containers[]
+  address    String?
   // @@map("warehouseDetails")
 }
 

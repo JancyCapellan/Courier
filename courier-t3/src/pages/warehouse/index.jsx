@@ -1,5 +1,6 @@
 import Layout from '@/components/Layout'
 import FancyTable from '@/components/Tables/FancyTable'
+import PickupListTable from '@/components/Tables/PickupListTable'
 import { trpc } from '@/utils/trpc'
 import { useRouter } from 'next/router'
 import { useState, useMemo } from 'react'
@@ -33,7 +34,6 @@ const Warehouse = () => {
   return (
     // tables showing the orders seperated by warehouse and make reports on those orders by warehouse daily
     <section>
-      <h1>Warehouse</h1>
       <label htmlFor="warehouse-select">
         Select Warehouse:
         <select
@@ -42,6 +42,7 @@ const Warehouse = () => {
             setSelectedWarehouse(e.target.value)
           }}
           id="warehouse-select"
+          className="w-max"
         >
           {['bronx', 'miami', 'santiago'].map((warehouse) => (
             <option key={warehouse} value={warehouse}>
@@ -50,6 +51,7 @@ const Warehouse = () => {
           ))}
         </select>
       </label>
+      <h1>Warehouse</h1>
       <hr className="mx-2 my-2"></hr>
       <div className="flex w-max flex-col items-center gap-2 bg-gray-200">
         <button className="btn btn-blue w-max hover:bg-red-300">
@@ -71,7 +73,7 @@ const Warehouse = () => {
         </button>
       </div>
       <div>Containers</div>
-      per warehouse seelected, show a list of the pacakges at that warehouse,
+      {/* per warehouse seelected, show a list of the pacakges at that warehouse,
       and the batch container they are in,
       <FancyTable
         columns={columns}
@@ -80,7 +82,8 @@ const Warehouse = () => {
           { warehouse: 'bronx' },
           { warehouse: 'bronx' },
         ]}
-      />
+      /> */}
+      {/* <PickupListTable /> */}
     </section>
   )
 }
