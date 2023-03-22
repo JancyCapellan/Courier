@@ -107,7 +107,7 @@ select {
 }
 
 .pagination {
-  @apply flex flex-row gap-1;
+  @apply mt-4 flex flex-row gap-1;
 }
 
 .pagination button {

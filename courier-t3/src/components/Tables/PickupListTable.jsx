@@ -234,6 +234,7 @@ const PickupListTable = () => {
           <>
             {orderOptionsIsSuccess ? (
               <select
+                className="w-max"
                 onChange={(e) => {
                   // console.log('pickup driver id', e.target.value)
                   changeOrderPickupDriver.mutate({
@@ -242,10 +243,16 @@ const PickupListTable = () => {
                   })
                 }}
               >
-                <option value={original.pickupDriverId}>
-                  {original.pickupDriver?.firstName}{' '}
-                  {original.pickupDriver?.lastName}
-                </option>
+                {original.pickupDriverId && (
+                  <option
+                    className="bg-red-400"
+                    value={original.pickupDriverId}
+                  >
+                    {original.pickupDriver?.firstName}{' '}
+                    {original.pickupDriver?.lastName}
+                  </option>
+                )}
+                <option value={null}>none</option>
                 {orderOptions.drivers.map((driver) => (
                   <option key={driver.id} value={driver.id}>
                     {driver.firstName} {driver.lastName}
@@ -457,9 +464,9 @@ const PickupListTable = () => {
 
       {/* // TODO */}
       {/* multidriver select */}
-      {!orderOptionsIsSuccess ? (
+      {orderOptionsIsSuccess ? (
         <div className="">
-          <label for="multiDriverSelect">Select Multiple Drivers: </label>
+          <label htmlFor="multiDriverSelect">Select Multiple Drivers: </label>
           <select
             id="multiDriverSelect"
             className="w-min"

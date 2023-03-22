@@ -97,12 +97,29 @@ export const invoiceApi = createProtectedRouter()
       newPickUpDriverId: z.string(),
     }),
     async resolve({ ctx, input }) {
-      const id = input.orderId
+      const orderId = input.orderId
       const driverId = input.newPickUpDriverId
       // console.log('updateorderpickupdriver by id:', id, driverId)
+
+      console.log({ driverId })
+      if (driverId === 'none') {
+        const removedPickupDriver = await ctx.prisma.order.update({
+          where: {
+            id: orderId,
+          },
+          data: {
+            pickupDriver: {
+              disconnect: true,
+            },
+          },
+        })
+
+        return removedPickupDriver
+      }
+
       const changedPickupDriver = await ctx.prisma.order.update({
         where: {
-          id: id,
+          id: orderId,
         },
         data: {
           pickupDriver: {

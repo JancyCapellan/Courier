@@ -36,7 +36,7 @@ const InvoicePage = () => {
       { stripePaymentIntent: order?.stripePaymentIntent },
     ],
     {
-      enabled: order?.stripePaymentIntent !== undefined,
+      enabled: order?.stripePaymentIntent !== null,
     }
   )
 
