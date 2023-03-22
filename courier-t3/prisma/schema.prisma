@@ -80,26 +80,26 @@ model address {
 // }
 
 model Order {
-  id             Int               @unique @default(autoincrement())
-  customerUserId String // thecustomer who sent the package, so client/shipper
-  customer       User              @relation("CUSTOMER", fields: [customerUserId], references: [id])
-  creatorUserId  String
-  creatorUser    User              @relation("creatorUser", fields: [creatorUserId], references: [id])
-  timePlaced     DateTime          @default(now())
-  paymentType    String // set at checkout //stripe webhooks can change this as necessary
-  statusMessage  String // id of status, can make into the status string itself if message is unique
-  status         orderStatus       @relation(fields: [statusMessage], references: [message])
-  // location OrderLocation @default(withShipper) // location is one of a list of locations that it is possible for a order to go through during the life time of its journey in the buisness, there will be some overlapping with the location names and the warehouse names. when warehouse location name changes the location list should change to refelect that.
-  location       String?
-  pickupDriverId String?
-  pickupDriver   User?             @relation(name: "DRIVER", fields: [pickupDriverId], references: [id])
-  pickupDatetime DateTime?
-  items          OrderItem[]
-  addresses      OrderAddressDuo[]
-  pickupZoneId   Int?
-  pickupZone     pickupZone?       @relation(fields: [pickupZoneId], references: [id])
-  containerId    Int?
-  container      containers?       @relation(fields: [containerId], references: [id])
+  id              Int               @unique @default(autoincrement())
+  customerUserId  String // thecustomer who sent the package, so client/shipper
+  customer        User              @relation("CUSTOMER", fields: [customerUserId], references: [id])
+  creatorUserId   String
+  creatorUser     User              @relation("creatorUser", fields: [creatorUserId], references: [id])
+  timePlaced      DateTime          @default(now())
+  paymentType     String // set at checkout //stripe webhooks can change this as necessary
+  statusMessage   String
+  status          orderStatus       @relation(fields: [statusMessage], references: [message])
+  paymentStatus   String
+  paymentStatuses paymentStatus     @relation(fields: [paymentStatus], references: [status])
+  pickupDriverId  String?
+  pickupDriver    User?             @relation(name: "DRIVER", fields: [pickupDriverId], references: [id])
+  pickupDatetime  DateTime?
+  items           OrderItem[]
+  addresses       OrderAddressDuo[]
+  pickupZoneId    Int?
+  pickupZone      pickupZone?       @relation(fields: [pickupZoneId], references: [id])
+  containerId     Int?
+  container       containers?       @relation(fields: [containerId], references: [id])
 
   stripeCheckoutUrl String?
   stripeCheckoutId  String? @unique //need stripe informmation to connect order to relevent stripe checkout session, with this id i can query specific orders when updating with information from stripe checkout
@@ -111,6 +111,8 @@ model Order {
   // DONE TODO: REMOVE, no longer needed, products now kept locally istead of using stripe products
   // stripeCheckout Json? @db.JsonB // stripe checkout.session.completed event object that includes the paymentintent id and stripe checkout Id need to query stripe for the line items, that i add locally from the app to the database because stripe is also getting the line items from the app. 
   // stripePaymentIntent Json? @db.JsonB // not needed since checkout object has necessary information
+  // orderLocations   orderLocations? @relation(fields: [orderLocationsId], references: [id])
+  // orderLocationsId Int?
 
   @@id([id, customerUserId, creatorUserId], map: "orderPK")
 }
@@ -156,8 +158,14 @@ model OrderItem {
 
 model orderStatus {
   id      Int     @id @default(autoincrement())
-  message String  @unique
+  message String  @unique @default("awaiting pickup")
   order   Order[]
+}
+
+model paymentStatus {
+  id     Int     @id @default(autoincrement())
+  status String  @unique
+  order  Order[]
 }
 
 model product {

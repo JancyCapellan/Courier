@@ -558,13 +558,23 @@ export const cartApi = createProtectedRouter()
               },
             },
             paymentType: input.paymentType,
+            paymentStatuses: {
+              connectOrCreate: {
+                where: {
+                  status: 'PENDING PAYMENT',
+                },
+                create: {
+                  status: 'PENDING PAYMENT',
+                },
+              },
+            },
             status: {
               connectOrCreate: {
                 where: {
-                  message: 'PENDING PAYMENT',
+                  message: 'awaiting pickup',
                 },
                 create: {
-                  message: 'PENDING PAYMENT',
+                  message: 'awaiting pickup',
                 },
               },
             },
@@ -581,7 +591,7 @@ export const cartApi = createProtectedRouter()
               },
             },
             stripeCheckoutId:
-              // made this way becuase not all orders go through stripe so some may need an empty column, i dont remember why null doesnt work because i could avoid this if input.stripeCheckoutId is null from not exisint already from creating the checkout order
+              // made this way becuase not all orders go through stripe so some may need an empty column, i dont remember why null doesnt work because i could avoid this if input.stripeCheckoutId is null from not exising already from creating the checkout order
               input.stripeCheckoutId !== null // this was the problem stopping the webhook from updating pending order
                 ? input.stripeCheckoutId
                 : undefined,

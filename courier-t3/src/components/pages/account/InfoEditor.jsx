@@ -18,6 +18,12 @@ const InfoEditor = ({ currentUser }) => {
 
   // console.log('editor current user', currentUser)
 
+  //if no currentUser found
+  if (!!!currentUser)
+    return (
+      <div>error. current user not found, database may be down or re-login</div>
+    )
+
   const initialValues = {
     userId: currentUser.id,
     firstName: currentUser.firstName,

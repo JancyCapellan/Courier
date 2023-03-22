@@ -292,6 +292,10 @@ const PickupListTable = () => {
         accessor: 'paymentType',
       },
       {
+        Header: 'Payment',
+        accessor: 'paymentStatus',
+      },
+      {
         Header: 'Batch Container',
         accessor: 'containerId',
       },
@@ -545,8 +549,6 @@ const PickupListTable = () => {
                         : ' 🔼'
                       : ' ↕'}
                   </span>
-                  <p>{column.filterValue}</p>
-                  {/* <Filter column={column} /> */}
                 </th>
               ))}
             </tr>

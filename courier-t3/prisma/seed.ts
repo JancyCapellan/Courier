@@ -14,6 +14,13 @@ async function main() {
         password: 'admin123',
       },
       {
+        email: 'jancycapellan97@email.com',
+        firstName: 'jancy',
+        lastName: 'capellan',
+        role: 'ADMIN',
+        password: '123',
+      },
+      {
         email: 'customerTester@email.com',
         firstName: 'Customer',
         lastName: 'Tester',
@@ -27,24 +34,31 @@ async function main() {
         role: 'DRIVER',
         password: '123',
       },
+      {
+        email: 'johnTester@email.com',
+        firstName: 'John',
+        lastName: 'Tester',
+        role: 'DRIVER',
+        password: '123',
+      },
     ],
   })
 
   // const orderPickupZones = await prisma.
   const invoiceStatuses = await prisma.orderStatus.createMany({
     data: [
-      { message: 'pending payment' },
+      { message: 'awaiting pickup' },
       {
         message: 'With Pickup Driver',
       },
       {
-        message: 'At NYC warehouse',
+        message: 'Arrived at NYC warehouse',
       },
       {
-        message: 'In Container',
+        message: 'In Transit to Next Facility',
       },
       {
-        message: 'At DR warehouse',
+        message: 'Arrived at DR warehouse',
       },
       {
         message: 'Out for delivery',
@@ -52,6 +66,14 @@ async function main() {
       {
         message: 'delivered to reciever',
       },
+    ],
+  })
+
+  const paymentStatuses = await prisma.paymentStatus.createMany({
+    data: [
+      { status: 'pending payment' },
+      { status: 'PAID' },
+      { status: 'CANCELLED' },
     ],
   })
   // console.log('✅ ~ file: seed.ts ~ line 24 ~ main ~ testUsers', testUsers)
