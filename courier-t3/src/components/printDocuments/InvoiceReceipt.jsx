@@ -1,7 +1,8 @@
-import React from 'react'
+import React, { useRef } from 'react'
 import { printDiv, printJsx } from './Print'
 
 const InvoiceReceipt = (order) => {
+  const comp = useRef()
   return (
     <>
       <div id="receipt" className="border-2 border-black">

@@ -609,6 +609,7 @@ export const cartApi = createProtectedRouter()
       stripeCheckoutId: z.string().optional(),
       paymentType: z.enum(['CARD', 'CASH', 'CHECK', 'QUICKPAY', 'STRIPE']),
       stripeCheckoutUrl: z.string().optional(),
+      pickupDateTime: z.string().datetime(),
       // stripePaymentIntent: z.string().optional(),
     }),
     async resolve({ ctx, input }) {
@@ -701,6 +702,7 @@ export const cartApi = createProtectedRouter()
                 data: cartSession?.addresses,
               },
             },
+            pickupDatetime: input?.pickupDateTime,
             stripeCheckoutId:
               // made this way becuase not all orders go through stripe so some may need an empty column, i dont remember why null doesnt work because i could avoid this if input.stripeCheckoutId is null from not exising already from creating the checkout order
               input.stripeCheckoutId !== null // this was the problem stopping the webhook from updating pending order

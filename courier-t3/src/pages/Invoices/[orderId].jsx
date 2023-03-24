@@ -6,6 +6,7 @@ import { QRCodeSVG } from 'qrcode.react'
 import { useState } from 'react'
 import { printJsx } from '@/components/printDocuments/Print'
 import InvoiceReceipt from '@/components/printDocuments/InvoiceReceipt'
+import DateTimeFormat from '@/components/DateTimeFormat'
 
 const InvoicePage = () => {
   const router = useRouter()
@@ -86,6 +87,22 @@ const InvoicePage = () => {
             </button>
           )}
 
+          {/* // TODO button to show option to change pickuptime if route not set */}
+          {/* <button></button>
+
+          <label className="block font-bold" htmlFor="meeting-time">
+            Choose a time for your appointment:
+          </label>
+
+          <input
+            type="datetime-local"
+            id="meeting-time"
+            name="meeting-time"
+            value={order?.pickupDatetime}
+            // min="2018-06-07T00:00"
+            // max="2018-06-14T00:00"
+          /> */}
+
           {/* <iframe id="stripeReceipt" src="google.com"></iframe> */}
 
           {!!order?.stripeCheckoutId && (
@@ -110,6 +127,19 @@ const InvoicePage = () => {
                 <b>pickup Driver: none</b>
               </p>
             )}
+            {/* <DateTimeFormat pickupDatetime={order?.pickupDatetime} /> */}
+            <div className="w-max border border-black">
+              <p className="font-bold underline">pickup time</p>
+              <div>
+                {order?.pickupDatetime?.toLocaleDateString('en-us', {
+                  weekday: 'short',
+                  year: 'numeric',
+                  month: 'short',
+                  day: 'numeric',
+                })}
+              </div>
+              <div>{order?.pickupDatetime?.toLocaleTimeString('en-US')}</div>
+            </div>
             {'\n'}Sender:{order?.customer.firstName} {order?.customer.lastName}
             {'\n'} Country: {order?.addresses[0]?.country}
             {'\n'} Address: {order?.addresses[0]?.address}

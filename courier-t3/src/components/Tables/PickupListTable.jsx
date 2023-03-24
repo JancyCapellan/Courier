@@ -431,6 +431,26 @@ const PickupListTable = () => {
         accessor: 'paymentStatus',
       },
       {
+        Header: 'pickup time',
+        accessor: (data) => {
+          console.log(data.pickupDatetime?.toString())
+
+          return (
+            <p>
+              <div>
+                {data.pickupDatetime?.toLocaleDateString('en-us', {
+                  weekday: 'short',
+                  year: 'numeric',
+                  month: 'short',
+                  day: 'numeric',
+                })}{' '}
+              </div>
+              <div>{data.pickupDatetime?.toLocaleTimeString('en-US')}</div>
+            </p>
+          )
+        },
+      },
+      {
         Header: 'Batch Container',
         accessor: 'containerId',
       },

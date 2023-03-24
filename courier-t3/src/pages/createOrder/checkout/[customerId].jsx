@@ -5,14 +5,24 @@ import { trpc } from '@/utils/trpc'
 import { useSession } from 'next-auth/react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import CreateOrder from '..'
+
+// TODO min pickup date is currently the start of the current day of setting, can possibly make it to be the next day? exclude sundays?
+function getCurrentDate() {
+  let current = new Date().toISOString().split('T')
+  let zTime = '00' + ':' + '00'
+  let dateTime = current[0] + 'T' + zTime
+  return dateTime
+}
 
 // review cart order, addresses, and items, and proceed to stripe checkout and creating an invoice for the order
 const Checkout = () => {
   const router = useRouter()
 
   const { data: session, status: sessionStatus } = useSession()
+
+  const [pickupDateTime, setPickupDateTime] = useState(null)
 
   // TODO: (see forms below) change returned object of data: cart to have explicit addresses, rn it is just explected that index 0 is shipper customer and index 1 is recieving person
   // * NOTE: the cart is based on user and customer id, if the user logged in is the customer making the order it is the same and their cart should show. if its a staff member making an order for someone even if they go to the checkout page for that customer it will be a different cart showing since its the staff making the order. if i want to see the customers current cart, i will need to adda seperate section. therortically, i could make it so /createOrder/checkout/[customerId] means that the checkout for that customer, but that might restrict to having one checkouot per customer, right now a customer can be making a order and an admin can also make them an order, the customer may be saving their order for later
@@ -64,6 +74,7 @@ const Checkout = () => {
       userId: session?.user?.id,
       customerId: router.query.customerId,
       paymentType: paymentType,
+      pickupDateTime: pickupDateTime,
     })
 
     //TODO: SEPERATE account components page by routes
@@ -105,7 +116,7 @@ const Checkout = () => {
     {
       // enabled: sessionStatus === 'authenticated' && !!router.query.customerId,
       onSuccess: (d) => {
-        console.log(d)
+        // console.log(d)
       },
     }
   )
@@ -130,10 +141,15 @@ const Checkout = () => {
   const stripeReturnStatus = router.query?.stripe
 
   const backlink = `/createOrder?customerId=${router.query?.customerId}`
+
+  let currentDate = getCurrentDate()
   return (
     <section>
-      <Link href={backlink}>back to cart</Link>
-
+      <Link href={backlink} passHref>
+        <a className=" border-1 block rounded-sm border-black font-bold">
+          back to cart
+        </a>
+      </Link>
       {stripeReturnStatus === 'cancelled' ? (
         // TODO: make into a modal or alert that can be remove from the page
         <div>
@@ -147,13 +163,31 @@ const Checkout = () => {
         <></>
       )}
       <h1>Review Order Before Checkout</h1>
-
       {/* <p>EMAIL: {customerEmail} </p> */}
-
+      <label className="block font-bold" htmlFor="meeting-time">
+        Choose a time for pickup:
+      </label>
+      {/* // TODO test on IOS may have to change to two INPUTS for DATE and TIME */}
+      <input
+        type="datetime-local"
+        id="meeting-time"
+        name="meeting-time"
+        // value={order?.pickupDatetime}
+        min={currentDate}
+        //      2023-2-24T00:00
+        // min="2023-03-24T00:00"
+        // max="2018-06-14T00:00"
+        // step="300"
+        onChange={(e) => {
+          console.log(e.target.value)
+          let time = e.target.value + ':00.000Z'
+          setPickupDateTime(time)
+        }}
+      />
       <div>
         <h2 className="font-bold"> Cart Addresses</h2>
         <div className="md: flex flex-col rounded border-2 border-solid border-black">
-          <h3 className="font-bold">shipper</h3>
+          <h3 className="font-bold">Pickup Address</h3>
           <p>name: {cart?.addresses[0]?.firstName}</p>
           <p>ID Number:</p>
           <p>Address: {cart?.addresses[0]?.address}</p>
@@ -164,7 +198,7 @@ const Checkout = () => {
           <p>telephone: {cart?.addresses[0]?.telephone}</p>
         </div>
         <div className="md: flex flex-col rounded border-2 border-solid border-black">
-          <h3 className="font-bold">reciever</h3>
+          <h3 className="font-bold">Delivery Address</h3>
           <p>name: {cart?.addresses[1]?.firstName}</p>
           <p>ID Number:</p>
           <p>Address: {cart?.addresses[1]?.address}</p>
@@ -175,12 +209,7 @@ const Checkout = () => {
           <p>telephone: {cart?.addresses[1]?.telephone}</p>
         </div>
       </div>
-
-      <section>
-        <h2 className="font-bold">Cart Item List</h2>
-        <Cart />
-      </section>
-
+      <Cart />
       {/* // TODO: change payment flow for admins/staff for customer orders with stripe. might have to do with partial payments  */}
       <div className="flex flex-row">
         {/* <p>proceed to payment</p> */}
