@@ -49,3 +49,5 @@ test.mts
 
 /public/workbox*
 /public/sw.*
+# /turbo.json
+.turbo

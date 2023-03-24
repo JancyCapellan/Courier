@@ -1,5 +1,6 @@
 import { createRouter } from './context'
 import { z } from 'zod'
+import { TRPCError } from '@trpc/server'
 
 export const publicApiRouter = createRouter()
   .mutation('register', {
@@ -20,7 +21,12 @@ export const publicApiRouter = createRouter()
         // console.log('Registartion Successful:', registrationSuccessful)
         return { message: 'Registartion Successful:', registrationSuccessful }
       } catch (error) {
-        throw error
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'An unexpected error occurred, please try again later.',
+          // optional: pass the original error to retain stack trace
+          cause: error,
+        })
       }
     },
   })

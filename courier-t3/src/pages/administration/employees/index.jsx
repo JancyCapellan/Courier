@@ -15,8 +15,10 @@ const Employees = () => {
           Create Staff
         </button>
         <h1>ADMINS</h1>
-        <h1>drivers</h1>
+        <hr />
         <h1>warehouse </h1>
+        <hr />
+        <h1>drivers</h1>
 
         <ModalContainer show={showModal} handleClose={handleModalClose}>
           <RegistrationFormModal

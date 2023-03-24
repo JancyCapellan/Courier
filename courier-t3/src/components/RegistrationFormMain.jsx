@@ -63,6 +63,9 @@ const RegistrationFormMain = () => {
         }),
       onError: (error) => {
         console.log('registration error:::', error)
+
+        const errorMessage = error.data?.zodError?.fieldErrors.content
+
         router.push({
           pathname: '/',
           query: { didRegister: 'Registartion Failed' },

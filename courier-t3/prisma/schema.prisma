@@ -80,6 +80,7 @@ model Order {
   paymentType       String // set at checkout //stripe webhooks can change this as necessary
   statusMessage     String
   status            orderStatus       @relation(fields: [statusMessage], references: [message])
+  totalCost         Int?
   paymentStatus     String
   paymentStatuses   paymentStatus     @relation(fields: [paymentStatus], references: [status])
   pickupDriverId    String?

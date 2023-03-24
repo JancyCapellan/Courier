@@ -4,9 +4,10 @@ import { useRouter } from 'next/router'
 import { trpc } from '@/utils/trpc'
 import { QRCodeSVG } from 'qrcode.react'
 import { useState } from 'react'
+import { printJsx } from '@/components/printDocuments/Print'
+import InvoiceReceipt from '@/components/printDocuments/InvoiceReceipt'
 
 const InvoicePage = () => {
-  const [totalOrderPriceSum, setTotalOrderPriceSum] = useState(0)
   const router = useRouter()
   const { orderId } = router.query
 
@@ -133,6 +134,9 @@ const InvoicePage = () => {
           </pre>
           {/* <code>STRIPE CHECKOUT:{JSON.stringify(order?.stripeCheckout)}</code> */}
 
+          {/* //TODO: stlye print document */}
+          <InvoiceReceipt />
+
           <table>
             <caption>
               <b>Items For Invoice#{order?.id}</b>
@@ -160,7 +164,7 @@ const InvoicePage = () => {
                 <td></td>
                 <td></td>
                 <td></td>
-                <td>total: ${totalOrderPriceSum}</td>
+                <td>total: ${(order?.totalCost / 100).toLocaleString('en')}</td>
                 {/* TODO: calculate total amount due for all items in the order */}
                 {/* <td>{order.totalPrice}</td> */}
               </tr>

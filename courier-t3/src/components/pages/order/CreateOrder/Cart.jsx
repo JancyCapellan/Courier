@@ -47,7 +47,12 @@ const Cart = () => {
   return (
     <section className="flex flex-col items-center">
       <h1>Current Cart</h1>
-      <p>Total Cost: ${(cartSession?.totalCost / 100).toLocaleString('en')}</p>
+      <p>
+        Total Cost: $
+        {cartSession?.totalCost
+          ? (cartSession?.totalCost / 100).toLocaleString('en')
+          : 0}
+      </p>
       {/* <p>CartId: {cartSession?.cartId}</p> */}
 
       {cartSession?.items.map((item) => {

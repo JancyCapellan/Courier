@@ -626,6 +626,7 @@ export const cartApi = createProtectedRouter()
             cartId: true,
             customerId: true,
             creatingUserId: true,
+            totalCost: true,
             items: {
               select: {
                 quantity: true,
@@ -677,6 +678,7 @@ export const cartApi = createProtectedRouter()
                 },
               },
             },
+            totalCost: cartSession?.totalCost,
             status: {
               connectOrCreate: {
                 where: {

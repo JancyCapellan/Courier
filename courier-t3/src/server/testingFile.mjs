@@ -3,17 +3,78 @@ const prisma = new PrismaClient()
 import { env } from '../env/server.mjs'
 import Stripe from 'stripe'
 
-export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
-  apiVersion: '2022-11-15',
-})
+async function createMockOrdersExcludingStripe() {
+  pendingOrder = await ctx.prisma.order.create({
+    data: {
+      customer: {
+        connect: {
+          id: input.customerId,
+        },
+      },
+      creatorUser: {
+        connect: {
+          id: input.userId,
+        },
+      },
+      paymentType: input.paymentType,
+      paymentStatuses: {
+        connectOrCreate: {
+          where: {
+            status: 'PENDING PAYMENT',
+          },
+          create: {
+            status: 'PENDING PAYMENT',
+          },
+        },
+      },
+      totalCost: cartSession?.totalCost,
+      status: {
+        connectOrCreate: {
+          where: {
+            message: 'awaiting pickup',
+          },
+          create: {
+            message: 'awaiting pickup',
+          },
+        },
+      },
+      items: {
+        createMany: {
+          //@ts-ignore
+          data: cartSession?.items,
+        },
+      },
+      addresses: {
+        createMany: {
+          //@ts-ignore
+          data: cartSession?.addresses,
+        },
+      },
+      stripeCheckoutId:
+        // made this way becuase not all orders go through stripe so some may need an empty column, i dont remember why null doesnt work because i could avoid this if input.stripeCheckoutId is null from not exising already from creating the checkout order
+        input.stripeCheckoutId !== null // this was the problem stopping the webhook from updating pending order
+          ? input.stripeCheckoutId
+          : undefined,
+      stripeCheckoutUrl: input.stripeCheckoutUrl,
+      // stripePaymentIntent: input?.stripePaymentIntent,
+    },
+    include: {
+      items: true,
+    },
+  })
+}
 
-const getCheckoutSession = await stripe.checkout.sessions.retrieve(
-  'cs_test_b1sMwShM6rnz0VUfO7LeHqTxNdkDKL8U9EppAljCNniKOzmZnuL3RCbE6c'
-)
-console.log(
-  '🚀 ~ file: testingFile.mjs:10 ~ getCheckoutSession:',
-  getCheckoutSession
-)
+// export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+//   apiVersion: '2022-11-15',
+// })
+
+// const getCheckoutSession = await stripe.checkout.sessions.retrieve(
+//   'cs_test_b1sMwShM6rnz0VUfO7LeHqTxNdkDKL8U9EppAljCNniKOzmZnuL3RCbE6c'
+// )
+// console.log(
+//   '🚀 ~ file: testingFile.mjs:10 ~ getCheckoutSession:',
+//   getCheckoutSession
+// )
 
 // const expiredSession = await stripe.checkout.sessions.expire(
 //   'cs_test_b1RHe1dcl3M0ZtxabCirZeXuGXoVKmX1W4BF2Baddg5Tp3w51uJFj0DtyP'

@@ -8,8 +8,10 @@ export default withAuth(
   },
   {
     callbacks: {
+      // todo: MAKE MORE ROBOUST
       authorized({ req, token }) {
         // `/admin` requires admin role
+        if (!token?.role) return false
         if (req.nextUrl.pathname === '/administration') {
           //console.log('auth token:', token?.role, !token) //?  is token missing role becuase of its typing?
           return token?.role === 'ADMIN'

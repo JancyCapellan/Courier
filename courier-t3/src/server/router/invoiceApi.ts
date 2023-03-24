@@ -264,6 +264,7 @@ export const invoiceApi = createProtectedRouter()
               message: true,
             },
           },
+          totalCost: true,
           timePlaced: true,
           stripeCheckoutId: true,
           stripeCheckoutUrl: true,

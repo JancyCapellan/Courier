@@ -78,11 +78,6 @@ const Checkout = () => {
     ['stripe.createCheckoutSession'],
     {
       onSuccess: (stripeCheckoutSession) => {
-        // console.log('Stripe Checkout Session', stripeCheckoutSession)
-        // create status pending order with checkoutSession, but what if checkout session isnt completed? left with an order that is pending in stripe and i could remove with a stripe webhook after expiration.
-        // going to expire the session and remove from local database on cancel
-
-        // *NOTE: checkout out created locally, no paymentIntent yet, order not complete and will expire
         createPendingOrder.mutate({
           userId: session?.user?.id,
           customerId: router.query.customerId,

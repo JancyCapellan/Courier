@@ -35,7 +35,7 @@ const DriverAccountPage = () => {
   return (
     <>
       {getStaffStatus === 'success' && (
-        <section className='driverAccountPage'>
+        <section className="driverAccountPage">
           <h1>
             {`${staff?.role}`}: {staff?.firstName} {staff?.lastName}
           </h1>
@@ -57,6 +57,7 @@ const DriverAccountPage = () => {
                 <th>order number</th>
                 <th> customer name</th>
                 <th>customer address</th>
+                {/* <th>pickup time</th> */}
               </tr>
             </thead>
             <tbody>
