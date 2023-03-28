@@ -3,7 +3,6 @@ import { useRouter } from 'next/router'
 // import { useQuery } from 'react-query'
 import { trpc } from '@/utils/trpc'
 import { QRCodeSVG } from 'qrcode.react'
-import { useState } from 'react'
 import { printJsx } from '@/components/printDocuments/Print'
 import InvoiceReceipt from '@/components/printDocuments/InvoiceReceipt'
 import DateTimeFormat from '@/components/DateTimeFormat'
@@ -202,35 +201,24 @@ const InvoicePage = () => {
           </table>
 
           <QRCodeSVG
-            value={`OrderID:${order?.id}\nSender:${order?.customer.firstName} ${
-              order?.customer.lastName
-            }\n  Country: ${order?.addresses[0]?.country}\n  Address: ${
-              order?.addresses[0]?.address
-            }\n  Address2: ${
-              order?.addresses[0]?.address2 || 'N/A'
-            }\n  Address3: ${
-              order?.addresses[0]?.address3 || ' N/A'
-            }\n  City: ${order?.addresses[0]?.city}\n  PostalCode: ${
-              order?.addresses[0]?.postalCode
-            }\n  Cellphone: ${
-              order?.addresses[0]?.cellphone || 'N/A'
-            }\n  Telephone: ${
-              order?.addresses[0]?.telephone || 'N/A'
-            }\nReciever: ${order?.addresses[1]?.firstName}\n  Country: ${
-              order?.addresses[1]?.country
-            }\n  Address: ${order?.addresses[1]?.address}\n  Address2: ${
-              order?.addresses[1]?.address2 || 'N/A'
-            }\n  Address3: ${
-              order?.addresses[1]?.address3 || ' N/A'
-            }\n  City: ${order?.addresses[1]?.city}\n  PostalCode: ${
-              order?.addresses[1]?.postalCode
-            }\n  Cellphone: ${
-              order?.addresses[1]?.cellphone || 'N/A'
-            }\n  Telephone: ${order?.addresses[1]?.telephone || 'N/A'}`}
+            value={`OrderID:${order?.id}\nSender:${order?.customer.firstName} ${order?.customer.lastName
+              }\n  Country: ${order?.addresses[0]?.country}\n  Address: ${order?.addresses[0]?.address
+              }\n  Address2: ${order?.addresses[0]?.address2 || 'N/A'
+              }\n  Address3: ${order?.addresses[0]?.address3 || ' N/A'
+              }\n  City: ${order?.addresses[0]?.city}\n  PostalCode: ${order?.addresses[0]?.postalCode
+              }\n  Cellphone: ${order?.addresses[0]?.cellphone || 'N/A'
+              }\n  Telephone: ${order?.addresses[0]?.telephone || 'N/A'
+              }\nReciever: ${order?.addresses[1]?.firstName}\n  Country: ${order?.addresses[1]?.country
+              }\n  Address: ${order?.addresses[1]?.address}\n  Address2: ${order?.addresses[1]?.address2 || 'N/A'
+              }\n  Address3: ${order?.addresses[1]?.address3 || ' N/A'
+              }\n  City: ${order?.addresses[1]?.city}\n  PostalCode: ${order?.addresses[1]?.postalCode
+              }\n  Cellphone: ${order?.addresses[1]?.cellphone || 'N/A'
+              }\n  Telephone: ${order?.addresses[1]?.telephone || 'N/A'}`}
             includeMargin={false}
             level={'Q'}
             size={220}
           />
+
 
           {/* <QRCodeSVG value={'google.com'} /> */}
         </section>

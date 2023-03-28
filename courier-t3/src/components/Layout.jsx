@@ -37,7 +37,7 @@ export default function Layout({ children }) {
           closeSidebar={toggleSidebar}
           setCloseSidebar={(t) => setToggleSidebar(t)}
         />
-        <main className="mb-6 flex w-full flex-col overflow-x-auto overflow-y-auto bg-white p-6">
+        <main className="mb-20 flex w-full flex-col overflow-x-auto overflow-y-auto bg-white p-6">
           {children}
         </main>
       </div>
