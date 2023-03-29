@@ -23,15 +23,13 @@ const DriverAccountPage = () => {
     {
       enabled: staffId !== '',
       onSuccess: (data) => {
-        console.log('account page:', data)
+        // console.log('account page:', data)
       },
       onError: (error) => {
         console.log('error fetching product types', error)
       },
     }
   )
-
-  console.log('staff', staff)
 
   return (
     <>
@@ -81,7 +79,16 @@ const DriverAccountPage = () => {
                       <DateTimeFormat pickupDatetime={order?.pickupDatetime} />
                     </td>
                     <td>
-                      <button>pickup details</button>
+                      <button
+                        className="btn btn-blue"
+                        onClick={() =>
+                          router.push({
+                            pathname: `/invoices/${order?.id}`,
+                          })
+                        }
+                      >
+                        pickup details
+                      </button>
                     </td>
                   </tr>
                 )

@@ -44,7 +44,7 @@ export const CustomerOrderHistory = ({ currentUser }) => {
                     <button
                       onClick={() =>
                         router.push({
-                          pathname: `/Invoices/${order.id}`,
+                          pathname: `/invoices/${order.id}`,
                           // query: { orderId: id },
                         })
                       }

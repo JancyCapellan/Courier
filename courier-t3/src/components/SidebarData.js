@@ -38,7 +38,7 @@ export const routes = {
   },
   invoices: {
     title: 'Invoices',
-    path: '/Invoices',
+    path: '/invoices',
     icon: <FaFileInvoiceDollar />,
   },
   pickups: {

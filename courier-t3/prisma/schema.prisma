@@ -25,7 +25,7 @@ datasource db {
 // }
 
 model User {
-  id                String    @id @default(cuid())
+  id                String                @id @default(cuid())
   // name          String? // prisma adapter field
   emailVerified     DateTime? // prisma adapter field 
   image             String? // prisma adapter field
@@ -35,25 +35,43 @@ model User {
   lastName          String
   middleName        String?
   password          String
-  email             String    @unique
+  email             String                @unique
   role              String
   company           String?
   branchName        String?
   lastSaleDate      DateTime?
   lastLogin         DateTime?
   currentBalance    Int?
-  preferredLanguage String    @default("English")
-  licenseId         Int?      @unique
-  addresses         address[]
-  orders            Order[]   @relation("CUSTOMER")
-  orderCreators     Order[]   @relation("creatorUser")
-  pickups           Order[]   @relation("DRIVER")
-  currentCart       cart[]    @relation("cartCreator")
-  cartCustomer      cart[]    @relation("customer")
-  creationDateTime  DateTime  @default(now())
+  preferredLanguage String                @default("English")
+  licenseId         Int?                  @unique
+  // addresses         address[]
+  addresses         UserAddress[]
+  deliveryAddresses UserDeliveryAddress[]
+  orders            Order[]               @relation("CUSTOMER")
+  orderCreators     Order[]               @relation("creatorUser")
+  pickups           Order[]               @relation("DRIVER")
+  currentCart       cart[]                @relation("cartCreator")
+  cartCustomer      cart[]                @relation("customer")
+  creationDateTime  DateTime              @default(now())
 }
 
-model address {
+// model address {
+//   id         Int     @id @default(autoincrement())
+//   userId     String
+//   address    String
+//   address2   String?
+//   address3   String?
+//   city       String
+//   state      String
+//   postalCode Int
+//   country    String
+//   cellphone  String?
+//   telephone  String?
+//   default    Boolean @default(false)
+//   user       User    @relation(fields: [userId], references: [id])
+// }
+
+model UserAddress {
   id         Int     @id @default(autoincrement())
   userId     String
   address    String
@@ -66,34 +84,53 @@ model address {
   cellphone  String?
   telephone  String?
   default    Boolean @default(false)
-  recipient  Boolean @default(false)
+  user       User    @relation(fields: [userId], references: [id])
+}
+
+model UserDeliveryAddress {
+  id         Int     @id @default(autoincrement())
+  userId     String
+  address    String
+  address2   String?
+  address3   String?
+  city       String
+  state      String
+  postalCode Int
+  country    String
+  cellphone  String?
+  telephone  String?
+  default    Boolean @default(false)
   user       User    @relation(fields: [userId], references: [id])
 }
 
 model Order {
-  id                Int               @unique @default(autoincrement())
-  customerUserId    String // thecustomer who sent the package, so client/shipper
-  customer          User              @relation("CUSTOMER", fields: [customerUserId], references: [id])
-  creatorUserId     String
-  creatorUser       User              @relation("creatorUser", fields: [creatorUserId], references: [id])
-  timePlaced        DateTime          @default(now())
-  paymentType       String // set at checkout //stripe webhooks can change this as necessary
-  statusMessage     String
-  status            orderStatus       @relation(fields: [statusMessage], references: [message])
-  totalCost         Int?
-  paymentStatus     String
-  paymentStatuses   paymentStatus     @relation(fields: [paymentStatus], references: [status])
-  pickupDriverId    String?
-  pickupDriver      User?             @relation(name: "DRIVER", fields: [pickupDriverId], references: [id])
-  pickupDatetime    DateTime?
-  items             OrderItem[]
-  addresses         OrderAddressDuo[]
+  id              Int           @unique @default(autoincrement())
+  customerUserId  String // thecustomer who sent the package, so client/shipper
+  customer        User          @relation("CUSTOMER", fields: [customerUserId], references: [id])
+  creatorUserId   String
+  creatorUser     User          @relation("creatorUser", fields: [creatorUserId], references: [id])
+  timePlaced      DateTime      @default(now())
+  paymentType     String // set at checkout //stripe webhooks can change this as necessary
+  statusMessage   String
+  status          orderStatus   @relation(fields: [statusMessage], references: [message])
+  totalCost       Int?
+  paymentStatus   String
+  paymentStatuses paymentStatus @relation(fields: [paymentStatus], references: [status])
+  pickupDriverId  String?
+  pickupDriver    User?         @relation(name: "DRIVER", fields: [pickupDriverId], references: [id])
+  pickupDatetime  DateTime?
+  items           OrderItem[]
+  // addresses       OrderAddressDuo[]
+
+  shipperAddress  OrderShipperAddress?
+  recieverAddress OrderRecieverAddress?
+
   pickupZoneId      Int?
-  pickupZone        pickupZone?       @relation(fields: [pickupZoneId], references: [id])
+  pickupZone        pickupZone? @relation(fields: [pickupZoneId], references: [id])
   containerId       Int?
-  container         containers?       @relation(fields: [containerId], references: [id])
+  container         containers? @relation(fields: [containerId], references: [id])
   stripeCheckoutUrl String?
-  stripeCheckoutId  String?           @unique //need stripe informmation to connect order to relevent stripe checkout session, with this id i can query specific orders when updating with information from stripe checkout
+  stripeCheckoutId  String?     @unique //need stripe informmation to connect order to relevent stripe checkout session, with this id i can query specific orders when updating with information from stripe checkout
 
   stripePaymentIntent String? @unique
   stripeReceiptUrl    String?
@@ -120,23 +157,59 @@ model pickupZone {
   order Order[]
 }
 
-model OrderAddressDuo {
+model OrderShipperAddress {
   id         Int     @id @default(autoincrement())
-  orderId    Int
+  // .query("getAddressesFromCart")
+  firstName  String?
+  lastName   String?
+  orderId    Int     @unique
   order      Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  firstName  String
-  lastName   String
-  address    String
+  address    String?
   address2   String?
   address3   String?
-  city       String
-  state      String
-  postalCode Int
-  country    String
+  city       String?
+  state      String?
+  postalCode Int?
+  country    String?
   cellphone  String?
   telephone  String?
-  recipient  Boolean @default(false)
 }
+
+model OrderRecieverAddress {
+  id         Int     @id @default(autoincrement())
+  // .query("getAddressesFromCart")
+  firstName  String?
+  lastName   String?
+  orderId    Int     @unique
+  order      Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  address    String?
+  address2   String?
+  address3   String?
+  city       String?
+  state      String?
+  postalCode Int?
+  country    String?
+  cellphone  String?
+  telephone  String?
+}
+
+// model OrderAddressDuo {
+//   id         Int     @id @default(autoincrement())
+//   orderId    Int
+//   order      Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+//   firstName  String
+//   lastName   String
+//   address    String
+//   address2   String?
+//   address3   String?
+//   city       String
+//   state      String
+//   postalCode Int
+//   country    String
+//   cellphone  String?
+//   telephone  String?
+//   recipient  Boolean @default(false)
+// }
 
 model OrderItem {
   id        Int     @id @default(autoincrement())
@@ -222,27 +295,29 @@ model containerStatus {
 // they should still have one cart, so a customer can have two different orders being made by two different users,
 // maybe make a way to save orders so another admin/staff may takeover the order??
 model cart {
-  id             Int                  @default(autoincrement()) // change to uuID
-  cartId         String               @unique @default(uuid())
-  customerId     String
-  customer       User                 @relation(fields: [customerId], references: [id], name: "customer")
-  creatingUserId String
-  cartCreator    User                 @relation(fields: [creatingUserId], references: [id], name: "cartCreator")
-  items          cartItem[]
-  addresses      CartOrderAddresses[]
-  totalCost      Int?
+  id              Int                  @default(autoincrement()) // change to uuID
+  cartId          String               @unique @default(uuid())
+  customerId      String
+  customer        User                 @relation(fields: [customerId], references: [id], name: "customer")
+  creatingUserId  String
+  cartCreator     User                 @relation(fields: [creatingUserId], references: [id], name: "cartCreator")
+  items           cartItem[]
+  // addresses       CartOrderAddresses[]
+  shipperAddress  cartShipperAddress?
+  recieverAddress cartRecieverAddress?
+  totalCost       Int?
   // order addresses saved in cart table before being added to order table
   // current orderForm with addresses
 
   @@id([creatingUserId, customerId])
 }
 
-model CartOrderAddresses {
-  id         Int     @default(autoincrement())
-  cartId     String
+model cartShipperAddress {
+  id         Int     @id @default(autoincrement())
   // .query("getAddressesFromCart")
   firstName  String?
   lastName   String?
+  cartId     String  @unique
   cart       cart    @relation(fields: [cartId], references: [cartId], onDelete: Cascade)
   address    String?
   address2   String?
@@ -253,11 +328,47 @@ model CartOrderAddresses {
   country    String?
   cellphone  String?
   telephone  String?
-  // default Boolean @default(false)
-  recipient  Boolean @default(false)
-
-  @@id([cartId, recipient]) //reciever: recipient==true, shipper:recipient==false; address, one form for both addresses caused me to use another varibale mot hadnle the difference between addresses.
 }
+
+model cartRecieverAddress {
+  id         Int     @id @default(autoincrement())
+  // .query("getAddressesFromCart")
+  firstName  String?
+  lastName   String?
+  cartId     String  @unique
+  cart       cart    @relation(fields: [cartId], references: [cartId], onDelete: Cascade)
+  address    String?
+  address2   String?
+  address3   String?
+  city       String?
+  state      String?
+  postalCode Int?
+  country    String?
+  cellphone  String?
+  telephone  String?
+}
+
+// model CartOrderAddresses {
+//   id         Int     @default(autoincrement())
+//   cartId     String
+//   // .query("getAddressesFromCart")
+//   firstName  String?
+//   lastName   String?
+//   cart       cart    @relation(fields: [cartId], references: [cartId], onDelete: Cascade)
+//   address    String?
+//   address2   String?
+//   address3   String?
+//   city       String?
+//   state      String?
+//   postalCode Int?
+//   country    String?
+//   cellphone  String?
+//   telephone  String?
+//   // default Boolean @default(false)
+//   recipient  Boolean @default(false)
+
+//   @@id([cartId, recipient]) //reciever: recipient==true, shipper:recipient==false; address, one form for both addresses caused me to use another varibale mot hadnle the difference between addresses.
+// }
 
 model cartItem {
   id        Int     @default(autoincrement())

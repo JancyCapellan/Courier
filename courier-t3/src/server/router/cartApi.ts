@@ -369,7 +369,7 @@ export const cartApi = createProtectedRouter()
       return true
     },
   })
-  .mutation('saveAddressesFormToCart', {
+  .mutation('saveShipperPickupAddressToCart', {
     input: z.object({
       // reciever and shipper
       userId: z.string(),
@@ -388,6 +388,34 @@ export const cartApi = createProtectedRouter()
         cellphone: z.string(),
         telephone: z.string(),
       }),
+    }),
+    async resolve({ ctx, input }) {
+      const { cartId } = await findOrCreateCart(
+        ctx.prisma,
+        input.userId,
+        input.customerId
+      )
+
+      // console.log('addeding addresses to form:', JSON.stringify(input))
+      const addedShipper = await ctx.prisma.cartShipperAddress.upsert({
+        where: {
+          cartId: cartId,
+        },
+        create: {
+          cartId: cartId,
+          ...input.shipper,
+        },
+        update: input.shipper,
+      })
+      console.log('Saved Shipper Address:', addedShipper)
+    },
+  })
+  //TODO
+  .mutation('saveRecieverDeliveryAddressToCart', {
+    input: z.object({
+      // reciever and shipper
+      userId: z.string(),
+      customerId: z.string(),
       reciever: z.object({
         firstName: z.string(),
         lastName: z.string(),
@@ -410,43 +438,97 @@ export const cartApi = createProtectedRouter()
       )
 
       // console.log('addeding addresses to form:', JSON.stringify(input))
-      const addedShipper = await ctx.prisma.cartOrderAddresses.upsert({
+      const addedShipper = await ctx.prisma.cartRecieverAddress.upsert({
         where: {
-          cartId_recipient: {
-            cartId: cartId,
-            recipient: false,
-          },
+          cartId: cartId,
         },
         create: {
           cartId: cartId,
-          recipient: false,
-          ...input.shipper,
-        },
-        update: input.shipper,
-      })
-      console.log('Saved Shipper Address:', addedShipper)
-
-      const addedReciever = await ctx.prisma.cartOrderAddresses.upsert({
-        where: {
-          cartId_recipient: {
-            cartId: cartId,
-            recipient: true,
-          },
-        },
-        create: {
-          cartId: cartId,
-          recipient: true,
           ...input.reciever,
         },
         update: input.reciever,
       })
-      console.log('Saved Reciever address:', addedReciever)
-
-      // console.log({ addedShipper, addedReciever })
-
-      return [addedShipper, addedReciever]
+      console.log('Saved Shipper Address:', addedShipper)
     },
   })
+  // .mutation('saveAddressesFormToCart', {
+  //   input: z.object({
+  //     // reciever and shipper
+  //     userId: z.string(),
+  //     customerId: z.string(),
+  //     shipper: z.object({
+  //       // userId: z.string(),
+  //       firstName: z.string(),
+  //       lastName: z.string(),
+  //       address: z.string(),
+  //       address2: z.string(),
+  //       address3: z.string(),
+  //       city: z.string(),
+  //       state: z.string(),
+  //       postalCode: z.number(),
+  //       country: z.string(),
+  //       cellphone: z.string(),
+  //       telephone: z.string(),
+  //     }),
+  //     reciever: z.object({
+  //       firstName: z.string(),
+  //       lastName: z.string(),
+  //       address: z.string(),
+  //       address2: z.string(),
+  //       address3: z.string(),
+  //       city: z.string(),
+  //       state: z.string(),
+  //       postalCode: z.number(),
+  //       country: z.string(),
+  //       cellphone: z.string(),
+  //       telephone: z.string(),
+  //     }),
+  //   }),
+  //   async resolve({ ctx, input }) {
+  //     const { cartId } = await findOrCreateCart(
+  //       ctx.prisma,
+  //       input.userId,
+  //       input.customerId
+  //     )
+
+  //     // console.log('addeding addresses to form:', JSON.stringify(input))
+  //     const addedShipper = await ctx.prisma.cartOrderAddresses.upsert({
+  //       where: {
+  //         cartId_recipient: {
+  //           cartId: cartId,
+  //           recipient: false,
+  //         },
+  //       },
+  //       create: {
+  //         cartId: cartId,
+  //         recipient: false,
+  //         ...input.shipper,
+  //       },
+  //       update: input.shipper,
+  //     })
+  //     console.log('Saved Shipper Address:', addedShipper)
+
+  //     const addedReciever = await ctx.prisma.cartOrderAddresses.upsert({
+  //       where: {
+  //         cartId_recipient: {
+  //           cartId: cartId,
+  //           recipient: true,
+  //         },
+  //       },
+  //       create: {
+  //         cartId: cartId,
+  //         recipient: true,
+  //         ...input.reciever,
+  //       },
+  //       update: input.reciever,
+  //     })
+  //     console.log('Saved Reciever address:', addedReciever)
+
+  //     // console.log({ addedShipper, addedReciever })
+
+  //     return [addedShipper, addedReciever]
+  //   },
+  // })
   .query('getAddressesFromCart', {
     input: z.object({
       userId: z.string(),

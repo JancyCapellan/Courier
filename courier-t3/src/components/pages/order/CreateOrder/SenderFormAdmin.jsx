@@ -358,7 +358,7 @@ const SenderFormAdmin = () => {
                   type="submit"
                   disabled={!formik.isValid}
                   onClick={() => refetchCart()}
-                  className={`btn bg-red-600 w-auto`}
+                  className={`btn w-auto bg-red-600`}
                 >
                   Confirm and save addresses to shopping Cart
                 </button>

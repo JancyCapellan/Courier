@@ -2,7 +2,7 @@ import React from 'react'
 
 const DateTimeFormat = ({ pickupDatetime }) => {
   return (
-    <p>
+    <div>
       <div>
         {pickupDatetime?.toLocaleDateString('en-us', {
           weekday: 'short',
@@ -12,7 +12,7 @@ const DateTimeFormat = ({ pickupDatetime }) => {
         })}
       </div>
       <div>{pickupDatetime?.toLocaleTimeString('en-US')}</div>
-    </p>
+    </div>
   )
 }
 

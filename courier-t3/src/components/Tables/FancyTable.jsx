@@ -80,7 +80,7 @@ const FancyTable = ({ columns, data }) => {
                 key={i}
                 // onClick={() =>
                 //   router.push({
-                //     pathname: `/Invoices/${row.original.id}`,
+                //     pathname: `/invoices/${row.original.id}`,
                 //     // query: { orderId: id },
                 //   })
                 // }

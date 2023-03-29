@@ -13,6 +13,8 @@ import { useSession } from 'next-auth/react'
 import StaffTable from '@/components/pages/administration/StaffTable'
 // import Checkout from './checkout'
 import Link from 'next/link'
+import SenderAddressForm from '@/components/pages/order/CreateOrder/orderForms/SenderAddressForm'
+import RecieverAddressForm from '@/components/pages/order/CreateOrder/orderForms/RecieverAddressForm'
 
 const CreateOrder = () => {
   const { data: session, status: sessionStatus } = useSession()
@@ -62,7 +64,9 @@ const CreateOrder = () => {
         )}
 
         <h1>Shipping Details</h1>
-        <SenderFormAdmin />
+
+        <SenderAddressForm />
+        <RecieverAddressForm />
         <Items />
         <Cart />
 

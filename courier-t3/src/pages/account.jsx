@@ -53,7 +53,7 @@ const UserOrderHistory = ({ currentUser }) => {
                       <button
                         onClick={() =>
                           router.push({
-                            pathname: `/Invoices/${order.id}`,
+                            pathname: `/invoices/${order.id}`,
                             // query: { orderId: id },
                           })
                         }
@@ -103,7 +103,7 @@ const AccountInfo = () => {
   }
 
   return (
-    <section className="flex flex-col items-center h-full">
+    <section className="flex h-full flex-col items-center">
       <h1>Account Information</h1>
 
       {/* create  tab menu  */}

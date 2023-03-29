@@ -3,11 +3,15 @@ import { trpc } from '@/utils/trpc'
 import { useSession } from 'next-auth/react'
 import React from 'react'
 import StaffTable from '@/components/pages/administration/StaffTable'
+import DateTimeFormat from '@/components/DateTimeFormat'
+import { useRouter } from 'next/router'
 // driver logs into app, gets a list of orders for the day
 // DRIVER OPENS ORDER TO CONFIRM WITH CUSTOMER, CUSTOMER NEEDS TO ADD/REMOVE ITEMS, CONFIRM ORDER, PRINT INVOVICE RECEIPT WITH OVERALL DETAILS THEN PRINT A TAG FOR EACH PACKAGGE WITH INVOICE ID/ PAKCKAGE NUMBER / CONTENT
 
 const DriverHome = () => {
   const { data: session, status: sessionStatus } = useSession()
+
+  const router = useRouter()
   // const pickupList = trpc.useQuery(
   //   ['invoice.getAllDriverOrders', { driverId: session?.user?.id }],
   //   {
@@ -20,15 +24,13 @@ const DriverHome = () => {
     {
       enabled: sessionStatus === 'authenticated',
       onSuccess: (data) => {
-        console.log('account page:', data)
+        // console.log('account page:', data)
       },
       onError: (error) => {
         console.log('error fetching product types', error)
       },
     }
   )
-
-  console.log('staff', staff)
 
   return (
     <>
@@ -55,7 +57,8 @@ const DriverHome = () => {
                 <th>order number</th>
                 <th> customer name</th>
                 <th>customer address</th>
-                {/* <th>pickup time</th> */}
+                <th>pickup time</th>
+                <th>utlitiy</th>
               </tr>
             </thead>
             <tbody>
@@ -72,6 +75,21 @@ const DriverHome = () => {
                       <pre>
                         {JSON.stringify(order.addresses[0], undefined, 2)}
                       </pre>
+                    </td>
+                    <td>
+                      <DateTimeFormat pickupDatetime={order?.pickupDatetime} />
+                    </td>
+                    <td>
+                      <button
+                        className="btn btn-blue"
+                        onClick={() =>
+                          router.push({
+                            pathname: `/invoices/${order?.id}`,
+                          })
+                        }
+                      >
+                        pickup details
+                      </button>
                     </td>
                   </tr>
                 )

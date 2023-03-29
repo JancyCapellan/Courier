@@ -48,7 +48,25 @@ export const userRouter = createProtectedRouter()
     }),
     async resolve({ ctx, input }) {
       try {
-        const addresses = await ctx.prisma.address.findMany({
+        const addresses = await ctx.prisma.userAddress.findMany({
+          where: {
+            userId: input.userId,
+          },
+        })
+
+        return addresses
+      } catch (error) {
+        throw error
+      }
+    },
+  })
+  .query('getDeliveryAddresses', {
+    input: z.object({
+      userId: z.string(),
+    }),
+    async resolve({ ctx, input }) {
+      try {
+        const addresses = await ctx.prisma.userDeliveryAddress.findMany({
           where: {
             userId: input.userId,
           },
@@ -78,10 +96,38 @@ export const userRouter = createProtectedRouter()
     }),
     async resolve({ ctx, input }) {
       try {
-        const addedAddress = await ctx.prisma.address.create({
+        const addedAddress = await ctx.prisma.userAddress.create({
           data: input.addressForm,
         })
         console.log('ADDED address:', addedAddress)
+        return addedAddress
+      } catch (error) {
+        console.error(error)
+      }
+    },
+  })
+  .mutation('addDeliveryAddress', {
+    input: z.object({
+      userId: z.string(),
+      addressForm: z.object({
+        userId: z.string(),
+        address: z.string(),
+        address2: z.string().optional(),
+        address3: z.string().optional(),
+        city: z.string(),
+        state: z.string(),
+        postalCode: z.number(),
+        country: z.string(),
+        cellphone: z.string(),
+        telephone: z.string().optional(),
+      }),
+    }),
+    async resolve({ ctx, input }) {
+      try {
+        const addedAddress = await ctx.prisma.userDeliveryAddress.create({
+          data: input.addressForm,
+        })
+        console.log('ADDED delivery address:', addedAddress)
         return addedAddress
       } catch (error) {
         console.error(error)
@@ -162,16 +208,94 @@ export const userRouter = createProtectedRouter()
   .mutation('changeUserAddress', {
     input: z.object({
       addressId: z.number(),
-      form: z.any(),
+      form: z.object({
+        address: z.string(),
+        address2: z.string().optional(),
+        address3: z.string().optional(),
+        city: z.string(),
+        state: z.string(),
+        postalCode: z.number(),
+        country: z.string(),
+        cellphone: z.string(),
+        telephone: z.string().optional(),
+      }),
     }),
     async resolve({ ctx, input }) {
       try {
-        const updatedAddressResult = await ctx.prisma.address.update({
+        const updatedAddressResult = await ctx.prisma.userAddress.update({
           where: {
             id: input.addressId,
           },
           data: input.form,
         })
+
+        return updatedAddressResult
+      } catch (e) {
+        throw e
+      }
+    },
+  })
+  .mutation('changeDeliveryAddress', {
+    input: z.object({
+      addressId: z.number(),
+      form: z.object({
+        address: z.string(),
+        address2: z.string().optional(),
+        address3: z.string().optional(),
+        city: z.string(),
+        state: z.string(),
+        postalCode: z.number(),
+        country: z.string(),
+        cellphone: z.string(),
+        telephone: z.string().optional(),
+      }),
+    }),
+    async resolve({ ctx, input }) {
+      try {
+        const updatedAddressResult =
+          await ctx.prisma.userDeliveryAddress.update({
+            where: {
+              id: input.addressId,
+            },
+            data: input.form,
+          })
+
+        return updatedAddressResult
+      } catch (e) {
+        throw e
+      }
+    },
+  })
+  .mutation('deleteAddress', {
+    input: z.object({
+      addressId: z.number(),
+    }),
+    async resolve({ ctx, input }) {
+      try {
+        const updatedAddressResult = await ctx.prisma.userAddress.delete({
+          where: {
+            id: input.addressId,
+          },
+        })
+
+        return updatedAddressResult
+      } catch (e) {
+        throw e
+      }
+    },
+  })
+  .mutation('deleteDeliveryAddress', {
+    input: z.object({
+      addressId: z.number(),
+    }),
+    async resolve({ ctx, input }) {
+      try {
+        const updatedAddressResult =
+          await ctx.prisma.userDeliveryAddress.delete({
+            where: {
+              id: input.addressId,
+            },
+          })
 
         return updatedAddressResult
       } catch (e) {

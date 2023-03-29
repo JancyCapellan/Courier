@@ -448,7 +448,7 @@ const PickupListTable = () => {
             <button
               onClick={() =>
                 router.push({
-                  pathname: `/Invoices/${original.id}`,
+                  pathname: `/invoices/${original.id}`,
                 })
               }
             >
@@ -573,7 +573,7 @@ const PickupListTable = () => {
   }, [pageSize, gotoPage])
 
   if (error || !allOrdersIsSuccess) {
-    return <p>Error</p>
+    return <p>Loading</p>
   }
 
   if (allOrdersIsLoading) {

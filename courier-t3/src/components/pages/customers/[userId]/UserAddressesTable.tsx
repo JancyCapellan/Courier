@@ -18,8 +18,17 @@ const UserAddressesTable = ({
   const [showEditModal, setOpenEditModal] = useState(false)
   const [editAddress, setEditAddress] = useState({})
 
-  const { data: customerAddresses, status: getCustomerAddressesStatus } =
-    trpc.useQuery(['user.getAddresses', { userId: userId }])
+  const {
+    data: customerAddresses,
+    status: getCustomerAddressesStatus,
+    refetch: refetchCustomerAddresses,
+  } = trpc.useQuery(['user.getAddresses', { userId: userId }])
+
+  const deleteAddress = trpc.useMutation(['user.deleteAddress'], {
+    onSuccess: (data) => {
+      refetchCustomerAddresses()
+    },
+  })
   return (
     <>
       <section>
@@ -81,7 +90,18 @@ const UserAddressesTable = ({
                         Edit
                       </button>
                       {/* //TODO: DELETE ADDRESSES MUTATION */}
-                      <button>Delete</button>
+                      <button
+                        onClick={() => {
+                          confirm(
+                            'DELETE CONFIRMATION: Are you sure you want to DELETE this address?'
+                          )
+                          deleteAddress.mutate({
+                            addressId: address.id,
+                          })
+                        }}
+                      >
+                        Delete
+                      </button>
                     </td>
                   </tr>
                 )
