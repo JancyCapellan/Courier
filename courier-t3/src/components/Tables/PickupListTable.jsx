@@ -19,6 +19,7 @@ import {
 import { useRouter } from 'next/router'
 import { trpc } from '@/utils/trpc'
 import { useQueryClient } from 'react-query'
+import DateTimeFormat from '../DateTimeFormat'
 // import { makeOrder } from './makeData.mjs'
 
 // ! next-dev.js?3515:20 Warning: Functions are not valid as a React child. This may happen if you return a Component instead of <Component /> from render. Or maybe you meant to call this function rather than return it.next-dev.js?3515:20 Warning: Functions are not valid as a React child. This may happen if you return a Component instead of <Component /> from render. Or maybe you meant to call this function rather than return it.
@@ -433,21 +434,7 @@ const PickupListTable = () => {
       {
         Header: 'pickup time',
         accessor: (data) => {
-          console.log(data.pickupDatetime?.toString())
-
-          return (
-            <p>
-              <div>
-                {data.pickupDatetime?.toLocaleDateString('en-us', {
-                  weekday: 'short',
-                  year: 'numeric',
-                  month: 'short',
-                  day: 'numeric',
-                })}{' '}
-              </div>
-              <div>{data.pickupDatetime?.toLocaleTimeString('en-US')}</div>
-            </p>
-          )
+          return <DateTimeFormat pickupDatetime={data.pickupDatetime} />
         },
       },
       {

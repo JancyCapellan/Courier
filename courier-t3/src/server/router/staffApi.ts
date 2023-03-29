@@ -80,6 +80,7 @@ export const staffApi = createProtectedRouter()
                     address3: true,
                   },
                 },
+                pickupDatetime: true,
               },
             },
           },

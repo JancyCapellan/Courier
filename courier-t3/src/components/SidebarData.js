@@ -1,5 +1,5 @@
 import React from 'react'
-import { HiOutlineUserGroup } from 'react-icons/hi'
+import { HiOutlineUserGroup, HiOutlineDocumentReport } from 'react-icons/hi'
 import { FiSettings } from 'react-icons/fi'
 import { GrGroup } from 'react-icons/gr'
 import { FaFileInvoiceDollar, FaWarehouse } from 'react-icons/fa'
@@ -99,7 +99,7 @@ export const routes = {
     cName: 'nav-listitem',
     title: 'Reports',
     path: '/reports',
-    icon: '',
+    icon: <HiOutlineDocumentReport />,
   },
 }
 export const sidebarTypes = {
@@ -115,7 +115,7 @@ export const sidebarTypes = {
     routes.invoices,
     routes.warehouse,
     // routes.crm,
-    // routes.reports,
+    routes.reports,
   ],
   All: [routes],
 }

@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
-import Layout from '../../components/Layout'
+import Layout from '@/components/Layout'
 // import { useQuery } from 'react-query'
 import { trpc } from '@/utils/trpc'
+import DateTimeFormat from '@/components/DateTimeFormat'
 
 const DriverAccountPage = () => {
   const router = useRouter()
@@ -57,7 +58,8 @@ const DriverAccountPage = () => {
                 <th>order number</th>
                 <th> customer name</th>
                 <th>customer address</th>
-                {/* <th>pickup time</th> */}
+                <th>pickup time</th>
+                <th>utlitiy</th>
               </tr>
             </thead>
             <tbody>
@@ -74,6 +76,12 @@ const DriverAccountPage = () => {
                       <pre>
                         {JSON.stringify(order.addresses[0], undefined, 2)}
                       </pre>
+                    </td>
+                    <td>
+                      <DateTimeFormat pickupDatetime={order?.pickupDatetime} />
+                    </td>
+                    <td>
+                      <button>pickup details</button>
                     </td>
                   </tr>
                 )

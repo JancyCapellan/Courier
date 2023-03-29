@@ -38,13 +38,12 @@ export const authOptions: NextAuthOptions = {
         return token
       }
 
-
       return token
     },
     session: async ({ session, token }) => {
       // let test = { ...session.user, ...token.user }
       // console.log("SESSION ", session, "TOKEN", token);
-      
+
       if (token && session.user) {
         session.user.id = token.id
         session.user.role = token.role
@@ -55,15 +54,14 @@ export const authOptions: NextAuthOptions = {
         // session.user = token.user ? token.user : session.user
         // session.user = test
       }
-      
-      
+
       // console.log('nextauth session:', session)
 
       return session
     },
   },
   // Configure one or more authentication providers
-  // for Oauth tables 
+  // for Oauth tables
   // adapter: PrismaAdapter(prisma),
   providers: [
     // DiscordProvider({
@@ -80,14 +78,19 @@ export const authOptions: NextAuthOptions = {
         //   placeholder: 'CORPNET',
         //   value: 'CORPNET',
         // },
-        email: { label: 'Email', type: 'text', placeholder: 'Name' },
+        // TODO: add tenant ID to change company database in which to use for the app to login
+        // tenantId: { label: ' tenantId', type: 'test' },
+        email: { label: 'Email', type: 'text' },
         password: { label: 'Password', type: 'password' },
       },
       // TODO create database look up so username/Email is case insensitive, customer123@email.com === CUSTOMER123@email.com === CUStoMEr123@email.com
       authorize: async (credentials) => {
-
-        if( credentials === undefined || credentials.email === undefined || credentials.password === undefined)
-        return null
+        if (
+          credentials === undefined ||
+          credentials.email === undefined ||
+          credentials.password === undefined
+        )
+          return null
 
         const user = await prisma.user.findFirst({
           where: {
@@ -117,7 +120,6 @@ export const authOptions: NextAuthOptions = {
           // return process.env.NEXTAUTH_URL + '/?signInError=true'
           return null
         }
-
       },
     }),
   ],
