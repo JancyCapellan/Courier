@@ -27,17 +27,17 @@ export default function Layout({ children }) {
   }
 
   return (
-    <div className="over  flex h-screen flex-col overflow-y-hidden">
+    <div className="flex h-screen flex-col ">
       <Header
         closeSidebar={toggleSidebar}
         setCloseSidebar={(t) => setToggleSidebar(t)}
       />
-      <div className="flex h-full">
+      <div className="flex h-screen overflow-y-hidden">
         <Sidebar
           closeSidebar={toggleSidebar}
           setCloseSidebar={(t) => setToggleSidebar(t)}
         />
-        <main className="mb-20 flex w-full flex-col overflow-x-auto overflow-y-auto bg-white p-6">
+        <main className="flex w-full flex-col overflow-x-auto  bg-white p-6 ">
           {children}
         </main>
       </div>
