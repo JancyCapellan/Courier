@@ -816,7 +816,7 @@ export const cartApi = createProtectedRouter()
                 productId: true,
               },
             },
-            addresses: {
+            shipperAddress: {
               select: {
                 firstName: true,
                 lastName: true,
@@ -829,7 +829,21 @@ export const cartApi = createProtectedRouter()
                 country: true,
                 cellphone: true,
                 telephone: true,
-                recipient: true,
+              },
+            },
+            recieverAddress: {
+              select: {
+                firstName: true,
+                lastName: true,
+                address: true,
+                address2: true,
+                address3: true,
+                city: true,
+                state: true,
+                postalCode: true,
+                country: true,
+                cellphone: true,
+                telephone: true,
               },
             },
           },
@@ -878,10 +892,34 @@ export const cartApi = createProtectedRouter()
                 data: cartSession?.items,
               },
             },
-            addresses: {
-              createMany: {
-                //@ts-ignore
-                data: cartSession?.addresses,
+            shipperAddress: {
+              create: {
+                firstName: cartSession?.shipperAddress?.firstName,
+                lastName: cartSession?.shipperAddress?.lastName,
+                address: cartSession?.shipperAddress?.address,
+                address2: cartSession?.shipperAddress?.address2,
+                address3: cartSession?.shipperAddress?.address3,
+                city: cartSession?.shipperAddress?.city,
+                state: cartSession?.shipperAddress?.state,
+                postalCode: cartSession?.shipperAddress?.postalCode,
+                country: cartSession?.shipperAddress?.country,
+                cellphone: cartSession?.shipperAddress?.cellphone,
+                telephone: cartSession?.shipperAddress?.telephone,
+              },
+            },
+            recieverAddress: {
+              create: {
+                firstName: cartSession?.recieverAddress?.firstName,
+                lastName: cartSession?.recieverAddress?.lastName,
+                address: cartSession?.recieverAddress?.address,
+                address2: cartSession?.recieverAddress?.address2,
+                address3: cartSession?.recieverAddress?.address3,
+                city: cartSession?.recieverAddress?.city,
+                state: cartSession?.recieverAddress?.state,
+                postalCode: cartSession?.recieverAddress?.postalCode,
+                country: cartSession?.recieverAddress?.country,
+                cellphone: cartSession?.recieverAddress?.cellphone,
+                telephone: cartSession?.recieverAddress?.telephone,
               },
             },
             pickupDatetime: input?.pickupDateTime,
@@ -897,7 +935,9 @@ export const cartApi = createProtectedRouter()
             items: true,
           },
         })
-        console.log('cartApi.ts 595 ~ pendingOrder', pendingOrder)
+        // console.log('cartApi.ts 595 ~ pendingOrder', pendingOrder)
+
+        // TODO: update customer balance
 
         return pendingOrder
       } catch (error) {

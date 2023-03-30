@@ -17,3 +17,6 @@ echo $1
 # npm run build
 
 # pm2 start --name=APP npm -- start'
+
+# pull, build and start with pm2
+# ssh CourierServer 'source ~/.nvm/nvm.sh; ./pullStart.sh'

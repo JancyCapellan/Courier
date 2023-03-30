@@ -233,7 +233,7 @@ export const invoiceApi = createProtectedRouter()
               lastName: true,
             },
           },
-          addresses: {
+          shipperAddress: {
             select: {
               firstName: true,
               lastName: true,
@@ -241,10 +241,26 @@ export const invoiceApi = createProtectedRouter()
               address2: true,
               address3: true,
               city: true,
+              state: true,
               postalCode: true,
+              country: true,
               cellphone: true,
               telephone: true,
+            },
+          },
+          recieverAddress: {
+            select: {
+              firstName: true,
+              lastName: true,
+              address: true,
+              address2: true,
+              address3: true,
+              city: true,
+              state: true,
+              postalCode: true,
               country: true,
+              cellphone: true,
+              telephone: true,
             },
           },
           items: {
@@ -267,6 +283,7 @@ export const invoiceApi = createProtectedRouter()
           totalCost: true,
           timePlaced: true,
           pickupDatetime: true,
+          paymentStatus: true,
           stripeCheckoutId: true,
           stripeCheckoutUrl: true,
           stripeReceiptUrl: true,

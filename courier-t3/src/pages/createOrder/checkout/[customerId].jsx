@@ -22,9 +22,8 @@ const Checkout = () => {
 
   const { data: session, status: sessionStatus } = useSession()
 
-  const [pickupDateTime, setPickupDateTime] = useState(null)
+  const [potentialPickupDateTime, setPotentialPickupDateTime] = useState(null)
 
-  // TODO: (see forms below) change returned object of data: cart to have explicit addresses, rn it is just explected that index 0 is shipper customer and index 1 is recieving person
   // * NOTE: the cart is based on user and customer id, if the user logged in is the customer making the order it is the same and their cart should show. if its a staff member making an order for someone even if they go to the checkout page for that customer it will be a different cart showing since its the staff making the order. if i want to see the customers current cart, i will need to adda seperate section. therortically, i could make it so /createOrder/checkout/[customerId] means that the checkout for that customer, but that might restrict to having one checkouot per customer, right now a customer can be making a order and an admin can also make them an order, the customer may be saving their order for later
   const { data: cart, status: cartStatus } = trpc.useQuery(
     [
@@ -74,14 +73,14 @@ const Checkout = () => {
       userId: session?.user?.id,
       customerId: router.query.customerId,
       paymentType: paymentType,
-      pickupDateTime: pickupDateTime,
+      pickupDateTime: potentialPickupDateTime,
     })
 
     //TODO: SEPERATE account components page by routes
     if (session.user.role === 'CUSTOMER') {
       router.push('/account')
     } else {
-      router.push('/Invoices')
+      router.push('/invoices')
     }
   }
 
@@ -95,6 +94,7 @@ const Checkout = () => {
           stripeCheckoutId: stripeCheckoutSession.id,
           paymentType: 'STRIPE',
           stripeCheckoutUrl: stripeCheckoutSession.url,
+          pickupDateTime: potentialPickupDateTime,
           // stripePaymentIntent: stripeCheckoutSession.payment_intent,
         })
 
@@ -181,7 +181,7 @@ const Checkout = () => {
         onChange={(e) => {
           console.log(e.target.value)
           let time = e.target.value + ':00.000Z'
-          setPickupDateTime(time)
+          setPotentialPickupDateTime(time)
         }}
       />
       <div>
@@ -217,6 +217,10 @@ const Checkout = () => {
         <button
           className="btn btn-blue"
           onClick={() => {
+            if (potentialPickupDateTime === null) {
+              alert('please choose pickup time')
+              return
+            }
             // note: Using the asPath field may lead to a mismatch between client and server if the page is rendered using server-side rendering or automatic static optimization. Avoid using asPath until the isReady field is true.
             if (confirm('Press OK if order is ready ')) {
               if (router.isReady) {
@@ -241,6 +245,11 @@ const Checkout = () => {
         <button
           className="btn btn-blue"
           onClick={() => {
+            if (potentialPickupDateTime === null) {
+              alert('please choose pickup time')
+              return
+            }
+
             if (confirm('Press OK if order is ready '))
               createPendingOrderWrapper('CASH')
           }}
@@ -250,6 +259,10 @@ const Checkout = () => {
         <button
           className="btn btn-blue"
           onClick={() => {
+            if (potentialPickupDateTime === null) {
+              alert('please choose pickup time')
+              return
+            }
             if (confirm('Press OK if order is ready '))
               createPendingOrderWrapper('CHECK')
           }}
@@ -260,6 +273,10 @@ const Checkout = () => {
         <button
           className="btn btn-blue"
           onClick={() => {
+            if (potentialPickupDateTime === null) {
+              alert('please choose pickup time')
+              return
+            }
             if (confirm('Press OK if order is ready '))
               createPendingOrderWrapper('QUICKPAY')
           }}

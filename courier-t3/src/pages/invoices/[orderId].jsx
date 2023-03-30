@@ -61,7 +61,7 @@ const InvoicePage = () => {
           >
             get/sync with stripe checkout
           </button> */}
-          {order?.status?.message === 'PENDING PAYMENT' &&
+          {order?.paymentStatus === 'PENDING PAYMENT' &&
             order?.stripeCheckoutId && (
               <button
                 className="btn btn-blue"
@@ -140,23 +140,23 @@ const InvoicePage = () => {
               <div>{order?.pickupDatetime?.toLocaleTimeString('en-US')}</div>
             </div>
             {'\n'}Sender:{order?.customer.firstName} {order?.customer.lastName}
-            {'\n'} Country: {order?.addresses[0]?.country}
-            {'\n'} Address: {order?.addresses[0]?.address}
-            {'\n'} Address2: {order?.addresses[0]?.address2 || 'N/A'}
-            {'\n'} Address3: {order?.addresses[0]?.address3 || ' N/A'}
-            {'\n'} City: {order?.addresses[0]?.city}
-            {'\n'} PostalCode: {order?.addresses[0]?.postalCode}
-            {'\n'} Cellphone: {order?.addresses[0]?.cellphone || 'N/A'}
-            {'\n'} Telephone: {order?.addresses[0]?.telephone || 'N/A'}
-            {'\n'}Reciever: {order?.addresses[1]?.firstName}
-            {'\n'} Country: {order?.addresses[1]?.country}
-            {'\n'} Address: {order?.addresses[1]?.address}
-            {'\n'} Address2: {order?.addresses[1]?.address2 || 'N/A'}
-            {'\n'} Address3: {order?.addresses[1]?.address3 || ' N/A'}
-            {'\n'} City: {order?.addresses[1]?.city}
-            {'\n'} PostalCode: {order?.addresses[1]?.postalCode}
-            {'\n'} Cellphone: {order?.addresses[1]?.cellphone || 'N/A'}
-            {'\n'} Telephone: {order?.addresses[1]?.telephone || 'N/A'}
+            {'\n'} Country: {order?.shipperAddress?.country}
+            {'\n'} Address: {order?.shipperAddress?.address}
+            {'\n'} Address2: {order?.shipperAddress?.address2 || 'N/A'}
+            {'\n'} Address3: {order?.shipperAddress?.address3 || ' N/A'}
+            {'\n'} City: {order?.shipperAddress?.city}
+            {'\n'} PostalCode: {order?.shipperAddress?.postalCode}
+            {'\n'} Cellphone: {order?.shipperAddress?.cellphone || 'N/A'}
+            {'\n'} Telephone: {order?.shipperAddress?.telephone || 'N/A'}
+            {'\n'}Reciever: {order?.recieverAddress?.firstName}
+            {'\n'} Country: {order?.recieverAddress?.country}
+            {'\n'} Address: {order?.recieverAddress?.address}
+            {'\n'} Address2: {order?.recieverAddress?.address2 || 'N/A'}
+            {'\n'} Address3: {order?.recieverAddress?.address3 || ' N/A'}
+            {'\n'} City: {order?.recieverAddress?.city}
+            {'\n'} PostalCode: {order?.recieverAddress?.postalCode}
+            {'\n'} Cellphone: {order?.recieverAddress?.cellphone || 'N/A'}
+            {'\n'} Telephone: {order?.recieverAddress?.telephone || 'N/A'}
             {'\n'}
             {'\n'}
             {/* route: {order.routeId} {'\n'} */}
@@ -203,29 +203,29 @@ const InvoicePage = () => {
           <QRCodeSVG
             value={`OrderID:${order?.id}\nSender:${order?.customer.firstName} ${
               order?.customer.lastName
-            }\n  Country: ${order?.addresses[0]?.country}\n  Address: ${
-              order?.addresses[0]?.address
+            }\n  Country: ${order?.shipperAddress?.country}\n  Address: ${
+              order?.shipperAddress?.address
             }\n  Address2: ${
-              order?.addresses[0]?.address2 || 'N/A'
+              order?.shipperAddress?.address2 || 'N/A'
             }\n  Address3: ${
-              order?.addresses[0]?.address3 || ' N/A'
-            }\n  City: ${order?.addresses[0]?.city}\n  PostalCode: ${
-              order?.addresses[0]?.postalCode
+              order?.shipperAddress?.address3 || ' N/A'
+            }\n  City: ${order?.shipperAddress?.city}\n  PostalCode: ${
+              order?.shipperAddress?.postalCode
             }\n  Cellphone: ${
-              order?.addresses[0]?.cellphone || 'N/A'
+              order?.shipperAddress?.cellphone || 'N/A'
             }\n  Telephone: ${
-              order?.addresses[0]?.telephone || 'N/A'
-            }\nReciever: ${order?.addresses[1]?.firstName}\n  Country: ${
-              order?.addresses[1]?.country
-            }\n  Address: ${order?.addresses[1]?.address}\n  Address2: ${
-              order?.addresses[1]?.address2 || 'N/A'
+              order?.shipperAddress?.telephone || 'N/A'
+            }\nReciever: ${order?.recieverAddress?.firstName}\n  Country: ${
+              order?.recieverAddress?.country
+            }\n  Address: ${order?.recieverAddress?.address}\n  Address2: ${
+              order?.recieverAddress?.address2 || 'N/A'
             }\n  Address3: ${
-              order?.addresses[1]?.address3 || ' N/A'
-            }\n  City: ${order?.addresses[1]?.city}\n  PostalCode: ${
-              order?.addresses[1]?.postalCode
+              order?.recieverAddress?.address3 || ' N/A'
+            }\n  City: ${order?.recieverAddress?.city}\n  PostalCode: ${
+              order?.recieverAddress?.postalCode
             }\n  Cellphone: ${
-              order?.addresses[1]?.cellphone || 'N/A'
-            }\n  Telephone: ${order?.addresses[1]?.telephone || 'N/A'}`}
+              order?.recieverAddress?.cellphone || 'N/A'
+            }\n  Telephone: ${order?.recieverAddress?.telephone || 'N/A'}`}
             includeMargin={false}
             level={'Q'}
             size={220}
