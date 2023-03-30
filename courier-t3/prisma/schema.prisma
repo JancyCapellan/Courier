@@ -104,13 +104,16 @@ model UserDeliveryAddress {
 }
 
 model Order {
-  id              Int           @unique @default(autoincrement())
-  customerUserId  String // thecustomer who sent the package, so client/shipper
-  customer        User          @relation("CUSTOMER", fields: [customerUserId], references: [id])
-  creatorUserId   String
-  creatorUser     User          @relation("creatorUser", fields: [creatorUserId], references: [id])
-  timePlaced      DateTime      @default(now())
-  paymentType     String // set at checkout //stripe webhooks can change this as necessary
+  id             Int      @unique @default(autoincrement())
+  customerUserId String // thecustomer who sent the package, so client/shipper
+  customer       User     @relation("CUSTOMER", fields: [customerUserId], references: [id])
+  creatorUserId  String
+  creatorUser    User     @relation("creatorUser", fields: [creatorUserId], references: [id])
+  timePlaced     DateTime @default(now())
+
+  currentBalance Int?
+  orderPayments  orderPayments[]
+
   statusMessage   String
   status          orderStatus   @relation(fields: [statusMessage], references: [message])
   totalCost       Int?
@@ -143,6 +146,16 @@ model Order {
   // orderLocationsId Int?
 
   @@id([id, customerUserId, creatorUserId], map: "orderPK")
+}
+
+model orderPayments {
+  id               Int     @id @default(autoincrement())
+  orderId          Int
+  order            Order   @relation(fields: [orderId], references: [id], onDelete: Restrict)
+  paymentType      String // set at checkout //stripe webhooks can change this as necessary
+  amountPaid       Int
+  receiptImageLink String?
+  paymentId        Int
 }
 
 // model Route {

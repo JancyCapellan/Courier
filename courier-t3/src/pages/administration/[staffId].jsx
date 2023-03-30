@@ -71,9 +71,9 @@ const DriverAccountPage = () => {
                     </td>
 
                     <td>
-                      <pre>
-                        {JSON.stringify(order.addresses[0], undefined, 2)}
-                      </pre>
+                      <p>{order?.shipperAddress.address}</p>
+                      <p>{order?.shipperAddress.address2}</p>
+                      <p>{order?.shipperAddress.address3}</p>
                     </td>
                     <td>
                       <DateTimeFormat pickupDatetime={order?.pickupDatetime} />

@@ -73,7 +73,7 @@ export const staffApi = createProtectedRouter()
               select: {
                 id: true,
                 customer: true,
-                addresses: {
+                shipperAddress: {
                   select: {
                     address: true,
                     address2: true,
