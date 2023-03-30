@@ -8,7 +8,7 @@ import * as Yup from 'yup'
 import { useSession } from 'next-auth/react'
 
 const SenderAddressForm = () => {
-  const { data: session } = useSession()
+  const { data: session, status: sessionStatus } = useSession()
   const [showModal, setShowModal] = useState(false)
   const [selectedShipperAddress, setSelectedShipperAddress] = useState({
     address: '',
@@ -30,6 +30,20 @@ const SenderAddressForm = () => {
   const saveShipperPickupAddressToCart = trpc.useMutation([
     'cart.saveShipperPickupAddressToCart',
   ])
+
+  const {
+    data: formDetails,
+    status: formDetailsStatus,
+    // refetch: refetchCartAddresses,
+  } = trpc.useQuery(
+    [
+      'cart.getShipperAddressFromCart',
+      { userId: session?.user?.id, customerId: customerId },
+    ],
+    {
+      enabled: sessionStatus === 'authenticated',
+    }
+  )
 
   const selectOptions = [
     { key: 'choose one', value: '' },
@@ -72,7 +86,8 @@ const SenderAddressForm = () => {
     }),
   })
 
-  if (customerInfoQueryStatus === 'loading') return <div>Loading...</div>
+  if (customerInfoQueryStatus === 'loading' || formDetailsStatus === 'loading')
+    return <div>Loading...</div>
 
   return (
     <section id="deliveryInformation">
@@ -93,7 +108,7 @@ const SenderAddressForm = () => {
 
       {/* <p>selected address: {selectedShipperAddress.address}</p> */}
       <Formik
-        initialValues={initialValues}
+        initialValues={{ shipper: formDetails } || initialValues}
         validationSchema={validationSchema}
         onSubmit={(values) => {
           console.log('adding order form to store', values)

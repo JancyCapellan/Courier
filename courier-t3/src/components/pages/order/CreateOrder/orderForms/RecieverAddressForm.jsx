@@ -22,7 +22,7 @@ const RecieverAddressForm = () => {
     telephone: '',
   })
 
-  const { data: session } = useSession()
+  const { data: session, status: sessionStatus } = useSession()
 
   const router = useRouter()
   const customerId = router.query.customerId
@@ -32,6 +32,21 @@ const RecieverAddressForm = () => {
   const saveRecieverDeliveryAddressToCart = trpc.useMutation([
     'cart.saveRecieverDeliveryAddressToCart',
   ])
+
+  const {
+    data: formDetails,
+    status: formDetailsStatus,
+    // refetch: refetchCartAddresses,
+  } = trpc.useQuery(
+    [
+      'cart.getRecieverAddressFromCart',
+      { userId: session?.user?.id, customerId: customerId },
+    ],
+    {
+      enabled: sessionStatus === 'authenticated',
+    }
+  )
+
   const selectOptions = [
     { key: 'choose one', value: '' },
     { key: 'UNITED STATES', value: 'USA' },
@@ -56,21 +71,22 @@ const RecieverAddressForm = () => {
 
   const validationSchema = Yup.object({
     reciever: Yup.object().shape({
-      firstName: Yup.string(),
-      lastName: Yup.string(),
-      address: Yup.string(),
+      firstName: Yup.string().required(),
+      lastName: Yup.string().required(),
+      address: Yup.string().required(),
       address2: Yup.string().notRequired(),
       address3: Yup.string().notRequired(),
-      city: Yup.string(),
-      state: Yup.string(),
-      postalCode: Yup.number(),
-      country: Yup.string(),
-      cellphone: Yup.string(),
+      city: Yup.string().required(),
+      state: Yup.string().required(),
+      postalCode: Yup.number().required(),
+      country: Yup.string().required(),
+      cellphone: Yup.string().required(),
       telephone: Yup.string().notRequired(),
     }),
   })
 
-  if (customerInfoQueryStatus === 'loading') return <div>Loading...</div>
+  if (customerInfoQueryStatus === 'loading' || formDetailsStatus === 'loading')
+    return <div>Loading...</div>
 
   return (
     <section id="deliveryInformation">
@@ -91,7 +107,7 @@ const RecieverAddressForm = () => {
 
       {/* <p>selected address: {selectedRecieverAddress.address}</p> */}
       <Formik
-        initialValues={initialValues}
+        initialValues={{ reciever: formDetails } || initialValues}
         validationSchema={validationSchema}
         onSubmit={(values) => {
           console.log('adding order form to store', values)

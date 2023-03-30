@@ -104,7 +104,7 @@ export const cartApi = createProtectedRouter()
               },
             },
           },
-          addresses: {
+          shipperAddress: {
             select: {
               firstName: true,
               lastName: true,
@@ -117,7 +117,21 @@ export const cartApi = createProtectedRouter()
               country: true,
               cellphone: true,
               telephone: true,
-              recipient: true,
+            },
+          },
+          recieverAddress: {
+            select: {
+              firstName: true,
+              lastName: true,
+              address: true,
+              address2: true,
+              address3: true,
+              city: true,
+              state: true,
+              postalCode: true,
+              country: true,
+              cellphone: true,
+              telephone: true,
             },
           },
         },
@@ -379,14 +393,14 @@ export const cartApi = createProtectedRouter()
         firstName: z.string(),
         lastName: z.string(),
         address: z.string(),
-        address2: z.string(),
-        address3: z.string(),
+        address2: z.string().optional(),
+        address3: z.string().optional(),
         city: z.string(),
         state: z.string(),
         postalCode: z.number(),
         country: z.string(),
         cellphone: z.string(),
-        telephone: z.string(),
+        telephone: z.string().optional(),
       }),
     }),
     async resolve({ ctx, input }) {
@@ -420,14 +434,14 @@ export const cartApi = createProtectedRouter()
         firstName: z.string(),
         lastName: z.string(),
         address: z.string(),
-        address2: z.string(),
-        address3: z.string(),
+        address2: z.string().optional(),
+        address3: z.string().optional(),
         city: z.string(),
         state: z.string(),
         postalCode: z.number(),
         country: z.string(),
         cellphone: z.string(),
-        telephone: z.string(),
+        telephone: z.string().optional(),
       }),
     }),
     async resolve({ ctx, input }) {
@@ -571,6 +585,92 @@ export const cartApi = createProtectedRouter()
         return null
       }
       return formAddresses
+    },
+  })
+  .query('getShipperAddressFromCart', {
+    input: z.object({
+      userId: z.string(),
+      customerId: z.string(),
+    }),
+    async resolve({ ctx, input }) {
+      // want to only find the cart id not create if no cart is found until needed to
+      const cart = await findCart(ctx.prisma, input.userId, input.customerId)
+
+      if (cart === false) {
+        return null
+      }
+
+      const shipperAddress = await ctx.prisma.cartShipperAddress.findUnique({
+        where: {
+          cartId: cart.cartId,
+        },
+        select: {
+          firstName: true,
+          lastName: true,
+          address: true,
+          address2: true,
+          address3: true,
+          city: true,
+          state: true,
+          postalCode: true,
+          country: true,
+          cellphone: true,
+          telephone: true,
+        },
+      })
+      // console.log(
+      //   '🚀 ~ file: cartApi.ts ~ line 274 ~ resolve ~ formAddresses',
+      //   formAddresses
+      // )
+
+      // if (shipperAddress === undefined || shipperAddress.length == 0) {
+      //   // array does not exist or is empty
+      //   return null
+      // }
+      return shipperAddress
+    },
+  })
+  .query('getRecieverAddressFromCart', {
+    input: z.object({
+      userId: z.string(),
+      customerId: z.string(),
+    }),
+    async resolve({ ctx, input }) {
+      // want to only find the cart id not create if no cart is found until needed to
+      const cart = await findCart(ctx.prisma, input.userId, input.customerId)
+
+      if (cart === false) {
+        return null
+      }
+
+      const recieverAddress = await ctx.prisma.cartRecieverAddress.findUnique({
+        where: {
+          cartId: cart.cartId,
+        },
+        select: {
+          firstName: true,
+          lastName: true,
+          address: true,
+          address2: true,
+          address3: true,
+          city: true,
+          state: true,
+          postalCode: true,
+          country: true,
+          cellphone: true,
+          telephone: true,
+        },
+      })
+      // console.log(
+      //   '🚀 ~ file: cartApi.ts ~ line 274 ~ resolve ~ formAddresses',
+      //   formAddresses
+      // )
+
+      // if (formAddresses === undefined || formAddresses.length == 0) {
+      //   // array does not exist or is empty
+      //   return null
+      // }
+      return recieverAddress
     },
   })
   .mutation('clearCart', {

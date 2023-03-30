@@ -188,25 +188,25 @@ const Checkout = () => {
         <h2 className="font-bold"> Cart Addresses</h2>
         <div className="md: flex flex-col rounded border-2 border-solid border-black">
           <h3 className="font-bold">Pickup Address</h3>
-          <p>name: {cart?.addresses[0]?.firstName}</p>
+          <p>name: {cart?.shipperAddress?.firstName}</p>
           <p>ID Number:</p>
-          <p>Address: {cart?.addresses[0]?.address}</p>
-          <p>City: {cart?.addresses[0]?.city}</p>
-          <p>State: {cart?.addresses[0]?.state} </p>{' '}
-          <p>postal: {cart?.addresses[0]?.postalCode}</p>
-          <p>cellphone: {cart?.addresses[0]?.cellphone}</p>
-          <p>telephone: {cart?.addresses[0]?.telephone}</p>
+          <p>Address: {cart?.shipperAddress?.address}</p>
+          <p>City: {cart?.shipperAddress?.city}</p>
+          <p>State: {cart?.shipperAddress?.state} </p>{' '}
+          <p>postal: {cart?.shipperAddress?.postalCode}</p>
+          <p>cellphone: {cart?.shipperAddress?.cellphone}</p>
+          <p>telephone: {cart?.shipperAddress?.telephone}</p>
         </div>
         <div className="md: flex flex-col rounded border-2 border-solid border-black">
           <h3 className="font-bold">Delivery Address</h3>
-          <p>name: {cart?.addresses[1]?.firstName}</p>
+          <p>name: {cart?.recieverAddress?.firstName}</p>
           <p>ID Number:</p>
-          <p>Address: {cart?.addresses[1]?.address}</p>
-          <p>City: {cart?.addresses[1]?.city}</p>
-          <p>State: {cart?.addresses[1]?.state} </p>{' '}
-          <p>postal: {cart?.addresses[1]?.postalCode}</p>
-          <p>cellphone: {cart?.addresses[1]?.cellphone}</p>
-          <p>telephone: {cart?.addresses[1]?.telephone}</p>
+          <p>Address: {cart?.recieverAddress?.address}</p>
+          <p>City: {cart?.recieverAddress?.city}</p>
+          <p>State: {cart?.recieverAddress?.state} </p>{' '}
+          <p>postal: {cart?.recieverAddress?.postalCode}</p>
+          <p>cellphone: {cart?.recieverAddress?.cellphone}</p>
+          <p>telephone: {cart?.recieverAddress?.telephone}</p>
         </div>
       </div>
       <Cart />
