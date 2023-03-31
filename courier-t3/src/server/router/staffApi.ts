@@ -80,13 +80,39 @@ export const staffApi = createProtectedRouter()
                     address3: true,
                   },
                 },
-                pickupDatetime: true,
+                pickupDate: true,
+                pickupTime: true,
               },
             },
           },
         })
 
         return staffInfo
+      } catch (error) {
+        console.log('error getting staff information', error)
+      }
+    },
+  })
+  .query('getDriverOrders', {
+    input: z.object({
+      driverId: z.string(),
+    }),
+    async resolve({ ctx, input }) {
+      try {
+        const orders = await ctx.prisma.order.findMany({
+          where: {
+            pickupDriverId: input.driverId,
+            pickupDate: {
+              gte: new Date('2023-04-03'),
+              lte: new Date('2023-04-03'),
+            },
+          },
+          include: {
+            pickupDriver: true,
+          },
+        })
+
+        return orders
       } catch (error) {
         console.log('error getting staff information', error)
       }

@@ -814,12 +814,11 @@ export const cartApi = createProtectedRouter()
       stripeCheckoutId: z.string().optional(),
       // paymentType: z.enum(['CARD', 'CASH', 'CHECK', 'QUICKPAY', 'STRIPE']),
       stripeCheckoutUrl: z.string().optional(),
-      pickupDateTime: z.string().datetime(),
+      pickupDate: z.string(),
+      pickupTime: z.string(),
       // stripePaymentIntent: z.string().optional(),
     }),
     async resolve({ ctx, input }) {
-      console.log('pickup time', input.pickupDateTime)
-
       // console.log('🚀 ~ file: cartApi.ts:510 ~ resolve ~ input:', input)
       let pendingOrder
       try {
@@ -951,7 +950,8 @@ export const cartApi = createProtectedRouter()
               },
             },
             // timePlaced: timePlaced,
-            pickupDatetime: input?.pickupDateTime,
+            pickupDate: input.pickupDate,
+            pickupTime: input.pickupTime,
             stripeCheckoutId:
               // made this way becuase not all orders go through stripe so some may need an empty column, i dont remember why null doesnt work because i could avoid this if input.stripeCheckoutId is null from not exising already from creating the checkout order
               input.stripeCheckoutId !== null // this was the problem stopping the webhook from updating pending order

@@ -19,8 +19,8 @@ const DriverHome = () => {
   //   }
   // )
 
-  const { data: staff, status: getStaffStatus } = trpc.useQuery(
-    ['staff.getUniqueStaff', { staffId: session?.user?.id }],
+  const { data: pickups, status: getPickupStatus } = trpc.useQuery(
+    ['staff.getDriverOrders', { driverId: session?.user?.id }],
     {
       enabled: sessionStatus === 'authenticated',
       onSuccess: (data) => {
@@ -34,19 +34,19 @@ const DriverHome = () => {
 
   return (
     <>
-      {getStaffStatus === 'success' && (
+      {getPickupStatus === 'success' && (
         <section className="driverAccountPage">
           <h1>
-            {`${staff?.role}`}: {staff?.firstName} {staff?.lastName}
+            {`${session?.user?.role}`}: {session?.user?.name}
           </h1>
           <button
             onClick={() =>
               router.push({
-                pathname: `/customers/${staff?.id}`,
+                pathname: `/customers/${pickups?.id}`,
               })
             }
           >
-            Edit {`${staff?.role}`} Account information
+            Edit {`${session?.role}`} Account information
           </button>
 
           <h2>pickups</h2>
@@ -62,7 +62,7 @@ const DriverHome = () => {
               </tr>
             </thead>
             <tbody>
-              {staff?.pickups.map((order) => {
+              {pickups?.map((order) => {
                 return (
                   <tr key={order.id}>
                     <td>{order.id}</td>
@@ -73,11 +73,16 @@ const DriverHome = () => {
 
                     <td>
                       <pre>
-                        {JSON.stringify(order.addresses[0], undefined, 2)}
+                        {order?.shipperAddress.address}
+                        {order?.shipperAddress.address2}
+                        {order?.shipperAddress.address3}
                       </pre>
                     </td>
                     <td>
-                      <DateTimeFormat pickupDatetime={order?.pickupDatetime} />
+                      <DateTimeFormat
+                        pickupDate={order?.pickupDate}
+                        pickupTime={order?.pickupTime}
+                      />
                     </td>
                     <td>
                       <button

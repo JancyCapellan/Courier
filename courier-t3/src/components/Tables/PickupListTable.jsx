@@ -409,13 +409,19 @@ const PickupListTable = () => {
         Header: 'Status',
         accessor: 'status.message',
       },
-      {
-        Header: 'Balance',
-        accessor: 'balance',
-      },
+
       {
         Header: 'Total Cost',
         accessor: 'totalCost',
+        Cell: ({ row: { original } }) => {
+          return (
+            <>${(Number(original?.totalCost) / 100).toLocaleString('en')}</>
+          )
+        },
+      },
+      {
+        Header: 'Balance',
+        accessor: 'balance',
       },
       {
         Header: 'Payment',
@@ -423,14 +429,10 @@ const PickupListTable = () => {
       },
       {
         Header: 'pickup time',
-        accessor: 'pickupDatetime',
+        accessor: 'pickupDate',
         Cell: ({ row: { original } }) => {
           return (
-            <>
-              {dayjs
-                .utc(original?.pickupDatetime)
-                .format('dddd, MMMM D, YYYY h:mm A')}
-            </>
+            <>{dayjs.utc(original?.pickupDate).format('dddd, MMMM D, YYYY ')}</>
           )
         },
         filter: dateBetweenFilterFn,

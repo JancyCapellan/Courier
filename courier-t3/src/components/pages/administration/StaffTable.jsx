@@ -75,13 +75,14 @@ const StaffTable = () => {
         Cell: ({ row: { original } }) => (
           <>
             <button
+              className="btn btn-blue"
               onClick={() => {
                 router.push({
                   pathname: `/administration/${original.id}`,
                 })
               }}
             >
-              Staff Page
+              pickup list
             </button>
           </>
         ),

@@ -26,6 +26,9 @@ const Checkout = () => {
 
   const [potentialPickupDateTime, setPotentialPickupDateTime] = useState(null)
 
+  const [pickupDate, setpickupDate] = useState(null)
+  const [pickupTime, setpickupTime] = useState(null)
+
   const { data: cart, status: cartStatus } = trpc.useQuery(
     [
       'cart.getCartSession',
@@ -73,7 +76,6 @@ const Checkout = () => {
     }
   )
 
-  // TODO: change pending status to include the type of payment waiting, stripe/cash/check/quickpay. and partial pending, (partial payments not yet implemented)
   function createPendingOrderWrapper(paymentType) {
     createPendingOrder.mutate({
       userId: session?.user?.id,
@@ -116,31 +118,6 @@ const Checkout = () => {
     }
   )
 
-  //if admin get customerEmail, if customer used currentEmail
-  // const { data: customerEmail } = trpc.useQuery(
-  //   ['user.getUserEmail', { userId: router?.query?.customerId }],
-  //   {
-  //     // enabled: sessionStatus === 'authenticated' && !!router.query.customerId,
-  //     onSuccess: (d) => {
-  //       // console.log(d)
-  //     },
-  //   }
-  // )
-
-  // changing for webhook that will let me checkk fo rehckout.session.expired in where i will delete from the data, this way i can set a configurable amount of time for the session to expire, maybe part of the base configs for projects that i have been thinking of that would set basic settings based on the prefernces of the tenant/client
-  // useEffect(() => {
-  //   if (router.query.stripe === 'cancelled') {
-
-  // i cant not get the checkoutsessionID in the cancelURl because it is created
-  // TODO: remove pending order that was just attempted?
-  // const session = await stripe.checkout.sessions.expire(
-  //   'cs_test_a1RtHP00RsUvDWVdtnLG0xshpb5hMsTy8gB6vYlHLIU4CGHOtwo54Z1RTp'
-  // )
-  // then remove same order from local database
-  //     console.log('pending orders remvoved')
-  //   }
-  // }, [router])
-
   if (sessionStatus === 'loading' || cartStatus === 'loading')
     return <div>Loading...</div>
 
@@ -148,7 +125,7 @@ const Checkout = () => {
 
   const backlink = `/createOrder?customerId=${router.query?.customerId}`
 
-  let currentDate = getCurrentDate()
+  let currentDate = dayjs().add(1, 'day').format('YYYY-MM-DD')
   return (
     <section>
       {createPendingOrder?.isSuccess ? (
@@ -175,10 +152,10 @@ const Checkout = () => {
           <h1>Review Order Before Checkout</h1>
           {/* <p>EMAIL: {customerEmail} </p> */}
           <label className="block font-bold" htmlFor="meeting-time">
-            Choose a time for pickup: Monday to Saturday, 10am to 6pm
+            Choose a time for pickup:
           </label>
           {/* // TODO make sure datetime is in UTC like invoices date/time placed, this time is diff, if utc if removed from formatting the user sees a pickupTime */}
-          <input
+          {/* <input
             type="datetime-local"
             id="meeting-time"
             name="meeting-time"
@@ -193,33 +170,88 @@ const Checkout = () => {
               // console.log(e.target.value)
               // let time = e.target.value
               let time = e.target.value + ':00.000Z'
-              time = dayjs.utc(time).toISOString()
-              console.log(time)
+
+              console.log({ time })
+              time = dayjs(time).toISOString()
+              console.log('dayjs time', time)
               setPotentialPickupDateTime(time)
             }}
-          />
-
-          {/* <input
-            type="date"
-            min={currentDate}
-            onChange={(e) => {
-              // console.log(e.target.value)
-              let time = e
-              console.log(time)
-              // let time = e.target.value + ':00.000Z'
-              // setPotentialPickupDateTime(time)
-            }}
-          />
-          <input
-            type="time"
-            onChange={(e) => {
-              // console.log(e.target.value)
-              let time = e
-              console.log(time)
-              // let time = e.target.value + ':00.000Z'
-              // setPotentialPickupDateTime(time)
-            }}
           /> */}
+
+          <div className="flex w-max flex-col">
+            <small>Pickups Monday to Saturday</small>
+            <input
+              type="date"
+              min={currentDate}
+              onChange={(e) => {
+                // console.log(e.target.value)
+                // let time = e
+                let date = e.target.value
+                date = dayjs(date).toISOString()
+                console.log(date)
+                setpickupDate(date)
+                // let time = e.target.value + ':00.000Z'
+                // setPotentialPickupDateTime(time)
+              }}
+              required
+            />
+
+            {/* // ? might need a change for cross complatibility, this is based on a time input with a 24 hour format */}
+            <div className="flex flex-row">
+              <input
+                type="time"
+                // min="09:00"
+                // max="17:30"
+                // step="00:10"
+                onChange={(e) => {
+                  // console.log(e.target.value)
+                  // let time = e
+                  let time = e.target.value
+
+                  const splitTime = time.split(':')
+
+                  console.log({ splitTime })
+                  let currentTimeHour = Number(splitTime[0])
+
+                  let formattedTime = ''
+                  // midnihgt 00, 01, .. , 12
+
+                  if (currentTimeHour === 0) {
+                    formattedTime = `12:${splitTime[1]} AM`
+                    console.log({ formattedTime })
+                    setpickupTime(formattedTime)
+                    return
+                  }
+
+                  if (currentTimeHour === 12) {
+                    formattedTime = `12:${splitTime[1]} PM`
+                    console.log({ formattedTime })
+                    setpickupTime(formattedTime)
+                    return
+                  }
+
+                  if (currentTimeHour > 12 && currentTimeHour < 24) {
+                    const twelveHourFormat = currentTimeHour - 12
+                    formattedTime = `${twelveHourFormat}:${splitTime[1]} PM`
+                    console.log({ formattedTime })
+
+                    setpickupTime(formattedTime)
+                    return
+                  } else {
+                    time = time + ' AM'
+                  }
+
+                  // time = dayjs(time).format('h:mm a')
+
+                  console.log(time)
+                  setpickupTime(time)
+                  // let time = e.target.value + ':00.000Z'
+                  // setPotentialPickupDateTime(time)
+                }}
+              />
+              <small>pickup hours are 9am to 5:30pm</small>
+            </div>
+          </div>
 
           <div>
             <h2 className="font-bold"> Cart Addresses</h2>
@@ -342,7 +374,11 @@ const Checkout = () => {
         <button
           className="btn btn-blue"
           onClick={() => {
-            if (potentialPickupDateTime === null) {
+            if (pickupDate === null) {
+              alert('please choose pickup Date')
+              return
+            }
+            if (pickupTime === null) {
               alert('please choose pickup time')
               return
             }
@@ -350,7 +386,8 @@ const Checkout = () => {
               createPendingOrder.mutate({
                 userId: session?.user?.id,
                 customerId: router.query.customerId,
-                pickupDateTime: potentialPickupDateTime,
+                pickupDate: pickupDate,
+                pickupTime: pickupTime,
               })
             }
           }}

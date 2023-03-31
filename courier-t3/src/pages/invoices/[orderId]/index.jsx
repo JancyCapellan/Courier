@@ -1,18 +1,23 @@
-import Layout from '../../components/Layout'
+import Layout from '../../../components/Layout'
 import { useRouter } from 'next/router'
 // import { useQuery } from 'react-query'
 import { trpc } from '@/utils/trpc'
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 import { printJsx } from '@/components/printDocuments/Print'
 import InvoiceReceipt from '@/components/printDocuments/InvoiceReceipt'
 import DateTimeFormat from '@/components/DateTimeFormat'
 import dayjs from 'dayjs'
 import ReactToPrint from 'react-to-print'
 import { QRCodeSVG } from 'qrcode.react'
+import ModalContainer from '@/components/HOC/ModalContainer'
 
 const InvoicePage = () => {
   const router = useRouter()
   const { orderId } = router.query
+
+  const [showEditPickupDatetime, setshowEditPickupDatetime] = useState(false)
+
+  let currentDate = dayjs().add(1, 'day').format('YYYY-MM-DD')
 
   const invoiceReceiptRef = useRef()
   // note: finds invoice in local database
@@ -129,12 +134,110 @@ const InvoicePage = () => {
             )}
             <div className="w-max border border-black">
               <p className="font-bold underline">pickup time</p>
+              <button
+                className="btn btn-blue"
+                onClick={() => setshowEditPickupDatetime(true)}
+              >
+                edit pickup Datetime
+              </button>
+              <ModalContainer
+                show={showEditPickupDatetime}
+                handleClose={() => setshowEditPickupDatetime(false)}
+              >
+                <>
+                  <div className="flex w-max flex-col">
+                    <small>Pickups Monday to Saturday</small>
+                    <input
+                      type="date"
+                      min={currentDate}
+                      onChange={(e) => {
+                        // console.log(e.target.value)
+                        // let time = e
+                        let date = e.target.value
+                        date = dayjs(date).toISOString()
+                        console.log(date)
+                        setpickupDate(date)
+                        // let time = e.target.value + ':00.000Z'
+                        // setPotentialPickupDateTime(time)
+                      }}
+                      required
+                    />
+
+                    {/* // ? might need a change for cross complatibility, this is based on a time input with a 24 hour format */}
+                    <div className="flex flex-row">
+                      <input
+                        type="time"
+                        // min="09:00"
+                        // max="17:30"
+                        // step="00:10"
+                        onChange={(e) => {
+                          // console.log(e.target.value)
+                          // let time = e
+                          let time = e.target.value
+
+                          const splitTime = time.split(':')
+
+                          console.log({ splitTime })
+                          let currentTimeHour = Number(splitTime[0])
+
+                          let formattedTime = ''
+                          // midnihgt 00, 01, .. , 12
+
+                          if (currentTimeHour === 0) {
+                            formattedTime = `12:${splitTime[1]} AM`
+                            console.log({ formattedTime })
+                            setpickupTime(formattedTime)
+                            return
+                          }
+
+                          if (currentTimeHour === 12) {
+                            formattedTime = `12:${splitTime[1]} PM`
+                            console.log({ formattedTime })
+                            setpickupTime(formattedTime)
+                            return
+                          }
+
+                          if (currentTimeHour > 12 && currentTimeHour < 24) {
+                            const twelveHourFormat = currentTimeHour - 12
+                            formattedTime = `${twelveHourFormat}:${splitTime[1]} PM`
+                            console.log({ formattedTime })
+
+                            setpickupTime(formattedTime)
+                            return
+                          } else {
+                            time = time + ' AM'
+                          }
+
+                          // time = dayjs(time).format('h:mm a')
+
+                          console.log(time)
+                          setpickupTime(time)
+                          // let time = e.target.value + ':00.000Z'
+                          // setPotentialPickupDateTime(time)
+                        }}
+                      />
+                      <small>pickup hours are 9am to 5:30pm</small>
+                    </div>
+                  </div>
+                </>
+              </ModalContainer>
               <div>
-                <DateTimeFormat pickupDatetime={order?.pickupDatetime} />
+                <DateTimeFormat
+                  pickupDate={order?.pickupDate}
+                  pickupTime={order?.pickupTime}
+                />
               </div>
             </div>
           </pre>
 
+          <button
+            className="btn w-max bg-black text-white"
+            onClick={() => {
+              router.push(`/invoices/${order?.id}/edit`)
+            }}
+          >
+            edit invoice
+          </button>
           <ReactToPrint
             trigger={() => (
               <button className="btn btn-blue w-max">

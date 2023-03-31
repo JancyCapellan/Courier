@@ -20,7 +20,6 @@ import { useQueryClient, useMutation } from 'react-query'
 //   timePlaced: string
 //   pickupDriverId: number
 //   pickupdriver: user
-//   pickupDatetime: string
 //   user: user
 // }
 

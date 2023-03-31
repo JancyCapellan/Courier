@@ -109,7 +109,7 @@ model Order {
   customer       User     @relation("CUSTOMER", fields: [customerUserId], references: [id])
   creatorUserId  String
   creatorUser    User     @relation("creatorUser", fields: [creatorUserId], references: [id])
-  timePlaced     DateTime @default(now()) //UTC TIME 4 hours ahead of EST time // ? TODO change to est time in database, use dayjs.utc.toISOstring
+  timePlaced     DateTime @default(now()) //UTC TIME 4 hours ahead of EST time // ? TODO change to update from client side event using localtime. so that in the database the time you see is in the same timezone as the pickupTime, which is in gmt (utc+4000)
 
   currentBalance Int?
   orderPayments  orderPayments[]
@@ -121,7 +121,9 @@ model Order {
   paymentStatuses paymentStatus         @relation(fields: [paymentStatus], references: [status])
   pickupDriverId  String?
   pickupDriver    User?                 @relation(name: "DRIVER", fields: [pickupDriverId], references: [id])
-  pickupDatetime  DateTime?
+  // pickupDatetime  DateTime?
+  pickupDate      String?
+  pickupTime      String?
   items           OrderItem[]
   shipperAddress  OrderShipperAddress?
   recieverAddress OrderRecieverAddress?
