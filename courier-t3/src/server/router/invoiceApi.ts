@@ -1,6 +1,7 @@
 // import { Prisma } from '@prisma/client'
 import { z } from 'zod'
 import { createProtectedRouter } from './protected-routers'
+import dayjs from 'dayjs'
 
 export const invoiceApi = createProtectedRouter()
   .query('getPickupDriversAndZones', {
@@ -83,7 +84,10 @@ export const invoiceApi = createProtectedRouter()
               //   time: result[obj][key].toTimeString(),
               // }
 
-              orders[obj][key] = orders[obj][key].toLocaleString('en-US')
+              //  orders[obj][key] = orders[obj][key].toLocaleString('en-US')
+              orders[obj][key] = dayjs(orders[obj][key]).format(
+                'dddd, MMMM D, YYYY h:mm A'
+              )
             }
 
         let data = { orders: orders, orderCount: orderCount }

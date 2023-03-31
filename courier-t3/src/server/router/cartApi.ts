@@ -1,6 +1,8 @@
 import { TRPCError } from '@trpc/server'
 import { z } from 'zod'
 import { createProtectedRouter } from './protected-routers'
+import dayjs from 'dayjs'
+import utc from 'dayjs/plugin/utc'
 
 async function findCart(prisma, userId, customerId) {
   try {
@@ -543,50 +545,50 @@ export const cartApi = createProtectedRouter()
   //     return [addedShipper, addedReciever]
   //   },
   // })
-  .query('getAddressesFromCart', {
-    input: z.object({
-      userId: z.string(),
-      customerId: z.string(),
-    }),
-    async resolve({ ctx, input }) {
-      // want to only find the cart id not create if no cart is found until needed to
-      const cart = await findCart(ctx.prisma, input.userId, input.customerId)
+  // .query('getAddressesFromCart', {
+  //   input: z.object({
+  //     userId: z.string(),
+  //     customerId: z.string(),
+  //   }),
+  //   async resolve({ ctx, input }) {
+  //     // want to only find the cart id not create if no cart is found until needed to
+  //     const cart = await findCart(ctx.prisma, input.userId, input.customerId)
 
-      if (cart === false) {
-        return null
-      }
+  //     if (cart === false) {
+  //       return null
+  //     }
 
-      const formAddresses = await ctx.prisma.cartOrderAddresses.findMany({
-        where: {
-          cartId: cart.cartId,
-        },
-        select: {
-          firstName: true,
-          lastName: true,
-          address: true,
-          address2: true,
-          address3: true,
-          city: true,
-          state: true,
-          postalCode: true,
-          country: true,
-          cellphone: true,
-          telephone: true,
-          recipient: true,
-        },
-      })
-      // console.log(
-      //   '🚀 ~ file: cartApi.ts ~ line 274 ~ resolve ~ formAddresses',
-      //   formAddresses
-      // )
+  //     const formAddresses = await ctx.prisma.cartOrderAddresses.findMany({
+  //       where: {
+  //         cartId: cart.cartId,
+  //       },
+  //       select: {
+  //         firstName: true,
+  //         lastName: true,
+  //         address: true,
+  //         address2: true,
+  //         address3: true,
+  //         city: true,
+  //         state: true,
+  //         postalCode: true,
+  //         country: true,
+  //         cellphone: true,
+  //         telephone: true,
+  //         recipient: true,
+  //       },
+  //     })
+  //     // console.log(
+  //     //   '🚀 ~ file: cartApi.ts ~ line 274 ~ resolve ~ formAddresses',
+  //     //   formAddresses
+  //     // )
 
-      if (formAddresses === undefined || formAddresses.length == 0) {
-        // array does not exist or is empty
-        return null
-      }
-      return formAddresses
-    },
-  })
+  //     if (formAddresses === undefined || formAddresses.length == 0) {
+  //       // array does not exist or is empty
+  //       return null
+  //     }
+  //     return formAddresses
+  //   },
+  // })
   .query('getShipperAddressFromCart', {
     input: z.object({
       userId: z.string(),
@@ -700,6 +702,27 @@ export const cartApi = createProtectedRouter()
       }
     },
   })
+  .mutation('clearCartById', {
+    input: z.object({
+      cartId: z.string(),
+    }),
+    async resolve({ ctx, input }) {
+      try {
+        const deleteCartSession = await ctx.prisma.cart.delete({
+          where: {
+            cartId: input.cartId,
+          },
+        })
+        return deleteCartSession
+      } catch (error) {
+        throw new TRPCError({
+          code: 'NOT_FOUND',
+          message: 'Could not find a cart to delete',
+          cause: error,
+        })
+      }
+    },
+  })
   .mutation('createOrderAfterCheckout', {
     input: z.object({
       customerId: z.string(),
@@ -789,12 +812,14 @@ export const cartApi = createProtectedRouter()
       userId: z.string(),
       customerId: z.string(),
       stripeCheckoutId: z.string().optional(),
-      paymentType: z.enum(['CARD', 'CASH', 'CHECK', 'QUICKPAY', 'STRIPE']),
+      // paymentType: z.enum(['CARD', 'CASH', 'CHECK', 'QUICKPAY', 'STRIPE']),
       stripeCheckoutUrl: z.string().optional(),
       pickupDateTime: z.string().datetime(),
       // stripePaymentIntent: z.string().optional(),
     }),
     async resolve({ ctx, input }) {
+      console.log('pickup time', input.pickupDateTime)
+
       // console.log('🚀 ~ file: cartApi.ts:510 ~ resolve ~ input:', input)
       let pendingOrder
       try {
@@ -852,6 +877,9 @@ export const cartApi = createProtectedRouter()
         //   '🚀 ~ file: cartApi.ts ~ line 551 ~ resolve ~ cartSession',
         //   cartSession
         // )
+        // console.log({ timePlaced })
+
+        let timePlaced = dayjs()
         pendingOrder = await ctx.prisma.order.create({
           data: {
             customer: {
@@ -864,7 +892,7 @@ export const cartApi = createProtectedRouter()
                 id: input.userId,
               },
             },
-            paymentType: input.paymentType,
+            // paymentType: input.paymentType,
             paymentStatuses: {
               connectOrCreate: {
                 where: {
@@ -922,6 +950,7 @@ export const cartApi = createProtectedRouter()
                 telephone: cartSession?.recieverAddress?.telephone,
               },
             },
+            // timePlaced: timePlaced,
             pickupDatetime: input?.pickupDateTime,
             stripeCheckoutId:
               // made this way becuase not all orders go through stripe so some may need an empty column, i dont remember why null doesnt work because i could avoid this if input.stripeCheckoutId is null from not exising already from creating the checkout order
@@ -938,6 +967,25 @@ export const cartApi = createProtectedRouter()
         // console.log('cartApi.ts 595 ~ pendingOrder', pendingOrder)
 
         // TODO: update customer balance
+
+        const getCustomerBalance = await ctx.prisma.user.findUniqueOrThrow({
+          where: {
+            id: input.customerId,
+          },
+          select: {
+            currentBalance: true,
+          },
+        })
+
+        const updatedCustomerBalace = await ctx.prisma.user.update({
+          where: {
+            id: input.customerId,
+          },
+          data: {
+            currentBalance:
+              getCustomerBalance?.currentBalance! + cartSession?.totalCost!,
+          },
+        })
 
         return pendingOrder
       } catch (error) {

@@ -130,14 +130,8 @@ const InvoicePage = () => {
             <div className="w-max border border-black">
               <p className="font-bold underline">pickup time</p>
               <div>
-                {order?.pickupDatetime?.toLocaleDateString('en-us', {
-                  weekday: 'short',
-                  year: 'numeric',
-                  month: 'short',
-                  day: 'numeric',
-                })}
+                <DateTimeFormat pickupDatetime={order?.pickupDatetime} />
               </div>
-              <div>{order?.pickupDatetime?.toLocaleTimeString('en-US')}</div>
             </div>
             {'\n'}Sender:{order?.customer.firstName} {order?.customer.lastName}
             {'\n'} Country: {order?.shipperAddress?.country}

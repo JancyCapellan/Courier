@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Formik, Form } from 'formik'
 import FormikControl from '@/components/Formik/FormikControl'
 import SelectCustomerAddressesModal from '../selectCustomerAddressesModal'
@@ -33,6 +33,7 @@ const RecieverAddressForm = () => {
     'cart.saveRecieverDeliveryAddressToCart',
   ])
 
+  const [formValues, setFormValues] = useState(null)
   const {
     data: formDetails,
     status: formDetailsStatus,
@@ -46,6 +47,21 @@ const RecieverAddressForm = () => {
       enabled: sessionStatus === 'authenticated',
     }
   )
+
+  useEffect(() => {
+    console.log(
+      '🚀 ~ file: SenderFormAdmin.jsx ~ line 68 ~ SenderFormAdmin ~ formDetails',
+      formDetails
+    )
+    if (formDetails == null) {
+      console.log('form set to intital values')
+      return
+    }
+
+    setFormValues({
+      reciever: formDetails,
+    })
+  }, [formDetails])
 
   const selectOptions = [
     { key: 'choose one', value: '' },
@@ -107,7 +123,7 @@ const RecieverAddressForm = () => {
 
       {/* <p>selected address: {selectedRecieverAddress.address}</p> */}
       <Formik
-        initialValues={{ reciever: formDetails } || initialValues}
+        initialValues={formValues || initialValues}
         validationSchema={validationSchema}
         onSubmit={(values) => {
           console.log('adding order form to store', values)

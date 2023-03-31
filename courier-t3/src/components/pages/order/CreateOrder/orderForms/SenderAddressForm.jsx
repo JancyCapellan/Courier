@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Formik, Form, FormikProvider } from 'formik'
 import FormikControl from '@/components/Formik/FormikControl'
 import SelectCustomerAddressesModal from '../selectCustomerAddressesModal'
@@ -24,6 +24,7 @@ const SenderAddressForm = () => {
 
   const router = useRouter()
   const customerId = router.query.customerId
+
   const { data: currentCustomer, status: customerInfoQueryStatus } =
     trpc.useQuery(['user.getUserAccountInfo', { userId: customerId }])
 
@@ -31,6 +32,7 @@ const SenderAddressForm = () => {
     'cart.saveShipperPickupAddressToCart',
   ])
 
+  const [formValues, setFormValues] = useState(null)
   const {
     data: formDetails,
     status: formDetailsStatus,
@@ -45,8 +47,18 @@ const SenderAddressForm = () => {
     }
   )
 
+  useEffect(() => {
+    if (formDetails == null) {
+      return
+    }
+
+    setFormValues({
+      shipper: formDetails,
+    })
+  }, [formDetails])
+
   const selectOptions = [
-    { key: 'choose one', value: '' },
+    { key: 'choose one', value: null },
     { key: 'UNITED STATES', value: 'USA' },
     { key: 'DOMINICAN REPUBLIC', value: 'DR' },
   ]
@@ -66,7 +78,6 @@ const SenderAddressForm = () => {
       country: selectedShipperAddress.country,
       cellphone: selectedShipperAddress.cellphone,
       telephone: selectedShipperAddress.telephone,
-      recipient: false,
     },
   }
 
@@ -86,8 +97,12 @@ const SenderAddressForm = () => {
     }),
   })
 
-  if (customerInfoQueryStatus === 'loading' || formDetailsStatus === 'loading')
+  if (
+    customerInfoQueryStatus === 'loading' ||
+    formDetailsStatus === 'loading'
+  ) {
     return <div>Loading...</div>
+  }
 
   return (
     <section id="deliveryInformation">
@@ -108,7 +123,7 @@ const SenderAddressForm = () => {
 
       {/* <p>selected address: {selectedShipperAddress.address}</p> */}
       <Formik
-        initialValues={{ shipper: formDetails } || initialValues}
+        initialValues={formValues || initialValues}
         validationSchema={validationSchema}
         onSubmit={(values) => {
           console.log('adding order form to store', values)

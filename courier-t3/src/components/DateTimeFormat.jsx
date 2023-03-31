@@ -1,19 +1,20 @@
 import React from 'react'
+import dayjs from 'dayjs'
+import utc from 'dayjs/plugin/utc'
 
 const DateTimeFormat = ({ pickupDatetime }) => {
-  return (
-    <div>
-      <div>
-        {pickupDatetime?.toLocaleDateString('en-us', {
-          weekday: 'short',
-          year: 'numeric',
-          month: 'short',
-          day: 'numeric',
-        })}
-      </div>
-      <div>{pickupDatetime?.toLocaleTimeString('en-US')}</div>
-    </div>
-  )
+  console.log({ pickupDatetime })
+
+  dayjs.extend(utc)
+
+  let isoDate
+  isoDate = dayjs.utc(pickupDatetime).format('dddd, MMMM D, YYYY h:mm A')
+
+  // isoDate = pickupDatetime.toISOString()
+
+  console.log({ isoDate })
+
+  return <div>{isoDate}</div>
 }
 
 export default DateTimeFormat

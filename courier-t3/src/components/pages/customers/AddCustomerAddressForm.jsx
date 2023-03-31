@@ -19,16 +19,27 @@ const AddCustomerAddressForm = ({ customerId, show, handleClose }) => {
     city: '',
     state: '',
     postalCode: '',
-    country: 'USA',
+    country: '',
     cellphone: '',
     telephone: '',
   }
 
   // Schema for yup
-  const validationSchema = Yup.object({})
+  const validationSchema = Yup.object().shape({
+    address: Yup.string().required(),
+    address2: Yup.string().notRequired(),
+    address3: Yup.string().notRequired(),
+    city: Yup.string().required(),
+    state: Yup.string().required(),
+    postalCode: Yup.number().required(),
+    country: Yup.string().required(),
+    cellphone: Yup.string().required(),
+    telephone: Yup.string().notRequired(),
+  })
 
   // ! turn this into dynamic option by adding CRUD DB API operations
   const selectOptions = [
+    { key: 'choose one', value: null },
     { key: 'UNITED STATES', value: 'USA' },
     { key: 'DOMINICAN REPUBLIC', value: 'DR' },
   ]
@@ -56,7 +67,7 @@ const AddCustomerAddressForm = ({ customerId, show, handleClose }) => {
       <ModalContainer show={show} handleClose={handleClose}>
         <h2>Add Address</h2>
         <Formik
-          className='customer-editor-form'
+          className="customer-editor-form"
           initialValues={initialValues}
           validationSchema={validationSchema}
           onSubmit={onSubmit}
@@ -65,66 +76,66 @@ const AddCustomerAddressForm = ({ customerId, show, handleClose }) => {
             return (
               <Form>
                 <FormikControl
-                  control='input'
-                  type='text'
-                  name='userId'
+                  control="input"
+                  type="text"
+                  name="userId"
                   hidden
                 />
                 <FormikControl
-                  control='select'
-                  label='Country'
-                  name='country'
+                  control="select"
+                  label="Country"
+                  name="country"
                   options={selectOptions}
                 />
                 <FormikControl
-                  control='input'
-                  type='text'
-                  label='Address line 1'
-                  name='address'
+                  control="input"
+                  type="text"
+                  label="Address line 1"
+                  name="address"
                 />
                 <FormikControl
-                  control='input'
-                  type='text'
-                  label='Address line 2'
-                  name='address2'
+                  control="input"
+                  type="text"
+                  label="Address line 2"
+                  name="address2"
                 />
                 <FormikControl
-                  control='input'
-                  type='text'
-                  label='Address line 3'
-                  name='address3'
+                  control="input"
+                  type="text"
+                  label="Address line 3"
+                  name="address3"
                 />
                 <FormikControl
-                  control='input'
-                  type='text'
-                  label='City'
-                  name='city'
+                  control="input"
+                  type="text"
+                  label="City"
+                  name="city"
                 />
                 <FormikControl
-                  control='input'
-                  type='text'
-                  label='State'
-                  name='state'
+                  control="input"
+                  type="text"
+                  label="State"
+                  name="state"
                 />
                 <FormikControl
-                  control='input'
-                  type='number'
-                  label='Postal code'
-                  name='postalCode'
+                  control="input"
+                  type="number"
+                  label="Postal code"
+                  name="postalCode"
                 />
                 <FormikControl
-                  control='input'
-                  type='text'
-                  label='Cellphone'
-                  name='cellphone'
+                  control="input"
+                  type="text"
+                  label="Cellphone"
+                  name="cellphone"
                 />
                 <FormikControl
-                  control='input'
-                  type='text'
-                  label='Telephone'
-                  name='telephone'
+                  control="input"
+                  type="text"
+                  label="Telephone"
+                  name="telephone"
                 />
-                <button type='submit' disabled={!formik.isValid}>
+                <button type="submit" disabled={!formik.isValid}>
                   Submit
                 </button>
               </Form>

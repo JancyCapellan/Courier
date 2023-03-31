@@ -28,7 +28,7 @@
     "@trpc/next": "~9.27.4",
     "@trpc/react": "~9.27.4",
     "@trpc/server": "~9.27.4",
-    "date-fns": "^2.29.3",
+    "dayjs": "^1.11.7",
     "formik": "^2.2.9",
     "lodash": "^4.17.21",
     "micro": "^9.4.1",
