@@ -53,6 +53,10 @@ export function dateBetweenFilterFn(rows, id, filterValues) {
 
   function datesAreOnSameDay(first, second) {
     console.log({ first, second })
+
+    // first.diff(second)
+
+    // if (first.diff(second) === 0) return true
     // return (
     //   first.getFullYear() === second.getFullYear() &&
     //   first.getMonth() === second.getMonth() &&
@@ -87,10 +91,13 @@ export function dateBetweenFilterFn(rows, id, filterValues) {
       // const cellDate = new Date(formattedData)
 
       const cellDate = dayjs(r.values['pickupDatetime']).format('MM/DD/YYYY')
+
+      console.log({ cellDate })
       // if (ed && sd && datesAreOnSameDay(sd, ed))
       //   return datesAreOnSameDay(cellDate, sd)
 
       if (ed && sd) {
+        console.log('ed && sd:', cellDate >= sd && cellDate <= ed)
         return cellDate >= sd && cellDate <= ed
       } else if (sd) {
         console.log('sd only:', cellDate >= sd)
@@ -105,10 +112,16 @@ export function dateBetweenFilterFn(rows, id, filterValues) {
   }
 }
 
-export const DateTimeColumnFilter = ({ setFilter, filterState }) => {
-  // console.log({ filterState })
+export const DateTimeColumnFilter = ({
+  setFilter,
+  filterState,
+  preFilteredRows,
+}) => {
+  // console.log({ preFilteredRows })
 
   const [filterValue, setFilterValue] = useState('')
+
+  // console.log({ filterState })
 
   useEffect(() => {
     const datetimeFilterArray = filterState.filter(
@@ -135,7 +148,7 @@ export const DateTimeColumnFilter = ({ setFilter, filterState }) => {
           ])
         }}
         type="date"
-        value={filterValue[0] || ''}
+        value={filterState[0]?.value[0] || ''}
       />
       <span className="ml-2 mr-2 font-bold">to</span>
       <input
@@ -149,7 +162,7 @@ export const DateTimeColumnFilter = ({ setFilter, filterState }) => {
           ])
         }}
         type="date"
-        value={filterValue[1] || ''}
+        value={filterState[0]?.value[1] || ''}
       />
 
       <button

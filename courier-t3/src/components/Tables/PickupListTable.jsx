@@ -456,7 +456,7 @@ const PickupListTable = () => {
         ),
       },
     ],
-    [orderOptionsIsSuccess, allOrdersIsSuccess, orderOptions?.drivers]
+    []
   )
 
   const filterTypes = React.useMemo(
@@ -465,6 +465,7 @@ const PickupListTable = () => {
       //  fuzzyText: fuzzyTextFilterFn,
       // Or, override the default text filter to use
       // "startWith"
+      dateBetweenFilterFn: dateBetweenFilterFn,
       text: (rows, id, filterValue) => {
         return rows.filter((row) => {
           const rowValue = row.values[id]
@@ -512,6 +513,7 @@ const PickupListTable = () => {
     selectedFlatRows,
     preGlobalFilteredRows,
     setFilter,
+    preFilteredRows,
   } = useTable(
     {
       columns: invoicesColumns,
@@ -528,6 +530,7 @@ const PickupListTable = () => {
       // autoResetSortBy: false,
       // autoResetExpanded: false,
       autoResetPage: false,
+      filterTypes: filterTypes,
     },
     useFilters,
     useGlobalFilter,
@@ -591,6 +594,7 @@ const PickupListTable = () => {
         <DateTimeColumnFilter
           setFilter={setFilter}
           filterState={state.filters}
+          preFilteredRows={preFilteredRows}
         />
       </div>
 
@@ -642,7 +646,6 @@ const PickupListTable = () => {
             </option>
           ))}
         </select>
-        {/* pagination buttons */}
         <button onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
           {'<<'}
         </button>{' '}
@@ -699,7 +702,7 @@ const PickupListTable = () => {
           ))}
         </thead>
         <tbody {...getTableBodyProps()}>
-          {rows.map((row, i) => {
+          {page.map((row, i) => {
             prepareRow(row)
 
             return (
