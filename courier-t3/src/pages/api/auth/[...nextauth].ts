@@ -92,9 +92,15 @@ export const authOptions: NextAuthOptions = {
         )
           return null
 
+        // take tenantId and create a new prisma client in client.ts/ both of these are backend files so they should be able to commuincate
+
         const user = await prisma.user.findFirst({
           where: {
-            email: credentials.email,
+            email: {
+              mode: 'insensitive',
+              equals: credentials.email,
+            },
+
             password: credentials.password,
           },
           // select: {
@@ -125,7 +131,7 @@ export const authOptions: NextAuthOptions = {
   ],
   session: {
     strategy: 'jwt',
-    maxAge: 60 * 60,
+    maxAge: 2 * 60 * 60, //  2 hours
   },
   pages: {
     signIn: '/',

@@ -14,7 +14,33 @@ export const publicApiRouter = createRouter()
     }),
     async resolve({ ctx, input }) {
       try {
-        console.log('registartion form:', input)
+        const emailAlreadyExists = await ctx.prisma.user.findFirst({
+          where: {
+            email: {
+              mode: 'insensitive',
+              equals: input.email,
+            },
+          },
+          // select: {
+          //   id: true,
+          //   preferredLanguage: true,
+          // },
+        })
+
+        if (emailAlreadyExists !== null) throw new Error('Email Already Exists')
+        console.log({ emailAlreadyExists })
+      } catch (error) {
+        throw new TRPCError({
+          code: 'BAD_REQUEST',
+          message: 'Email Already Exists',
+          // optional: pass the original error to retain stack trace
+          cause: error,
+        })
+      }
+
+      try {
+        console.log('passed email check')
+
         const registrationSuccessful = await ctx.prisma.user.create({
           data: input,
         })

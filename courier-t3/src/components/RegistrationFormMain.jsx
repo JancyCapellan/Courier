@@ -20,6 +20,7 @@ const RegistrationFormMain = () => {
 
   const validationSchema = Yup.object({
     firstName: Yup.string()
+      .required()
       .min(2, '*Names must have at least 2 characters')
       .max(100, "*Names can't be longer than 100 characters")
       .required('First Name is required'),
@@ -29,6 +30,7 @@ const RegistrationFormMain = () => {
       .max(100, "*Names can't be longer than 100 characters"),
 
     lastName: Yup.string()
+      .required()
       .min(2, '*Names must have at least 2 characters')
       .max(100, "*Names can't be longer than 100 characters")
       .required('Last Name is required'),
@@ -45,7 +47,7 @@ const RegistrationFormMain = () => {
 
   const postRegisterUser = trpc.useMutation(['public.register'])
 
-  const onSubmit = async (values) => {
+  const onSubmit = (values) => {
     // console.log('register', values)
     if (values.password !== values.password2) {
       alert('passwords do not match')
