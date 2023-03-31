@@ -157,8 +157,8 @@ const InvoicePage = () => {
           </pre>
           {/* <code>STRIPE CHECKOUT:{JSON.stringify(order?.stripeCheckout)}</code> */}
 
-          {/* //TODO: stlye print document */}
-          <InvoiceReceipt />
+          <InvoiceReceipt order={order} />
+          {/* package reciepts printing */}
 
           <table>
             <caption>
@@ -194,7 +194,7 @@ const InvoicePage = () => {
             </tbody>
           </table>
 
-          <QRCodeSVG
+          {/* <QRCodeSVG
             value={`OrderID:${order?.id}\nSender:${order?.customer.firstName} ${
               order?.customer.lastName
             }\n  Country: ${order?.shipperAddress?.country}\n  Address: ${
@@ -223,7 +223,7 @@ const InvoicePage = () => {
             includeMargin={false}
             level={'Q'}
             size={220}
-          />
+          /> */}
 
           {/* <QRCodeSVG value={'google.com'} /> */}
         </section>

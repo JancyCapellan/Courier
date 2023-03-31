@@ -1,25 +1,36 @@
 import React, { useRef } from 'react'
 import { printDiv, printJsx } from './Print'
 
+import ReactToPrint from 'react-to-print'
+
 const InvoiceReceipt = (order) => {
-  const comp = useRef()
+  const componentRef = useRef()
+
+  console.log(JSON.stringify(order))
+
   return (
-    <>
-      <div id="receipt" className="border-2 border-black">
-        <div id="printableArea">
-          <h1>Receipt</h1>
-        </div>
+    <div>
+      <ReactToPrint
+        trigger={() => (
+          <button className="btn btn-blue">Print this out!</button>
+        )}
+        content={() => componentRef.current}
+      />
+      <div className="hidden">
+        <Receipt ref={componentRef} order={order} />
       </div>
-      <button
-        className="btn btn-blue"
-        onClick={() => {
-          printDiv('receipt')
-        }}
-      >
-        Print Order
-      </button>
-    </>
+    </div>
   )
 }
+
+const Receipt = React.forwardRef((props, ref) => {
+  return (
+    <div className="" ref={ref}>
+      <pre>{JSON.stringify(props.order, null, 2)}</pre>
+    </div>
+  )
+})
+
+Receipt.displayName = ' Invoice Receipt'
 
 export default InvoiceReceipt
