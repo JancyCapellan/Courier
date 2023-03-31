@@ -2,15 +2,18 @@ import Layout from '../../components/Layout'
 import { useRouter } from 'next/router'
 // import { useQuery } from 'react-query'
 import { trpc } from '@/utils/trpc'
-import { QRCodeSVG } from 'qrcode.react'
+import { useRef } from 'react'
 import { printJsx } from '@/components/printDocuments/Print'
 import InvoiceReceipt from '@/components/printDocuments/InvoiceReceipt'
 import DateTimeFormat from '@/components/DateTimeFormat'
+
+import ReactToPrint from 'react-to-print'
 
 const InvoicePage = () => {
   const router = useRouter()
   const { orderId } = router.query
 
+  const invoiceReceiptRef = useRef()
   // note: finds invoice in local database
   const {
     data: order,
@@ -110,8 +113,8 @@ const InvoicePage = () => {
           {!!order?.stripePaymentIntent && (
             <div>Stripe PaymentIntentId: {order?.stripePaymentIntent}</div>
           )}
+
           <pre>
-            OrderID: {order?.id}
             {'\n'}time ordered: {`${order?.timePlaced}`}
             {'\n'}
             <b>status: {order?.status?.message}</b>
@@ -126,6 +129,19 @@ const InvoicePage = () => {
                 <b>pickup Driver: none</b>
               </p>
             )}
+          </pre>
+          <ReactToPrint
+            trigger={() => (
+              <button className="btn btn-blue">Print this out!</button>
+            )}
+            content={() => invoiceReceiptRef.current}
+          />
+
+          <pre
+            ref={invoiceReceiptRef}
+            className="border-1 block border-solid border-black"
+          >
+            OrderID: {order?.id}
             {/* <DateTimeFormat pickupDatetime={order?.pickupDatetime} /> */}
             <div className="w-max border border-black">
               <p className="font-bold underline">pickup time</p>
@@ -133,7 +149,8 @@ const InvoicePage = () => {
                 <DateTimeFormat pickupDatetime={order?.pickupDatetime} />
               </div>
             </div>
-            {'\n'}Sender:{order?.customer.firstName} {order?.customer.lastName}
+            {'\n'}Sender:{order?.customer?.firstName}{' '}
+            {order?.customer?.lastName}
             {'\n'} Country: {order?.shipperAddress?.country}
             {'\n'} Address: {order?.shipperAddress?.address}
             {'\n'} Address2: {order?.shipperAddress?.address2 || 'N/A'}
@@ -154,10 +171,11 @@ const InvoicePage = () => {
             {'\n'}
             {'\n'}
             {/* route: {order.routeId} {'\n'} */}
+            {JSON.stringify(order?.items, null, ' ')}
           </pre>
           {/* <code>STRIPE CHECKOUT:{JSON.stringify(order?.stripeCheckout)}</code> */}
 
-          <InvoiceReceipt order={order} />
+          {/* <InvoiceReceipt order={order} /> */}
           {/* package reciepts printing */}
 
           <table>
@@ -193,37 +211,6 @@ const InvoicePage = () => {
               </tr>
             </tbody>
           </table>
-
-          {/* <QRCodeSVG
-            value={`OrderID:${order?.id}\nSender:${order?.customer.firstName} ${
-              order?.customer.lastName
-            }\n  Country: ${order?.shipperAddress?.country}\n  Address: ${
-              order?.shipperAddress?.address
-            }\n  Address2: ${
-              order?.shipperAddress?.address2 || 'N/A'
-            }\n  Address3: ${
-              order?.shipperAddress?.address3 || ' N/A'
-            }\n  City: ${order?.shipperAddress?.city}\n  PostalCode: ${
-              order?.shipperAddress?.postalCode
-            }\n  Cellphone: ${
-              order?.shipperAddress?.cellphone || 'N/A'
-            }\n  Telephone: ${
-              order?.shipperAddress?.telephone || 'N/A'
-            }\nReciever: ${order?.recieverAddress?.firstName}\n  Country: ${
-              order?.recieverAddress?.country
-            }\n  Address: ${order?.recieverAddress?.address}\n  Address2: ${
-              order?.recieverAddress?.address2 || 'N/A'
-            }\n  Address3: ${
-              order?.recieverAddress?.address3 || ' N/A'
-            }\n  City: ${order?.recieverAddress?.city}\n  PostalCode: ${
-              order?.recieverAddress?.postalCode
-            }\n  Cellphone: ${
-              order?.recieverAddress?.cellphone || 'N/A'
-            }\n  Telephone: ${order?.recieverAddress?.telephone || 'N/A'}`}
-            includeMargin={false}
-            level={'Q'}
-            size={220}
-          /> */}
 
           {/* <QRCodeSVG value={'google.com'} /> */}
         </section>
