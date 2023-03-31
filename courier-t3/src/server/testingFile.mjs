@@ -1,23 +1,71 @@
-// import { PrismaClient } from '@prisma/client'
-// const prisma = new PrismaClient()
 // import { env } from '../env/server.mjs'
 // import Stripe from 'stripe'
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc.js'
 import localizedFormat from 'dayjs/plugin/localizedFormat.js'
 
-main()
+import { faker } from '@faker-js/faker'
+import { PrismaClient } from '@prisma/client'
+const prisma = new PrismaClient()
+// main()
 
-function main() {
-  dayjs.extend(utc)
-  dayjs.extend(localizedFormat)
+// function main() {
+//   dayjs.extend(utc)
+//   dayjs.extend(localizedFormat)
 
-  const nowutc = dayjs.utc()
-  console.log({ nowutc })
-  const now = nowutc.local().format('L LT')
-  console.log({ now })
-  return now
+//   const nowutc = dayjs.utc()
+//   console.log({ nowutc })
+//   const now = nowutc.local().format('L LT')
+//   console.log({ now })
+//   return now
+// }
+
+const range = (len) => {
+  const arr = []
+  for (let i = 0; i < len; i++) {
+    arr.push(i)
+  }
+  return arr
 }
+
+const newCustomer = () => {
+  const firstName = faker.name.firstName()
+  const lastName = faker.name.lastName()
+  return {
+    firstName: firstName,
+    middleName: faker.name.middleName(),
+    lastName: lastName,
+    email: faker.internet.email(firstName, lastName, 'email.com'),
+    password: '123',
+    role: 'CUSTOMER',
+  }
+}
+
+export function makeCustomerData(...lens) {
+  const makeDataLevel = (depth = 0) => {
+    const len = lens[depth]
+    return range(len).map((d) => {
+      return {
+        ...newCustomer(),
+        // subRows: lens[depth + 1] ? makeDataLevel(depth + 1) : undefined,
+      }
+    })
+  }
+
+  return makeDataLevel()
+}
+
+async function makeManyCustomer() {
+  const customers = makeCustomerData(10)
+
+  const createdCustomers = await prisma.user.createMany({
+    data: customers,
+  })
+
+  console.log({ createdCustomers })
+}
+
+makeManyCustomer()
 
 // async function createMockOrdersExcludingStripe() {
 //   pendingOrder = await ctx.prisma.order.create({

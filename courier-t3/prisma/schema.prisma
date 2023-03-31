@@ -121,8 +121,7 @@ model Order {
   paymentStatuses paymentStatus         @relation(fields: [paymentStatus], references: [status])
   pickupDriverId  String?
   pickupDriver    User?                 @relation(name: "DRIVER", fields: [pickupDriverId], references: [id])
-  // pickupDatetime  DateTime?
-  pickupDate      String?
+  pickupDate      DateTime?
   pickupTime      String?
   items           OrderItem[]
   shipperAddress  OrderShipperAddress?
