@@ -6,8 +6,9 @@ import { useRef } from 'react'
 import { printJsx } from '@/components/printDocuments/Print'
 import InvoiceReceipt from '@/components/printDocuments/InvoiceReceipt'
 import DateTimeFormat from '@/components/DateTimeFormat'
-
+import dayjs from 'dayjs'
 import ReactToPrint from 'react-to-print'
+import { QRCodeSVG } from 'qrcode.react'
 
 const InvoicePage = () => {
   const router = useRouter()
@@ -51,7 +52,7 @@ const InvoicePage = () => {
   return (
     <>
       {getOrderDetailsStatus === 'success' && (
-        <section className="invoice-details-container">
+        <section className="flex flex-col">
           <h1>Invoice #{order?.id}</h1>
           {/* <button
             className="btn btn-blue"
@@ -89,7 +90,6 @@ const InvoicePage = () => {
             </button>
           )}
 
-          {/* // TODO button to show option to change pickuptime if route not set */}
           {/* <button></button>
 
           <label className="block font-bold" htmlFor="meeting-time">
@@ -104,8 +104,6 @@ const InvoicePage = () => {
             // min="2018-06-07T00:00"
             // max="2018-06-14T00:00"
           /> */}
-
-          {/* <iframe id="stripeReceipt" src="google.com"></iframe> */}
 
           {!!order?.stripeCheckoutId && (
             <div>Stripe CheckoutId: {order?.stripeCheckoutId}</div>
@@ -129,90 +127,170 @@ const InvoicePage = () => {
                 <b>pickup Driver: none</b>
               </p>
             )}
-          </pre>
-          <ReactToPrint
-            trigger={() => (
-              <button className="btn btn-blue">Print this out!</button>
-            )}
-            content={() => invoiceReceiptRef.current}
-          />
-
-          <pre
-            ref={invoiceReceiptRef}
-            className="border-1 block border-solid border-black"
-          >
-            OrderID: {order?.id}
-            {/* <DateTimeFormat pickupDatetime={order?.pickupDatetime} /> */}
             <div className="w-max border border-black">
               <p className="font-bold underline">pickup time</p>
               <div>
                 <DateTimeFormat pickupDatetime={order?.pickupDatetime} />
               </div>
             </div>
-            {'\n'}Sender:{order?.customer?.firstName}{' '}
-            {order?.customer?.lastName}
-            {'\n'} Country: {order?.shipperAddress?.country}
-            {'\n'} Address: {order?.shipperAddress?.address}
-            {'\n'} Address2: {order?.shipperAddress?.address2 || 'N/A'}
-            {'\n'} Address3: {order?.shipperAddress?.address3 || ' N/A'}
-            {'\n'} City: {order?.shipperAddress?.city}
-            {'\n'} PostalCode: {order?.shipperAddress?.postalCode}
-            {'\n'} Cellphone: {order?.shipperAddress?.cellphone || 'N/A'}
-            {'\n'} Telephone: {order?.shipperAddress?.telephone || 'N/A'}
-            {'\n'}Reciever: {order?.recieverAddress?.firstName}
-            {'\n'} Country: {order?.recieverAddress?.country}
-            {'\n'} Address: {order?.recieverAddress?.address}
-            {'\n'} Address2: {order?.recieverAddress?.address2 || 'N/A'}
-            {'\n'} Address3: {order?.recieverAddress?.address3 || ' N/A'}
-            {'\n'} City: {order?.recieverAddress?.city}
-            {'\n'} PostalCode: {order?.recieverAddress?.postalCode}
-            {'\n'} Cellphone: {order?.recieverAddress?.cellphone || 'N/A'}
-            {'\n'} Telephone: {order?.recieverAddress?.telephone || 'N/A'}
-            {'\n'}
-            {'\n'}
-            {/* route: {order.routeId} {'\n'} */}
-            {JSON.stringify(order?.items, null, ' ')}
           </pre>
+
+          <ReactToPrint
+            trigger={() => (
+              <button className="btn btn-blue w-max">
+                Print Invoice Receipt
+              </button>
+            )}
+            content={() => invoiceReceiptRef.current}
+            bodyClass="InvoiceReceipt"
+            pageStyle=""
+          />
+          <div className="">
+            <div
+              id="InvoiceReceipt"
+              ref={invoiceReceiptRef}
+              className="max-w-full border-2 border-solid border-black text-sm"
+            >
+              <div className="flex flex-row justify-between">
+                <pre>
+                  718-860-4300 {'\n'}
+                  Luciano Shipping NYC {'\n'}
+                  3440 Bailey Avenue {'\n'}
+                  Bronx, NY, 10463{'\n'}
+                  718-860-4300
+                </pre>
+                <pre>
+                  809-581-7194 {'\n'}
+                  Luciano Shipping DR {'\n'}
+                  Autopista Juan Pablo Duarte {'\n'}
+                  KM 1/1/2, Santiago {'\n'}
+                  809-581-7194
+                </pre>
+              </div>
+              <h2 className="text-center text-lg font-bold underline">
+                OrderID: {order?.id}
+              </h2>
+              <p>
+                Pickup Date: {dayjs(order?.pickupDatetime).format('MM/DD/YYYY')}
+              </p>
+              {/* <DateTimeFormat pickupDatetime={order?.pickupDatetime} /> */}
+              <div className="flex flex-row justify-between">
+                <pre>
+                  {'\n'}Pickup/Shipper: {'\n'} {order?.customer?.firstName}{' '}
+                  {order?.customer?.lastName}
+                  {'\n'} Country: {order?.shipperAddress?.country}
+                  {'\n'} Address: {'\n'}
+                  {order?.shipperAddress?.address}
+                  {'\n'} Address2: {order?.shipperAddress?.address2 || 'N/A'}
+                  {'\n'} Address3: {order?.shipperAddress?.address3 || ' N/A'}
+                  {'\n'} City: {order?.shipperAddress?.city}
+                  {'\n'} PostalCode: {order?.shipperAddress?.postalCode}
+                  {'\n'} Cellphone: {order?.shipperAddress?.cellphone || 'N/A'}
+                  {'\n'} Telephone: {order?.shipperAddress?.telephone || 'N/A'}
+                  {'\n'}
+                </pre>
+                <pre>
+                  {'\n'}Delivery/Reciever: {'\n'}{' '}
+                  {order?.recieverAddress?.firstName}{' '}
+                  {order?.recieverAddress?.lastName}
+                  {'\n'} Country: {order?.recieverAddress?.country}
+                  {'\n'} Address: {'\n'}
+                  {order?.recieverAddress?.address}
+                  {'\n'} Address2: {order?.recieverAddress?.address2 || 'N/A'}
+                  {'\n'} Address3: {order?.recieverAddress?.address3 || ' N/A'}
+                  {'\n'} City: {order?.recieverAddress?.city}
+                  {'\n'} PostalCode: {order?.recieverAddress?.postalCode}
+                  {'\n'} Cellphone: {order?.recieverAddress?.cellphone || 'N/A'}
+                  {'\n'} Telephone: {order?.recieverAddress?.telephone || 'N/A'}
+                  {'\n'}
+                  {'\n'}
+                </pre>
+              </div>
+
+              <div className="flex flex-row justify-between">
+                <table className="w-max">
+                  <caption>
+                    <b>Items For Invoice#{order?.id}</b>
+                  </caption>
+                  <thead>
+                    <tr>
+                      <th>Item</th>
+                      <th>Amount</th>
+                      <th>Per Item Price</th>
+                      <th>grouped price</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {order?.items.map((item) => {
+                      return (
+                        <tr key={item.product.name}>
+                          <td>{item.product.name}</td>
+                          <td>{item.quantity}</td>
+                          <td>${item.product.price / 100}</td>
+                          <td>
+                            {' '}
+                            ${(item.product.price * item.quantity) / 100}
+                          </td>
+                        </tr>
+                      )
+                    })}
+                    <tr>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td>
+                        total: ${(order?.totalCost / 100).toLocaleString('en')}
+                      </td>
+                      {/* TODO: calculate total amount due for all items in the order */}
+                      {/* <td>{order.totalPrice}</td> */}
+                    </tr>
+                  </tbody>
+                </table>
+                <QRCodeSVG
+                  value={`OrderID:${order?.id}\nSender:${
+                    order?.customer?.firstName
+                  } ${order?.customer?.lastName}\n  Country: ${
+                    order?.shipperAddress?.country
+                  }\n  Address: ${
+                    order?.shipperAddress?.address
+                  }\n  Address2: ${
+                    order?.shipperAddress?.address2 || 'N/A'
+                  }\n  Address3: ${
+                    order?.shipperAddress?.address3 || ' N/A'
+                  }\n  City: ${order?.shipperAddress?.city}\n  PostalCode: ${
+                    order?.shipperAddress?.postalCode
+                  }\n  Cellphone: ${
+                    order?.shipperAddress?.cellphone || 'N/A'
+                  }\n  Telephone: ${
+                    order?.shipperAddress?.telephone || 'N/A'
+                  }\nReciever: ${
+                    order?.recieverAddress?.firstName
+                  }\n  Country: ${
+                    order?.recieverAddress?.country
+                  }\n  Address: ${
+                    order?.recieverAddress?.address
+                  }\n  Address2: ${
+                    order?.recieverAddress?.address2 || 'N/A'
+                  }\n  Address3: ${
+                    order?.recieverAddress?.address3 || ' N/A'
+                  }\n  City: ${order?.recieverAddress?.city}\n  PostalCode: ${
+                    order?.recieverAddress?.postalCode
+                  }\n  Cellphone: ${
+                    order?.recieverAddress?.cellphone || 'N/A'
+                  }\n  Telephone: ${
+                    order?.recieverAddress?.telephone || 'N/A'
+                  }`}
+                  includeMargin={true}
+                  level={'H'}
+                  size={350}
+                />
+              </div>
+            </div>
+          </div>
           {/* <code>STRIPE CHECKOUT:{JSON.stringify(order?.stripeCheckout)}</code> */}
 
-          {/* <InvoiceReceipt order={order} /> */}
+          {/* //Todo print labels for each item after order is confirmed*/}
           {/* package reciepts printing */}
-
-          <table>
-            <caption>
-              <b>Items For Invoice#{order?.id}</b>
-            </caption>
-            <thead>
-              <tr>
-                <th>Item</th>
-                <th>Amount</th>
-                <th>Per Item Price</th>
-                <th>grouped price</th>
-              </tr>
-            </thead>
-            <tbody>
-              {order?.items.map((item) => {
-                return (
-                  <tr key={item.product.name}>
-                    <td>{item.product.name}</td>
-                    <td>{item.quantity}</td>
-                    <td>${item.product.price / 100}</td>
-                    <td> ${(item.product.price * item.quantity) / 100}</td>
-                  </tr>
-                )
-              })}
-              <tr>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td>total: ${(order?.totalCost / 100).toLocaleString('en')}</td>
-                {/* TODO: calculate total amount due for all items in the order */}
-                {/* <td>{order.totalPrice}</td> */}
-              </tr>
-            </tbody>
-          </table>
-
-          {/* <QRCodeSVG value={'google.com'} /> */}
         </section>
       )}
     </>
