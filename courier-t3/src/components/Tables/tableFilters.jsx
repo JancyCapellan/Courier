@@ -1,6 +1,8 @@
 import { functionsIn } from 'lodash'
 import { useMemo, useState, useEffect } from 'react'
 import { useAsyncDebounce } from 'react-table'
+import dayjs from 'dayjs'
+import utc from 'dayjs/plugin/utc'
 
 export const GlobalFilter = ({
   preGlobalFilteredRows,
@@ -40,6 +42,7 @@ export const ShowColumnFilter = ({ column }) => {
 
 export function dateBetweenFilterFn(rows, id, filterValues) {
   // * needed becase new Date with format yyyyddmm gives the day before the inputed date. mmddyyyy format gives the correct date
+  // before using dayjs to simplfiy time
   function mmddyyyy(dateString) {
     const [year, month, day] = dateString.split('-')
     const formattedDate = [month, day, year].join('-')
@@ -49,36 +52,51 @@ export function dateBetweenFilterFn(rows, id, filterValues) {
   }
 
   function datesAreOnSameDay(first, second) {
-    return (
-      first.getFullYear() === second.getFullYear() &&
-      first.getMonth() === second.getMonth() &&
-      first.getDate() === second.getDate()
-    )
+    console.log({ first, second })
+    // return (
+    //   first.getFullYear() === second.getFullYear() &&
+    //   first.getMonth() === second.getMonth() &&
+    //   first.getDate() === second.getDate()
+    // )
   }
 
-  let sd = filterValues[0] ? new Date(mmddyyyy(filterValues[0])) : undefined
-  let ed = filterValues[1] ? new Date(mmddyyyy(filterValues[1])) : undefined
+  // console.log({ filterValues })
+
+  let sd = filterValues[0]
+    ? dayjs(filterValues[0]).format('MM/DD/YYYY')
+    : undefined
+  let ed = filterValues[1]
+    ? dayjs(filterValues[1]).format('MM/DD/YYYY')
+    : undefined
+
+  console.log({ sd, ed })
 
   if (ed || sd) {
     return rows.filter((r) => {
+      // console.log(r.values['pickupDatetime'])
       // format data
-      var dateAndHour = r.values['timePlaced'].split(',')
-      var [month, day, year] = dateAndHour[0].split('/')
-      var date = [month, day, year].join('/')
-      // var date = dateAndHour[0]
-      var hour = dateAndHour[1]
-      var formattedData = date + ' ' + hour
+      // var dateAndHour = dayjs(r.values['pickupDatetime']).toDate()
+      // var [month, day, year] = dateAndHour[0].split('/')
+      // var date = [month, day, year].join('/')
+      // // var date = dateAndHour[0]
+      // var hour = dateAndHour[1]
+      // var formattedData = date + ' ' + hour
 
-      const cellDate = new Date(formattedData)
+      // console.log({ dateAndHour })
+      // return
+      // const cellDate = new Date(formattedData)
 
-      if (ed && sd && datesAreOnSameDay(sd, ed))
-        return datesAreOnSameDay(cellDate, sd)
+      const cellDate = dayjs(r.values['pickupDatetime']).format('MM/DD/YYYY')
+      // if (ed && sd && datesAreOnSameDay(sd, ed))
+      //   return datesAreOnSameDay(cellDate, sd)
 
       if (ed && sd) {
         return cellDate >= sd && cellDate <= ed
       } else if (sd) {
+        console.log('sd only:', cellDate >= sd)
         return cellDate >= sd
       } else {
+        console.log('ed only:', cellDate <= ed)
         return cellDate <= ed
       }
     })
@@ -94,7 +112,7 @@ export const DateTimeColumnFilter = ({ setFilter, filterState }) => {
 
   useEffect(() => {
     const datetimeFilterArray = filterState.filter(
-      (obj) => obj.id === 'timePlaced'
+      (obj) => obj.id === 'pickupDatetime'
     )
     if (datetimeFilterArray[0]) setFilterValue(datetimeFilterArray[0].value)
   }, [filterState])
@@ -105,12 +123,16 @@ export const DateTimeColumnFilter = ({ setFilter, filterState }) => {
 
   return (
     <div>
+      <p>filter pickup times: </p>
       <input
         // placeholder="dd-mm-yyyy"
         //min={min.toISOString().slice(0, 10)}
         onChange={(e) => {
           const val = e.target.value //yyyy-mm-dd
-          setFilter('timePlaced', (old = []) => [val ? val : undefined, old[1]])
+          setFilter('pickupDatetime', (old = []) => [
+            val ? val : undefined,
+            old[1],
+          ])
         }}
         type="date"
         value={filterValue[0] || ''}
@@ -121,7 +143,10 @@ export const DateTimeColumnFilter = ({ setFilter, filterState }) => {
         //max={max.toISOString().slice(0, 10)}
         onChange={(e) => {
           const val = e.target.value
-          setFilter('timePlaced', (old = []) => [old[0], val ? val : undefined])
+          setFilter('pickupDatetime', (old = []) => [
+            old[0],
+            val ? val : undefined,
+          ])
         }}
         type="date"
         value={filterValue[1] || ''}
@@ -130,7 +155,7 @@ export const DateTimeColumnFilter = ({ setFilter, filterState }) => {
       <button
         className="btn btn-blue"
         onClick={() => {
-          setFilter('timePlaced', '')
+          setFilter('pickupDatetime', '')
         }}
       >
         reset

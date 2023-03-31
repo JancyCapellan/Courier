@@ -20,6 +20,8 @@ import { useRouter } from 'next/router'
 import { trpc } from '@/utils/trpc'
 import { useQueryClient } from 'react-query'
 import DateTimeFormat from '../DateTimeFormat'
+import dayjs from 'dayjs'
+import utc from 'dayjs/plugin/utc'
 // import { makeOrder } from './makeData.mjs'
 
 // ! next-dev.js?3515:20 Warning: Functions are not valid as a React child. This may happen if you return a Component instead of <Component /> from render. Or maybe you meant to call this function rather than return it.next-dev.js?3515:20 Warning: Functions are not valid as a React child. This may happen if you return a Component instead of <Component /> from render. Or maybe you meant to call this function rather than return it.
@@ -170,8 +172,8 @@ const PickupListTable = () => {
       // staleTime: 100,
       // staleTime: 100,
 
-      refetchOnWindowFocus: 'always', // onyl works when data is stale
-      refetchOnMount: 'always',
+      // refetchOnWindowFocus: 'always', // onyl works when data is stale
+      // refetchOnMount: 'always',
     }
   )
 
@@ -289,28 +291,9 @@ const PickupListTable = () => {
       },
     }
   )
-  // const mutationPickupZone = useMutation(
-  //   async ({ orderId, pickupZoneId }) => {
-  //     // change pickup order for order after single selection
 
-  //     const { data } = await backendClient.put(
-  //       `order/update/${orderId}/pickupZone`,
-  //       {
-  //         pickupZoneId: pickupZoneId,
-  //       }
-  //     )
-  //     return data
-  //   },
-  //   {
-  //     onSuccess: (data) => {
-  //       // queryClient.setQueryData(['getAllOrders', queryPageIndex, queryPageSize], (oldData) => {
-  //       //   return [...oldData, data]
-  //       // })
-  //       console.log('updated pickupZone', data)
-  //       // alert('user info edit completed')
-  //     },
-  //   }
-  // )
+  //add utc to dayjs to get write time inserted from datetime-local input in checkout/[customerId]
+  dayjs.extend(utc)
 
   const invoicesColumns = React.useMemo(
     () => [
@@ -412,7 +395,10 @@ const PickupListTable = () => {
       {
         Header: 'Date/time Placed',
         accessor: 'timePlaced',
-        filter: dateBetweenFilterFn,
+        // cell: (data) => {
+        //   return dayjs(data?.timePlaced).format('MMMM/DD/YYYY h:mm A')
+        // },
+        // filter: dateBetweenFilterFn,
       },
       // { Header: 'Total Items', accessor: 'totalItems' },
       // {
@@ -424,8 +410,12 @@ const PickupListTable = () => {
         accessor: 'status.message',
       },
       {
-        Header: 'Payment Type',
-        accessor: 'paymentType',
+        Header: 'Balance',
+        accessor: 'balance',
+      },
+      {
+        Header: 'Total Cost',
+        accessor: 'totalCost',
       },
       {
         Header: 'Payment',
@@ -433,9 +423,17 @@ const PickupListTable = () => {
       },
       {
         Header: 'pickup time',
-        accessor: (data) => {
-          return <DateTimeFormat pickupDatetime={data.pickupDatetime} />
+        accessor: 'pickupDatetime',
+        Cell: ({ row: { original } }) => {
+          return (
+            <>
+              {dayjs
+                .utc(original?.pickupDatetime)
+                .format('dddd, MMMM D, YYYY h:mm A')}
+            </>
+          )
         },
+        filter: dateBetweenFilterFn,
       },
       {
         Header: 'Batch Container',

@@ -109,22 +109,20 @@ model Order {
   customer       User     @relation("CUSTOMER", fields: [customerUserId], references: [id])
   creatorUserId  String
   creatorUser    User     @relation("creatorUser", fields: [creatorUserId], references: [id])
-  timePlaced     DateTime @default(now())
+  timePlaced     DateTime @default(now()) //UTC TIME 4 hours ahead of EST time // ? TODO change to est time in database, use dayjs.utc.toISOstring
 
   currentBalance Int?
   orderPayments  orderPayments[]
 
   statusMessage   String
-  status          orderStatus   @relation(fields: [statusMessage], references: [message])
+  status          orderStatus           @relation(fields: [statusMessage], references: [message])
   totalCost       Int?
   paymentStatus   String
-  paymentStatuses paymentStatus @relation(fields: [paymentStatus], references: [status])
+  paymentStatuses paymentStatus         @relation(fields: [paymentStatus], references: [status])
   pickupDriverId  String?
-  pickupDriver    User?         @relation(name: "DRIVER", fields: [pickupDriverId], references: [id])
+  pickupDriver    User?                 @relation(name: "DRIVER", fields: [pickupDriverId], references: [id])
   pickupDatetime  DateTime?
   items           OrderItem[]
-  // addresses       OrderAddressDuo[]
-
   shipperAddress  OrderShipperAddress?
   recieverAddress OrderRecieverAddress?
 
