@@ -1,80 +1,13 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { useRouter } from 'next/router'
 import Layout from '@/components/Layout'
 import { useSession } from 'next-auth/react'
 import { trpc } from '@/utils/trpc'
 import InfoEditor from '@/components/pages/account/InfoEditor'
 import { CustomerAddresses as UserAddresses } from '@/components/pages/customers/CustomerAddresses'
-
-const UserOrderHistory = ({ currentUser }) => {
-  const router = useRouter()
-
-  const { data: orderHistory, status: userOrderStatus } = trpc.useQuery([
-    'user.getUserOrders',
-    { userId: currentUser.id },
-  ])
-
-  console.log('user order History', orderHistory)
-  return (
-    <>
-      <h1>ORDERS</h1>
-      {userOrderStatus === 'success' ? (
-        !orderHistory?.length ? (
-          <p>NO ORDERS FOR USER FOUND</p>
-        ) : (
-          <table>
-            <caption>User Order History</caption>
-            <thead>
-              <tr>
-                <th>Order Id</th>
-                <th>time placed</th>
-                <th>Sending to:</th>
-                <th>total cost</th>
-                <th>total items</th>
-                <th>status</th>
-                {/* <th>location</th> */}
-                <th>utilities</th>
-              </tr>
-            </thead>
-            <tbody>
-              {orderHistory.map((order) => {
-                return (
-                  <tr key={order.id}>
-                    <td>{order.id}</td>
-                    <td>{order.timePlaced}</td>
-                    <td>
-                      {order.recieverFirstName} {order.recieverLastName}
-                    </td>
-                    <td>{order.totalPrice}</td>
-                    <td>{order.totalItems}</td>
-                    <td>{order.status.message} </td>
-                    {/* <td>{order.location}</td> */}
-                    <td>
-                      <button
-                        onClick={() =>
-                          router.push({
-                            pathname: `/invoices/${order.id}`,
-                            // query: { orderId: id },
-                          })
-                        }
-                      >
-                        invoice page
-                      </button>
-                    </td>
-                  </tr>
-                )
-              })}
-            </tbody>
-          </table>
-        )
-      ) : (
-        <>
-          <p>order history is loading</p>
-        </>
-      )}
-    </>
-  )
-}
+import SelectDeliveryAddress from '@/components/pages/order/CreateOrder/SelectDeliveryAddress'
+import CustomerDeliveryAddresses from '@/components/pages/customers/[userId]/CustomerDeliveryAddresses'
+import FancyTable from '@/components/Tables/FancyTable'
 
 const AccountInfo = () => {
   // const [session, loading] = useSession()
@@ -94,7 +27,12 @@ const AccountInfo = () => {
       case 1:
         return <InfoEditor currentUser={user} />
       case 2:
-        return <UserAddresses currentUser={user} />
+        return (
+          <>
+            <UserAddresses currentUser={user} />
+            <CustomerDeliveryAddresses currentCustomerId={user?.id} />
+          </>
+        )
       case 3:
         return <UserOrderHistory currentUser={user} />
       default:
@@ -103,7 +41,7 @@ const AccountInfo = () => {
   }
 
   return (
-    <section className="flex h-full flex-col items-center">
+    <div className="flex h-full flex-col items-center">
       <h1>Account Information</h1>
 
       {/* create  tab menu  */}
@@ -125,7 +63,7 @@ const AccountInfo = () => {
         <></>
       )}
       {/* <br /> */}
-    </section>
+    </div>
   )
 }
 
@@ -135,6 +73,94 @@ AccountInfo.getLayout = function getLayout(page) {
   return <Layout>{page}</Layout>
 }
 
-// AccountInfo.auth = () => {
-//   return 'private'
-// }
+const UserOrderHistory = ({ currentUser }) => {
+  const router = useRouter()
+
+  const {
+    data: orderHistory,
+    status: userOrderStatus,
+    isSuccess: orderHistoryIsSuccess,
+    isError: orderHistoryIsError,
+  } = trpc.useQuery(['user.getUserOrders', { userId: currentUser.id }])
+
+  const data = useMemo(() => {
+    if (!orderHistory) return []
+    return orderHistory
+  }, [orderHistory])
+
+  // th>Order Id</th>
+  //               <th>time placed</th>
+  //               <th>Sending to:</th>
+  //               <th>total cost</th>
+  //               <th>total items</th>
+  //               <th>status</th>
+  //               {/* <th>location</th> */}
+  //               <th>utilities</th>
+  const columns = useMemo(
+    () => [
+      {
+        Header: 'Order ID',
+        accessor: 'id',
+      },
+      {
+        Header: 'Delivery Address',
+        accessor: 'recieverAddress.address',
+      },
+      {
+        Header: 'Status',
+        accessor: 'statusMessage',
+      },
+      {
+        Header: 'totalCost',
+        accessor: 'totalCost',
+        Cell: ({ row }) => {
+          return `$${Number(row.values.totalCost / 100).toLocaleString('en')} `
+        },
+      },
+      {
+        Header: 'Balance',
+        accessor: 'currentBalance',
+      },
+      {
+        Header: 'utility',
+        Cell: ({ row: { original } }) => (
+          <>
+            <button
+              onClick={() =>
+                router.push({
+                  pathname: `/invoices/${original.id}`,
+                })
+              }
+            >
+              Invoice page
+            </button>
+          </>
+        ),
+      },
+
+      // {
+      //   Header: '',
+      //   accessor: '',
+      // },
+    ],
+    []
+  )
+  return (
+    <>
+      <h1>ORDERS</h1>
+      {userOrderStatus === 'success' ? (
+        !orderHistory?.length ? (
+          <p>NO ORDERS FOR USER FOUND</p>
+        ) : (
+          <div className="w-max">
+            <FancyTable columns={columns} data={data} />
+          </div>
+        )
+      ) : (
+        <>
+          <p>order history is loading</p>
+        </>
+      )}
+    </>
+  )
+}

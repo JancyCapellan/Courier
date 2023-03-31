@@ -45,11 +45,15 @@ const FancyTable = ({ columns, data }) => {
 
   return (
     <>
-      <input
-        type="text"
-        value={globalFilter || ''}
-        onChange={(e) => setGlobalFilter(e.target.value)}
-      />
+      <label htmlFor="globalFilter">
+        Global Filter:
+        <input
+          id="globalFilter"
+          type="text"
+          value={globalFilter || ''}
+          onChange={(e) => setGlobalFilter(e.target.value)}
+        />
+      </label>
       <table {...getTableProps()}>
         <thead>
           {headerGroups.map((headerGroup) => (

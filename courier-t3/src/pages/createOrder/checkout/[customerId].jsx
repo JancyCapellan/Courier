@@ -175,7 +175,7 @@ const Checkout = () => {
           <h1>Review Order Before Checkout</h1>
           {/* <p>EMAIL: {customerEmail} </p> */}
           <label className="block font-bold" htmlFor="meeting-time">
-            Choose a time for pickup:
+            Choose a time for pickup: Monday to Saturday, 10am to 6pm
           </label>
           {/* // TODO make sure datetime is in UTC like invoices date/time placed, this time is diff, if utc if removed from formatting the user sees a pickupTime */}
           <input
@@ -199,7 +199,7 @@ const Checkout = () => {
             }}
           />
 
-          <input
+          {/* <input
             type="date"
             min={currentDate}
             onChange={(e) => {
@@ -219,7 +219,7 @@ const Checkout = () => {
               // let time = e.target.value + ':00.000Z'
               // setPotentialPickupDateTime(time)
             }}
-          />
+          /> */}
 
           <div>
             <h2 className="font-bold"> Cart Addresses</h2>

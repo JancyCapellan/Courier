@@ -183,7 +183,8 @@ export const userRouter = createProtectedRouter()
                 },
               },
             },
-            addresses: true,
+            shipperAddress: true,
+            recieverAddress: true,
           },
         })
 

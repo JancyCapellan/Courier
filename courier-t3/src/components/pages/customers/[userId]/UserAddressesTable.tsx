@@ -31,91 +31,89 @@ const UserAddressesTable = ({
   })
   return (
     <>
-      <section>
-        {/* choose address for: {currentCustomer.firstName} {currentCustomer.lastName} */}
-        <table>
-          <tbody>
-            <tr>
-              {/* <th>Address ID</th> */}
-              <th>Address Line 1</th>
-              <th>Address Line 2</th>
-              <th>Address Line 3</th>
-              <th>City</th>
-              <th>State</th>
-              <th>Postal Code</th>
-              <th>Country</th>
-              <th>Cellphone</th>
-              <th>Telephone</th>
-              <th>utility</th>
-            </tr>
-            {getCustomerAddressesStatus == 'success' &&
-              customerAddresses.map((address) => {
-                return (
-                  <tr className="customer-table-row" key={address.id}>
-                    {/* <td>{address.address_id}</td> */}
-                    <td>{address.address}</td>
-                    <td>{address.address2}</td>
-                    <td>{address.address3}</td>
-                    <td>{address.city}</td>
-                    <td>{address.state}</td>
-                    <td>{address.postalCode}</td>
-                    <td>{address.country}</td>
-                    <td>{address.cellphone}</td>
-                    <td>{address.telephone}</td>
-                    <td>
-                      {setSelectShipperAddress ? (
-                        <button
-                          onClick={() => {
-                            // console.log(address)
-                            setSelectShipperAddress(address)
-                            console.log('func here?', handleCloseParentModal)
-                            if (handleCloseParentModal) {
-                              console.log('CLOSE MODAL')
-                              handleCloseParentModal()
-                            }
-                          }}
-                        >
-                          select
-                        </button>
-                      ) : (
-                        <></>
-                      )}
+      {/* choose address for: {currentCustomer.firstName} {currentCustomer.lastName} */}
+      <table>
+        <tbody>
+          <tr>
+            {/* <th>Address ID</th> */}
+            <th>Address Line 1</th>
+            <th>Address Line 2</th>
+            <th>Address Line 3</th>
+            <th>City</th>
+            <th>State</th>
+            <th>Postal Code</th>
+            <th>Country</th>
+            <th>Cellphone</th>
+            <th>Telephone</th>
+            <th>utility</th>
+          </tr>
+          {getCustomerAddressesStatus == 'success' &&
+            customerAddresses.map((address) => {
+              return (
+                <tr className="customer-table-row" key={address.id}>
+                  {/* <td>{address.address_id}</td> */}
+                  <td>{address.address}</td>
+                  <td>{address.address2}</td>
+                  <td>{address.address3}</td>
+                  <td>{address.city}</td>
+                  <td>{address.state}</td>
+                  <td>{address.postalCode}</td>
+                  <td>{address.country}</td>
+                  <td>{address.cellphone}</td>
+                  <td>{address.telephone}</td>
+                  <td>
+                    {setSelectShipperAddress ? (
                       <button
                         onClick={() => {
-                          console.log('edit address', address)
-                          setEditAddress(address)
-                          setOpenEditModal(true)
+                          // console.log(address)
+                          setSelectShipperAddress(address)
+                          console.log('func here?', handleCloseParentModal)
+                          if (handleCloseParentModal) {
+                            console.log('CLOSE MODAL')
+                            handleCloseParentModal()
+                          }
                         }}
                       >
-                        Edit
+                        select
                       </button>
-                      {/* //TODO: DELETE ADDRESSES MUTATION */}
-                      <button
-                        onClick={() => {
-                          confirm(
-                            'DELETE CONFIRMATION: Are you sure you want to DELETE this address?'
-                          )
-                          deleteAddress.mutate({
-                            addressId: address.id,
-                          })
-                        }}
-                      >
-                        Delete
-                      </button>
-                    </td>
-                  </tr>
-                )
-              })}
-          </tbody>
-        </table>
+                    ) : (
+                      <></>
+                    )}
+                    <button
+                      onClick={() => {
+                        console.log('edit address', address)
+                        setEditAddress(address)
+                        setOpenEditModal(true)
+                      }}
+                    >
+                      Edit
+                    </button>
+                    {/* //TODO: DELETE ADDRESSES MUTATION */}
+                    <button
+                      onClick={() => {
+                        confirm(
+                          'DELETE CONFIRMATION: Are you sure you want to DELETE this address?'
+                        )
+                        deleteAddress.mutate({
+                          addressId: address.id,
+                        })
+                      }}
+                    >
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              )
+            })}
+        </tbody>
+      </table>
 
-        <EditAddressModal
-          showEditModal={showEditModal}
-          handleClose={() => setOpenEditModal(false)}
-          address={editAddress}
-          userId={userId}
-        />
-      </section>
+      <EditAddressModal
+        showEditModal={showEditModal}
+        handleClose={() => setOpenEditModal(false)}
+        address={editAddress}
+        userId={userId}
+      />
     </>
   )
 }

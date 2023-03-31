@@ -14,18 +14,6 @@ const SelectDeliveryAddress = ({
   return (
     <>
       <ModalContainer show={show} handleClose={handleClose}>
-        {/* <button
-          onClick={() => {
-            setShowAddForm(true)
-          }}
-        >
-          create new customer address
-        </button> */}
-        {/* <CustomerAddresses
-          currentUser={currentCustomer}
-          setSelectedShipperAddress={setAddress}
-          handleCloseParentModal={handleClose}
-        /> */}
         {/* // delivery  */}
         <button onClick={() => setShowModal(true)}>Add Address</button>
         <SaveDeliveryAddressForm

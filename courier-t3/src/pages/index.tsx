@@ -117,17 +117,19 @@ const Home: NextPage = () => {
             {(formik) => {
               return (
                 <>
-                  <Form className="flex flex-col">
+                  <Form className="flex flex-col gap-2">
                     <h2 className="text-grey-darkest bold mb-6 block w-full text-center text-xl underline">
                       Login
                     </h2>
                     <FormikControl
+                      className=" rounded-md bg-gray-200 text-black"
                       control="input"
                       type="email"
                       label="Email"
                       name="email"
                     />
                     <FormikControl
+                      className=" rounded-md bg-gray-200 text-black"
                       control="input"
                       type="password"
                       label="Password"
