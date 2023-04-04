@@ -119,12 +119,12 @@ export const authOptions: NextAuthOptions = {
 
       console.log('session', token, session)
 
-      if (new Date(session.expires).getTime() < new Date().getTime()) {
-        console.log('session past expiration')
+      // if (new Date(session.expires).getTime() < new Date().getTime()) {
+      //   console.log('session past expiration')
 
-        // return {} as typeof session
-        // regenerate and return new token
-      }
+      //   // return {} as typeof session
+      //   // regenerate and return new token
+      // }
 
       if (token && session.user) {
         session.user.id = token.id
@@ -148,7 +148,7 @@ export const authOptions: NextAuthOptions = {
 
   session: {
     strategy: 'jwt',
-    maxAge: 10, //  2 hours
+    maxAge: 12 * 60 * 60, //  12 hours
   },
   pages: {
     signIn: '/',
