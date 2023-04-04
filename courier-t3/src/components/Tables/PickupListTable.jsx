@@ -428,7 +428,7 @@ const PickupListTable = () => {
         accessor: 'paymentStatus',
       },
       {
-        Header: 'pickup time',
+        Header: 'pickup Date',
         accessor: 'pickupDate',
         Cell: ({ row: { original } }) => {
           return (
