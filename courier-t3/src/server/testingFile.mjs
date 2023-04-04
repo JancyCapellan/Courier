@@ -7,7 +7,23 @@ import localizedFormat from 'dayjs/plugin/localizedFormat.js'
 import { faker } from '@faker-js/faker'
 import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient()
-// main()
+
+main()
+
+async function main() {
+  const randomCustomers =
+    await prisma.$queryRaw`SELECT * FROM "User" ORDER BY RANDOM() LIMIT 10;`
+  console.log({ randomCustomers })
+
+  let customerIds = []
+
+  randomCustomers.forEach((customer) => {
+    customerIds.push(customer.id)
+  })
+  const createCustomersOrders = await prisma.order.createMany({
+    data: {},
+  })
+}
 
 // function main() {
 //   dayjs.extend(utc)
@@ -19,53 +35,6 @@ const prisma = new PrismaClient()
 //   console.log({ now })
 //   return now
 // }
-
-const range = (len) => {
-  const arr = []
-  for (let i = 0; i < len; i++) {
-    arr.push(i)
-  }
-  return arr
-}
-
-const newCustomer = () => {
-  const firstName = faker.name.firstName()
-  const lastName = faker.name.lastName()
-  return {
-    firstName: firstName,
-    middleName: faker.name.middleName(),
-    lastName: lastName,
-    email: faker.internet.email(firstName, lastName, 'email.com'),
-    password: '123',
-    role: 'CUSTOMER',
-  }
-}
-
-export function makeCustomerData(...lens) {
-  const makeDataLevel = (depth = 0) => {
-    const len = lens[depth]
-    return range(len).map((d) => {
-      return {
-        ...newCustomer(),
-        // subRows: lens[depth + 1] ? makeDataLevel(depth + 1) : undefined,
-      }
-    })
-  }
-
-  return makeDataLevel()
-}
-
-async function makeManyCustomer() {
-  const customers = makeCustomerData(10)
-
-  const createdCustomers = await prisma.user.createMany({
-    data: customers,
-  })
-
-  console.log({ createdCustomers })
-}
-
-makeManyCustomer()
 
 // async function createMockOrdersExcludingStripe() {
 //   pendingOrder = await ctx.prisma.order.create({

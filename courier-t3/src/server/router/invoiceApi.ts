@@ -289,10 +289,10 @@ export const invoiceApi = createProtectedRouter()
           pickupDate: true,
           pickupTime: true,
           paymentStatus: true,
-          stripeCheckoutId: true,
-          stripeCheckoutUrl: true,
-          stripeReceiptUrl: true,
-          stripePaymentIntent: true,
+          // stripeCheckoutId: true,
+          // stripeCheckoutUrl: true,
+          // stripeReceiptUrl: true,
+          // stripePaymentIntent: true,
         },
       })
       if (order) {

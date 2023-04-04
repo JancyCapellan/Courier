@@ -13,7 +13,7 @@ import {
 } from '@/components/globalStore'
 import { CustomerAddresses } from '@/components/pages/customers/CustomerAddresses'
 import { CustomerOrderHistory } from '@/components/pages/customers/CustomerOrderHistory'
-import { CustomerEditorForm } from '@/components/pages/customers/CustomerEditorForm'
+import { CustomerAccountInfoPage } from '@/components/pages/customers/CustomerAccountInfoPage'
 
 const CustomerAccountPage = () => {
   const router = useRouter()
@@ -43,40 +43,42 @@ const CustomerAccountPage = () => {
   function ComponentSwitcher({ user }) {
     switch (currentPage) {
       case 1:
-        return <CustomerEditorForm currentUser={user} />
+        return <CustomerAccountInfoPage currentUser={user} />
       case 2:
         return <CustomerAddresses currentUser={user} />
       case 3:
         return <CustomerOrderHistory currentUser={user} />
       default:
-        return <CustomerEditorForm currentUser={user} />
+        return <CustomerAccountInfoPage currentUser={user} />
     }
   }
 
   return (
-    <section className="flex flex-col items-center h-full">
-      <h1 className="mb-4 mt-4 text-4xl font-extrabold tracking-tight leading-none text-gray-900 md:text-5xl lg:text-6xl">
+    <>
+      <h1 className="mb-4 mt-4 text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl">
         Customer Account Page
       </h1>
-      <nav className="flex flex-row gap-4">
-        <button className="btn btn-blue" onClick={() => setCurrentPage(1)}>
-          Account Information
-        </button>
-        <button className="btn btn-blue" onClick={() => setCurrentPage(2)}>
-          Addresses
-        </button>
-        <button className="btn btn-blue" onClick={() => setCurrentPage(3)}>
-          Order History
-        </button>
-      </nav>
-      <br />
-      {getUserAccountInfoStatus === 'success' ? (
-        <ComponentSwitcher user={user} />
-      ) : (
-        <></>
-      )}
-      <br />
-    </section>
+      <section className="flex h-full flex-col items-center">
+        <nav className="flex flex-row gap-4">
+          <button className="btn btn-blue" onClick={() => setCurrentPage(1)}>
+            Account Information
+          </button>
+          <button className="btn btn-blue" onClick={() => setCurrentPage(2)}>
+            Addresses
+          </button>
+          <button className="btn btn-blue" onClick={() => setCurrentPage(3)}>
+            Order History
+          </button>
+        </nav>
+        <br />
+        {getUserAccountInfoStatus === 'success' ? (
+          <ComponentSwitcher user={user} />
+        ) : (
+          <></>
+        )}
+        <br />
+      </section>
+    </>
   )
 }
 

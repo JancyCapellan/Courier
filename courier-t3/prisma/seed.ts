@@ -1,8 +1,55 @@
 import { PrismaClient } from '@prisma/client'
+import { faker } from '@faker-js/faker'
 
 const prisma = new PrismaClient()
 
+const range = (len: any) => {
+  const arr = []
+  for (let i = 0; i < len; i++) {
+    arr.push(i)
+  }
+  return arr
+}
+
+const newCustomer = () => {
+  const firstName = faker.name.firstName()
+  const lastName = faker.name.lastName()
+  return {
+    firstName: firstName,
+    middleName: faker.name.middleName(),
+    lastName: lastName,
+    email: faker.internet.email(firstName, lastName, 'email.com'),
+    password: '123',
+    role: 'CUSTOMER',
+  }
+}
+
+export function makeCustomerData(...lens: number[]) {
+  const makeDataLevel = (depth = 0) => {
+    const len = lens[depth]
+    return range(len).map((d) => {
+      return {
+        ...newCustomer(),
+        // subRows: lens[depth + 1] ? makeDataLevel(depth + 1) : undefined,
+      }
+    })
+  }
+
+  return makeDataLevel()
+}
+
+async function makeManyCustomer(lens: number) {
+  const customers = makeCustomerData(lens)
+
+  const createdCustomers = await prisma.user.createMany({
+    data: customers,
+  })
+
+  console.log({ createdCustomers })
+}
+
 async function main() {
+  makeManyCustomer(250)
   const testUsers = await prisma.user.createMany({
     data: [
       {

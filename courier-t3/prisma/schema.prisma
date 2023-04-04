@@ -16,18 +16,10 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// enum Role {
-//   USER
-//   ADMIN
-//   CUSTOMER
-//   DRIVER
-//   STAFF
-// }
-
 model User {
   id                String                @id @default(cuid())
   // name          String? // prisma adapter field
-  emailVerified     DateTime? // prisma adapter field 
+  emailVerified     DateTime? // prisma adapter field
   image             String? // prisma adapter field
   accounts          Account[]
   sessions          Session[]
@@ -36,7 +28,7 @@ model User {
   middleName        String?
   password          String
   email             String                @unique
-  role              String
+  role              String // * type constrainted at the backend level.
   company           String?
   branchName        String?
   lastSaleDate      DateTime?
@@ -48,28 +40,12 @@ model User {
   addresses         UserAddress[]
   deliveryAddresses UserDeliveryAddress[]
   orders            Order[]               @relation("CUSTOMER")
-  orderCreators     Order[]               @relation("creatorUser")
+  orderCreator    Order[]            @relation("creatorUser")
   pickups           Order[]               @relation("DRIVER")
   currentCart       cart[]                @relation("cartCreator")
   cartCustomer      cart[]                @relation("customer")
   creationDateTime  DateTime              @default(now())
 }
-
-// model address {
-//   id         Int     @id @default(autoincrement())
-//   userId     String
-//   address    String
-//   address2   String?
-//   address3   String?
-//   city       String
-//   state      String
-//   postalCode Int
-//   country    String
-//   cellphone  String?
-//   telephone  String?
-//   default    Boolean @default(false)
-//   user       User    @relation(fields: [userId], references: [id])
-// }
 
 model UserAddress {
   id         Int     @id @default(autoincrement())
@@ -105,15 +81,15 @@ model UserDeliveryAddress {
 
 model Order {
   id             Int      @unique @default(autoincrement())
+  orderId      String @unique @default(uuid())
   customerUserId String // thecustomer who sent the package, so client/shipper
   customer       User     @relation("CUSTOMER", fields: [customerUserId], references: [id])
   creatorUserId  String
   creatorUser    User     @relation("creatorUser", fields: [creatorUserId], references: [id])
   timePlaced     DateTime @default(now()) //UTC TIME 4 hours ahead of EST time // ? TODO change to update from client side event using localtime. so that in the database the time you see is in the same timezone as the pickupTime, which is in gmt (utc+4000)
-
   currentBalance Int?
+  totalBalancePaid Int?
   orderPayments  orderPayments[]
-
   statusMessage   String
   status          orderStatus           @relation(fields: [statusMessage], references: [message])
   totalCost       Int?
@@ -126,17 +102,14 @@ model Order {
   items           OrderItem[]
   shipperAddress  OrderShipperAddress?
   recieverAddress OrderRecieverAddress?
-
   pickupZoneId      Int?
   pickupZone        pickupZone? @relation(fields: [pickupZoneId], references: [id])
   containerId       Int?
   container         containers? @relation(fields: [containerId], references: [id])
-  stripeCheckoutUrl String?
-  stripeCheckoutId  String?     @unique //need stripe informmation to connect order to relevent stripe checkout session, with this id i can query specific orders when updating with information from stripe checkout
-
-  stripePaymentIntent String? @unique
-  stripeReceiptUrl    String?
-
+  // stripeCheckoutUrl String?
+  // stripeCheckoutId  String?     @unique //need stripe informmation to connect order to relevent stripe checkout session, with this id i can query specific orders when updating with information from stripe checkout
+  // stripePaymentIntent String? @unique
+  // stripeReceiptUrl    String?
   // ? instead of just ids, going to add the entire items of stripepayments to the database to backup the data
   // DONE TODO: REMOVE, no longer needed, products now kept locally istead of using stripe products
   // stripeCheckout Json? @db.JsonB // stripe checkout.session.completed event object that includes the paymentintent id and stripe checkout Id need to query stripe for the line items, that i add locally from the app to the database because stripe is also getting the line items from the app. 
@@ -155,6 +128,10 @@ model orderPayments {
   amountPaid       Int
   receiptImageLink String?
   paymentId        Int
+  stripeCheckoutUrl String?
+  stripeCheckoutId  String?     @unique //need stripe informmation to connect order to relevent stripe checkout session, with this id i can query specific orders when updating with information from stripe checkout
+  stripePaymentIntent String? @unique
+  stripeReceiptUrl    String?
 }
 
 // model Route {
@@ -171,7 +148,6 @@ model pickupZone {
 
 model OrderShipperAddress {
   id         Int     @id @default(autoincrement())
-  // .query("getAddressesFromCart")
   firstName  String?
   lastName   String?
   orderId    Int     @unique
@@ -205,32 +181,16 @@ model OrderRecieverAddress {
   telephone  String?
 }
 
-// model OrderAddressDuo {
-//   id         Int     @id @default(autoincrement())
-//   orderId    Int
-//   order      Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
-//   firstName  String
-//   lastName   String
-//   address    String
-//   address2   String?
-//   address3   String?
-//   city       String
-//   state      String
-//   postalCode Int
-//   country    String
-//   cellphone  String?
-//   telephone  String?
-//   recipient  Boolean @default(false)
-// }
-
 model OrderItem {
   id        Int     @id @default(autoincrement())
   orderId   Int
   order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
   quantity  Int
-  productId Int
-  product   product @relation(fields: [productId], references: [id])
+  productId Int?
+  product   product? @relation(fields: [productId], references: [id])
+
 }
+
 
 // TODO driver edits invoice, after driver confirms reciever address and item being shipper. add orderLocations table that tracks the orderItems individally, so 4 boxes of used clothes that show up as
 // 4 seperate row of item locations, each delivery package label QR code corresponds to a location entry, this way
@@ -307,12 +267,10 @@ model containerStatus {
   container containers[]
 }
 
-// change this to cart, thinking about future saving of carts in a different table
-// these tables should just focus on a singular user's order session, even when staff make orders for other users 
-// they should still have one cart, so a customer can have two different orders being made by two different users,
-// maybe make a way to save orders so another admin/staff may takeover the order??
+
+// ? maybe make a way to save orders so another admin/staff may takeover the order??
 model cart {
-  id              Int                  @default(autoincrement()) // change to uuID
+  // id              Int                  @default(autoincrement())
   cartId          String               @unique @default(uuid())
   customerId      String
   customer        User                 @relation(fields: [customerId], references: [id], name: "customer")
@@ -389,13 +347,13 @@ model cartRecieverAddress {
 
 model cartItem {
   id        Int     @default(autoincrement())
-  cartId    String  @map("shoppingSessionId")
+  cartId    String
   cart      cart    @relation(fields: [cartId], references: [cartId], onDelete: Cascade, onUpdate: Cascade)
   quantity  Int
-  productId Int
-  product   product @relation(fields: [productId], references: [id])
+  productId Int?
+  product   product? @relation(fields: [productId], references: [id])
 
-  @@id([cartId, productId], name: "CartItemId")
+  @@id([cartId, id], name: "CartItemId")
 }
 
 model StripeEvent {

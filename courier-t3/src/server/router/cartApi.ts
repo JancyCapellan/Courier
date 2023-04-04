@@ -36,7 +36,6 @@ async function findOrCreateCart(prisma, userId, customerId) {
       },
     },
     select: {
-      id: true,
       cartId: true,
     },
   })
@@ -48,7 +47,6 @@ async function findOrCreateCart(prisma, userId, customerId) {
         creatingUserId: userId,
       },
       select: {
-        id: true,
         cartId: true,
       },
     })
@@ -952,12 +950,12 @@ export const cartApi = createProtectedRouter()
             // timePlaced: timePlaced,
             pickupDate: input.pickupDate,
             pickupTime: input.pickupTime,
-            stripeCheckoutId:
-              // made this way becuase not all orders go through stripe so some may need an empty column, i dont remember why null doesnt work because i could avoid this if input.stripeCheckoutId is null from not exising already from creating the checkout order
-              input.stripeCheckoutId !== null // this was the problem stopping the webhook from updating pending order
-                ? input.stripeCheckoutId
-                : undefined,
-            stripeCheckoutUrl: input.stripeCheckoutUrl,
+            // stripeCheckoutId:
+            //   // made this way becuase not all orders go through stripe so some may need an empty column, i dont remember why null doesnt work because i could avoid this if input.stripeCheckoutId is null from not exising already from creating the checkout order
+            //   input.stripeCheckoutId !== null // this was the problem stopping the webhook from updating pending order
+            //     ? input.stripeCheckoutId
+            //     : undefined,
+            // stripeCheckoutUrl: input.stripeCheckoutUrl,
             // stripePaymentIntent: input?.stripePaymentIntent,
           },
           include: {

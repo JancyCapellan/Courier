@@ -7,7 +7,7 @@ import { useQueryClient } from 'react-query'
 import { trpc } from '@/utils/trpc'
 import { useRouter } from 'next/router'
 
-export const CustomerEditorForm = ({ currentUser }) => {
+export const CustomerAccountInfoPage = ({ currentUser }) => {
   // not all of these values are in the form inputs to hide them from being edited.
   const queryClient = useQueryClient()
   const [showEditForm, setShowEditForm] = useState(false)
@@ -89,6 +89,12 @@ export const CustomerEditorForm = ({ currentUser }) => {
             <b>Customer Account Information</b>
           </caption>
           <tbody>
+            <tr className="text-red-600">
+              <th className="text-red-600">Current Balance</th>
+              <td>
+                ${(currentUser.currentBalance / 100).toLocaleString('en')}
+              </td>
+            </tr>
             <tr>
               <th>ID</th>
               <td>{currentUser.id}</td>

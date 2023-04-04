@@ -8,10 +8,10 @@ import FormikControl from '@/components/Formik/FormikControl'
 
 // ! errors when no user is logged in and component is loaded
 const InfoEditor = ({ currentUser }) => {
-  console.log(
-    '🚀 ~ file: InfoEditor.jsx ~ line 10 ~ InfoEditor ~ currentUser',
-    currentUser
-  )
+  // console.log(
+  //   '🚀 ~ file: InfoEditor.jsx ~ line 10 ~ InfoEditor ~ currentUser',
+  //   currentUser
+  // )
   // not all of these values are in the form inputs to hide them from being edited.
   const queryClient = useQueryClient()
   const [showEditForm, setShowEditForm] = useState(false)

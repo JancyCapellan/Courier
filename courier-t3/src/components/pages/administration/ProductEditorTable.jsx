@@ -1,6 +1,6 @@
 import { Formik, Form } from 'formik'
 import * as Yup from 'yup'
-import FormikControl from '../../../components/Formik/FormikControl'
+import FormikControl from '@/components/Formik/FormikControl'
 import { trpc } from '@/utils/trpc'
 
 const ProductEditorTable = () => {

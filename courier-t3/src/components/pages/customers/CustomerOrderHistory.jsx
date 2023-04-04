@@ -22,6 +22,9 @@ export const CustomerOrderHistory = ({ currentUser }) => {
               <th>time placed</th>
               <th>Sending to:</th>
               <th>status</th>
+              <th>total Cost</th>
+              <th>current balance</th>
+              <th>total Balance Paid</th>
               {/* <th>location</th> */}
               <th>utilities</th>
             </tr>
@@ -33,12 +36,19 @@ export const CustomerOrderHistory = ({ currentUser }) => {
                   <td>{order.id}</td>
                   <td>{order?.timePlaced}</td>
                   <td>
-                    {order?.addresses[1]?.firstName}{' '}
-                    {order?.addresses[1]?.lastName}
+                    {order?.recieverAddress?.firstName}{' '}
+                    {order?.recieverAddress?.lastName}
+                    {/* {order?.addresses[1]?.firstName}{' '}
+                    {order?.addresses[1]?.lastName} */}
                   </td>
                   {/* <td>{order.totalPrice}</td>
                   <td>{order.totalItems}</td> */}
                   <td>{order.status.message} </td>
+                  <td>${(order.totalCost / 100)?.toLocaleString('en')}</td>
+                  <td>${(order.currentBalance / 100)?.toLocaleString('en')}</td>
+                  <td>
+                    ${(order.totalBalancePaid / 100)?.toLocaleString('en')}
+                  </td>
                   {/* <td>{order.location}</td> */}
                   <td>
                     <button

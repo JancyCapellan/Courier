@@ -40,15 +40,15 @@ const InvoicePage = () => {
 
   // {/* checkout session has payment intent, find charge with payment intent after order is completed, add stripeReceiptUrl to local order */}
 
-  const { data: stripeReceipt } = trpc.useQuery(
-    [
-      'stripe.getReceiptUrl',
-      { stripePaymentIntent: order?.stripePaymentIntent },
-    ],
-    {
-      enabled: order?.stripePaymentIntent !== null,
-    }
-  )
+  // const { data: stripeReceipt } = trpc.useQuery(
+  //   [
+  //     'stripe.getReceiptUrl',
+  //     { stripePaymentIntent: order?.stripePaymentIntent },
+  //   ],
+  //   {
+  //     enabled: order?.stripePaymentIntent !== null,
+  //   }
+  // )
 
   if (getOrderDetailsStatus === 'error') return <div>error</div>
 
@@ -82,7 +82,7 @@ const InvoicePage = () => {
               </button>
             )}
 
-          {!!stripeReceipt && (
+          {/* {!!stripeReceipt && (
             <button
               className="btn btn-blue"
               onClick={() => {
@@ -93,7 +93,7 @@ const InvoicePage = () => {
             >
               View Stripe Reciept
             </button>
-          )}
+          )} */}
 
           {/* <button></button>
 
