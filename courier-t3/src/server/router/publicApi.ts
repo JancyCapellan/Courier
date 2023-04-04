@@ -56,6 +56,29 @@ export const publicApiRouter = createRouter()
       }
     },
   })
+  .query('getProducts', {
+    async resolve({ ctx }) {
+      const products = await ctx.prisma.product.findMany({
+        select: {
+          id: true,
+          name: true,
+          price: true,
+          // stripePriceId: true,
+          // stripeProductId: true,
+          // productType: {
+          //   select: {
+          //     type: true,
+          //   },
+          // },
+        },
+        where: {
+          createdOnPickup: false,
+        },
+      })
+
+      return products
+    },
+  })
   .query('getAllProducts', {
     async resolve({ ctx }) {
       const products = await ctx.prisma.product.findMany({

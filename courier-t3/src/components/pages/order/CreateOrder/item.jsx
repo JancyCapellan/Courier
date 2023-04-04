@@ -9,7 +9,7 @@ import { useRouter } from 'next/router'
 import React, { useState } from 'react'
 // import { useCart } from '../../contexts/cartContext'
 
-const Item = ({ name, price, id, stripePriceId, stripeProductId }) => {
+const Item = ({ name, price, id }) => {
   const [qty, setQty] = useState('1')
 
   const router = useRouter()
@@ -19,7 +19,7 @@ const Item = ({ name, price, id, stripePriceId, stripeProductId }) => {
   //
 
   const refetchCart = useGlobalStore((state) => state.refetchCart)
-  const addToCart = trpc.useMutation(['cart.addToCartSession'], {
+  const addToCartSession = trpc.useMutation(['cart.addToCartSession'], {
     onSuccess: () => refetchCart(),
   })
 
@@ -29,12 +29,8 @@ const Item = ({ name, price, id, stripePriceId, stripeProductId }) => {
 
   // item to add to cart that will be submitted for order,
   let item = {
-    name: `${name}`,
-    price: price,
     amount: parseInt(qty),
     productId: id,
-    stripePriceId: stripePriceId,
-    stripeProductId: stripeProductId,
   }
 
   // if (qty === 1)
@@ -77,7 +73,7 @@ const Item = ({ name, price, id, stripePriceId, stripeProductId }) => {
         className=""
         onClick={() => {
           if (status === 'authenticated')
-            addToCart.mutate({
+            addToCartSession.mutate({
               userId: session?.user?.id,
               customerId: router.query.customerId,
               item: item,

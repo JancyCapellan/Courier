@@ -5,12 +5,42 @@ import { trpc } from '@/utils/trpc'
 import * as Yup from 'yup'
 import FormikControl from '@/components/Formik/FormikControl'
 import { Formik, Form } from 'formik'
+import { useRouter } from 'next/router'
+import { useSession } from 'next-auth/react'
+import { useGlobalStore } from '@/components/globalStore'
 // const jsonProdcutsES = products.spanish
 
 const Items = () => {
+  const router = useRouter()
+
+  const { data: session, status } = useSession()
+
   const { data: allProducts, status: allProductsStatus } = trpc.useQuery([
-    'public.getAllProducts',
+    'public.getProducts',
   ])
+
+  const createProductAtPickup = trpc.useMutation(['cart.createProductAtPickup'])
+
+  const refetchCart = useGlobalStore((state) => state.refetchCart)
+  const addToCartSession = trpc.useMutation(['cart.addToCartSession'], {
+    onSuccess: () => refetchCart(),
+  })
+
+  const addProduct = trpc.useMutation(['products.addProduct'], {
+    onSuccess: (data, variables) => {
+      console.log({ data, variables })
+
+      addToCartSession.mutate({
+        userId: session?.user?.id,
+        customerId: router.query.customerId,
+        item: {
+          productId: data?.id,
+          amount: variables?.item_amount,
+        },
+      })
+    },
+  })
+
   return (
     <>
       <section>
@@ -27,7 +57,9 @@ const Items = () => {
             )}
           </div>
         </section>
-        <div>
+
+        {/* add custom item form */}
+        <div className="w-max border-2 border-black">
           <button>Create Misc. Item</button>
           <div>
             <Formik
@@ -35,6 +67,7 @@ const Items = () => {
                 item_name: ' ',
                 item_price: 0,
                 item_description: '',
+                item_amount: 1,
               }}
               validationSchema={Yup.object({
                 item_name: Yup.string()
@@ -54,13 +87,20 @@ const Items = () => {
                     }
                   )
                   .required('please enter a price for this item'),
+                item_description: Yup.string(),
+                item_amount: Yup.number(),
               })}
               onSubmit={async (values, { resetForm }) => {
-                console.log('item submission values', values)
-
                 try {
                   console.log('create new product', values)
-                  createProduct.mutate(values)
+
+                  addProduct.mutate({
+                    item_name: values.item_name,
+                    item_price: values.item_price,
+                    item_description: values.item_description,
+                    createdOnPickup: true,
+                    item_amount: values.item_amount,
+                  })
                   resetForm()
                 } catch (error) {
                   // console.log(error)
@@ -87,12 +127,25 @@ const Items = () => {
                       name="item_price"
                       className=""
                     />
+                    <FormikControl
+                      control="textarea"
+                      label="description"
+                      name="item_description"
+                      className=""
+                    />
+                    <FormikControl
+                      control="input"
+                      type="number"
+                      label="amount"
+                      name="item_amount"
+                      className=""
+                    />
                     <button
                       className="btn btn-blue"
                       type="submit"
                       disabled={!formik.isValid}
                     >
-                      Submit
+                      add item
                     </button>
                   </Form>
                 )

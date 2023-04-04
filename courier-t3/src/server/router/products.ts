@@ -8,6 +8,8 @@ export const productsApi = createProtectedRouter().mutation('addProduct', {
   input: z.object({
     item_name: z.string(),
     item_price: z.number(),
+    item_description: z.string().optional(),
+    createdOnPickup: z.boolean().optional(),
     // item_type: z.string(),
   }),
   async resolve({ ctx, input }) {
@@ -18,16 +20,15 @@ export const productsApi = createProtectedRouter().mutation('addProduct', {
         data: {
           name: input.item_name,
           price: stripePriceFormat,
+          description: input?.item_description,
+          createdOnPickup: input?.createdOnPickup,
         },
       })
-      console.log(
-        '🚀 ~ file: staffApi.ts ~ line 100 ~ resolve ~ newItem',
-        newItem
-      )
+      console.log({ newItem })
 
       return newItem
     } catch (error) {
-      console.error('delete product error', error)
+      console.error('add product', error)
     }
   },
 })

@@ -186,8 +186,10 @@ model OrderItem {
   orderId   Int
   order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
   quantity  Int
-  productId Int?
-  product   product? @relation(fields: [productId], references: [id])
+  productId BigInt
+  product   product @relation(fields: [productId], references: [id])
+  // onSiteCreatedProductId BigInt?
+  // onSiteCreatedProduct onSiteCreatedProduct? @relation(fields: [onSiteCreatedProductId], references: [id])
 
 }
 
@@ -210,15 +212,13 @@ model paymentStatus {
 }
 
 model product {
-  id        Int         @id @default(autoincrement())
+  id        BigInt         @id @default(autoincrement())
   name      String
   price     Int // in USD cents, $50.25 = 5025
-  // stripePriceId   String?     @unique // to be removed
-  // stripeProductId String?     @unique // 
+  description String?
   orderItem OrderItem[]
-  // type String
-  // productType productType? @relation(fields: [type], references:[type])
   cartItem  cartItem[]
+  createdOnPickup Boolean @default(false) // false means it was created by an admin/staff in office, not during a pickup
 }
 
 // model productType {
@@ -350,11 +350,21 @@ model cartItem {
   cartId    String
   cart      cart    @relation(fields: [cartId], references: [cartId], onDelete: Cascade, onUpdate: Cascade)
   quantity  Int
-  productId Int?
-  product   product? @relation(fields: [productId], references: [id])
+  productId BigInt
+  product   product @relation(fields: [productId], references: [id])
+  // onSiteCreatedProductId BigInt?
+  // onSiteCreatedProduct onSiteCreatedProduct? @relation(fields: [onSiteCreatedProductId], references: [id])
 
-  @@id([cartId, id], name: "CartItemId")
+  @@id([cartId, productId], name: "CartItemId")
 }
+
+// model onSiteCreatedProduct {
+//   id        BigInt         @id @default(autoincrement())
+//   name      String
+//   price     Int // in USD cents, $50.25 = 5025
+//   orderItem OrderItem[]
+//   cartItem  cartItem[]
+// }
 
 model StripeEvent {
   id               String   @id @unique

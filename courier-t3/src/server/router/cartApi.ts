@@ -193,10 +193,8 @@ export const cartApi = createProtectedRouter()
       userId: z.string(), //logged in user
       customerId: z.string(),
       item: z.object({
-        name: z.string(),
-        // price: z.number(), // not needed since items are connected to the itemTable in which the order would have recieved its details
         amount: z.number(),
-        productId: z.number(),
+        productId: z.bigint(),
       }),
     }),
     async resolve({ ctx, input }) {
@@ -291,7 +289,7 @@ export const cartApi = createProtectedRouter()
   })
   .mutation('removeItemFromCart', {
     input: z.object({
-      productId: z.number(),
+      productId: z.bigint(),
       cartId: z.string(),
     }),
     async resolve({ ctx, input }) {
@@ -335,7 +333,7 @@ export const cartApi = createProtectedRouter()
   })
   .mutation('toggleCartItemAmount', {
     input: z.object({
-      productId: z.number(),
+      productId: z.bigint(),
       cartId: z.string(),
       toggleType: z.string(),
       currentQuantity: z.number(),

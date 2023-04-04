@@ -458,7 +458,7 @@ const PickupListTable = () => {
         ),
       },
     ],
-    []
+    [orderOptionsIsSuccess]
   )
 
   const filterTypes = React.useMemo(
