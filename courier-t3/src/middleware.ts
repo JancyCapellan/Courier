@@ -1,4 +1,6 @@
 import { withAuth } from 'next-auth/middleware'
+import { useRouter } from 'next/router'
+import { NextResponse } from 'next/server'
 
 export default withAuth(
   // `withAuth` augments your `Request` with the user's token.
@@ -11,6 +13,16 @@ export default withAuth(
       // todo: MAKE MORE ROBOUST
       authorized({ req, token }) {
         // `/admin` requires admin role
+        // console.log({ token })
+
+        // const router = useRouter()
+        // if (token === null) {
+        //   // router.push('/')
+        //   console.log('TOKEN IS NULL')
+        //   NextResponse.redirect(process.env?.NEXTAUTH_URL!)
+        //   return false
+        // }
+
         if (!token?.role) return false
         if (req.nextUrl.pathname === '/administration') {
           //console.log('auth token:', token?.role, !token) //?  is token missing role becuase of its typing?
