@@ -61,6 +61,10 @@ const Home: NextPage = () => {
         <></>
       )}
 
+      {router.query?.sessionExpired && (
+        <p className="text-red-800">**Session Expired Please Login Again**</p>
+      )}
+
       {!!session ? (
         <div className=" mt-16 flex w-fit flex-col">
           <p> Logged in as {session?.user?.name} </p>
