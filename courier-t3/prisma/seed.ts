@@ -97,6 +97,8 @@ async function main() {
     ],
   })
 
+  console.log({ testUsers })
+
   // const orderPickupZones = await prisma.
   const invoiceStatuses = await prisma.orderStatus.createMany({
     data: [
