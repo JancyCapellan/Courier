@@ -33,7 +33,7 @@ const InvoiceOrderDetailsPage = () => {
     refetch: refetchOrder,
   } = trpc.useQuery(['invoice.getOrderById', { orderId: orderId }], {
     refetchOnMount: 'always',
-    enabled: orderId !== null,
+    enabled: !!router.query.orderId,
   })
 
   // note: checks stripe database for order, sync the order to app database, then retefches the order. mostly a for development
@@ -103,7 +103,16 @@ const InvoiceOrderDetailsPage = () => {
     <>
       {getOrderDetailsStatus === 'success' && (
         <section className="flex flex-col">
-          <h1>Invoice #{order?.id}</h1>
+          <h1>Order #{order?.id}</h1>
+
+          <button
+            className="btn w-max bg-black text-white"
+            onClick={() => {
+              router.push(`/invoices/${order?.orderId}/edit`)
+            }}
+          >
+            edit invoice
+          </button>
           {/* <button
             className="btn btn-blue"
             onClick={() => {
@@ -301,21 +310,23 @@ const InvoiceOrderDetailsPage = () => {
                                 confirm payment
                               </button>
                             ) : (
-                              <button
-                                className="btn btn-blue"
-                                onClick={() => {
-                                  if (
-                                    confirm(
-                                      'Are you sure you want to unconfirm payment?'
+                              session?.user?.role === 'ADMIN' && (
+                                <button
+                                  className="btn btn-blue"
+                                  onClick={() => {
+                                    if (
+                                      confirm(
+                                        'Are you sure you want to unconfirm payment?'
+                                      )
                                     )
-                                  )
-                                    unconfirmPayment.mutate({
-                                      paymentId: payment?.id,
-                                    })
-                                }}
-                              >
-                                unconfirm payment
-                              </button>
+                                      unconfirmPayment.mutate({
+                                        paymentId: payment?.id,
+                                      })
+                                  }}
+                                >
+                                  unconfirm payment
+                                </button>
+                              )
                             )}
                           </td>
                         ) : (
@@ -445,14 +456,7 @@ const InvoiceOrderDetailsPage = () => {
             </div>
           </pre>
 
-          <button
-            className="btn w-max bg-black text-white"
-            onClick={() => {
-              router.push(`/invoices/${order?.id}/edit`)
-            }}
-          >
-            edit invoice
-          </button>
+          {/* at this point is when an invoice is created, the shipper has confirmed with the driver/staff that this is the order they want to send.  */}
           <ReactToPrint
             trigger={() => (
               <button className="btn btn-blue w-max">

@@ -93,22 +93,87 @@ export const staffApi = createProtectedRouter()
       }
     },
   })
-  .query('getDriverOrders', {
+  .query('getDriverOrdersAsAdmin', {
     input: z.object({
       driverId: z.string(),
+      pickupDate: z.string(),
     }),
     async resolve({ ctx, input }) {
       try {
+        const staffInfo = await ctx.prisma.user.findUnique({
+          where: {
+            id: input.driverId,
+          },
+          select: {
+            id: true,
+            role: true,
+            firstName: true,
+            lastName: true,
+          },
+        })
+        // console.log({ staffInfo })
+
+        const filterDate = new Date(input.pickupDate)
+        let filterDateplus1 = new Date(input.pickupDate)
+        filterDateplus1.setDate(filterDateplus1.getDate() + 1)
+
+        const pickupOrders = await ctx.prisma.order.findMany({
+          where: {
+            pickupDriverId: input.driverId,
+            pickupDate: {
+              gte: filterDate,
+              lt: filterDateplus1,
+            },
+          },
+          select: {
+            id: true,
+            orderId: true,
+            customer: true,
+            shipperAddress: {
+              select: {
+                address: true,
+                address2: true,
+                address3: true,
+              },
+            },
+            pickupDate: true,
+            pickupTime: true,
+          },
+        })
+
+        return { staffInfo: staffInfo, orders: pickupOrders }
+      } catch (error) {
+        console.log('error getting staff information', error)
+      }
+    },
+  })
+  .query('getDriverOrders', {
+    input: z.object({
+      driverId: z.string(),
+      pickupDate: z.string(),
+    }),
+    async resolve({ ctx, input }) {
+      try {
+        const filterDate = new Date(input.pickupDate)
+        let filterDateplus1 = new Date(input.pickupDate)
+        filterDateplus1.setDate(filterDateplus1.getDate() + 1)
         const orders = await ctx.prisma.order.findMany({
           where: {
             pickupDriverId: input.driverId,
             pickupDate: {
-              gte: new Date('2023-04-03'),
-              // lte: new Date('2023-04-03'),
+              gte: filterDate,
+              lt: filterDateplus1,
             },
           },
           include: {
             pickupDriver: true,
+            shipperAddress: true,
+            customer: {
+              select: {
+                firstName: true,
+                lastName: true,
+              },
+            },
           },
         })
 

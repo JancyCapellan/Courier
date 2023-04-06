@@ -298,6 +298,9 @@ export const invoiceApi = createProtectedRouter()
           // stripePaymentIntent: true,
         },
       })
+
+      // console.log({ order })
+
       if (order) {
         // changing timePlaced for orders into readable local values
         for (const key in order)
@@ -475,6 +478,8 @@ export const invoiceApi = createProtectedRouter()
       return confirmedPayment
     },
   })
+  // afterr the payment is confirmed customer balance and total balance paid are changed
+  // if payment is unconfirmed, amount paid is added back to customer balacne and total balance paid
   .mutation('unconfirmInvoicePayment', {
     input: z.object({
       paymentId: z.number(),
@@ -536,5 +541,39 @@ export const invoiceApi = createProtectedRouter()
       return deletedPayment
     },
   })
-// afterr the payment is confirmed customer balance and total balance paid are changed
-// if payment is unconfirmed, amount paid is added back to customer balacne and total balance paid
+  .mutation('updateRecieverAddress', {
+    input: z.object({
+      orderId: z.string(),
+      updatedAddress: z.object({
+        firstName: z.string(),
+        lastName: z.string(),
+        address: z.string(),
+        address2: z.string(),
+        address3: z.string(),
+        city: z.string(),
+        state: z.string(),
+        postalCode: z.number(),
+        country: z.string(),
+        cellphone: z.string(),
+        telephone: z.string(),
+      }),
+    }),
+    async resolve({ ctx, input }) {
+      try {
+        const updatedReciverAddress = await ctx.prisma.order.update({
+          where: {
+            orderId: input.orderId,
+          },
+          data: {
+            recieverAddress: {
+              update: input.updatedAddress,
+            },
+          },
+        })
+
+        return true
+      } catch (error) {
+        throw error
+      }
+    },
+  })

@@ -1,10 +1,11 @@
 import Layout from '@/components/Layout'
 import { trpc } from '@/utils/trpc'
 import { useSession } from 'next-auth/react'
-import React from 'react'
+import React, { useState } from 'react'
 import StaffTable from '@/components/pages/administration/StaffTable'
 import DateTimeFormat from '@/components/DateTimeFormat'
 import { useRouter } from 'next/router'
+import dayjs from 'dayjs'
 // driver logs into app, gets a list of orders for the day
 // DRIVER OPENS ORDER TO CONFIRM WITH CUSTOMER, CUSTOMER NEEDS TO ADD/REMOVE ITEMS, CONFIRM ORDER, PRINT INVOVICE RECEIPT WITH OVERALL DETAILS THEN PRINT A TAG FOR EACH PACKAGGE WITH INVOICE ID/ PAKCKAGE NUMBER / CONTENT
 
@@ -19,8 +20,13 @@ const DriverHome = () => {
   //   }
   // )
 
+  const [selectDate, setselectDate] = useState(dayjs().format('YYYY-MM-DD'))
+
   const { data: pickups, status: getPickupStatus } = trpc.useQuery(
-    ['staff.getDriverOrders', { driverId: session?.user?.id }],
+    [
+      'staff.getDriverOrders',
+      { driverId: session?.user?.id, pickupDate: selectDate },
+    ],
     {
       enabled: sessionStatus === 'authenticated',
       onSuccess: (data) => {
@@ -34,6 +40,21 @@ const DriverHome = () => {
 
   return (
     <>
+      <input
+        className="w-min"
+        type="date"
+        onChange={(e) => {
+          // console.log(e.target.value)
+          // let time = e
+          let date = e.target.value
+          // date = dayjs(date)
+          // console.log(date)
+          setselectDate(date)
+          // let time = e.target.value + ':00.000Z'
+          // setPotentialPickupDateTime(time)
+        }}
+        value={selectDate}
+      />
       {getPickupStatus === 'success' && (
         <section className="driverAccountPage">
           <h1>
@@ -89,7 +110,7 @@ const DriverHome = () => {
                         className="btn btn-blue"
                         onClick={() =>
                           router.push({
-                            pathname: `/invoices/${order?.id}`,
+                            pathname: `/invoices/${order?.orderId}`,
                           })
                         }
                       >

@@ -4,26 +4,32 @@ import Layout from '@/components/Layout'
 // import { useQuery } from 'react-query'
 import { trpc } from '@/utils/trpc'
 import DateTimeFormat from '@/components/DateTimeFormat'
+import dayjs from 'dayjs'
 
-const DriverAccountPage = () => {
+const DriverPickupListPage = () => {
   const router = useRouter()
   // const { staff } = router.query
   // console.log('staff page router: ', router)
-  const [staffId, setStaffId] = useState('')
+  const [driverId, setdriverId] = useState('')
+
+  const [selectDate, setselectDate] = useState(dayjs().format('YYYY-MM-DD'))
 
   // * avoid router not being hydratged during a rerender or during page refersh
   useEffect(() => {
     if (!router.isReady) return
 
-    setStaffId(router.query.staffId)
-  }, [router.isReady, router.query.staffId])
+    setdriverId(router.query.driverId)
+  }, [router.isReady, router.query.driverId])
 
-  const { data: staff, status: getStaffStatus } = trpc.useQuery(
-    ['staff.getUniqueStaff', { staffId: staffId }],
+  const { data: pickupList, status: getStaffStatus } = trpc.useQuery(
+    [
+      'staff.getDriverOrdersAsAdmin',
+      { driverId: driverId, pickupDate: selectDate },
+    ],
     {
-      enabled: staffId !== '',
+      enabled: driverId !== '' && selectDate !== null,
       onSuccess: (data) => {
-        // console.log('account page:', data)
+        // console.log({ data })
       },
       onError: (error) => {
         console.log('error fetching product types', error)
@@ -31,21 +37,38 @@ const DriverAccountPage = () => {
     }
   )
 
+  // let currentDate = dayjs().add(1, 'day').format('YYYY-MM-DD')
   return (
     <>
+      <input
+        className="w-min"
+        type="date"
+        onChange={(e) => {
+          // console.log(e.target.value)
+          // let time = e
+          let date = e.target.value
+          // date = dayjs(date)
+          // console.log(date)
+          setselectDate(date)
+          // let time = e.target.value + ':00.000Z'
+          // setPotentialPickupDateTime(time)
+        }}
+        value={selectDate}
+      />
       {getStaffStatus === 'success' && (
         <section className="driverAccountPage">
           <h1>
-            {`${staff?.role}`}: {staff?.firstName} {staff?.lastName}
+            {`${pickupList.staffInfo?.role}`}: {pickupList.staffInfo?.firstName}{' '}
+            {pickupList.staffInfo?.lastName}
           </h1>
           <button
             onClick={() =>
               router.push({
-                pathname: `/customers/${staff?.id}`,
+                pathname: `/customers/${pickupList.staffInfo?.id}`,
               })
             }
           >
-            Edit {`${staff?.role}`} Account information
+            Edit {`${pickupList.staffInfo?.role}`} Account information
           </button>
 
           <h2>pickups</h2>
@@ -61,7 +84,7 @@ const DriverAccountPage = () => {
               </tr>
             </thead>
             <tbody>
-              {staff?.pickups?.map((order) => {
+              {pickupList?.orders.map((order) => {
                 return (
                   <tr key={order.id}>
                     <td>{order.id}</td>
@@ -88,7 +111,7 @@ const DriverAccountPage = () => {
                         className="btn btn-blue"
                         onClick={() =>
                           router.push({
-                            pathname: `/invoices/${order?.id}`,
+                            pathname: `/invoices/${order?.orderId}`,
                           })
                         }
                       >
@@ -106,8 +129,8 @@ const DriverAccountPage = () => {
   )
 }
 
-export default DriverAccountPage
+export default DriverPickupListPage
 
-DriverAccountPage.getLayout = function getLayout(page) {
+DriverPickupListPage.getLayout = function getLayout(page) {
   return <Layout>{page}</Layout>
 }

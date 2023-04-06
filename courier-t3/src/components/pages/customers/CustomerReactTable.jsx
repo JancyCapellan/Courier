@@ -20,7 +20,7 @@ import RegistrationFormModal from '../../RegistrationFormModal'
 import { trpc } from '@/utils/trpc'
 import { GlobalFilter } from '@/components/Tables/tableFilters'
 
-let defaultPageSize = 60
+let defaultPageSize = 55
 const FancyTable = ({ columns }) => {
   const router = useRouter()
   const [queryPageIndex, setQueryPageIndex] = React.useState(0)

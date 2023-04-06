@@ -182,6 +182,7 @@ model OrderRecieverAddress {
   telephone  String?
 }
 
+// every order item needs individual order locations because they will each have tags, this means that each item might need to be treated as an unique item, cons is that this table will exponentially grow in size so a bigint id may be necessary with its cons of more space usuage, this some how seems wrong
 model OrderItem {
   id        Int     @id @default(autoincrement())
   orderId   Int
