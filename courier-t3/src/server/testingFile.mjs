@@ -11,20 +11,82 @@ const prisma = new PrismaClient()
 main()
 
 async function main() {
-  const randomCustomers =
-    await prisma.$queryRaw`SELECT * FROM "User" ORDER BY RANDOM() LIMIT 10;`
-  console.log({ randomCustomers })
+  // const randomCustomers =
+  //   await prisma.$queryRaw`SELECT * FROM "User" ORDER BY RANDOM() LIMIT 10;`
+  // console.log({ randomCustomers })
 
-  let customerIds = []
+  // let customerIds = []
 
-  randomCustomers.forEach((customer) => {
-    customerIds.push(customer.id)
+  // randomCustomers.forEach((customer) => {
+  //   customerIds.push(customer.id)
+  // })
+  // const createCustomersOrders = await prisma.order.createMany({
+  //   data: {},
+  // })
+
+  const orders = await prisma.order.findMany({
+    include: {
+      items: true,
+      shipperAddress: true,
+      recieverAddress: true,
+    },
   })
-  const createCustomersOrders = await prisma.order.createMany({
-    data: {},
-  })
+
+  console.log(orders[0])
 }
 
+const testOrder = {
+  id: 1,
+  orderId: '16ffd76e-fd50-436e-8ada-cbcd0df2cfdf',
+  customerUserId: 'clg2nuhr900039kxen19zrcus',
+  creatorUserId: 'clg2nuhr800019kxemfcby3dw',
+  timePlaced: '2023-04-04T19:39:15.160Z',
+  currentBalance: null,
+  totalBalancePaid: null,
+  statusMessage: 'awaiting pickup',
+  totalCost: 39500,
+  paymentStatus: 'PENDING PAYMENT',
+  pickupDriverId: 'clg2nuhr900049kxewy1r6e3w',
+  pickupDate: '2023-04-06T04:00:00.000Z',
+  pickupTime: '2:45 PM',
+  pickupZoneId: null,
+  containerId: null,
+  items: [
+    { id: 1, orderId: 1, quantity: 1, productId: 2n },
+    { id: 2, orderId: 1, quantity: 1, productId: 1n },
+    { id: 3, orderId: 1, quantity: 3, productId: 5n },
+  ],
+  shipperAddress: {
+    id: 1,
+    firstName: 'Customer',
+    lastName: 'Tester',
+    orderId: 1,
+    address: '314 East 100st apt 6f',
+    address2: '',
+    address3: '',
+    city: 'New York City',
+    state: 'NY',
+    postalCode: 10029,
+    country: 'USA',
+    cellphone: '3475209701',
+    telephone: '',
+  },
+  recieverAddress: {
+    id: 1,
+    firstName: 'juan',
+    lastName: 'castro',
+    orderId: 1,
+    address: 'Kilómetro 3 ½, 1, Santiago De Los Caballeros',
+    address2: '',
+    address3: '',
+    city: 'Santiago De Los Caballeros',
+    state: 'santiago',
+    postalCode: 51000,
+    country: 'DR',
+    cellphone: '8092428872',
+    telephone: '',
+  },
+}
 // function main() {
 //   dayjs.extend(utc)
 //   dayjs.extend(localizedFormat)

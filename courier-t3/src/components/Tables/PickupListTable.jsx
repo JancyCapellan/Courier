@@ -130,7 +130,7 @@ const EditableCell = ({
 }
 
 // PICKUP LIST / INVOICE table
-let defaultPageSize = 20
+let defaultPageSize = 60
 const PickupListTable = () => {
   const [multiSelectPickupDriver, setMultiSelectPickupDriver] =
     React.useState('')
@@ -420,8 +420,15 @@ const PickupListTable = () => {
         },
       },
       {
-        Header: 'Balance',
-        accessor: 'balance',
+        Header: 'Balance paid',
+        accessor: 'totalBalancePaid',
+        Cell: ({ row: { original } }) => {
+          return (
+            <>
+              ${(Number(original?.totalBalancePaid) / 100).toLocaleString('en')}
+            </>
+          )
+        },
       },
       {
         Header: 'Payment',
@@ -448,7 +455,7 @@ const PickupListTable = () => {
             <button
               onClick={() =>
                 router.push({
-                  pathname: `/invoices/${original.id}`,
+                  pathname: `/invoices/${original.orderId}`,
                 })
               }
             >
@@ -642,7 +649,7 @@ const PickupListTable = () => {
             setPageSize(Number(e.target.value))
           }}
         >
-          {[defaultPageSize, 5, 10, 40, 60, 100].map((pageSize) => (
+          {[defaultPageSize, 5, 10, 40, 65, 100].map((pageSize) => (
             <option key={pageSize} value={pageSize}>
               show per page: {pageSize}
             </option>

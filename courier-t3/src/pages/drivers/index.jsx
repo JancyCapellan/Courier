@@ -42,11 +42,11 @@ const DriverHome = () => {
           <button
             onClick={() =>
               router.push({
-                pathname: `/customers/${pickups?.id}`,
+                pathname: `/customers/${session.user?.id}`,
               })
             }
           >
-            Edit {`${session?.role}`} Account information
+            Edit {`${session?.user?.role}`} Account information
           </button>
 
           <h2>pickups</h2>
@@ -55,7 +55,7 @@ const DriverHome = () => {
             <thead>
               <tr>
                 <th>order number</th>
-                <th> customer name</th>
+                <th>customer name</th>
                 <th>customer address</th>
                 <th>pickup time</th>
                 <th>utlitiy</th>
@@ -73,9 +73,9 @@ const DriverHome = () => {
 
                     <td>
                       <pre>
-                        {order?.shipperAddress.address}
-                        {order?.shipperAddress.address2}
-                        {order?.shipperAddress.address3}
+                        {order?.shipperAddress?.address}
+                        {order?.shipperAddress?.address2}
+                        {order?.shipperAddress?.address3}
                       </pre>
                     </td>
                     <td>

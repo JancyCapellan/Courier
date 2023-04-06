@@ -1,8 +1,8 @@
 import React from 'react'
 import { HiOutlineUserGroup, HiOutlineDocumentReport } from 'react-icons/hi'
 import { FiSettings } from 'react-icons/fi'
-import { GrGroup } from 'react-icons/gr'
-import { FaFileInvoiceDollar, FaWarehouse } from 'react-icons/fa'
+import { GrGroup, GrUserManager } from 'react-icons/gr'
+import { FaFileInvoiceDollar, FaPeopleCarry, FaWarehouse } from 'react-icons/fa'
 import { MdAdminPanelSettings } from 'react-icons/md'
 import { useSession } from 'next-auth/react'
 import { TbFileInvoice } from 'react-icons/tb'
@@ -92,7 +92,7 @@ export const routes = {
   employees: {
     title: 'employees',
     path: '/administration/employees',
-    icon: <HiOutlineUserGroup />,
+    icon: <FaPeopleCarry />,
     cName: 'nav-listitem',
   },
   reports: {
@@ -109,13 +109,13 @@ export const sidebarTypes = {
   CUSTOMER: [routes.account, routes.createOrder],
   ADMIN: [
     routes.administration,
-    routes.employees,
-    routes.account,
     routes.customers,
+    routes.employees,
     routes.invoices,
     routes.warehouse,
     // routes.crm,
     routes.reports,
+    routes.account,
   ],
   All: [routes],
 }

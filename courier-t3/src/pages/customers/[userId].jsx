@@ -27,10 +27,12 @@ const CustomerAccountPage = () => {
 
   // console.log(currentCustomer)
 
-  const { data: user, status: getUserAccountInfoStatus } = trpc.useQuery([
-    'user.getUserAccountInfo',
-    { userId: userId },
-  ])
+  const { data: user, status: getUserAccountInfoStatus } = trpc.useQuery(
+    ['user.getUserAccountInfo', { userId: userId }],
+    {
+      refetchOnMount: 'always',
+    }
+  )
 
   //    try {
   //    const data = await queryClient.fetchQuery(queryKey, queryFn)

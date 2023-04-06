@@ -117,7 +117,7 @@ export const authOptions: NextAuthOptions = {
       // let test = { ...session.user, ...token.user }
       // console.log("SESSION ", session, "TOKEN", token);
 
-      console.log('session', token, session)
+      // console.log('session', token, session)
 
       // if (new Date(session.expires).getTime() < new Date().getTime()) {
       //   console.log('session past expiration')

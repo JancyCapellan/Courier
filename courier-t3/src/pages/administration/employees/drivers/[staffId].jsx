@@ -54,14 +54,14 @@ const DriverAccountPage = () => {
             <thead>
               <tr>
                 <th>order number</th>
-                <th> customer name</th>
+                <th>customer name</th>
                 <th>customer address</th>
                 <th>pickup time</th>
                 <th>utlitiy</th>
               </tr>
             </thead>
             <tbody>
-              {staff?.pickups.map((order) => {
+              {staff?.pickups?.map((order) => {
                 return (
                   <tr key={order.id}>
                     <td>{order.id}</td>
@@ -71,12 +71,17 @@ const DriverAccountPage = () => {
                     </td>
 
                     <td>
-                      <p>{order?.shipperAddress.address}</p>
-                      <p>{order?.shipperAddress.address2}</p>
-                      <p>{order?.shipperAddress.address3}</p>
+                      <pre>
+                        {order?.shipperAddress?.address}
+                        {order?.shipperAddress?.address2}
+                        {order?.shipperAddress?.address3}
+                      </pre>
                     </td>
                     <td>
-                      <DateTimeFormat pickupDatetime={order?.pickupDatetime} />
+                      <DateTimeFormat
+                        pickupDate={order?.pickupDate}
+                        pickupTime={order?.pickupTime}
+                      />
                     </td>
                     <td>
                       <button

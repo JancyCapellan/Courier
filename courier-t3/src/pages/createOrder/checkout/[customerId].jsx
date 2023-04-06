@@ -57,7 +57,7 @@ const Checkout = () => {
       onSuccess: (data) => {
         // clearCartById.mutate({ cartId: cart?.cartId })
 
-        router.push(`/invoices/${data?.id}`)
+        router.push(`/invoices/${data?.orderId}`)
         // console.log('HERREEEE', data)
         // console.log(
         //   'pending order created, clearing cart',
@@ -281,94 +281,6 @@ const Checkout = () => {
           <Cart />
         </section>
       )}
-
-      {/* <div className="flex flex-row"> */}
-      {/* <p>proceed to payment</p> */}
-      {/* make sessions and stuff on databasem, just send the link to the stripe chkout page  */}
-      {/* <button
-          className="btn btn-blue"
-          onClick={() => {
-            if (potentialPickupDateTime === null) {
-              alert('please choose pickup time')
-              return
-            }
-            // note: Using the asPath field may lead to a mismatch between client and server if the page is rendered using server-side rendering or automatic static optimization. Avoid using asPath until the isReady field is true.
-            if (confirm('Press OK if order is ready ')) {
-              if (router.isReady) {
-                console.log('WTF')
-                createCheckoutSession.mutate({
-                  userId: session?.user?.id,
-                  customerId: router.query.customerId,
-                  redirectUrl: router.asPath,
-                  customerEmail: customerEmail.email,
-                })
-              } else {
-                // ? cross platofrm issue?
-                alert('try again, router wasnt ready')
-              }
-            }
-          }}
-        >
-          stripe checkout
-        </button>
-
-        <p>partial payments? click here and enter amount to be paid now: </p> */}
-      {/* <button
-          className="btn btn-blue"
-          onClick={() => {
-            if (potentialPickupDateTime === null) {
-              alert('please choose pickup time')
-              return
-            }
-
-            if (confirm('Press OK if order is ready '))
-              createPendingOrderWrapper('CASH')
-          }}
-        >
-          cash
-        </button>
-        <button
-          className="btn btn-blue"
-          onClick={() => {
-            if (potentialPickupDateTime === null) {
-              alert('please choose pickup time')
-              return
-            }
-            if (confirm('Press OK if order is ready '))
-              createPendingOrderWrapper('CHECK')
-          }}
-        >
-          check
-        </button>
-
-        <button
-          className="btn btn-blue"
-          onClick={() => {
-            if (potentialPickupDateTime === null) {
-              alert('please choose pickup time')
-              return
-            }
-            if (confirm('Press OK if order is ready '))
-              createPendingOrderWrapper('QUICKPAY')
-          }}
-        >
-          quickpay
-        </button>
-
-        <button
-          className="btn btn-blue"
-          onClick={() => {
-            if (potentialPickupDateTime === null) {
-              alert('please choose pickup time')
-              return
-            }
-            if (confirm('Press OK if order is ready '))
-              createPendingOrderWrapper('QUICKPAY')
-          }}
-        >
-          quickpay
-        </button> */}
-      {/* </div> */}
 
       {!createPendingOrder?.isSuccess && (
         <button

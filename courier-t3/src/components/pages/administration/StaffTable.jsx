@@ -78,7 +78,7 @@ const StaffTable = () => {
               className="btn btn-blue"
               onClick={() => {
                 router.push({
-                  pathname: `/administration/${original.id}`,
+                  pathname: `/administration/employees/drivers/${original.id}`,
                 })
               }}
             >

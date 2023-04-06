@@ -104,7 +104,7 @@ export const staffApi = createProtectedRouter()
             pickupDriverId: input.driverId,
             pickupDate: {
               gte: new Date('2023-04-03'),
-              lte: new Date('2023-04-03'),
+              // lte: new Date('2023-04-03'),
             },
           },
           include: {

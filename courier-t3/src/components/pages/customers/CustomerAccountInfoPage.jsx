@@ -92,44 +92,44 @@ export const CustomerAccountInfoPage = ({ currentUser }) => {
             <tr className="text-red-600">
               <th className="text-red-600">Current Balance</th>
               <td>
-                ${(currentUser.currentBalance / 100).toLocaleString('en')}
+                ${(currentUser?.currentBalance / 100).toLocaleString('en')}
               </td>
             </tr>
             <tr>
               <th>ID</th>
-              <td>{currentUser.id}</td>
+              <td>{currentUser?.id}</td>
             </tr>
             <tr>
               <th>First Name</th>
-              <td>{currentUser.firstName}</td>
+              <td>{currentUser?.firstName}</td>
             </tr>
             <tr>
               <th>Middle Name</th>
-              <td>{currentUser.middleName}</td>
+              <td>{currentUser?.middleName}</td>
             </tr>
             <tr>
               <th>Last Name</th>
-              <td>{currentUser.lastName}</td>
+              <td>{currentUser?.lastName}</td>
             </tr>
             <tr>
               <th>Email</th>
-              <td>{currentUser.email}</td>
+              <td>{currentUser?.email}</td>
             </tr>
             <tr>
               <th>Role</th>
-              <td>{currentUser.role}</td>
+              <td>{currentUser?.role}</td>
             </tr>
             <tr>
               <th>branch</th>
-              <td>{currentUser.branchName}</td>
+              <td>{currentUser?.branchName}</td>
             </tr>
             <tr>
               <th>Preferred Language</th>
-              <td>{currentUser.preferredLanguage}</td>
+              <td>{currentUser?.preferredLanguage}</td>
             </tr>
             <tr>
               <th>License ID</th>
-              <td>{currentUser.licenseId}</td>
+              <td>{currentUser?.licenseId}</td>
             </tr>
             {/* <tr>
               <th>Time of Account Creation</th>

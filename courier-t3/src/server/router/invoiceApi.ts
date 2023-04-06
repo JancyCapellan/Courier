@@ -214,12 +214,12 @@ export const invoiceApi = createProtectedRouter()
   })
   .query('getOrderById', {
     input: z.object({
-      orderId: z.number(),
+      orderId: z.string(),
     }),
     async resolve({ ctx, input }) {
       const order = await ctx.prisma.order.findUnique({
         where: {
-          id: input.orderId,
+          orderId: input.orderId,
         },
         select: {
           id: true,
@@ -284,6 +284,9 @@ export const invoiceApi = createProtectedRouter()
               message: true,
             },
           },
+          // currentBalance: true,
+          orderId: true,
+          totalBalancePaid: true,
           totalCost: true,
           timePlaced: true,
           pickupDate: true,
@@ -313,3 +316,225 @@ export const invoiceApi = createProtectedRouter()
       }
     },
   })
+  .query('getInvoicePayments', {
+    input: z.object({
+      orderId: z.string(),
+    }),
+    async resolve({ ctx, input }) {
+      const orderPayments = await ctx.prisma.orderPayments.findMany({
+        where: {
+          orderId: input.orderId,
+        },
+      })
+
+      // console.log({ orderPayments })
+
+      return orderPayments
+    },
+  })
+  .mutation('deleteInvoicePayment', {
+    input: z.object({
+      paymentId: z.number(),
+    }),
+    async resolve({ ctx, input }) {
+      const deletedPayment = await ctx.prisma.orderPayments.delete({
+        where: {
+          id: input.paymentId,
+        },
+      })
+
+      console.log({ deletedPayment })
+
+      if (!!deletedPayment?.confirmed) {
+        const getOrderBalance = await ctx.prisma.order.findUniqueOrThrow({
+          where: {
+            orderId: deletedPayment.orderId,
+          },
+          select: {
+            totalBalancePaid: true,
+          },
+        })
+
+        const updatedInvoiceTotalBalancePaid = await ctx.prisma.order.update({
+          where: {
+            orderId: deletedPayment.orderId,
+          },
+          data: {
+            totalBalancePaid:
+              getOrderBalance?.totalBalancePaid! - deletedPayment.amountPaid,
+          },
+        })
+
+        // console.log({ updatedInvoiceTotalBalancePaid })
+
+        const getCustomerBalance = await ctx.prisma.user.findUniqueOrThrow({
+          where: {
+            id: updatedInvoiceTotalBalancePaid.customerUserId,
+          },
+          select: {
+            currentBalance: true,
+          },
+        })
+
+        // console.log({ getCustomerBalance })
+
+        const updatedCustomerBalance = await ctx.prisma.user.update({
+          where: {
+            id: updatedInvoiceTotalBalancePaid.customerUserId,
+          },
+          data: {
+            currentBalance:
+              getCustomerBalance?.currentBalance! + deletedPayment.amountPaid,
+          },
+        })
+      }
+
+      return deletedPayment
+    },
+  })
+  .mutation('createInvoicePayment', {
+    input: z.object({
+      orderId: z.string(),
+      amountPaid: z.number(),
+      paymentType: z.string(),
+    }),
+    async resolve({ ctx, input }) {
+      const createdPayment = await ctx.prisma.orderPayments.create({
+        data: {
+          amountPaid: input.amountPaid * 100, //keep in usd cents,
+          paymentType: input.paymentType,
+          order: {
+            connect: {
+              orderId: input.orderId,
+            },
+          },
+        },
+      })
+
+      return createdPayment
+    },
+  })
+  .mutation('confirmInvoicePayment', {
+    input: z.object({
+      paymentId: z.number(),
+    }),
+    async resolve({ ctx, input }) {
+      const confirmedPayment = await ctx.prisma.orderPayments.update({
+        where: {
+          id: input.paymentId,
+        },
+        data: {
+          confirmed: true,
+        },
+      })
+
+      const getOrderBalance = await ctx.prisma.order.findUniqueOrThrow({
+        where: {
+          orderId: confirmedPayment.orderId,
+        },
+        select: {
+          totalBalancePaid: true,
+        },
+      })
+
+      const updatedInvoiceTotalBalancePaid = await ctx.prisma.order.update({
+        where: {
+          orderId: confirmedPayment.orderId,
+        },
+        data: {
+          totalBalancePaid:
+            getOrderBalance?.totalBalancePaid! + confirmedPayment.amountPaid,
+        },
+      })
+
+      console.log({ updatedInvoiceTotalBalancePaid })
+
+      const getCustomerBalance = await ctx.prisma.user.findUniqueOrThrow({
+        where: {
+          id: updatedInvoiceTotalBalancePaid.customerUserId,
+        },
+        select: {
+          currentBalance: true,
+        },
+      })
+
+      console.log({ getCustomerBalance })
+
+      const updatedCustomerBalance = await ctx.prisma.user.update({
+        where: {
+          id: updatedInvoiceTotalBalancePaid.customerUserId,
+        },
+        data: {
+          currentBalance:
+            getCustomerBalance?.currentBalance! - confirmedPayment.amountPaid,
+        },
+      })
+
+      console.log({ updatedCustomerBalance })
+
+      return confirmedPayment
+    },
+  })
+  .mutation('unconfirmInvoicePayment', {
+    input: z.object({
+      paymentId: z.number(),
+    }),
+    async resolve({ ctx, input }) {
+      const deletedPayment = await ctx.prisma.orderPayments.update({
+        where: {
+          id: input.paymentId,
+        },
+        data: {
+          confirmed: false,
+        },
+      })
+
+      const getOrderBalance = await ctx.prisma.order.findUniqueOrThrow({
+        where: {
+          orderId: deletedPayment.orderId,
+        },
+        select: {
+          totalBalancePaid: true,
+        },
+      })
+
+      const updatedInvoiceTotalBalancePaid = await ctx.prisma.order.update({
+        where: {
+          orderId: deletedPayment.orderId,
+        },
+        data: {
+          totalBalancePaid:
+            getOrderBalance?.totalBalancePaid! - deletedPayment.amountPaid,
+        },
+      })
+
+      console.log({ updatedInvoiceTotalBalancePaid })
+
+      const getCustomerBalance = await ctx.prisma.user.findUniqueOrThrow({
+        where: {
+          id: updatedInvoiceTotalBalancePaid.customerUserId,
+        },
+        select: {
+          currentBalance: true,
+        },
+      })
+
+      console.log({ getCustomerBalance })
+
+      const updatedCustomerBalance = await ctx.prisma.user.update({
+        where: {
+          id: updatedInvoiceTotalBalancePaid.customerUserId,
+        },
+        data: {
+          currentBalance:
+            getCustomerBalance?.currentBalance! + deletedPayment.amountPaid,
+        },
+      })
+
+      console.log({ updatedCustomerBalance })
+
+      return deletedPayment
+    },
+  })
+// afterr the payment is confirmed customer balance and total balance paid are changed
+// if payment is unconfirmed, amount paid is added back to customer balacne and total balance paid

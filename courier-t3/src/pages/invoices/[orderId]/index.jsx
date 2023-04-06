@@ -10,14 +10,20 @@ import dayjs from 'dayjs'
 import ReactToPrint from 'react-to-print'
 import { QRCodeSVG } from 'qrcode.react'
 import ModalContainer from '@/components/HOC/ModalContainer'
+import InvoicePaymentForm from '@/components/pages/invoices/InvoicePaymentForm'
+import { useSession } from 'next-auth/react'
 
-const InvoicePage = () => {
+const InvoiceOrderDetailsPage = () => {
   const router = useRouter()
   const { orderId } = router.query
 
   const [showEditPickupDatetime, setshowEditPickupDatetime] = useState(false)
+  const [showPaymentModal, setShowPaymentModal] = useState(false)
+  const [paymentType, setPaymentType] = useState('')
 
   let currentDate = dayjs().add(1, 'day').format('YYYY-MM-DD')
+
+  const { data: session, status: sessionStatus } = useSession()
 
   const invoiceReceiptRef = useRef()
   // note: finds invoice in local database
@@ -25,7 +31,7 @@ const InvoicePage = () => {
     data: order,
     status: getOrderDetailsStatus,
     refetch: refetchOrder,
-  } = trpc.useQuery(['invoice.getOrderById', { orderId: parseInt(orderId) }], {
+  } = trpc.useQuery(['invoice.getOrderById', { orderId: orderId }], {
     refetchOnMount: 'always',
     enabled: orderId !== null,
   })
@@ -35,6 +41,42 @@ const InvoicePage = () => {
     ['stripe.getStripeCheckoutDetailsFromStripe'],
     {
       onSuccess: () => refetchOrder(),
+    }
+  )
+
+  const {
+    data: invoicePayments,
+    status: invoicePaymentStatus,
+    refetch: refetchInvoicePayments,
+  } = trpc.useQuery(['invoice.getInvoicePayments', { orderId: orderId }], {
+    enabled: !!orderId,
+  })
+
+  //only when invoice payment is not confirmed
+  const deleteInvoicePayment = trpc.useMutation(
+    ['invoice.deleteInvoicePayment'],
+    {
+      onSuccess: () => {
+        // refetchOrder()
+        refetchInvoicePayments()
+      },
+    }
+  )
+
+  const confirmPayment = trpc.useMutation(['invoice.confirmInvoicePayment'], {
+    onSuccess: () => {
+      refetchOrder()
+      refetchInvoicePayments()
+    },
+  })
+
+  const unconfirmPayment = trpc.useMutation(
+    ['invoice.unconfirmInvoicePayment'],
+    {
+      onSuccess: () => {
+        refetchOrder()
+        refetchInvoicePayments()
+      },
     }
   )
 
@@ -52,8 +94,11 @@ const InvoicePage = () => {
 
   if (getOrderDetailsStatus === 'error') return <div>error</div>
 
-  if (getOrderDetailsStatus === 'loading') return <div>loading</div>
+  if (getOrderDetailsStatus === 'loading' || sessionStatus === 'loading')
+    return <div>loading</div>
 
+  let totalBalanceRemaining =
+    order?.totalCost / 100 - order?.totalBalancePaid / 100
   return (
     <>
       {getOrderDetailsStatus === 'success' && (
@@ -117,6 +162,176 @@ const InvoicePage = () => {
             <div>Stripe PaymentIntentId: {order?.stripePaymentIntent}</div>
           )}
 
+          {/* // ? TODO while paymentStatus is not complete/finish show payment options */}
+          <div>
+            <h3 className="font-bold underline">PAYMENTS</h3>
+            <small>
+              you can make multiple payments if needed, just choose the correct
+              option
+            </small>
+            <div>
+              <p className=" text-blue-400">
+                total cost: ${(order?.totalCost / 100).toLocaleString('en')}
+              </p>
+              <p className="text-orange-500">
+                total Paid: $
+                {(order?.totalBalancePaid / 100).toLocaleString('en')}
+              </p>
+              <p className="text-red-600">
+                remaining balance: ${totalBalanceRemaining.toLocaleString('en')}
+              </p>
+              <button
+                className="btn bg-red-500"
+                onClick={() => {
+                  if (confirm('Confirm Invoice has been completed paid')) {
+                  }
+                }}
+              >
+                Confirm Invoice Paid
+              </button>
+              {/* { if (totalBalanceRemaining === 0) <button></button> } */}
+            </div>
+
+            <div className="flex flex-row">
+              {/* customer can choose, but driver/staff must confirm, staff in office always confirm payments */}
+              <button
+                className="btn btn-blue"
+                onClick={() => {
+                  setPaymentType('cash')
+                  setShowPaymentModal(true)
+                }}
+              >
+                Cash
+              </button>
+              <button
+                className="btn btn-blue"
+                onClick={() => {
+                  setPaymentType('check')
+                  setShowPaymentModal(true)
+                }}
+              >
+                check
+              </button>
+              <button className="btn btn-blue">Quickpay</button>
+              {/* if customer doesnt want stripe and straight card they can choose card and call to pay */}
+              <button className="btn btn-blue">Card</button>
+              <button className="btn btn-blue">Stripe</button>
+              <button className="btn btn-blue">Bank Transfer</button>
+            </div>
+          </div>
+          <ModalContainer
+            show={showPaymentModal}
+            handleClose={() => setShowPaymentModal(false)}
+          >
+            <InvoicePaymentForm
+              orderId={orderId}
+              paymentType={paymentType}
+              closeModal={() => setShowPaymentModal(false)}
+              refetchPayments={refetchInvoicePayments}
+            />
+          </ModalContainer>
+
+          {/* payments table, paymentid, type, amount paid */}
+          <div>
+            {invoicePaymentStatus === 'success' ? (
+              <table className="w-max">
+                <caption>Payments</caption>
+                <thead>
+                  <tr>
+                    <th>id</th>
+                    <th>type</th>
+                    <th>paid</th>
+                    <th>confirm</th>
+                    <th>utility</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {invoicePayments.map((payment) => {
+                    return (
+                      <tr key={payment?.id}>
+                        <td>{payment?.id}</td>
+                        <td>{payment?.paymentType}</td>
+                        <td>
+                          ${(payment?.amountPaid / 100).toLocaleString('en')}
+                        </td>
+                        <td>{!!!payment?.confirmed ? 'false' : 'true'}</td>
+                        {/* payments can be delete if not confirmed and invoice is also not completed/ finalized */}
+                        {order?.paymentStatus !== 'PAID' ? (
+                          <td className="flex flex-row gap-1">
+                            {!!!payment?.confirmed ? (
+                              <>
+                                {' '}
+                                <button
+                                  className="btn btn-blue"
+                                  onClick={() => {
+                                    if (
+                                      confirm(
+                                        'Are you sure you want to delete payment?'
+                                      )
+                                    ) {
+                                      deleteInvoicePayment.mutate({
+                                        paymentId: payment?.id,
+                                      })
+                                    }
+                                  }}
+                                >
+                                  delete payment
+                                </button>
+                              </>
+                            ) : (
+                              <></>
+                            )}
+
+                            {(session?.user?.role !== 'STAFF' ||
+                              session?.user?.role !== 'ADMIN') &&
+                            !!!payment?.confirmed ? (
+                              <button
+                                className="btn btn-blue"
+                                onClick={() => {
+                                  if (
+                                    confirm(
+                                      'Are you sure you want to confirm payment?'
+                                    )
+                                  )
+                                    confirmPayment.mutate({
+                                      paymentId: payment?.id,
+                                    })
+                                }}
+                              >
+                                confirm payment
+                              </button>
+                            ) : (
+                              <button
+                                className="btn btn-blue"
+                                onClick={() => {
+                                  if (
+                                    confirm(
+                                      'Are you sure you want to unconfirm payment?'
+                                    )
+                                  )
+                                    unconfirmPayment.mutate({
+                                      paymentId: payment?.id,
+                                    })
+                                }}
+                              >
+                                unconfirm payment
+                              </button>
+                            )}
+                          </td>
+                        ) : (
+                          <></>
+                        )}
+                      </tr>
+                    )
+                  })}
+                </tbody>
+              </table>
+            ) : (
+              <></>
+            )}
+          </div>
+
+          {/* invoice details */}
           <pre>
             {'\n'}time ordered: {`${order?.timePlaced}`}
             {'\n'}
@@ -271,7 +486,7 @@ const InvoicePage = () => {
                 </pre>
               </div>
               <h2 className="text-center text-lg font-bold underline">
-                OrderID: {order?.id}
+                OrderID: {order?.orderId}
               </h2>
               <p>
                 Pickup Date: {dayjs(order?.pickupDatetime).format('MM/DD/YYYY')}
@@ -350,7 +565,7 @@ const InvoicePage = () => {
                   </tbody>
                 </table>
                 <QRCodeSVG
-                  value={`OrderID:${order?.id}\nSender:${
+                  value={`OrderID:${order?.orderId}\nSender:${
                     order?.customer?.firstName
                   } ${order?.customer?.lastName}\n  Country: ${
                     order?.shipperAddress?.country
@@ -400,8 +615,8 @@ const InvoicePage = () => {
   )
 }
 
-export default InvoicePage
+export default InvoiceOrderDetailsPage
 
-InvoicePage.getLayout = function getLayout(page) {
+InvoiceOrderDetailsPage.getLayout = function getLayout(page) {
   return <Layout>{page}</Layout>
 }

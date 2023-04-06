@@ -87,7 +87,7 @@ model Order {
   creatorUserId  String
   creatorUser    User     @relation("creatorUser", fields: [creatorUserId], references: [id])
   timePlaced     DateTime @default(now()) //UTC TIME 4 hours ahead of EST time // ? TODO change to update from client side event using localtime. so that in the database the time you see is in the same timezone as the pickupTime, which is in gmt (utc+4000)
-  currentBalance Int?
+  // currentBalance Int?
   totalBalancePaid Int?
   orderPayments  orderPayments[]
   statusMessage   String
@@ -112,7 +112,7 @@ model Order {
   // stripeReceiptUrl    String?
   // ? instead of just ids, going to add the entire items of stripepayments to the database to backup the data
   // DONE TODO: REMOVE, no longer needed, products now kept locally istead of using stripe products
-  // stripeCheckout Json? @db.JsonB // stripe checkout.session.completed event object that includes the paymentintent id and stripe checkout Id need to query stripe for the line items, that i add locally from the app to the database because stripe is also getting the line items from the app. 
+  // stripeCheckout Json? @db.JsonB // stripe checkout.session.completed event object that includes the paymentintent id and stripe checkout Id need to query stripe for the line items, that i add locally from the app to the database because stripe is also getting the line items from the app.
   // stripePaymentIntent Json? @db.JsonB // not needed since checkout object has necessary information
   // orderLocations   orderLocations? @relation(fields: [orderLocationsId], references: [id])
   // orderLocationsId Int?
@@ -122,12 +122,13 @@ model Order {
 
 model orderPayments {
   id               Int     @id @default(autoincrement())
-  orderId          Int
-  order            Order   @relation(fields: [orderId], references: [id], onDelete: Restrict)
+  orderId          String
+  order            Order   @relation(fields: [orderId], references: [orderId], onDelete: Restrict)
+  confirmed   Boolean? @default(false)
   paymentType      String // set at checkout //stripe webhooks can change this as necessary
   amountPaid       Int
   receiptImageLink String?
-  paymentId        Int
+  paymentId        Int?
   stripeCheckoutUrl String?
   stripeCheckoutId  String?     @unique //need stripe informmation to connect order to relevent stripe checkout session, with this id i can query specific orders when updating with information from stripe checkout
   stripePaymentIntent String? @unique

@@ -141,7 +141,7 @@ const Sidebar = ({ closeSidebar, setCloseSidebar }) => {
                     {/* order link needed a different onclick handler */}
                     {item.title === 'Order' ? (
                       <Link href={item.path} passHref={true}>
-                        <div
+                        <a
                           onClick={() =>
                             item.title === 'Order' && //maybe a way to remove basically the same link component
                             setCurrentCustomer(session.user)
@@ -154,12 +154,12 @@ const Sidebar = ({ closeSidebar, setCloseSidebar }) => {
                           <div className={` ${closeSidebar ? 'hidden' : ''}`}>
                             {item.title}
                           </div>
-                        </div>
+                        </a>
                       </Link>
                     ) : (
                       // All links
                       <Link href={item.path} passHref={true}>
-                        <div className="sidebar-link w-min gap-3">
+                        <a className="sidebar-link w-min gap-3">
                           <div className={` ${closeSidebar ? '' : ''}`}>
                             {item.icon}
                           </div>
@@ -171,7 +171,7 @@ const Sidebar = ({ closeSidebar, setCloseSidebar }) => {
                               {item.title}
                             </div>
                           )}
-                        </div>
+                        </a>
                       </Link>
                     )}
                   </li>

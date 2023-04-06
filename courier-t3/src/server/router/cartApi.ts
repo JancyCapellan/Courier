@@ -973,7 +973,7 @@ export const cartApi = createProtectedRouter()
           },
         })
 
-        const updatedCustomerBalace = await ctx.prisma.user.update({
+        const updatedCustomerBalance = await ctx.prisma.user.update({
           where: {
             id: input.customerId,
           },
