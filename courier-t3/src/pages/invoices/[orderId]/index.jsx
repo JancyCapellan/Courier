@@ -92,37 +92,6 @@ const InvoiceOrderDetailsPage = () => {
   //   }
   // )
 
-  const [convertedCartItems, setconvertedCartItems] = useState([])
-
-  useEffect(() => {
-    if (order === undefined) return
-    if (order.items === null) return
-
-    console.log(order.items)
-
-    const filteredDuplicates = order.items.filter(
-      (obj, index) =>
-        order.items.findIndex((item) => item.productId === obj.productId) ===
-        index
-    )
-
-    let combinedItemQty = {}
-    order.items.forEach((item) => {
-      combinedItemQty[item.productId] =
-        (combinedItemQty[item.productId] || 0) + 1
-    })
-
-    filteredDuplicates.forEach((item) => {
-      item.quantity = combinedItemQty[item.productId]
-    })
-
-    console.log({ filteredDuplicates })
-    console.log({ combinedItemQty })
-
-    //  * note: only the latest id is passed to CartItem and is the id used to decrease item quantity
-    setconvertedCartItems(filteredDuplicates)
-  }, [order])
-
   if (getOrderDetailsStatus === 'error') return <div>error</div>
 
   if (getOrderDetailsStatus === 'loading' || sessionStatus === 'loading')
@@ -574,7 +543,7 @@ const InvoiceOrderDetailsPage = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {convertedCartItems.map((item) => {
+                    {order?.items.map((item) => {
                       return (
                         <tr key={item.product.name}>
                           <td>{item.product.name}</td>

@@ -208,6 +208,29 @@ export const cartApi = createProtectedRouter()
         })
         // console.log('cartSession:', cartSession)
 
+        if (cartSession) {
+          if (cartSession === undefined) return
+          if (cartSession.items === null) return
+
+          const filteredDuplicates = cartSession.items.filter(
+            (obj, index) =>
+              cartSession.items.findIndex(
+                (item) => item.productId === obj.productId
+              ) === index
+          )
+
+          let combinedItemQty = {}
+          cartSession.items.forEach((item) => {
+            combinedItemQty[item.productId] =
+              (combinedItemQty[item.productId] || 0) + 1
+          })
+
+          filteredDuplicates.forEach((item) => {
+            item.quantity = combinedItemQty[item.productId]
+          })
+          cartSession.items = filteredDuplicates
+        }
+
         return cartSession
       } catch (error) {
         console.error('error findign cart', error)

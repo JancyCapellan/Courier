@@ -309,6 +309,25 @@ export const invoiceApi = createProtectedRouter()
             order[key] = order[key].toLocaleString()
           }
 
+        const filteredDuplicates = order.items.filter(
+          (obj, index) =>
+            order.items.findIndex(
+              (item) => item.product.name === obj.product.name
+            ) === index
+        )
+
+        let combinedItemQty = {}
+        order.items.forEach((item) => {
+          combinedItemQty[item.product.name] =
+            (combinedItemQty[item.product.name] || 0) + 1
+        })
+
+        filteredDuplicates.forEach((item) => {
+          item.quantity = combinedItemQty[item.product.name]
+        })
+
+        order.items = filteredDuplicates
+
         // console.log('DEBUGGGINGGG')
         // const orderCheckout = order.stripeCheckout as Prisma.JsonObject
         // console.log(
