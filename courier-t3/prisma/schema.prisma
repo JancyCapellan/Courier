@@ -193,8 +193,6 @@ model OrderItem {
   productId BigInt
   product   product @relation(fields: [productId], references: [id])
   location String?
-  // onSiteCreatedProductId BigInt?
-  // onSiteCreatedProduct onSiteCreatedProduct? @relation(fields: [onSiteCreatedProductId], references: [id])
 
 }
 

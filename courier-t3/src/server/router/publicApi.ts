@@ -71,9 +71,10 @@ export const publicApiRouter = createRouter()
           //   },
           // },
         },
-        where: {
-          createdOnPickup: false,
-        },
+        // ! only show products created by admin
+        // where: {
+        //   createdOnPickup: false,
+        // },
       })
 
       return products

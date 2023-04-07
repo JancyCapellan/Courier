@@ -15,9 +15,11 @@ const Items = () => {
 
   const { data: session, status } = useSession()
 
-  const { data: allProducts, status: allProductsStatus } = trpc.useQuery([
-    'public.getProducts',
-  ])
+  const {
+    data: allProducts,
+    status: allProductsStatus,
+    refetch: refetchProducts,
+  } = trpc.useQuery(['public.getProducts'])
 
   const createProductAtPickup = trpc.useMutation(['cart.createProductAtPickup'])
 
@@ -28,14 +30,15 @@ const Items = () => {
 
   const addProduct = trpc.useMutation(['products.addProduct'], {
     onSuccess: (data, variables) => {
-      console.log({ data, variables })
+      // console.log({ data, variables })
+      refetchProducts()
 
       addToCartSession.mutate({
         userId: session?.user?.id,
         customerId: router.query.customerId,
         item: {
           productId: data?.id,
-          amount: variables?.item_amount,
+          quantity: variables?.item_amount,
         },
       })
     },
