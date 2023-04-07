@@ -11,7 +11,8 @@ const Warehouse = () => {
 
   const router = useRouter()
 
-  const [selectedWarehouse, setSelectedWarehouse] = useState('')
+  // TODO created a default warehouse choice for admin whom can be at multiple warehouses, drivers, staff, only see the warehouse that they associate with.
+  const [selectedWarehouse, setSelectedWarehouse] = useState('bronx')
 
   const columns = useMemo(
     () => [
@@ -51,7 +52,7 @@ const Warehouse = () => {
           ))}
         </select>
       </label>
-      <h1>Warehouse</h1>
+      <h1>{selectedWarehouse} Warehouse</h1>
       <hr className="mx-2 my-2"></hr>
       <div className="flex w-max flex-col items-center gap-2 bg-gray-200">
         <button className="btn btn-blue w-max hover:bg-red-300">

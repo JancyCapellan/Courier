@@ -49,12 +49,12 @@ const RecieverAddressForm = () => {
   )
 
   useEffect(() => {
-    console.log(
-      '🚀 ~ file: SenderFormAdmin.jsx ~ line 68 ~ SenderFormAdmin ~ formDetails',
-      formDetails
-    )
+    // console.log(
+    //   '🚀 ~ file: SenderFormAdmin.jsx ~ line 68 ~ SenderFormAdmin ~ formDetails',
+    //   formDetails
+    // )
     if (formDetails == null) {
-      console.log('form set to intital values')
+      // console.log('form set to intital values')
       return
     }
 

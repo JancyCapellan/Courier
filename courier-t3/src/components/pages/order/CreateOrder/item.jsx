@@ -16,7 +16,6 @@ const Item = ({ name, price, id }) => {
 
   // const addItemToCart = usePersistedLocallyStore((state) => state.addItemToCart)
   // the cart is local for the current page, but i want it to be on DB
-  //
 
   const refetchCart = useGlobalStore((state) => state.refetchCart)
   const addToCartSession = trpc.useMutation(['cart.addToCartSession'], {
@@ -29,7 +28,7 @@ const Item = ({ name, price, id }) => {
 
   // item to add to cart that will be submitted for order,
   let item = {
-    amount: parseInt(qty),
+    quantity: parseInt(qty),
     productId: id,
   }
 

@@ -49,7 +49,14 @@ async function makeManyCustomer(lens: number) {
 }
 
 async function main() {
-  makeManyCustomer(250)
+  const warehouses = await prisma.warehouse.createMany({
+    data: [
+      { name: 'bronx', codeName: 'BX' },
+      { name: 'santaigo', codeName: 'STI' },
+      { name: 'miami', codeName: 'MI' },
+    ],
+  })
+
   const testUsers = await prisma.user.createMany({
     data: [
       {
@@ -65,6 +72,7 @@ async function main() {
         lastName: 'ADMIN',
         role: 'ADMIN',
         password: 'admin123',
+        defaultWarehouseName: 'bronx',
       },
       {
         email: 'jancycapellan97@email.com',
@@ -97,7 +105,7 @@ async function main() {
     ],
   })
 
-  console.log({ testUsers })
+  // console.log({ testUsers })
 
   // const orderPickupZones = await prisma.
   const invoiceStatuses = await prisma.orderStatus.createMany({
@@ -172,8 +180,8 @@ async function main() {
     price: number
   }
   let defaultItems: defaultItems[] = [
-    { name: 'Box Of Used CLothes', price: 150 * 100 },
-    { name: 'Box Of new CLothes', price: 200 * 100 },
+    { name: 'Box Of USED Clothes', price: 150 * 100 },
+    { name: 'Box Of NEW clothes', price: 200 * 100 },
     { name: 'Box Of food', price: 125 * 100 },
     { name: 'Box ', price: 75 * 100 },
   ]

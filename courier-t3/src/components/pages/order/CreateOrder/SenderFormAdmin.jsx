@@ -16,10 +16,6 @@ import { set } from 'zod'
 const SenderFormAdmin = () => {
   const router = useRouter()
   const customerId = router.query.customerId
-  console.log(
-    '🚀 ~ file: SenderFormAdmin.jsx ~ line 19 ~ SenderFormAdmin ~ customerId',
-    customerId
-  )
   const { data: session, status: sessionStatus } = useSession()
   const [selectedShipperAddress, setSelectedShipperAddress] = useState({
     address: '',

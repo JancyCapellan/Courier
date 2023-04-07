@@ -3,8 +3,17 @@ import { z } from 'zod'
 import { createProtectedRouter } from './protected-routers'
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
+import { PrismaClient, Prisma } from '@prisma/client'
 
-async function findCart(prisma, userId, customerId) {
+async function findCart(
+  prisma: PrismaClient<
+    Prisma.PrismaClientOptions,
+    never,
+    Prisma.RejectOnNotFound | Prisma.RejectPerOperation | undefined
+  >,
+  userId: string,
+  customerId: string
+) {
   try {
     const cart = await prisma.cart.findUnique({
       where: {
@@ -27,7 +36,15 @@ async function findCart(prisma, userId, customerId) {
   }
 }
 
-async function findOrCreateCart(prisma, userId, customerId) {
+async function findOrCreateCart(
+  prisma: PrismaClient<
+    Prisma.PrismaClientOptions,
+    never,
+    Prisma.RejectOnNotFound | Prisma.RejectPerOperation | undefined
+  >,
+  userId: string,
+  customerId: string
+) {
   const cart = await prisma.cart.findUnique({
     where: {
       creatingUserId_customerId: {
@@ -57,7 +74,14 @@ async function findOrCreateCart(prisma, userId, customerId) {
   return cart
 }
 
-async function getCartTotalCost(prisma, cartId) {
+async function getCartTotalCost(
+  prisma: PrismaClient<
+    Prisma.PrismaClientOptions,
+    never,
+    Prisma.RejectOnNotFound | Prisma.RejectPerOperation | undefined
+  >,
+  cartId: string
+) {
   try {
     const total = await prisma.cart.findFirst({
       where: {
@@ -67,6 +91,7 @@ async function getCartTotalCost(prisma, cartId) {
         totalCost: true,
       },
     })
+    if (total === null) return 0
     if (!total.totalCost) return 0
 
     return total.totalCost
@@ -95,7 +120,7 @@ export const cartApi = createProtectedRouter()
           creatingUserId: true,
           items: {
             select: {
-              quantity: true,
+              // quantity: true,
               product: {
                 select: {
                   name: true,
@@ -161,7 +186,8 @@ export const cartApi = createProtectedRouter()
             totalCost: true,
             items: {
               select: {
-                quantity: true,
+                // quantity: true,
+                id: true,
                 productId: true,
                 product: {
                   select: {
@@ -174,7 +200,7 @@ export const cartApi = createProtectedRouter()
                 },
               },
               orderBy: {
-                id: 'asc',
+                productId: 'asc',
               },
             },
             cartId: true,
@@ -188,77 +214,105 @@ export const cartApi = createProtectedRouter()
       }
     },
   })
+  // add item to cart
   .mutation('addToCartSession', {
     input: z.object({
       userId: z.string(), //logged in user
       customerId: z.string(),
       item: z.object({
-        amount: z.number(),
+        quantity: z.number(),
         productId: z.bigint(),
       }),
     }),
     async resolve({ ctx, input }) {
-      const { cartId } = await findOrCreateCart(
-        ctx.prisma,
-        input.userId,
-        input.customerId
-      )
+      try {
+        const { cartId } = await findOrCreateCart(
+          ctx.prisma,
+          input.userId,
+          input.customerId
+        )
 
-      const prevItemQuantity = await ctx.prisma.cartItem.findUnique({
-        where: {
-          CartItemId: {
+        // const prevItemQuantity = await ctx.prisma.cartItem.findUnique({
+        //   where: {
+        //     CartItemId: {
+        //       productId: input.item.productId,
+        //       cartId: cartId,
+        //     },
+        //   },
+        //   select: {
+        //     quantity: true,
+        //   },
+        // })
+
+        // const prevQty = prevItemQuantity?.quantity ?? 0
+
+        // let itemToAdd =
+
+        // array of the item multiplied by the quantity being added to created x amount of same item in cart
+        let itemMultiplied = []
+
+        for (let index = 0; index < input.item.quantity; index++) {
+          itemMultiplied.push({
             productId: input.item.productId,
             cartId: cartId,
+          })
+        }
+
+        const addedItem = await ctx.prisma.cartItem.createMany({
+          // where: {
+          //   CartItemId: {
+          //     productId: input.item.productId,
+          //     cartId: cartId,
+          //   },
+          // },
+          data: itemMultiplied,
+          // update: {
+          //   quantity: input.item.amount + prevQty,
+          // },
+          // include: {
+          //   product: {
+          //     select: {
+          //       price: true,
+          //     },
+          //   },
+          // },
+        })
+
+        let totalCost = await getCartTotalCost(ctx.prisma, cartId)
+        // console.log(
+        //   'item added to cart:',
+        //   addedItem,
+        //   totalCost,
+        //   addedItem.product.price
+        //   // addedItem.quantity
+        // )
+
+        if (totalCost === undefined) throw 'total cost undefined'
+
+        const productPrice = await ctx.prisma.product.findUnique({
+          where: {
+            id: input.item.productId,
           },
-        },
-        select: {
-          quantity: true,
-        },
-      })
+          select: {
+            price: true,
+          },
+        })
 
-      const prevQty = prevItemQuantity?.quantity ?? 0
-
-      const addedItem = await ctx.prisma.cartItem.upsert({
-        where: {
-          CartItemId: {
-            productId: input.item.productId,
+        const updatedCartTotal = await ctx.prisma.cart.update({
+          where: {
             cartId: cartId,
           },
-        },
-        create: {
-          productId: input.item.productId,
-          quantity: input.item.amount,
-          cartId: cartId,
-        },
-        update: {
-          quantity: input.item.amount + prevQty,
-        },
-        include: {
-          product: {
-            select: {
-              price: true,
-            },
+          // data: {
+          //   totalCost: totalCost + addedItem.product.price * input.item.amount,
+          // },
+          data: {
+            totalCost: totalCost + productPrice?.price! * input.item.quantity,
           },
-        },
-      })
-
-      let totalCost = await getCartTotalCost(ctx.prisma, cartId)
-      console.log(
-        'item added to cart:',
-        addedItem,
-        totalCost,
-        addedItem.product.price,
-        addedItem.quantity
-      )
-      const updatedCartTotal = await ctx.prisma.cart.update({
-        where: {
-          cartId: cartId,
-        },
-        data: {
-          totalCost: totalCost + addedItem.product.price * input.item.amount,
-        },
-      })
-      return addedItem
+        })
+        return addedItem
+      } catch (error) {
+        throw error
+      }
     },
   })
   .mutation('clearUserCartSessionItems', {
@@ -287,38 +341,48 @@ export const cartApi = createProtectedRouter()
       }
     },
   })
-  .mutation('removeItemFromCart', {
+  .mutation('removeEnitreItemFromCart', {
     input: z.object({
+      // cartItemId: z.bigint(),
       productId: z.bigint(),
       cartId: z.string(),
     }),
     async resolve({ ctx, input }) {
       try {
-        const removedItem = await ctx.prisma.cartItem.delete({
+        const removedItems = await ctx.prisma.cartItem.deleteMany({
           where: {
-            CartItemId: {
-              productId: input.productId,
-              cartId: input.cartId,
-            },
+            productId: input.productId,
+          },
+
+          // select: {
+          //   // quantity: true,
+          //   product: {
+          //     select: {
+          //       price: true,
+          //     },
+          //   },
+          // },
+        })
+
+        const productPrice = await ctx.prisma.product.findUnique({
+          where: {
+            id: input.productId,
           },
           select: {
-            quantity: true,
-            product: {
-              select: {
-                price: true,
-              },
-            },
+            price: true,
           },
         })
 
         let totalCost = await getCartTotalCost(ctx.prisma, input.cartId)
+
+        if (totalCost === undefined) throw 'total cart balance not found'
+
         const totalCostAfterRemove = await ctx.prisma.cart.update({
           where: {
             cartId: input.cartId,
           },
           data: {
-            totalCost:
-              totalCost - removedItem.product.price * removedItem.quantity,
+            totalCost: totalCost - removedItems.count * productPrice?.price!,
           },
           select: {
             totalCost: true,
@@ -331,28 +395,21 @@ export const cartApi = createProtectedRouter()
       }
     },
   })
-  .mutation('toggleCartItemAmount', {
+  .mutation('removeItemFromCart', {
     input: z.object({
-      productId: z.bigint(),
+      cartItemId: z.bigint(),
+      // productId: z.bigint(),
       cartId: z.string(),
-      toggleType: z.string(),
-      currentQuantity: z.number(),
     }),
     async resolve({ ctx, input }) {
       try {
-        let quantityChange = input.toggleType === 'inc' ? 1 : -1
-        console.log(quantityChange)
-        const removedItem = await ctx.prisma.cartItem.update({
+        const removedItem = await ctx.prisma.cartItem.delete({
           where: {
-            CartItemId: {
-              productId: input.productId,
-              cartId: input.cartId,
-            },
+            id: input.cartItemId,
           },
-          data: {
-            quantity: input.currentQuantity + quantityChange,
-          },
+
           select: {
+            // quantity: true,
             product: {
               select: {
                 price: true,
@@ -363,24 +420,136 @@ export const cartApi = createProtectedRouter()
 
         let totalCost = await getCartTotalCost(ctx.prisma, input.cartId)
 
-        const totalCostAfterToggle = await ctx.prisma.cart.update({
+        if (totalCost === undefined) throw 'total cart balance not found'
+
+        const totalCostAfterRemove = await ctx.prisma.cart.update({
           where: {
             cartId: input.cartId,
           },
           data: {
-            totalCost: totalCost + removedItem.product.price * quantityChange,
+            totalCost: totalCost - removedItem.product.price,
           },
           select: {
             totalCost: true,
           },
         })
+
+        return totalCostAfterRemove.totalCost
       } catch (error) {
         throw error
       }
-
-      return true
     },
   })
+  .mutation('addOneCartItem', {
+    input: z.object({
+      // cartItemId: z.bigint(),
+      productId: z.bigint(),
+      cartId: z.string(),
+    }),
+    async resolve({ ctx, input }) {
+      try {
+        const addedItem = await ctx.prisma.cartItem.create({
+          // where: {
+          //   CartItemId: {
+          //     productId: input.item.productId,
+          //     cartId: cartId,
+          //   },
+          // },
+          data: {
+            productId: input.productId,
+            // quantity: input.item.amount,
+            cartId: input.cartId,
+          },
+          // update: {
+          //   quantity: input.item.amount + prevQty,
+          // },
+          include: {
+            product: {
+              select: {
+                price: true,
+              },
+            },
+          },
+        })
+
+        let totalCost = await getCartTotalCost(ctx.prisma, input.cartId)
+        console.log(
+          'item added to cart:',
+          addedItem,
+          totalCost,
+          addedItem.product.price
+          // addedItem.quantity
+        )
+
+        if (totalCost === undefined) throw 'total cost undefined'
+
+        const updatedCartTotal = await ctx.prisma.cart.update({
+          where: {
+            cartId: input.cartId,
+          },
+          // data: {
+          //   totalCost: totalCost + addedItem.product.price * input.item.amount,
+          // },
+          data: {
+            totalCost: totalCost + addedItem.product.price,
+          },
+        })
+        return addedItem
+      } catch (error) {
+        throw error
+      }
+    },
+  })
+  // .mutation('toggleCartItemAmount', {
+  //   input: z.object({
+  //     productId: z.bigint(),
+  //     cartId: z.string(),
+  //     toggleType: z.string(),
+  //     currentQuantity: z.number(),
+  //   }),
+  //   async resolve({ ctx, input }) {
+  //     try {
+  //       let quantityChange = input.toggleType === 'inc' ? 1 : -1
+  //       console.log(quantityChange)
+  //       const removedItem = await ctx.prisma.cartItem.update({
+  //         where: {
+  //           CartItemId: {
+  //             productId: input.productId,
+  //             cartId: input.cartId,
+  //           },
+  //         },
+  //         data: {
+  //           quantity: input.currentQuantity + quantityChange,
+  //         },
+  //         select: {
+  //           product: {
+  //             select: {
+  //               price: true,
+  //             },
+  //           },
+  //         },
+  //       })
+
+  //       let totalCost = await getCartTotalCost(ctx.prisma, input.cartId)
+
+  //       const totalCostAfterToggle = await ctx.prisma.cart.update({
+  //         where: {
+  //           cartId: input.cartId,
+  //         },
+  //         data: {
+  //           totalCost: totalCost + removedItem.product.price * quantityChange,
+  //         },
+  //         select: {
+  //           totalCost: true,
+  //         },
+  //       })
+  //     } catch (error) {
+  //       throw error
+  //     }
+
+  //     return true
+  //   },
+  // })
   .mutation('saveShipperPickupAddressToCart', {
     input: z.object({
       // reciever and shipper
@@ -719,88 +888,88 @@ export const cartApi = createProtectedRouter()
       }
     },
   })
-  .mutation('createOrderAfterCheckout', {
-    input: z.object({
-      customerId: z.string(),
-      userId: z.string(),
-    }),
-    async resolve({ ctx, input }) {
-      // find cart made by user for customer, add info to order table, remove cart entry
-      //TODO: after checkout is competed stripe returns to app this endpoint is called to make sure the checkout was completed and successly added to the app database, the  webhook for checkout session completed will also attempt to add the checkout to the order. the stripe checkout information is not avaible here, outside porblem from the webhook that does have the stripe object. how do i get that information into the order after the checkout is completed? i have access to the stripecheckoutID from the moment the checkout was created after pay online was choosen, maybe cache or create the order at that moment, the order will be a temp order from the cart details and create checkout session details, the stripe checkout details will be updated by the webhook after the fact but to start off having all the cart session infromation and a way to query stripe checkout is better than no information.
-      const cartSession = await ctx.prisma.cart.findUnique({
-        where: {
-          creatingUserId_customerId: {
-            creatingUserId: input.userId,
-            customerId: input.customerId,
-          },
-        },
-        select: {
-          cartId: true,
-          customerId: true,
-          creatingUserId: true,
-          items: {
-            select: {
-              quantity: true,
-              product: {
-                select: {
-                  name: true,
-                  // stripePriceId: true,
-                  // stripeProductId: true,
-                  price: true,
-                },
-              },
-            },
-          },
-          addresses: {
-            select: {
-              firstName: true,
-              lastName: true,
-              address: true,
-              address2: true,
-              address3: true,
-              city: true,
-              state: true,
-              postalCode: true,
-              country: true,
-              cellphone: true,
-              telephone: true,
-              recipient: true,
-            },
-          },
-        },
-      })
-      console.log(
-        '🚀 ~ file: cartApi.ts ~ line 468 ~ resolve ~ cartSession',
-        cartSession
-      )
-      // const { cartId } = await findCart(
-      //   ctx.prisma,
-      //   input.userId,
-      //   input.customerId
-      // )
+  // .mutation('createOrderAfterCheckout', {
+  //   input: z.object({
+  //     customerId: z.string(),
+  //     userId: z.string(),
+  //   }),
+  //   async resolve({ ctx, input }) {
+  //     // find cart made by user for customer, add info to order table, remove cart entry
+  //     //TODO: after checkout is competed stripe returns to app this endpoint is called to make sure the checkout was completed and successly added to the app database, the  webhook for checkout session completed will also attempt to add the checkout to the order. the stripe checkout information is not avaible here, outside porblem from the webhook that does have the stripe object. how do i get that information into the order after the checkout is completed? i have access to the stripecheckoutID from the moment the checkout was created after pay online was choosen, maybe cache or create the order at that moment, the order will be a temp order from the cart details and create checkout session details, the stripe checkout details will be updated by the webhook after the fact but to start off having all the cart session infromation and a way to query stripe checkout is better than no information.
+  //     const cartSession = await ctx.prisma.cart.findUnique({
+  //       where: {
+  //         creatingUserId_customerId: {
+  //           creatingUserId: input.userId,
+  //           customerId: input.customerId,
+  //         },
+  //       },
+  //       select: {
+  //         cartId: true,
+  //         customerId: true,
+  //         creatingUserId: true,
+  //         items: {
+  //           select: {
+  //             // quantity: true,
+  //             product: {
+  //               select: {
+  //                 name: true,
+  //                 // stripePriceId: true,
+  //                 // stripeProductId: true,
+  //                 price: true,
+  //               },
+  //             },
+  //           },
+  //         },
+  //         addresses: {
+  //           select: {
+  //             firstName: true,
+  //             lastName: true,
+  //             address: true,
+  //             address2: true,
+  //             address3: true,
+  //             city: true,
+  //             state: true,
+  //             postalCode: true,
+  //             country: true,
+  //             cellphone: true,
+  //             telephone: true,
+  //             recipient: true,
+  //           },
+  //         },
+  //       },
+  //     })
+  //     console.log(
+  //       '🚀 ~ file: cartApi.ts ~ line 468 ~ resolve ~ cartSession',
+  //       cartSession
+  //     )
+  //     // const { cartId } = await findCart(
+  //     //   ctx.prisma,
+  //     //   input.userId,
+  //     //   input.customerId
+  //     // )
 
-      // const cartDetails = await ctx.prisma.cart.findUnique({
-      //   where: {
-      //     cartId: cartId,
-      //   },
-      //   include: {
-      //     items: true,
-      //     addresses: true,
-      //   },
-      // })
-      // console.log(
-      //   '🚀 ~ file: cartApi.ts ~ line 437 ~ resolve ~ cartDetails',
-      //   cartDetails
-      // )
+  //     // const cartDetails = await ctx.prisma.cart.findUnique({
+  //     //   where: {
+  //     //     cartId: cartId,
+  //     //   },
+  //     //   include: {
+  //     //     items: true,
+  //     //     addresses: true,
+  //     //   },
+  //     // })
+  //     // console.log(
+  //     //   '🚀 ~ file: cartApi.ts ~ line 437 ~ resolve ~ cartDetails',
+  //     //   cartDetails
+  //     // )
 
-      // const createdOrder = await ctx.prisma.order.create({
-      //   data: {
-      //     // userid customer id
-      //     //
-      //   },
-      // })
-    },
-  })
+  //     // const createdOrder = await ctx.prisma.order.create({
+  //     //   data: {
+  //     //     // userid customer id
+  //     //     //
+  //     //   },
+  //     // })
+  //   },
+  // })
 
   //createPendingOrder
   .mutation('createPendingOrderBeforeCheckoutCompletes', {
@@ -832,7 +1001,7 @@ export const cartApi = createProtectedRouter()
             totalCost: true,
             items: {
               select: {
-                quantity: true,
+                // quantity: true,
                 productId: true,
               },
             },
@@ -874,7 +1043,7 @@ export const cartApi = createProtectedRouter()
         // )
         // console.log({ timePlaced })
 
-        let timePlaced = dayjs()
+        // let timePlaced = dayjs()
         pendingOrder = await ctx.prisma.order.create({
           data: {
             customer: {

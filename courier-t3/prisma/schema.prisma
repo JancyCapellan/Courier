@@ -45,6 +45,8 @@ model User {
   currentCart       cart[]                @relation("cartCreator")
   cartCustomer      cart[]                @relation("customer")
   creationDateTime  DateTime              @default(now())
+  defaultWarehouseName String?
+  warehouse      warehouse? @relation(fields: [defaultWarehouseName], references: [name])
 }
 
 model UserAddress {
@@ -184,22 +186,18 @@ model OrderRecieverAddress {
 
 // every order item needs individual order locations because they will each have tags, this means that each item might need to be treated as an unique item, cons is that this table will exponentially grow in size so a bigint id may be necessary with its cons of more space usuage, this some how seems wrong
 model OrderItem {
-  id        Int     @id @default(autoincrement())
+  id        BigInt     @id @default(autoincrement())
   orderId   Int
   order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  quantity  Int
+  // quantity  Int
   productId BigInt
   product   product @relation(fields: [productId], references: [id])
+  location String?
   // onSiteCreatedProductId BigInt?
   // onSiteCreatedProduct onSiteCreatedProduct? @relation(fields: [onSiteCreatedProductId], references: [id])
 
 }
 
-
-// TODO driver edits invoice, after driver confirms reciever address and item being shipper. add orderLocations table that tracks the orderItems individally, so 4 boxes of used clothes that show up as
-// 4 seperate row of item locations, each delivery package label QR code corresponds to a location entry, this way
-// packages in one order are tracked sepearlty, if one goes missing that location shouldnt be updated, and when looking under order status for a confirmed invoice
-// it wont appear as deliver in red or something
 
 model orderStatus {
   id      Int     @id @default(autoincrement())
@@ -256,10 +254,11 @@ model warehouseSupplies {
 model warehouse {
   id         Int                 @id @default(autoincrement())
   codeName   String // BX, DR
-  name       String //bronx, Dominican Republic
+  name       String  @unique//bronx, Dominican Republic
   supplies   warehouseSupplies[]
   containers containers[]
   address    String?
+  user User[]
   // @@map("warehouseDetails")
 }
 
@@ -325,48 +324,18 @@ model cartRecieverAddress {
   telephone  String?
 }
 
-// model CartOrderAddresses {
-//   id         Int     @default(autoincrement())
-//   cartId     String
-//   // .query("getAddressesFromCart")
-//   firstName  String?
-//   lastName   String?
-//   cart       cart    @relation(fields: [cartId], references: [cartId], onDelete: Cascade)
-//   address    String?
-//   address2   String?
-//   address3   String?
-//   city       String?
-//   state      String?
-//   postalCode Int?
-//   country    String?
-//   cellphone  String?
-//   telephone  String?
-//   // default Boolean @default(false)
-//   recipient  Boolean @default(false)
-
-//   @@id([cartId, recipient]) //reciever: recipient==true, shipper:recipient==false; address, one form for both addresses caused me to use another varibale mot hadnle the difference between addresses.
-// }
 
 model cartItem {
-  id        Int     @default(autoincrement())
+  id        BigInt     @id @default(autoincrement())
   cartId    String
   cart      cart    @relation(fields: [cartId], references: [cartId], onDelete: Cascade, onUpdate: Cascade)
-  quantity  Int
+  // quantity  Int
   productId BigInt
   product   product @relation(fields: [productId], references: [id])
-  // onSiteCreatedProductId BigInt?
-  // onSiteCreatedProduct onSiteCreatedProduct? @relation(fields: [onSiteCreatedProductId], references: [id])
 
-  @@id([cartId, productId], name: "CartItemId")
+  // @@id([cartId, productId], name: "CartItemId")
 }
 
-// model onSiteCreatedProduct {
-//   id        BigInt         @id @default(autoincrement())
-//   name      String
-//   price     Int // in USD cents, $50.25 = 5025
-//   orderItem OrderItem[]
-//   cartItem  cartItem[]
-// }
 
 model StripeEvent {
   id               String   @id @unique

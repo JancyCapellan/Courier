@@ -67,6 +67,12 @@ const CreateOrder = () => {
 
         <SenderAddressForm />
         <RecieverAddressForm />
+
+        {/*
+        // TODO driver edits invoice, after driver confirms reciever address and item being shipper. add orderLocations table that tracks the orderItems individally, so 4 boxes of used clothes that show up as
+        // 4 seperate row of item locations, each delivery package label QR code corresponds to a location entry, this way
+        // packages in one order are tracked sepearlty, if one goes missing that location shouldnt be updated, and when looking under order status for a confirmed invoice
+        // it wont appear as deliver in red or something */}
         <Items />
         <Cart />
 

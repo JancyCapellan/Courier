@@ -49,8 +49,8 @@ const Items = () => {
         <section className="items-section">
           <div className="itemsList">
             {allProductsStatus === 'success' ? (
-              allProducts.map((item) => {
-                return <Item key={item.id} {...item} />
+              allProducts.map((product) => {
+                return <Item key={product.id} {...product} />
               })
             ) : (
               <></>
