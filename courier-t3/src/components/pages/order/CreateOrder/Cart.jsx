@@ -72,8 +72,6 @@ const Cart = () => {
         ) === index
     )
 
-    // setconvertedCartItems(cartItemsWithQty)
-
     let combinedItemQty = {}
     cartSession.items.forEach((item) => {
       combinedItemQty[item.productId] =

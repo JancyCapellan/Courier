@@ -270,6 +270,7 @@ export const invoiceApi = createProtectedRouter()
           items: {
             select: {
               // quantity: true,
+              productId: true,
               product: {
                 select: {
                   price: true,
