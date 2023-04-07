@@ -52,7 +52,7 @@ const Checkout = () => {
   const updateBalance = trpc.useMutation([''])
 
   const createPendingOrder = trpc.useMutation(
-    ['cart.createPendingOrderBeforeCheckoutCompletes'],
+    ['cart.createPendingOrderBeforeConfirmation'],
     {
       onSuccess: (data) => {
         // clearCartById.mutate({ cartId: cart?.cartId })

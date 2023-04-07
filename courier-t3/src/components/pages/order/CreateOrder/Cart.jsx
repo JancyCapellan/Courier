@@ -56,7 +56,7 @@ const Cart = () => {
       </p>
       {/* <p>CartId: {cartSession?.cartId}</p> */}
 
-      {cartSession.items.map((cartItem) => {
+      {cartSession?.items.map((cartItem) => {
         return (
           <CartItem
             key={cartItem.id}

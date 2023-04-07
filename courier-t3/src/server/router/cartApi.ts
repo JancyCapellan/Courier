@@ -995,7 +995,7 @@ export const cartApi = createProtectedRouter()
   // })
 
   //createPendingOrder
-  .mutation('createPendingOrderBeforeCheckoutCompletes', {
+  .mutation('createPendingOrderBeforeConfirmation', {
     input: z.object({
       userId: z.string(),
       customerId: z.string(),
@@ -1025,6 +1025,7 @@ export const cartApi = createProtectedRouter()
             items: {
               select: {
                 // quantity: true,
+                // id: true,
                 productId: true,
               },
             },
@@ -1064,7 +1065,8 @@ export const cartApi = createProtectedRouter()
         //   '🚀 ~ file: cartApi.ts ~ line 551 ~ resolve ~ cartSession',
         //   cartSession
         // )
-        // console.log({ timePlaced })
+
+        // console.log('items', cartSession?.items)
 
         // let timePlaced = dayjs()
         pendingOrder = await ctx.prisma.order.create({
@@ -1154,8 +1156,6 @@ export const cartApi = createProtectedRouter()
         })
         // console.log('cartApi.ts 595 ~ pendingOrder', pendingOrder)
 
-        // TODO: update customer balance
-
         const getCustomerBalance = await ctx.prisma.user.findUniqueOrThrow({
           where: {
             id: input.customerId,
@@ -1181,6 +1181,7 @@ export const cartApi = createProtectedRouter()
           '🚀 ~ file: cartApi.ts ~ line 601 ~ resolve ~ error',
           error
         )
+        throw error
       }
     },
   })

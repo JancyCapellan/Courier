@@ -6,7 +6,11 @@ import { useRouter } from 'next/router'
 import * as Yup from 'yup'
 import { useSession } from 'next-auth/react'
 
-const EditRecieverAddressForm = ({ recieverAddress, orderId }) => {
+const EditRecieverAddressForm = ({
+  recieverAddress,
+  orderId,
+  refetchAddress,
+}) => {
   const { data: session, status: sessionStatus } = useSession()
 
   const [formValues, setFormValues] = useState(null)
@@ -67,6 +71,7 @@ const EditRecieverAddressForm = ({ recieverAddress, orderId }) => {
     ['invoice.updateRecieverAddress'],
     {
       onSuccess: (data) => {
+        refetchAddress()
         console.log({ data })
       },
       onError: (e) => {

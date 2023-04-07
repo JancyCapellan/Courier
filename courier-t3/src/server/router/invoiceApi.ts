@@ -270,6 +270,7 @@ export const invoiceApi = createProtectedRouter()
           items: {
             select: {
               // quantity: true,
+              id: true,
               productId: true,
               product: {
                 select: {
@@ -592,6 +593,242 @@ export const invoiceApi = createProtectedRouter()
         })
 
         return true
+      } catch (error) {
+        throw error
+      }
+    },
+  })
+  .mutation('removeEnitreItemFromOrder', {
+    input: z.object({
+      // cartItemId: z.bigint(),
+      productId: z.bigint(),
+      orderId: z.string(),
+    }),
+    async resolve({ ctx, input }) {
+      try {
+        const removedItems = await ctx.prisma.orderItem.deleteMany({
+          where: {
+            productId: input.productId,
+          },
+
+          // select: {
+          //   // quantity: true,
+          //   product: {
+          //     select: {
+          //       price: true,
+          //     },
+          //   },
+          // },
+        })
+
+        const productPrice = await ctx.prisma.product.findUnique({
+          where: {
+            id: input.productId,
+          },
+          select: {
+            price: true,
+          },
+        })
+
+        let totalCost = await ctx.prisma.order.findUnique({
+          where: {
+            orderId: input.orderId,
+          },
+          select: {
+            totalCost: true,
+          },
+        })
+
+        if (totalCost === undefined) throw 'total cart balance not found'
+
+        const totalCostAfterRemove = await ctx.prisma.order.update({
+          where: {
+            orderId: input.orderId,
+          },
+          data: {
+            totalCost:
+              totalCost?.totalCost! - removedItems.count * productPrice?.price!,
+          },
+          select: {
+            totalCost: true,
+          },
+        })
+
+        return totalCostAfterRemove.totalCost
+      } catch (error) {
+        throw error
+      }
+    },
+  })
+  .mutation('removeItemFromOrder', {
+    input: z.object({
+      cartItemId: z.bigint(),
+      // productId: z.bigint(),
+      orderId: z.string(),
+    }),
+    async resolve({ ctx, input }) {
+      try {
+        const removedItem = await ctx.prisma.orderItem.delete({
+          where: {
+            id: input.cartItemId,
+          },
+
+          select: {
+            // quantity: true,
+            product: {
+              select: {
+                price: true,
+              },
+            },
+          },
+        })
+
+        let totalCost = await ctx.prisma.order.findUnique({
+          where: {
+            orderId: input.orderId,
+          },
+          select: {
+            totalCost: true,
+          },
+        })
+
+        if (totalCost === undefined) throw 'total cart balance not found'
+
+        const totalCostAfterRemove = await ctx.prisma.order.update({
+          where: {
+            orderId: input.orderId,
+          },
+          data: {
+            totalCost: totalCost?.totalCost! - removedItem.product.price,
+          },
+          select: {
+            totalCost: true,
+          },
+        })
+
+        return totalCostAfterRemove.totalCost
+      } catch (error) {
+        throw error
+      }
+    },
+  })
+  .mutation('addOneItem', {
+    input: z.object({
+      // cartItemId: z.bigint(),
+      productId: z.bigint(),
+      orderId: z.string(),
+    }),
+    async resolve({ ctx, input }) {
+      try {
+        const addedItem = await ctx.prisma.orderItem.create({
+          // where: {
+          //   CartItemId: {
+          //     productId: input.item.productId,
+          //     cartId: cartId,
+          //   },
+          // },
+          data: {
+            productId: input.productId,
+            // quantity: input.item.amount,
+            orderId: input.orderId,
+          },
+          // update: {
+          //   quantity: input.item.amount + prevQty,
+          // },
+          include: {
+            product: {
+              select: {
+                price: true,
+              },
+            },
+          },
+        })
+
+        let totalCost = await ctx.prisma.order.findUnique({
+          where: {
+            orderId: input.orderId,
+          },
+          select: {
+            totalCost: true,
+          },
+        })
+        if (totalCost === null) throw 'total cost undefined'
+
+        const updatedOrderTotal = await ctx.prisma.order.update({
+          where: {
+            orderId: input.orderId,
+          },
+          // data: {
+          //   totalCost: totalCost + addedItem.product.price * input.item.amount,
+          // },
+          data: {
+            totalCost: totalCost?.totalCost! + addedItem?.product?.price!,
+          },
+        })
+        return addedItem
+      } catch (error) {
+        throw error
+      }
+    },
+  })
+  .mutation('addProductToOrder', {
+    input: z.object({
+      // cartItemId: z.bigint(),
+      // productId: z.bigint(),
+      orderId: z.string(),
+      item: z.object({
+        quantity: z.number(),
+        productId: z.bigint(),
+      }),
+    }),
+    async resolve({ ctx, input }) {
+      try {
+        let itemMultiplied = []
+
+        for (let index = 0; index < input.item.quantity; index++) {
+          itemMultiplied.push({
+            productId: input.item.productId,
+            orderId: input.orderId,
+          })
+        }
+
+        const addedItem = await ctx.prisma.orderItem.createMany({
+          data: itemMultiplied,
+        })
+
+        let totalCost = await ctx.prisma.order.findUnique({
+          where: {
+            orderId: input.orderId,
+          },
+          select: {
+            totalCost: true,
+          },
+        })
+        if (totalCost === null) throw 'total cost undefined'
+
+        const productPrice = await ctx.prisma.product.findUnique({
+          where: {
+            id: input.item.productId,
+          },
+          select: {
+            price: true,
+          },
+        })
+
+        const updatedOrderTotal = await ctx.prisma.order.update({
+          where: {
+            orderId: input.orderId,
+          },
+          // data: {
+          //   totalCost: totalCost + addedItem.product.price * input.item.amount,
+          // },
+          data: {
+            totalCost:
+              totalCost?.totalCost! +
+              productPrice?.price! * input.item.quantity,
+          },
+        })
+        return addedItem
       } catch (error) {
         throw error
       }

@@ -25,12 +25,13 @@ const EditInvoice = () => {
           <EditRecieverAddressForm
             recieverAddress={order?.recieverAddress}
             orderId={orderId}
+            refetchAddress={refetchOrder}
           />
         )
       case 2:
         return (
           <>
-            <EditOrderItems orderItems={order?.items} />
+            <EditOrderItems order={order} refetchOrder={refetchOrder} />
           </>
         )
       default:
