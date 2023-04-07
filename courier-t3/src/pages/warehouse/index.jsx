@@ -3,7 +3,7 @@ import FancyTable from '@/components/Tables/FancyTable'
 import PickupListTable from '@/components/Tables/PickupListTable'
 import { trpc } from '@/utils/trpc'
 import { useRouter } from 'next/router'
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 
 const Warehouse = () => {
   //function to scan qrcode/add container id number to open a container for filling
@@ -11,8 +11,12 @@ const Warehouse = () => {
 
   const router = useRouter()
 
-  // TODO created a default warehouse choice for admin whom can be at multiple warehouses, drivers, staff, only see the warehouse that they associate with.
+  // todo created a default warehouse choice for admin whom can be at multiple warehouses, drivers, staff, only see the warehouse that they associate with.
   const [selectedWarehouse, setSelectedWarehouse] = useState('bronx')
+
+  useEffect(() => {
+    setSelectedWarehouse(router.query.name)
+  }, [router.query.name])
 
   const columns = useMemo(
     () => [
@@ -21,17 +25,18 @@ const Warehouse = () => {
         accessor: 'warehouse',
       },
       {
-        Header: 'Total Packages',
-        accessor: 'totalPackages',
+        Header: 'Ship Container Id',
+        accessor: '',
       },
       {
-        Header: 'Batch Containers',
-        accessor: '',
+        Header: 'Total Packages in container',
+        accessor: 'totalPackages',
       },
     ],
     []
   )
 
+  // todo print invoice for each order item, order id, order item id, scan and update location / scan and update the container the item is going to be loaded into.
   return (
     // tables showing the orders seperated by warehouse and make reports on those orders by warehouse daily
     <section>
@@ -74,8 +79,6 @@ const Warehouse = () => {
         </button>
       </div>
       <div>Containers</div>
-      {/* per warehouse seelected, show a list of the pacakges at that warehouse,
-      and the batch container they are in,
       <FancyTable
         columns={columns}
         data={[
@@ -83,7 +86,7 @@ const Warehouse = () => {
           { warehouse: 'bronx' },
           { warehouse: 'bronx' },
         ]}
-      /> */}
+      />
       {/* <PickupListTable /> */}
     </section>
   )

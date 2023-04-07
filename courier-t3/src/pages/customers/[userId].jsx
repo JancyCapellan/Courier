@@ -31,6 +31,7 @@ const CustomerAccountPage = () => {
     ['user.getUserAccountInfo', { userId: userId }],
     {
       refetchOnMount: 'always',
+      refetchOnWindowFocus: 'always',
     }
   )
 

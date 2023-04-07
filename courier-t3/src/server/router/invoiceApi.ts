@@ -654,7 +654,32 @@ export const invoiceApi = createProtectedRouter()
           },
         })
 
-        return totalCostAfterRemove.totalCost
+        const getCustomerBalance = await ctx.prisma.order.findUniqueOrThrow({
+          where: {
+            orderId: input.orderId,
+          },
+          include: {
+            customer: {
+              select: {
+                currentBalance: true,
+                id: true,
+              },
+            },
+          },
+        })
+
+        const updatedCustomerBalance = await ctx.prisma.user.update({
+          where: {
+            id: getCustomerBalance.customer.id,
+          },
+          data: {
+            currentBalance:
+              getCustomerBalance?.customer?.currentBalance! -
+              removedItems.count * productPrice?.price!,
+          },
+        })
+
+        return true
       } catch (error) {
         throw error
       }
@@ -703,6 +728,31 @@ export const invoiceApi = createProtectedRouter()
           },
           select: {
             totalCost: true,
+          },
+        })
+
+        const getCustomerBalance = await ctx.prisma.order.findUniqueOrThrow({
+          where: {
+            orderId: input.orderId,
+          },
+          include: {
+            customer: {
+              select: {
+                currentBalance: true,
+                id: true,
+              },
+            },
+          },
+        })
+
+        const updatedCustomerBalance = await ctx.prisma.user.update({
+          where: {
+            id: getCustomerBalance.customer.id,
+          },
+          data: {
+            currentBalance:
+              getCustomerBalance?.customer?.currentBalance! -
+              removedItem.product.price,
           },
         })
 
@@ -765,6 +815,32 @@ export const invoiceApi = createProtectedRouter()
             totalCost: totalCost?.totalCost! + addedItem?.product?.price!,
           },
         })
+
+        const getCustomerBalance = await ctx.prisma.order.findUniqueOrThrow({
+          where: {
+            orderId: input.orderId,
+          },
+          include: {
+            customer: {
+              select: {
+                currentBalance: true,
+                id: true,
+              },
+            },
+          },
+        })
+
+        const updatedCustomerBalance = await ctx.prisma.user.update({
+          where: {
+            id: getCustomerBalance.customer.id,
+          },
+          data: {
+            currentBalance:
+              getCustomerBalance?.customer?.currentBalance! +
+              addedItem?.product?.price!,
+          },
+        })
+
         return addedItem
       } catch (error) {
         throw error
@@ -828,6 +904,32 @@ export const invoiceApi = createProtectedRouter()
               productPrice?.price! * input.item.quantity,
           },
         })
+
+        const getCustomerBalance = await ctx.prisma.order.findUniqueOrThrow({
+          where: {
+            orderId: input.orderId,
+          },
+          include: {
+            customer: {
+              select: {
+                currentBalance: true,
+                id: true,
+              },
+            },
+          },
+        })
+
+        const updatedCustomerBalance = await ctx.prisma.user.update({
+          where: {
+            id: getCustomerBalance.customer.id,
+          },
+          data: {
+            currentBalance:
+              getCustomerBalance?.customer?.currentBalance! +
+              productPrice?.price! * input.item.quantity,
+          },
+        })
+
         return addedItem
       } catch (error) {
         throw error

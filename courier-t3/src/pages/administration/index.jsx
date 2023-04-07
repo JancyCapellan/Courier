@@ -9,9 +9,12 @@ import { Formik, Form } from 'formik'
 import FormikControl from '@/components/Formik/FormikControl'
 import * as Yup from 'yup'
 import { trpc } from '@/utils/trpc'
+import { useRouter } from 'next/router'
 
 // TODO: status and data of ongoing business operations
 const Administration = () => {
+  const router = useRouter()
+
   const newWarehouseMutation = trpc.useMutation(['warehouse.createWarehouse'], {
     onSuccess: () => console.log('created new warehouse'),
     onError: () => console.log('error creating new warehouse '),
@@ -64,7 +67,13 @@ const Administration = () => {
                       >
                         delete warehouse
                       </button> */}
-                      <button>details page</button>
+                      <button
+                        onClick={() => {
+                          router.push(`/warehouse?codeName=${warehouse.name}`)
+                        }}
+                      >
+                        details page
+                      </button>
                     </td>
                   </tr>
                 )

@@ -55,7 +55,7 @@ const Checkout = () => {
     ['cart.createPendingOrderBeforeConfirmation'],
     {
       onSuccess: (data) => {
-        // clearCartById.mutate({ cartId: cart?.cartId })
+        clearCartById.mutate({ cartId: cart?.cartId })
 
         router.push(`/invoices/${data?.orderId}`)
         // console.log('HERREEEE', data)

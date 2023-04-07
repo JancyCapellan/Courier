@@ -256,7 +256,7 @@ model warehouse {
   supplies   warehouseSupplies[]
   containers containers[]
   address    String?
-  user User[]
+  userDefaultWarehouse User[]
   // @@map("warehouseDetails")
 }
 

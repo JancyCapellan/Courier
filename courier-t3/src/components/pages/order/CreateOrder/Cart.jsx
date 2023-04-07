@@ -24,6 +24,7 @@ const Cart = () => {
     ],
     {
       enabled: sessionStatus === 'authenticated',
+      refetchOnMount: 'always',
     }
   )
 
