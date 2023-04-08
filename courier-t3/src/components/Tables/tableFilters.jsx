@@ -77,9 +77,9 @@ export function dateBetweenFilterFn(rows, id, filterValues) {
 
   if (ed || sd) {
     return rows.filter((r) => {
-      // console.log(r.values['pickupDatetime'])
+      // console.log(r.values['pickupDate'])
       // format data
-      // var dateAndHour = dayjs(r.values['pickupDatetime']).toDate()
+      // var dateAndHour = dayjs(r.values['pickupDate']).toDate()
       // var [month, day, year] = dateAndHour[0].split('/')
       // var date = [month, day, year].join('/')
       // // var date = dateAndHour[0]
@@ -90,7 +90,7 @@ export function dateBetweenFilterFn(rows, id, filterValues) {
       // return
       // const cellDate = new Date(formattedData)
 
-      const cellDate = dayjs(r.values['pickupDatetime']).format('MM/DD/YYYY')
+      const cellDate = dayjs(r.values['pickupDate']).format('MM/DD/YYYY')
 
       console.log({ cellDate })
       // if (ed && sd && datesAreOnSameDay(sd, ed))
@@ -125,7 +125,7 @@ export const DateTimeColumnFilter = ({
 
   useEffect(() => {
     const datetimeFilterArray = filterState.filter(
-      (obj) => obj.id === 'pickupDatetime'
+      (obj) => obj.id === 'pickupDate'
     )
     if (datetimeFilterArray[0]) setFilterValue(datetimeFilterArray[0].value)
   }, [filterState])
@@ -142,10 +142,7 @@ export const DateTimeColumnFilter = ({
         //min={min.toISOString().slice(0, 10)}
         onChange={(e) => {
           const val = e.target.value //yyyy-mm-dd
-          setFilter('pickupDatetime', (old = []) => [
-            val ? val : undefined,
-            old[1],
-          ])
+          setFilter('pickupDate', (old = []) => [val ? val : undefined, old[1]])
         }}
         type="date"
         value={filterState[0]?.value[0] || ''}
@@ -156,10 +153,7 @@ export const DateTimeColumnFilter = ({
         //max={max.toISOString().slice(0, 10)}
         onChange={(e) => {
           const val = e.target.value
-          setFilter('pickupDatetime', (old = []) => [
-            old[0],
-            val ? val : undefined,
-          ])
+          setFilter('pickupDate', (old = []) => [old[0], val ? val : undefined])
         }}
         type="date"
         value={filterState[0]?.value[1] || ''}
@@ -168,7 +162,7 @@ export const DateTimeColumnFilter = ({
       <button
         className="btn btn-blue"
         onClick={() => {
-          setFilter('pickupDatetime', '')
+          setFilter('pickupDate', '')
         }}
       >
         reset
