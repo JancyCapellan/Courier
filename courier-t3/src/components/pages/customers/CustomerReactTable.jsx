@@ -30,21 +30,34 @@ const FancyTable = ({ columns }) => {
     setShowModal(!showModal)
   }
 
+  // const {
+  //   data: customerListData,
+  //   isLoading,
+  //   isSuccess,
+  //   error,
+  // } = trpc.useQuery(
+  //   [
+  //     'customers.getCustomerList',
+  //     { queryPageIndex: queryPageIndex, queryPageSize: queryPageSize },
+  //   ],
+  //   {
+  //     keepPreviousData: true,
+  //     staleTime: Infinity,
+  //   }
+  // )
+
+  // ! testing non manual pagination, needs full list of customers. manual pagination has an issue with search and then changing the page size causing the page count not to be in sync
+  // *^ this change fixed the isssue without any performance hit, must research more of when manual pagination is neccessary
+
   const {
     data: customerListData,
     isLoading,
     isSuccess,
     error,
-  } = trpc.useQuery(
-    [
-      'customers.getCustomerList',
-      { queryPageIndex: queryPageIndex, queryPageSize: queryPageSize },
-    ],
-    {
-      keepPreviousData: true,
-      staleTime: Infinity,
-    }
-  )
+  } = trpc.useQuery(['customers.getAllCustomers'], {
+    keepPreviousData: true,
+    staleTime: Infinity,
+  })
 
   const tableData = React.useMemo(() => {
     if (!customerListData) return []
@@ -108,14 +121,15 @@ const FancyTable = ({ columns }) => {
       defaultColumn,
       filterTypes,
       initialState: {
-        pageIndex: queryPageIndex,
-        pageSize: queryPageSize,
+        pageIndex: 0,
+        // pageIndex: queryPageIndex,
+        // pageSize: queryPageSize,
       },
-      manualPagination: true,
-      pageCount: isSuccess ? Math.ceil(tableTotalCount / queryPageSize) : null,
+      // manualPagination: true,
+      // pageCount: isSuccess ? Math.ceil(tableTotalCount / queryPageSize) : null,
       // autoResetSortBy: false,
       // autoResetExpanded: false,
-      autoResetPage: false,
+      // autoResetPage: false,
     },
     useGlobalFilter,
     useSortBy,

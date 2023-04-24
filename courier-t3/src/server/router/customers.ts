@@ -35,6 +35,31 @@ export const customerRouter = createProtectedRouter()
       }
     },
   })
+  .query('getAllCustomers', {
+    async resolve({ ctx, input }) {
+      // debug('query:', req)
+      try {
+        const allCustomers = await ctx.prisma.user.findMany({
+          where: {
+            role: 'CUSTOMER',
+          },
+        })
+        const customerTableCount = await ctx.prisma.user.count({
+          where: {
+            role: 'CUSTOMER',
+          },
+        })
+        // debug('all customers\n', allCustomers)
+        return {
+          currentCustomerPage: allCustomers,
+          customerTableCount: customerTableCount,
+        }
+      } catch (error) {
+        // res.status(500)
+        console.error('ERROR GETTING CUSTOMERS LIST', error)
+      }
+    },
+  })
   .mutation('editUserInformation', {
     input: z.object({
       userId: z.string(),
