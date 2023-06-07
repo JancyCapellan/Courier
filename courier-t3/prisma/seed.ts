@@ -49,96 +49,98 @@ async function makeManyCustomer(lens: number) {
 }
 
 async function main() {
-  const warehouses = await prisma.warehouse.createMany({
-    data: [
-      { name: 'bronx', codeName: 'BX' },
-      { name: 'santaigo', codeName: 'STI' },
-      { name: 'miami', codeName: 'MI' },
-    ],
-  })
+  // const warehouses = await prisma.warehouse.createMany({
+  //   data: [
+  //     { name: 'bronx', codeName: 'BX' },
+  //     { name: 'santaigo', codeName: 'STI' },
+  //     { name: 'miami', codeName: 'MI' },
+  //   ],
+  // })
 
-  const testUsers = await prisma.user.createMany({
-    data: [
-      {
-        email: 'owner@email.com',
-        firstName: 'Owner',
-        lastName: 'Tester',
-        role: 'ADMIN',
-        password: 'admin123',
-      },
-      {
-        email: 'ADMIN@email.com',
-        firstName: 'ADMININSTRATOR',
-        lastName: 'ADMIN',
-        role: 'ADMIN',
-        password: 'admin123',
-        defaultWarehouseName: 'bronx',
-      },
-      {
-        email: 'jancycapellan97@email.com',
-        firstName: 'jancy',
-        lastName: 'capellan',
-        role: 'ADMIN',
-        password: '123',
-      },
-      {
-        email: 'customerTester@email.com',
-        firstName: 'Customer',
-        lastName: 'Tester',
-        role: 'CUSTOMER',
-        password: '123',
-      },
-      {
-        email: 'driverTester@email.com',
-        firstName: 'driver',
-        lastName: 'Tester',
-        role: 'DRIVER',
-        password: '123',
-      },
-      {
-        email: 'johnTester@email.com',
-        firstName: 'John',
-        lastName: 'Tester',
-        role: 'DRIVER',
-        password: '123',
-      },
-    ],
-  })
+  // const testUsers = await prisma.user.createMany({
+  //   data: [
+  //     {
+  //       email: 'owner@email.com',
+  //       firstName: 'Owner',
+  //       lastName: 'Tester',
+  //       role: 'ADMIN',
+  //       password: 'admin123',
+  //     },
+  //     {
+  //       email: 'ADMIN@email.com',
+  //       firstName: 'ADMININSTRATOR',
+  //       lastName: 'ADMIN',
+  //       role: 'ADMIN',
+  //       password: 'admin123',
+  //       defaultWarehouseName: 'bronx',
+  //     },
+  //     {
+  //       email: 'jancycapellan97@email.com',
+  //       firstName: 'jancy',
+  //       lastName: 'capellan',
+  //       role: 'ADMIN',
+  //       password: '123',
+  //     },
+  //     {
+  //       email: 'customerTester@email.com',
+  //       firstName: 'Customer',
+  //       lastName: 'Tester',
+  //       role: 'CUSTOMER',
+  //       password: '123',
+  //     },
+  //     {
+  //       email: 'driverTester@email.com',
+  //       firstName: 'driver',
+  //       lastName: 'Tester',
+  //       role: 'DRIVER',
+  //       password: '123',
+  //     },
+  //     {
+  //       email: 'johnTester@email.com',
+  //       firstName: 'John',
+  //       lastName: 'Tester',
+  //       role: 'DRIVER',
+  //       password: '123',
+  //     },
+  //   ],
+  // })
 
   // console.log({ testUsers })
 
-  // const orderPickupZones = await prisma.
-  const invoiceStatuses = await prisma.orderStatus.createMany({
-    data: [
-      { message: 'awaiting pickup' },
-      {
-        message: 'With Pickup Driver',
-      },
-      {
-        message: 'Arrived at NYC warehouse',
-      },
-      {
-        message: 'In Transit to Next Facility',
-      },
-      {
-        message: 'Arrived at DR warehouse',
-      },
-      {
-        message: 'Out for delivery',
-      },
-      {
-        message: 'delivered to reciever',
-      },
-    ],
-  })
+  makeManyCustomer(1000)
 
-  const paymentStatuses = await prisma.paymentStatus.createMany({
-    data: [
-      { status: 'pending payment' },
-      { status: 'PAID' },
-      { status: 'CANCELLED' },
-    ],
-  })
+  // const orderPickupZones = await prisma.
+  // const invoiceStatuses = await prisma.orderStatus.createMany({
+  //   data: [
+  //     { message: 'awaiting pickup' },
+  //     {
+  //       message: 'With Pickup Driver',
+  //     },
+  //     {
+  //       message: 'Arrived at NYC warehouse',
+  //     },
+  //     {
+  //       message: 'In Transit to Next Facility',
+  //     },
+  //     {
+  //       message: 'Arrived at DR warehouse',
+  //     },
+  //     {
+  //       message: 'Out for delivery',
+  //     },
+  //     {
+  //       message: 'delivered to reciever',
+  //     },
+  //   ],
+  // })
+
+  // const paymentStatuses = await prisma.paymentStatus.createMany({
+  //   data: [
+  //     { status: 'pending payment' },
+  //     { status: 'PAID' },
+  //     { status: 'CANCELLED' },
+  //   ],
+  // })
   // console.log('✅ ~ file: seed.ts ~ line 24 ~ main ~ testUsers', testUsers)
 
   // let testItems = {
